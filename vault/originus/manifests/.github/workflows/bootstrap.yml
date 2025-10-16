@@ -1,0 +1,129 @@
+name: Bootstrap ORIGINUS (one-paste)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  ORIGINUS_PATH: vault/originus
+  INFINITY_PATH: vault/infinity
+  MANIFEST_FILE: vault/originus/manifests/dual_core_bridge.json
+  AGENTS_SYNC_FILE: .github/workflows/agents_sync.yml
+  # Optionnels (ajoute-les dans Settings → Secrets → Actions)
+  NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+  VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure folders
+        run: |
+          mkdir -p "$ORIGINUS_PATH/manifests" "$ORIGINUS_PATH/status" "$INFINITY_PATH/runtime" "$INFINITY_PATH/logs"
+
+      - name: Create/Update manifest (dual_core_bridge)
+        run: |
+          cat > "$MANIFEST_FILE" <<'JSON'
+          {
+            "manifest": "dual_core_bridge",
+            "source": "ORIGINUS",
+            "vaults": { "primary": "/vault/originus", "mirror": "/vault/infinity" },
+            "migration": "auto",
+            "auto_heal": true,
+            "netlify_bridge": { "enabled": true, "mode": "dual-core", "trigger": "onDeploy" },
+            "security": { "encryption": "ECHO-256", "failover": "active", "visibility": "hidden" },
+            "domains": {
+              "business": [
+                "sentinelfortune.com",
+                "sentinelfortunerecords.one",
+                "lumengame.vip",
+                "lightnodesystems.my",
+                "vibraflowmedia.casa",
+                "codexworldtv.homes",
+                "lumenschoolacademy.online",
+                "oglegacystore.homes"
+              ],
+              "ng": [
+                "miarnet.homes",
+                "sanctummiar.homes",
+                "altarofmiar.vip",
+                "miarprayers.club",
+                "blessingsmiar.club",
+                "restoremysoul.sbs"
+              ]
+            },
+            "status": "online"
+          }
+          JSON
+
+      - name: Install main workflow (agents_sync)
+        run: |
+          cat > "$AGENTS_SYNC_FILE" <<'YAML'
+          name: Agents Sync (ORIGINUS ⇄ INFINITY + Netlify)
+          on:
+            push:
+              branches: [ "main" ]
+            workflow_dispatch:
+            schedule:
+              - cron: "0 * * * *"
+          permissions:
+            contents: write
+          env:
+            ORIGINUS_PATH: vault/originus
+            INFINITY_PATH: vault/infinity
+            MANIFEST_PATH: vault/originus/manifests/dual_core_bridge.json
+            IMAGE_POLICY: >
+              USE_ONLY=["AI_GENERATED","LICENSED","OWNED","PUBLIC_DOMAIN"];
+              BAN=["UNLICENSED_STOCK","REAL_PERSON_NO_CONSENT"];
+              STYLE_PREF=["realistic_animation","stylized","mecha_transformers","animal_faces","human_like"];
+          jobs:
+            sync:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Validate structure
+                  run: |
+                    for p in "$ORIGINUS_PATH" "$INFINITY_PATH"; do
+                      [ -d "$p" ] || { echo "::error::Missing $p"; exit 1; }
+                    done
+                - name: Mirror ORIGINUS → INFINITY
+                  run: |
+                    rsync -a --delete --exclude='.git' "$ORIGINUS_PATH/runtime/" "$INFINITY_PATH/runtime/" || true
+                    rsync -a --exclude='.git' "$ORIGINUS_PATH/logs/" "$INFINITY_PATH/logs/" || true
+                - name: Agents heartbeat + policy
+                  run: |
+                    mkdir -p "$ORIGINUS_PATH/status"
+                    echo "{\"last_sync\":\"$(date -u +%FT%TZ)\",\"image_policy\":\"${IMAGE_POLICY}\"}" \
+                      > "$ORIGINUS_PATH/status/status.json"
+                    echo "ts=$(date -u +%FT%TZ) policy=${IMAGE_POLICY}" >> "$ORIGINUS_PATH/status/agents_heartbeat.log"
+                - name: Commit status if changed
+                  run: |
+                    git config user.name "sentinel-bot"
+                    git config user.email "actions@github"
+                    git add "$ORIGINUS_PATH/status/" || true
+                    git diff --cached --quiet || git commit -m "chore: sync agents + policy"
+                    git push || true
+                - name: Trigger Netlify
+                  if: env.NETLIFY_BUILD_HOOK != ''
+                  run: |
+                    curl -s -X POST "${NETLIFY_BUILD_HOOK}" || true
+                - name: Trigger Vercel (optional)
+                  if: env.VERCEL_DEPLOY_HOOK != ''
+                  run: |
+                    curl -s -X POST "${VERCEL_DEPLOY_HOOK}" || true
+          YAML
+
+      - name: Commit bootstrap files
+        run: |
+          git config user.name "sentinel-bot"
+          git config user.email "actions@github"
+          git add "$MANIFEST_FILE" "$AGENTS_SYNC_FILE"
+          git commit -m "bootstrap: manifest + agents_sync workflow" || echo "No changes"
+          git push || true
+
+      - name: Done
+        run: echo "Bootstrap finished. Agents Sync installed."
