@@ -1,0 +1,47 @@
+{
+  "manifest": "dual_core_bridge",
+  "source": "ORIGINUS",
+  "vaults": {
+    "primary": "/vault/originus",
+    "mirror": "/vault/infinity"
+  },
+  "migration": "auto",
+  "auto_heal": true,
+  "netlify_bridge": {
+    "enabled": true,
+    "mode": "dual-core",
+    "trigger": "onDeploy",
+    "backup_path": "/vault/originus/runtime/",
+    "sync_interval": "15min"
+  },
+  "agents": {
+    "core": ["ORIGINUS", "S.I.L.O.H.", "V.O.I.C.E.", "S.C.A.N."],
+    "aux": ["K.H.A.R.I.S.", "E.Y.E.S.", "SENTINEL TWIN"]
+  },
+  "security": {
+    "encryption": "ECHO-256",
+    "failover": "active",
+    "visibility": "hidden"
+  },
+  "domains": {
+    "business": [
+      "sentinelfortune.com",
+      "sentinelfortunerecords.one",
+      "lumengame.vip",
+      "lightnodesystems.my",
+      "vibraflowmedia.casa",
+      "codexworldtv.homes",
+      "lumenschoolacademy.online",
+      "oglegacystore.homes"
+    ],
+    "ong": [
+      "miarnet.homes",
+      "sanctummiar.homes",
+      "altarofmiar.vip",
+      "miarprayers.club",
+      "blessingsmiar.club",
+      "restoremysoul.sbs"
+    ]
+  },
+  "status": "online"
+}
