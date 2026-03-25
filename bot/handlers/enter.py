@@ -44,23 +44,39 @@ async def handle_enter(message: Message) -> None:
     result = await _call_enter(uid)
 
     if result.get("ok"):
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[[
-            InlineKeyboardButton(
-                text="View My Status →",
-                callback_data="enter_check_status",
-            ),
-            InlineKeyboardButton(
-                text="Explore Tiers →",
-                callback_data="p3_tiers",
-            ),
-        ]])
-        await message.answer(
+        checkout_url = result.get("checkout_url")
+        tier         = result.get("tier")
+        tier_labels  = {
+            "lite": "Starter Lite ($2)", "monthly": "Monthly Reset ($25/mo)",
+            "starter": "Starter Pack ($290)", "pro": "Pro Access ($1,900)",
+            "oem": "OEM License ($7,500)", "licensing": "Institutional License ($15,000)",
+        }
+        tier_label = tier_labels.get(tier, (tier or "").title()) if tier else None
+
+        inline_rows = []
+        if checkout_url:
+            label = f"Buy {tier_label} →" if tier_label else "Complete Purchase →"
+            inline_rows.append([InlineKeyboardButton(text=label, url=checkout_url)])
+
+        inline_rows.append([
+            InlineKeyboardButton(text="My Status →", callback_data="enter_check_status"),
+            InlineKeyboardButton(text="All Tiers →", callback_data="p3_tiers"),
+        ])
+
+        keyboard = InlineKeyboardMarkup(inline_keyboard=inline_rows)
+
+        body = (
             "<b>Entry confirmed.</b>\n\n"
-            "You are now registered in the Sentinel Fortune system.\n\n"
-            "Use /status to check your current tier and delivery state.\n"
-            "Use /buy to unlock a tier and receive channel access.",
-            reply_markup=keyboard,
+            "You are registered in the Sentinel Fortune system.\n\n"
         )
+        if checkout_url and tier_label:
+            body += f"Your recommended tier: <b>{tier_label}</b>\n"
+            body += "Tap the button below to complete your purchase and receive channel access.\n"
+        else:
+            body += "Use /buy [tier] to generate your personalised payment link.\n"
+        body += "\nUse /status at any time to check your tier and delivery state."
+
+        await message.answer(body, reply_markup=keyboard)
     else:
         err = result.get("error", "Unknown error")
         logger.error("enter-system failed uid=%s err=%s", uid, err)

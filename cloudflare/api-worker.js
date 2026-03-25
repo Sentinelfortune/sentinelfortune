@@ -20,8 +20,8 @@
  * R2 Namespace Governance (READ-ONLY Canon rule: never write originus/_canon/):
  *   originus/public/*    — public content
  *   originus/hub/*       — hub content
- *   originus/system/users/{id}/profile.json
- *   originus/system/users/{id}/delivery.json
+ *   originus/users/{id}/profile.json
+ *   originus/users/{id}/delivery.json
  *   originus/payments/*  — payment records
  *   originus/access/*    — access grants
  *   originus/finance/*   — finance records
@@ -117,7 +117,7 @@ async function handleEnterSystem(req, env) {
   const now = new Date().toISOString();
 
   // R2 canonical key
-  const profileKey = `originus/system/users/${uid}/profile.json`;
+  const profileKey = `originus/users/${uid}/profile.json`;
   let profile = await r2Read(env, profileKey);
 
   if (!profile) {
@@ -182,8 +182,8 @@ async function handleStatus(userId, env) {
   if (!userId) return json({ error: "user_id required" }, 400);
   const uid = String(userId);
 
-  const deliveryKey = `originus/system/users/${uid}/delivery.json`;
-  const profileKey  = `originus/system/users/${uid}/profile.json`;
+  const deliveryKey = `originus/users/${uid}/delivery.json`;
+  const profileKey  = `originus/users/${uid}/profile.json`;
 
   const [delivery, profile] = await Promise.all([
     r2Read(env, deliveryKey),

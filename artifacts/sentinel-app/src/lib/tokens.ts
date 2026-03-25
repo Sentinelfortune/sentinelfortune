@@ -120,7 +120,7 @@ export const BOT_START = (ref: string) => `${BOT_LINK}?start=${ref}`;
 export const R2_NAMESPACES = {
   public:   "originus/public/",
   hub:      "originus/hub/",
-  users:    "originus/system/users/",
+  users:    "originus/users/",
   payments: "originus/payments/",
   access:   "originus/access/",
   finance:  "originus/finance/",
