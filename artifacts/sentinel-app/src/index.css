@@ -24,3 +24,39 @@ code, pre, kbd, samp {
 ::-webkit-scrollbar-track { background: #0d1528; }
 ::-webkit-scrollbar-thumb { background: #1e2d4a; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #2a3f5f; }
+
+/* ─── SFL background identity watermark ──────────────────────────────────── */
+.sf-watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(680px, 85vw);
+  height: min(680px, 85vw);
+  background-image: url('/assets/branding/sf-logo-watermark.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.055;
+  filter: blur(18px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 0;
+  will-change: opacity;
+}
+
+/* Ensure all routed page content sits above the watermark layer */
+.sf-app-layer {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .sf-watermark {
+    width: min(420px, 90vw);
+    height: min(420px, 90vw);
+    opacity: 0.045;
+    filter: blur(14px);
+  }
+}
+/* ─────────────────────────────────────────────────────────────────────────── */

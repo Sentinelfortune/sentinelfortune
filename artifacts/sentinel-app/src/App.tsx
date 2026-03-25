@@ -23,34 +23,42 @@ import NotFound from "./pages/not-found";
 
 export default function App() {
   return (
-    <Switch>
-      {/* Public routes */}
-      <Route path="/"                component={Home} />
-      <Route path="/corridors"       component={Corridors} />
-      <Route path="/corridors/:id"   component={Corridor} />
-      <Route path="/content"         component={Content} />
-      <Route path="/teachings"       component={Teachings} />
-      <Route path="/teachings/:slug" component={Teachings} />
-      <Route path="/rhapsodies"      component={Rhapsodies} />
-      <Route path="/rhapsodies/:slug" component={Rhapsodies} />
-      <Route path="/music"           component={Music} />
-      <Route path="/music/:slug"     component={Music} />
-      <Route path="/games"           component={Games} />
-      <Route path="/games/:slug"     component={Games} />
-      <Route path="/store"           component={Store} />
-      <Route path="/membership"      component={Membership} />
-      <Route path="/agent"           component={Agent} />
+    <>
+      {/* Background identity watermark — fixed, blurred, screen-blended */}
+      <div className="sf-watermark" aria-hidden="true" />
 
-      {/* Ops routes */}
-      <Route path="/ops"             component={Ops} />
-      <Route path="/ops/content"     component={OpsContent} />
-      <Route path="/ops/pipeline"    component={OpsPipeline} />
-      <Route path="/ops/access"      component={OpsAccess} />
-      <Route path="/ops/logs"        component={OpsLogs} />
-      <Route path="/ops/upload"      component={OpsUpload} />
+      {/* All routed content — sits above watermark via z-index */}
+      <div className="sf-app-layer">
+        <Switch>
+          {/* Public routes */}
+          <Route path="/"                component={Home} />
+          <Route path="/corridors"       component={Corridors} />
+          <Route path="/corridors/:id"   component={Corridor} />
+          <Route path="/content"         component={Content} />
+          <Route path="/teachings"       component={Teachings} />
+          <Route path="/teachings/:slug" component={Teachings} />
+          <Route path="/rhapsodies"      component={Rhapsodies} />
+          <Route path="/rhapsodies/:slug" component={Rhapsodies} />
+          <Route path="/music"           component={Music} />
+          <Route path="/music/:slug"     component={Music} />
+          <Route path="/games"           component={Games} />
+          <Route path="/games/:slug"     component={Games} />
+          <Route path="/store"           component={Store} />
+          <Route path="/membership"      component={Membership} />
+          <Route path="/agent"           component={Agent} />
 
-      {/* 404 */}
-      <Route                         component={NotFound} />
-    </Switch>
+          {/* Ops routes */}
+          <Route path="/ops"             component={Ops} />
+          <Route path="/ops/content"     component={OpsContent} />
+          <Route path="/ops/pipeline"    component={OpsPipeline} />
+          <Route path="/ops/access"      component={OpsAccess} />
+          <Route path="/ops/logs"        component={OpsLogs} />
+          <Route path="/ops/upload"      component={OpsUpload} />
+
+          {/* 404 */}
+          <Route                         component={NotFound} />
+        </Switch>
+      </div>
+    </>
   );
 }
