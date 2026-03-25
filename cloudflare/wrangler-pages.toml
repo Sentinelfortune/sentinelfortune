@@ -1,0 +1,13 @@
+# Sentinel Fortune — Cloudflare Pages Frontend
+# wrangler pages deploy artifacts/sentinel-app/dist/public --project-name sentinel-fortune-hub
+
+# Build locally first:
+#   cd artifacts/sentinel-app && pnpm run build
+# Then deploy:
+#   wrangler pages deploy dist/public --project-name sentinel-fortune-hub --branch main
+
+# Or connect via GitHub → Cloudflare Pages dashboard:
+#   Repo: Sentinelfortune/sentinelfortune
+#   Build command: cd artifacts/sentinel-app && pnpm run build
+#   Build output: artifacts/sentinel-app/dist/public
+#   Root path: /

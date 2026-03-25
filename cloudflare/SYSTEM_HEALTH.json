@@ -1,0 +1,49 @@
+{
+  "_schema": "sfl-system-health-v1",
+  "_comment": "Written by health check routines. Read by ops dashboard. Never manually edit.",
+  "last_checked": null,
+  "overall_status": "unknown",
+  "services": {
+    "api": {
+      "status": "unknown",
+      "endpoint": "https://sentinelfortune.com/api/health",
+      "last_ok": null,
+      "latency_ms": null
+    },
+    "bot": {
+      "status": "unknown",
+      "endpoint": "webhook",
+      "last_ok": null
+    },
+    "r2": {
+      "status": "unknown",
+      "bucket": "originus",
+      "binding": "ORIGINUS_R2",
+      "last_ok": null
+    },
+    "stripe": {
+      "status": "unknown",
+      "webhook": "configured",
+      "last_ok": null
+    }
+  },
+  "routes": {
+    "GET /api/health":          "unknown",
+    "GET /api/healthz":         "unknown",
+    "POST /api/enter-system":   "unknown",
+    "POST /api/buy":            "unknown",
+    "GET /api/status/:id":      "unknown",
+    "POST /api/stripe/webhook": "unknown"
+  },
+  "r2_namespaces": {
+    "originus/public/":   "governed",
+    "originus/hub/":      "governed",
+    "originus/system/":   "governed",
+    "originus/payments/": "governed",
+    "originus/access/":   "governed",
+    "originus/finance/":  "governed",
+    "originus/private/":  "governed",
+    "originus/_canon/":   "READ-ONLY — NEVER WRITE"
+  },
+  "heal_log": []
+}

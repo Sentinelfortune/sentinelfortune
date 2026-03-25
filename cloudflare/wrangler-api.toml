@@ -1,0 +1,29 @@
+# Sentinel Fortune — Cloudflare Workers API
+# wrangler deploy --config cloudflare/wrangler-api.toml
+
+name = "sentinel-fortune-ecosystem"
+main = "cloudflare/api-worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[r2_buckets]]
+binding = "ORIGINUS_R2"
+bucket_name = "originus"
+
+[vars]
+# Set real values in Cloudflare dashboard / wrangler secret put
+STRIPE_BUY_LINK_LITE      = ""
+STRIPE_BUY_LINK_MONTHLY   = ""
+STRIPE_BUY_LINK_STARTER   = ""
+STRIPE_BUY_LINK_PRO       = ""
+STRIPE_BUY_LINK_OEM       = ""
+STRIPE_BUY_LINK_LICENSING = ""
+
+# [secrets] — set via: wrangler secret put STRIPE_WEBHOOK_SECRET
+# STRIPE_SECRET
+# STRIPE_WEBHOOK_SECRET
+# BOT_TOKEN
+
+[[routes]]
+pattern = "sentinelfortune.com/api/*"
+zone_name = "sentinelfortune.com"

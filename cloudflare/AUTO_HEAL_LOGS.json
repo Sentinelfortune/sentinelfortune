@@ -1,0 +1,5 @@
+{
+  "_schema": "sfl-auto-heal-log-v1",
+  "_comment": "Append-only structured log of auto-heal events. Never truncate.",
+  "log": []
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+  <!-- S.F. wordmark + shield mark -->
+  <g>
+    <!-- Shield mark -->
+    <path d="M8 4 L28 4 L28 38 Q18 50 8 44 Q0 38 0 28 L0 12 Z" fill="#c9a34f" opacity="0.15"/>
+    <path d="M8 4 L28 4 L28 38 Q18 50 8 44 Q0 38 0 28 L0 12 Z" fill="none" stroke="#c9a34f" stroke-width="1.5"/>
+    <text x="5" y="30" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#c9a34f">S</text>
+  </g>
+  <!-- Wordmark -->
+  <text x="36" y="26" font-family="'Space Grotesk', system-ui, sans-serif" font-size="13" font-weight="700" fill="#e8edf5" letter-spacing="1">SENTINEL</text>
+  <text x="36" y="42" font-family="'Space Grotesk', system-ui, sans-serif" font-size="10" font-weight="500" fill="#c9a34f" letter-spacing="3">FORTUNE</text>
+  <text x="162" y="42" font-family="'Space Grotesk', system-ui, sans-serif" font-size="7" font-weight="400" fill="#3d4f6a" letter-spacing="1">LLC</text>
+</svg>
