@@ -1,0 +1,43 @@
+{
+  "_schema": "sfl-current-working-map-v1",
+  "_date": "2026-03-25",
+  "api_routes": {
+    "GET /api/health":          { "status": "live", "handler": "api-server/routes/health.ts" },
+    "GET /api/healthz":         { "status": "live", "handler": "api-server/routes/health.ts" },
+    "POST /api/enter-system":   { "status": "live", "handler": "api-server/routes/ecosystem.ts" },
+    "POST /api/buy":            { "status": "live", "handler": "api-server/routes/ecosystem.ts" },
+    "GET /api/status/:id":      { "status": "live", "handler": "api-server/routes/ecosystem.ts" },
+    "POST /api/stripe/webhook": { "status": "live", "handler": "api-server/routes/stripe.ts" }
+  },
+  "cloudflare_workers": {
+    "sentinel-fortune-ecosystem": { "version": "v1.4.0", "status": "deployed" },
+    "sentinelfortunellc":         { "version": "v2",     "status": "deployed" }
+  },
+  "bot_commands": {
+    "/start":  { "status": "live", "handler": "bot/handlers/start.py" },
+    "/menu":   { "status": "live", "handler": "bot/handlers/menu.py" },
+    "/enter":  { "status": "live", "handler": "bot/handlers/enter.py" },
+    "/buy":    { "status": "live", "handler": "bot/handlers/buy.py" },
+    "/status": { "status": "live", "handler": "bot/handlers/status_cmd.py" }
+  },
+  "frontend_routes": {
+    "public": ["/","/corridors","/corridors/:id","/content","/teachings/:slug","/rhapsodies/:slug","/music","/music/:slug","/games/:slug","/store","/membership","/agent"],
+    "ops":    ["/ops","/ops/content","/ops/pipeline","/ops/access","/ops/logs","/ops/upload"]
+  },
+  "design_system": {
+    "background": "#070c18",
+    "font": "Space Grotesk + JetBrains Mono",
+    "accent": "#c9a34f",
+    "logo_path": "/public/assets/branding/sf-logo.svg"
+  },
+  "r2": {
+    "bucket": "originus",
+    "canonical_user_path": "originus/users/{id}/",
+    "binding_name": "ORIGINUS_R2"
+  },
+  "github": {
+    "repo": "Sentinelfortune/sentinelfortune",
+    "latest_tag": "v2.1.0",
+    "branch": "main"
+  }
+}

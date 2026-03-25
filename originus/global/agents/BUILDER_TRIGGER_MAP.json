@@ -1,0 +1,24 @@
+{
+  "_schema": "sfl-builder-trigger-map-v1",
+  "triggers": {
+    "api": {
+      "description": "POST /api/builders/:id/invoke",
+      "auth": "none for standard builders, x-ops-token for governance builders",
+      "builders": ["all 15 builders"]
+    },
+    "dashboard": {
+      "description": "Ops dashboard at /ops — all builders exposed",
+      "route": "/ops/pipeline",
+      "builders": ["all 15 builders"]
+    },
+    "telegram": {
+      "description": "Selected builders exposed via Telegram commands",
+      "builders": { "snippets_builder": "/snippet" }
+    },
+    "auto_scheduler": {
+      "description": "Auto-publish scheduler in bot/services/auto_publish.py",
+      "builders": ["snippets_builder"],
+      "note": "DO NOT TOUCH delivery_service.py or auto_publish.py"
+    }
+  }
+}

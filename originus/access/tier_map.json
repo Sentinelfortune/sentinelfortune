@@ -1,0 +1,15 @@
+{
+  "_schema": "sfl-tier-map-v1",
+  "tier_to_channels": {
+    "lite":      ["teachings_vault_v1"],
+    "monthly":   ["reset_v1","quick_access_v1"],
+    "starter":   ["teachings_vault_v1"],
+    "pro":       ["teachings_vault_v1","sentinel_engine_v1"],
+    "oem":       ["teachings_vault_v1","sentinel_engine_v1","sentinel_architect_v1"],
+    "licensing": ["teachings_vault_v1","sentinel_engine_v1","sentinel_architect_v1"]
+  },
+  "channel_labels": {
+    "reset_v1":"Reset Channel","quick_access_v1":"Quick Access",
+    "teachings_vault_v1":"Teachings Vault","sentinel_engine_v1":"Sentinel Engine","sentinel_architect_v1":"Sentinel Architect"
+  }
+}

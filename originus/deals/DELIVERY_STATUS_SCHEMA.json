@@ -1,0 +1,16 @@
+{
+  "_schema":"sfl-delivery-status-schema-v1",
+  "_path":"originus/users/{user_id}/delivery.json",
+  "fields":{
+    "user_id":{"type":"string","required":true},
+    "tier":{"type":"string","enum":["lite","monthly","starter","pro","oem","licensing"]},
+    "status":{"type":"string","enum":["entered","paid","delivered","failed"]},
+    "delivered":{"type":"boolean"},
+    "channels":{"type":"array"},
+    "channel":{"type":"string"},
+    "source":{"type":"string"},
+    "stripe_event_id":{"type":"string"},
+    "created_at":{"type":"string","format":"iso8601"},
+    "updated_at":{"type":"string","format":"iso8601"}
+  }
+}

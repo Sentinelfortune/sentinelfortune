@@ -1,0 +1,14 @@
+{
+  "_schema": "sfl-builder-monetization-map-v1",
+  "by_tier": {
+    "no_tier_required": ["snippets_builder","offer_pack_builder"],
+    "starter":          ["ebook_builder"],
+    "pro":              ["app_builder","cartoon_builder","mini_web_games_builder","audiobook_builder","video_builder","landing_page_builder"],
+    "oem":              ["assets_builder","bot_builder","image_rebuilder","agent_service_builder"],
+    "licensing":        ["house_signature_builder","deal_pdf_builder"]
+  },
+  "governance_builders": {
+    "builders": ["house_signature_builder","deal_pdf_builder"],
+    "rule": "Require x-ops-token header. Owner is final signer. Output goes to originus/private/."
+  }
+}

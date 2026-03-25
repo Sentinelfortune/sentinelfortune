@@ -1,0 +1,20 @@
+{
+  "_schema": "sfl-builder-output-schemas-v1",
+  "schemas": {
+    "app_builder":             { "type": "web_manifest", "fields": ["project_id","pages","routes","domain","built_at"], "r2_path": "originus/content/output/apps/{project_id}/" },
+    "assets_builder":          { "type": "asset_record",  "fields": ["asset_id","brand","format","r2_path","dimensions","built_at"], "r2_path": "originus/global/assets/{brand}/" },
+    "house_signature_builder": { "type": "pdf_document",  "fields": ["deal_id","parties","signature_required","pdf_r2_key","signed_at"], "r2_path": "originus/deals/generated_pdfs/" },
+    "bot_builder":             { "type": "bot_config",    "fields": ["bot_name","commands","domain","handler_stubs","built_at"], "r2_path": "originus/content/output/bots/" },
+    "cartoon_builder":         { "type": "scene_manifest","fields": ["scene","universe","characters","storyboard_r2_key","built_at"], "r2_path": "originus/content/output/cartoons/" },
+    "mini_web_games_builder":  { "type": "game_manifest", "fields": ["game_id","title","genre","assets_r2_path","built_at"], "r2_path": "originus/content/output/games/" },
+    "snippets_builder":        { "type": "content_snippet","fields": ["snippet_id","topic","tone","body","word_count","built_at"], "r2_path": "originus/content/output/snippets/" },
+    "ebook_builder":           { "type": "ebook_package", "fields": ["title","author","chapter_count","pdf_r2_key","cover_r2_key","built_at"], "r2_path": "originus/products/digital/ebooks/" },
+    "audiobook_builder":       { "type": "audio_manifest","fields": ["title","chapter_count","audio_r2_paths","built_at"], "r2_path": "originus/content/output/audiobooks/" },
+    "video_builder":           { "type": "video_manifest","fields": ["title","scene_count","format","storyboard_r2_key","built_at"], "r2_path": "originus/content/output/videos/" },
+    "image_rebuilder":         { "type": "image_record",  "fields": ["source","target_format","brand","r2_key","dimensions","built_at"], "r2_path": "originus/global/assets/images/" },
+    "deal_pdf_builder":        { "type": "pdf_document",  "fields": ["deal_id","deal_type","amount_cents","parties","pdf_r2_key","built_at"], "r2_path": "originus/deals/generated_pdfs/" },
+    "offer_pack_builder":      { "type": "offer_pack",    "fields": ["pack_id","tier","items","stripe_link","copy","built_at"], "r2_path": "originus/products/bundles/" },
+    "landing_page_builder":    { "type": "page_manifest", "fields": ["page_id","domain","headline","sections","cta","built_at"], "r2_path": "originus/hub/manifests/" },
+    "agent_service_builder":   { "type": "agent_config",  "fields": ["agent_id","capabilities","trigger_rules","endpoints","built_at"], "r2_path": "originus/global/agents/" }
+  }
+}

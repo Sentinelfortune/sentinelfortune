@@ -1,0 +1,22 @@
+{
+  "_schema": "sfl-preserve-list-v1",
+  "critical_do_not_touch": [
+    "bot/services/delivery_service.py",
+    "bot/services/auto_publish.py",
+    "bot/services/ai_content.py",
+    "originus/_canon/ (R2 bucket — READ ONLY at runtime)",
+    "All 6 API routes (GET /health, GET /healthz, POST /enter-system, POST /buy, GET /status/:id, POST /stripe/webhook)",
+    "Stripe webhook signature verification logic",
+    "Cloudflare Worker routing (sentinelfortunellc v2 isApiRoute guard)",
+    "activate_user await calls — must never use create_task",
+    "deliver_tier_access await calls — must never use create_task"
+  ],
+  "preserve_behavior": [
+    "Deep-link entry flow: /start entry_{slug}_{tier}",
+    "CRI embedding in Stripe checkout URLs",
+    "Idempotency: originus/sales/stripe_events/processed/{event_id}.json",
+    "Local filesystem fallback for R2 reads: data/users/{id}/",
+    "INTERNAL_API_BASE defaulting to http://localhost:8080",
+    "Channel invite links stored in env vars (INVITE_RESET, INVITE_QUICK, INVITE_VAULT, INVITE_ENGINE, INVITE_ARCHITECT)"
+  ]
+}

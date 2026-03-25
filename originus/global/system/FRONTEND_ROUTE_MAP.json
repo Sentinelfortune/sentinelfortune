@@ -1,0 +1,25 @@
+{
+  "_schema": "sfl-frontend-route-map-v1",
+  "public_routes": {
+    "/":                 { "component": "Home",        "cta": ["buy","membership"],         "brand": ["O.G","O.O'$","GRAND"] },
+    "/corridors":        { "component": "Corridors",   "cta": ["membership","unlock"],       "domains": "all 8 domains" },
+    "/corridors/:id":    { "component": "CorridorDetail", "cta": ["buy","streaming"],       "dynamic": true },
+    "/content":          { "component": "Content",     "cta": ["subscribe","email_capture"], "builders": ["snippets_builder"] },
+    "/teachings/:slug":  { "component": "Teachings",   "cta": ["buy","ebook_builder"],       "domain": "lumenschoolacademy.online" },
+    "/rhapsodies/:slug": { "component": "Rhapsodies",  "cta": ["streaming","buy"],           "domain": "vibraflowmedia.casa" },
+    "/music":            { "component": "Music",        "cta": ["streaming","buy"],           "brand": "IZZZ", "domain": "sentinelfortunerecords.one" },
+    "/music/:slug":      { "component": "MusicDetail", "cta": ["buy","streaming"],           "dynamic": true },
+    "/games/:slug":      { "component": "GameDetail",  "cta": ["unlock","buy"],              "ip": "RATOU", "domain": "lumengame.vip" },
+    "/store":            { "component": "Store",        "cta": ["buy","oem_cta","licensing_cta"], "brands": "all 8 brands" },
+    "/membership":       { "component": "Membership",  "cta": ["subscribe","buy"],           "tier_display": true },
+    "/agent":            { "component": "Agent",        "cta": ["licensing_cta","oem_cta"],  "builders": "exposed" }
+  },
+  "ops_routes": {
+    "/ops":              { "component": "OpsDashboard", "auth": "ops_token" },
+    "/ops/content":      { "component": "OpsContent",   "auth": "ops_token", "builder": "snippets_builder" },
+    "/ops/pipeline":     { "component": "OpsPipeline",  "auth": "ops_token", "api": "/api/builders" },
+    "/ops/access":       { "component": "OpsAccess",    "auth": "ops_token" },
+    "/ops/logs":         { "component": "OpsLogs",      "auth": "ops_token" },
+    "/ops/upload":       { "component": "OpsUpload",    "auth": "ops_token", "namespace": "originus/public/" }
+  }
+}

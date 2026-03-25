@@ -1,0 +1,19 @@
+{
+  "_schema": "sfl-domain-brand-ip-map-v1",
+  "domains": {
+    "sentinelfortune.com":          { "label": "Command Hub",          "brands": ["O.G","O.O'$","GRAND"],      "ip": [],                       "category": "hub",         "primary_tiers": ["all"] },
+    "sentinelfortunerecords.one":   { "label": "Records",              "brands": ["IZZZ"],                     "ip": [],                       "category": "music",       "primary_tiers": ["starter","pro"] },
+    "codexworldtv.homes":           { "label": "Codex World TV",       "brands": [],                           "ip": ["RATOU","CODEX SHARDS"], "category": "film",        "primary_tiers": ["pro","oem"] },
+    "lumengame.vip":                { "label": "Lumen Game",           "brands": [],                           "ip": ["RATOU"],                "category": "games",       "primary_tiers": ["pro","oem"] },
+    "lumenschoolacademy.online":    { "label": "Lumen School Academy", "brands": [],                           "ip": [],                       "category": "education",   "primary_tiers": ["starter","pro"] },
+    "vibraflowmedia.casa":          { "label": "VibraFlow Media",      "brands": ["AURA BOARD"],               "ip": [],                       "category": "spirituality","primary_tiers": ["oem"] },
+    "lightnodesystems.my":          { "label": "LightNode Systems",    "brands": [],                           "ip": [],                       "category": "systems",     "primary_tiers": ["licensing"] },
+    "oglegacystore.homes":          { "label": "OG Legacy Store",      "brands": ["MOB AREA","DUDE STUNNA","KNI$"],"ip": [],               "category": "commerce",    "primary_tiers": ["starter","pro"] }
+  },
+  "brands_master": ["MOB AREA","IZZZ","DUDE STUNNA","O.G","O.O'$","GRAND","KNI$","AURA BOARD"],
+  "ip_universe":   ["RATOU","CODEX SHARDS"],
+  "ip_rules": {
+    "RATOU":        "Must surface on codexworldtv.homes AND lumengame.vip",
+    "CODEX SHARDS": "Primary: codexworldtv.homes; secondary: main hub"
+  }
+}

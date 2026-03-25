@@ -1,0 +1,51 @@
+{
+  "_schema": "sfl-cf-migration-plan-v1",
+  "_version": "2.1.0",
+  "target_state": {
+    "frontend": "Cloudflare Pages (sentinelfortune.com)",
+    "api": "Cloudflare Workers (sentinel-fortune-ecosystem)",
+    "storage": "Cloudflare R2 (originus bucket)",
+    "bot": "Portable Python — any VPS or Cloudflare Worker (via Deno/WASM in future)",
+    "secrets": "Cloudflare Workers environment secrets",
+    "versioning": "GitHub → Cloudflare Pages CI/CD"
+  },
+  "components": {
+    "cloudflare_workers_api": {
+      "file": "cloudflare/api-worker.js",
+      "status": "ready",
+      "deploy_cmd": "wrangler deploy --config cloudflare/wrangler-api.toml",
+      "r2_binding": "ORIGINUS_R2 → originus bucket",
+      "env_vars_needed": ["STRIPE_BUY_LINK_LITE","STRIPE_BUY_LINK_MONTHLY","STRIPE_BUY_LINK_STARTER","STRIPE_BUY_LINK_PRO","STRIPE_BUY_LINK_OEM","STRIPE_BUY_LINK_LICENSING","STRIPE_WEBHOOK_SECRET","BOT_TOKEN"]
+    },
+    "cloudflare_pages_frontend": {
+      "build_cmd": "cd artifacts/sentinel-app && pnpm run build",
+      "output_dir": "artifacts/sentinel-app/dist/public",
+      "config_file": "cloudflare/wrangler-pages.toml",
+      "status": "build_ready",
+      "connect_via": "Cloudflare Pages dashboard → Connect GitHub → Sentinelfortune/sentinelfortune"
+    },
+    "r2_bucket": {
+      "bucket_name": "originus",
+      "status": "active",
+      "binding": "ORIGINUS_R2",
+      "canon_seed": "Upload originus/_canon/* files via R2 console after repo push"
+    },
+    "telegram_bot": {
+      "current_host": "Replit",
+      "portable": true,
+      "move_to": "Any VPS with Python 3.11+, or keep on Replit long-term",
+      "dependencies": ["TELEGRAM_BOT_TOKEN","STRIPE_WEBHOOK_SECRET","STRIPE_BUY_LINK_*","INVITE_*","OPENAI_API_KEY","CF_R2_ACCESS_KEY_ID","CF_R2_SECRET_ACCESS_KEY","CF_ACCOUNT_ID"]
+    }
+  },
+  "migration_order": [
+    "1. Set all STRIPE_BUY_LINK_* env vars in Replit + CF Workers",
+    "2. Bind originus R2 bucket to sentinel-fortune-ecosystem worker (ORIGINUS_R2)",
+    "3. Upload originus/_canon/*.json files to R2 via dashboard",
+    "4. Connect GitHub to CF Pages → trigger first build",
+    "5. Test CF Pages frontend loads correctly on custom domain",
+    "6. Point sentinelfortune.com DNS to CF Pages (if not already)",
+    "7. Verify all /api/* routes still work via CF Worker proxy",
+    "8. Monitor for 48h → confirm stability",
+    "9. Replit becomes optional — can deactivate or keep for bot only"
+  ]
+}

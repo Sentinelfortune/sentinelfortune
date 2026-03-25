@@ -1,0 +1,31 @@
+{
+  "_schema": "sfl-master-system-map-v1",
+  "_version": "2.1.0",
+  "layers": {
+    "cloudflare": {
+      "workers": ["sentinel-fortune-ecosystem v1.4.0", "sentinelfortunellc v2"],
+      "pages": "pending CF Pages connection",
+      "r2": "originus bucket (active)",
+      "status": "sovereign_runtime"
+    },
+    "replit": {
+      "bot": "Python aiogram 3 — port 8082 webhook + polling",
+      "api": "Express 5 TypeScript — port 8080",
+      "frontend": "React Vite — port 22543",
+      "role": "build_and_control_only"
+    },
+    "github": {
+      "repo": "Sentinelfortune/sentinelfortune",
+      "role": "canonical_version_control",
+      "deploy_target": "Cloudflare Pages + Workers"
+    }
+  },
+  "data_flow": {
+    "user_entry": "Telegram /start or website deep-link → /api/enter-system → R2 profile write",
+    "payment": "Stripe checkout → webhook :8082 → tier resolve → activate → deliver",
+    "content": "Auto-publish scheduler → ai_content → Telegram channel post",
+    "status": "Telegram /status → /api/status/:id → R2 delivery.json read"
+  },
+  "brands": ["MOB AREA","IZZZ","DUDE STUNNA","O.G","O.O'$","GRAND","KNI$","AURA BOARD"],
+  "ip_universe": ["RATOU", "CODEX SHARDS"]
+}

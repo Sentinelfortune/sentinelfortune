@@ -1,0 +1,16 @@
+{
+  "_schema": "sfl-api-route-registry-v1",
+  "routes": {
+    "GET /api/health":             { "auth": "none", "worker_compatible": true,  "r2": false },
+    "GET /api/healthz":            { "auth": "none", "worker_compatible": true,  "r2": false },
+    "POST /api/enter-system":      { "auth": "none", "worker_compatible": true,  "r2": "read+write" },
+    "POST /api/buy":               { "auth": "none", "worker_compatible": true,  "r2": false, "redirects_to": "stripe" },
+    "GET /api/status/:id":         { "auth": "none", "worker_compatible": true,  "r2": "read" },
+    "POST /api/stripe/webhook":    { "auth": "stripe_sig", "worker_compatible": true, "r2": "write" },
+    "GET /api/builders":           { "auth": "none", "worker_compatible": true,  "r2": false, "status": "new" },
+    "GET /api/builders/:id":       { "auth": "none", "worker_compatible": true,  "r2": false, "status": "new" },
+    "POST /api/builders/:id/invoke": { "auth": "ops_token", "worker_compatible": true, "r2": "write", "status": "new" },
+    "GET /api/products":           { "auth": "none", "worker_compatible": true,  "r2": "read",  "status": "new" },
+    "GET /api/products/:tier":     { "auth": "none", "worker_compatible": true,  "r2": "read",  "status": "new" }
+  }
+}

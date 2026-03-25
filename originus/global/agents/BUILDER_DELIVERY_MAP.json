@@ -1,0 +1,20 @@
+{
+  "_schema": "sfl-builder-delivery-map-v1",
+  "delivery_targets": {
+    "app_builder":             { "primary": "originus/sites/{domain}/",           "secondary": null,                              "public": false },
+    "assets_builder":          { "primary": "originus/global/assets/{brand}/",    "secondary": "originus/public/assets/",         "public": true  },
+    "house_signature_builder": { "primary": "originus/private/reports/",          "secondary": null,                              "public": false },
+    "bot_builder":             { "primary": "originus/global/system/",             "secondary": null,                              "public": false },
+    "cartoon_builder":         { "primary": "originus/sites/codexworldtv.homes/", "secondary": null,                              "public": true  },
+    "mini_web_games_builder":  { "primary": "originus/sites/lumengame.vip/",      "secondary": null,                              "public": true  },
+    "snippets_builder":        { "primary": "originus/content/feed/",              "secondary": null,                              "public": false },
+    "ebook_builder":           { "primary": "originus/products/digital/ebooks/",  "secondary": "originus/delivery/records/",      "public": false },
+    "audiobook_builder":       { "primary": "originus/products/digital/audio/",   "secondary": null,                              "public": false },
+    "video_builder":           { "primary": "originus/sites/codexworldtv.homes/", "secondary": null,                              "public": true  },
+    "image_rebuilder":         { "primary": "originus/public/assets/",            "secondary": "originus/global/assets/images/",  "public": true  },
+    "deal_pdf_builder":        { "primary": "originus/private/reports/",          "secondary": null,                              "public": false },
+    "offer_pack_builder":      { "primary": "originus/products/",                 "secondary": null,                              "public": false },
+    "landing_page_builder":    { "primary": "originus/hub/manifests/",            "secondary": null,                              "public": true  },
+    "agent_service_builder":   { "primary": "originus/global/agents/",            "secondary": null,                              "public": false }
+  }
+}

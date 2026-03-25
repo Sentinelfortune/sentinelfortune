@@ -1,0 +1,171 @@
+{
+  "_schema": "sfl-r2-master-tree-v1",
+  "_authority": "Sentinel Fortune LLC",
+  "_rule": "This file defines the canonical R2 namespace structure. Workers read this. Never invent paths outside these roots.",
+  "_write_rule": "originus/_canon/ is READ-ONLY at runtime. Only the owner may update these files via manual R2 upload.",
+  "canonical_roots": {
+    "originus/_canon/": {
+      "purpose": "Canonical read-only source of truth. System indexes, schemas, boundary definitions.",
+      "write_access": "owner_manual_only",
+      "contains": ["R2_MASTER_TREE.json","R2_CANON_INDEX.json","PUBLIC_PRIVATE_BOUNDARY.json","WORKER_TO_R2_MAP.json","SITE_TO_R2_MAP.json","DELIVERY_GRAPH.json"]
+    },
+    "originus/global/": {
+      "purpose": "Global system components: agents, builders, system maps",
+      "contains": {
+        "agents/": "Builder registry + callable agent configs",
+        "system/": "Master system maps, route registries, command maps",
+        "assets/": "Global brand assets index"
+      }
+    },
+    "originus/workers/": {
+      "purpose": "Cloudflare Workers configs, route tables, worker-specific state",
+      "contains": {
+        "configs/": "Per-worker configuration JSON",
+        "routes/": "Route registry per worker",
+        "health/": "SYSTEM_HEALTH.json, AUTO_HEAL_LOGS.json"
+      }
+    },
+    "originus/sites/": {
+      "purpose": "Per-domain site content, manifests, and configs",
+      "contains": {
+        "sentinelfortune.com/": "Hub site content",
+        "sentinelfortunerecords.one/": "Music/records content",
+        "codexworldtv.homes/": "Film/RATOU universe content",
+        "lumengame.vip/": "Games/RATOU interactive",
+        "lumenschoolacademy.online/": "Education/teachings",
+        "vibraflowmedia.casa/": "Spirituality/media",
+        "lightnodesystems.my/": "Systems/tools",
+        "oglegacystore.homes/": "Commerce/brands/store"
+      }
+    },
+    "originus/products/": {
+      "purpose": "Product registry, digital product manifests",
+      "contains": {
+        "registry/": "PRODUCT_REGISTRY.json, tier definitions",
+        "digital/": "Digital product files and bundles",
+        "bundles/": "Packaged offer bundles"
+      }
+    },
+    "originus/content/": {
+      "purpose": "Content production and distribution",
+      "contains": {
+        "output/": "Builder-generated content output",
+        "feed/": "Auto-publish feed JSON",
+        "archive/": "Historical content"
+      }
+    },
+    "originus/deals/": {
+      "purpose": "Deal records, generated PDFs, signed contracts",
+      "contains": {
+        "generated_pdfs/": "PDF output from deal_pdf_builder",
+        "records/": "Deal records JSON",
+        "contracts/": "Contract templates"
+      }
+    },
+    "originus/chat/": {
+      "purpose": "Telegram conversation logs, lead state, session state",
+      "contains": {
+        "sessions/": "Active conversation state",
+        "logs/": "Interaction logs"
+      }
+    },
+    "originus/automation/": {
+      "purpose": "Automation rules, scheduler state, trigger logs",
+      "contains": {
+        "scheduler/": "Auto-publish schedule state",
+        "triggers/": "Trigger event log",
+        "rules/": "Automation rule definitions"
+      }
+    },
+    "originus/delivery/": {
+      "purpose": "Delivery records, channel invites, access grants",
+      "contains": {
+        "channels/": "Channel invite mappings per tier",
+        "records/": "Delivery receipts per user",
+        "failed/": "Failed delivery queue for retry"
+      }
+    },
+    "originus/analytics/": {
+      "purpose": "Traffic, conversion, sales analytics",
+      "contains": {
+        "leads/": "Lead capture events",
+        "conversions/": "Payment conversion events",
+        "clicks/": "Buy link click events",
+        "daily/": "Daily aggregated metrics"
+      }
+    },
+    "originus/backups/": {
+      "purpose": "System backups: user data, config snapshots",
+      "contains": {
+        "users/": "User data backups",
+        "configs/": "Config snapshots",
+        "events/": "Event log backups"
+      }
+    },
+    "originus/users/": {
+      "purpose": "Live user data: profile, delivery, events",
+      "write_access": "bot_and_worker",
+      "contains": {
+        "{user_id}/profile.json": "User registration profile",
+        "{user_id}/delivery.json": "Access + delivery state (source of truth for /status)",
+        "{user_id}/events/{ts}.json": "Per-user event log"
+      }
+    },
+    "originus/access/": {
+      "purpose": "Access grants, premium user registry, channel map",
+      "contains": {
+        "premium_users/": "Granted access index",
+        "tier_map.json": "Tier → channel mapping",
+        "channel_invites.json": "Channel invite links per tier"
+      }
+    },
+    "originus/payments/": {
+      "purpose": "Payment records, Stripe events",
+      "contains": {
+        "webhooks/": "Stripe webhook event logs",
+        "confirmations/": "Payment confirmation records",
+        "refunds/": "Refund records"
+      }
+    },
+    "originus/finance/": {
+      "purpose": "Revenue tracking, MRR, deal values",
+      "contains": {
+        "revenue/": "Revenue records by period",
+        "deals/": "Deal financial records"
+      }
+    },
+    "originus/private/": {
+      "purpose": "Owner-only private data, internal reports",
+      "write_access": "owner_only",
+      "contains": {
+        "reports/": "Revenue and system reports",
+        "ops/": "Operator notes and decisions",
+        "keys/": "Key references (NOT actual secrets)"
+      }
+    },
+    "originus/public/": {
+      "purpose": "Publicly readable assets served via Workers",
+      "write_access": "worker_controlled",
+      "contains": {
+        "assets/branding/": "Logo, brand assets",
+        "og/": "OG images per domain"
+      }
+    },
+    "originus/hub/": {
+      "purpose": "Hub content, manifests, public indexes",
+      "contains": {
+        "manifests/": "Per-page content manifests",
+        "indexes/": "Public content indexes"
+      }
+    },
+    "originus/sales/": {
+      "purpose": "Sales flow state: leads, clicks, followups, Stripe events",
+      "contains": {
+        "leads/": "Entry intent logs",
+        "clicks/": "Buy link click logs",
+        "followup/": "Retargeting state",
+        "stripe_events/": "Full Stripe event logs + idempotency"
+      }
+    }
+  }
+}

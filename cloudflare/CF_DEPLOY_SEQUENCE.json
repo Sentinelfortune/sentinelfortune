@@ -1,0 +1,68 @@
+{
+  "_schema": "sfl-cf-deploy-sequence-v1",
+  "phases": [
+    {
+      "phase": 1, "label": "Workers API — already live",
+      "steps": [
+        "sentinel-fortune-ecosystem v1.4.0 deployed via CLOUDFLARE_WORKERS_TOKEN",
+        "sentinelfortunellc v2 deployed with isApiRoute() guard",
+        "All 6 API routes verified working via CF Worker"
+      ],
+      "status": "complete"
+    },
+    {
+      "phase": 2, "label": "R2 Binding",
+      "steps": [
+        "Go to CF Workers dashboard → sentinel-fortune-ecosystem → Settings → R2",
+        "Add binding: Variable name = ORIGINUS_R2, R2 bucket = originus",
+        "Deploy new version to pick up binding"
+      ],
+      "status": "pending_owner"
+    },
+    {
+      "phase": 3, "label": "CF Pages Frontend",
+      "steps": [
+        "CF Dashboard → Pages → Create → Connect to Git",
+        "Repo: Sentinelfortune/sentinelfortune",
+        "Build command: cd artifacts/sentinel-app && pnpm run build",
+        "Build output: artifacts/sentinel-app/dist/public",
+        "Set BASE_PATH=/ env var in Pages build settings",
+        "Connect sentinelfortune.com to Pages project"
+      ],
+      "status": "pending_owner"
+    },
+    {
+      "phase": 4, "label": "Secrets in CF Workers",
+      "steps": [
+        "wrangler secret put STRIPE_BUY_LINK_LITE",
+        "wrangler secret put STRIPE_BUY_LINK_MONTHLY",
+        "wrangler secret put STRIPE_BUY_LINK_STARTER",
+        "wrangler secret put STRIPE_BUY_LINK_PRO",
+        "wrangler secret put STRIPE_BUY_LINK_OEM",
+        "wrangler secret put STRIPE_BUY_LINK_LICENSING",
+        "wrangler secret put STRIPE_WEBHOOK_SECRET"
+      ],
+      "status": "pending_owner"
+    },
+    {
+      "phase": 5, "label": "R2 Canon Seed",
+      "steps": [
+        "Upload originus/_canon/*.json to R2 bucket via CF dashboard or wrangler r2 object put",
+        "Upload originus/global/agents/BUILDER_REGISTRY_MASTER.json",
+        "Upload originus/products/registry/PRODUCT_REGISTRY.json",
+        "Upload originus/access/tier_map.json"
+      ],
+      "status": "pending_owner"
+    },
+    {
+      "phase": 6, "label": "Final Verification",
+      "steps": [
+        "Test all 6 API routes via sentinelfortune.com (not Replit)",
+        "Test Telegram bot /enter /buy /status flow end-to-end",
+        "Test Stripe payment → webhook → channel delivery",
+        "Confirm CF Pages loads correctly on all 8 domains"
+      ],
+      "status": "pending"
+    }
+  ]
+}

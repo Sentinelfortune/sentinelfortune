@@ -1,0 +1,21 @@
+{
+  "_schema": "sfl-frontend-architecture-map-v1",
+  "_version": "2.1.0",
+  "stack": "React + Vite 7 + TypeScript, pnpm monorepo (@workspace/sentinel-app)",
+  "build_target": "Cloudflare Pages (static export)",
+  "design_system": {
+    "bg": "#070c18", "surface": "#0d1528", "accent_gold": "#c9a34f",
+    "fonts": ["Space Grotesk", "JetBrains Mono"],
+    "logo_path": "/public/assets/branding/sf-logo.svg"
+  },
+  "layers": {
+    "public": { "routes": ["/","/corridors","/corridors/:id","/content","/teachings/:slug","/rhapsodies/:slug","/music","/music/:slug","/games/:slug","/store","/membership","/agent"], "api_first": true, "no_direct_r2": true },
+    "ops":    { "routes": ["/ops","/ops/content","/ops/pipeline","/ops/access","/ops/logs","/ops/upload"], "auth": "owner_session_or_ops_token", "no_direct_r2": true }
+  },
+  "monetization": {
+    "rule": "Every public page must have at least one monetization path",
+    "types": ["buy","subscribe","membership","unlock","streaming","email_capture","oem_cta","licensing_cta"]
+  },
+  "api_base": "process.env.VITE_API_BASE || /api",
+  "never": ["direct R2 object browsing", "presigned URL from browser", "private index exposure"]
+}

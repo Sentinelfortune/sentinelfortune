@@ -1,0 +1,11 @@
+{
+  "_schema": "sfl-product-registry-v1",
+  "products": {
+    "lite":      { "id":"lite",      "label":"Starter Lite",         "type":"one_time",    "price_cents":200,     "price_display":"$2",       "channels":["teachings_vault_v1"],                                                  "stripe_env":"STRIPE_BUY_LINK_LITE" },
+    "monthly":   { "id":"monthly",   "label":"Monthly Reset",         "type":"subscription","price_cents":2500,    "price_display":"$25/mo",   "channels":["reset_v1","quick_access_v1"],                                          "stripe_env":"STRIPE_BUY_LINK_MONTHLY" },
+    "starter":   { "id":"starter",   "label":"Starter Pack",          "type":"one_time",    "price_cents":29000,   "price_display":"$290",     "channels":["teachings_vault_v1"],                                                  "stripe_env":"STRIPE_BUY_LINK_STARTER" },
+    "pro":       { "id":"pro",       "label":"Pro Access",            "type":"one_time",    "price_cents":190000,  "price_display":"$1,900",   "channels":["teachings_vault_v1","sentinel_engine_v1"],                             "stripe_env":"STRIPE_BUY_LINK_PRO" },
+    "oem":       { "id":"oem",       "label":"OEM License",           "type":"one_time",    "price_cents":750000,  "price_display":"$7,500",   "channels":["teachings_vault_v1","sentinel_engine_v1","sentinel_architect_v1"],    "stripe_env":"STRIPE_BUY_LINK_OEM" },
+    "licensing": { "id":"licensing", "label":"Institutional License", "type":"one_time",    "price_cents":1500000, "price_display":"$15,000",  "channels":["teachings_vault_v1","sentinel_engine_v1","sentinel_architect_v1"],    "stripe_env":"STRIPE_BUY_LINK_LICENSING", "governance":"owner_onboarding_required" }
+  }
+}

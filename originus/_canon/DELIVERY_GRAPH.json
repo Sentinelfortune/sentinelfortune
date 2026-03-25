@@ -1,0 +1,53 @@
+{
+  "_schema": "sfl-delivery-graph-v1",
+  "_description": "Canonical delivery pipeline from payment to channel access",
+  "flow": {
+    "step_1_payment": {
+      "trigger": "Stripe checkout.session.completed",
+      "handler": "bot/services/stripe_webhook.py → start_webhook_server()",
+      "port": 8082,
+      "webhook_endpoint": "POST /stripe/webhook"
+    },
+    "step_2_user_resolution": {
+      "priority_order": ["session.client_reference_id", "session.metadata.telegram_id", "email_map R2 lookup"],
+      "r2_lookup": "originus/users/email_map/{encoded_email}.json",
+      "failure_action": "log only, return 200 (safe skip)"
+    },
+    "step_3_tier_resolution": {
+      "priority_order": ["payment_link_id → STRIPE_LINK_* env vars", "session.metadata.tier", "amount_total → AMOUNT_TIER_MAP"],
+      "amount_map": {
+        "200": "lite", "2500": "monthly", "29000": "starter",
+        "190000": "pro", "750000": "oem", "1500000": "licensing"
+      }
+    },
+    "step_4_activation": {
+      "function": "await activate_user(user_id, tier, source='stripe')",
+      "writes": ["originus/users/{id}/profile.json", "originus/users/{id}/delivery.json", "originus/users/{id}/events/{ts}.json"],
+      "rule": "MUST use await — never create_task"
+    },
+    "step_5_delivery": {
+      "function": "await deliver_tier_access(bot, user_id, tier)",
+      "rule": "MUST use await — never create_task",
+      "channel_invites": "originus/access/channel_invites.json"
+    },
+    "step_6_confirmation": {
+      "action": "Telegram message with channel invite link sent to user chat",
+      "idempotency": "originus/sales/stripe_events/processed/{event_id}.json"
+    }
+  },
+  "tier_to_channel_map": {
+    "lite":      ["teachings_vault_v1"],
+    "monthly":   ["reset_v1", "quick_access_v1"],
+    "starter":   ["teachings_vault_v1"],
+    "pro":       ["teachings_vault_v1", "sentinel_engine_v1"],
+    "oem":       ["teachings_vault_v1", "sentinel_engine_v1", "sentinel_architect_v1"],
+    "licensing": ["teachings_vault_v1", "sentinel_engine_v1", "sentinel_architect_v1"]
+  },
+  "channel_invite_env_vars": {
+    "reset_v1":              "INVITE_RESET",
+    "quick_access_v1":       "INVITE_QUICK",
+    "teachings_vault_v1":    "INVITE_VAULT",
+    "sentinel_engine_v1":    "INVITE_ENGINE",
+    "sentinel_architect_v1": "INVITE_ARCHITECT"
+  }
+}

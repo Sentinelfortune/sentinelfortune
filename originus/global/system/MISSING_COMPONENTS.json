@@ -1,0 +1,41 @@
+{
+  "_schema": "sfl-missing-components-v1",
+  "_date": "2026-03-25",
+  "missing_or_pending": {
+    "stripe_buy_links": {
+      "status": "pending_owner",
+      "action": "Set STRIPE_BUY_LINK_LITE, _MONTHLY, _STARTER, _PRO, _OEM, _LICENSING in Replit Secrets or CF Workers env",
+      "impact": "/buy command and /enter checkout_url return null until set"
+    },
+    "r2_originus_binding": {
+      "status": "pending_owner",
+      "action": "In CF Workers dashboard, bind bucket 'originus' to sentinel-fortune-ecosystem as ORIGINUS_R2",
+      "impact": "GET /api/status/:id falls back to local data/ files; R2 reads fail silently"
+    },
+    "official_logo_png": {
+      "status": "pending_owner",
+      "action": "Upload official logo to /public/assets/branding/sf-logo.svg (or .png) via /ops/upload",
+      "impact": "SVG placeholder currently showing in nav — works but not final brand mark"
+    },
+    "cf_pages_deployment": {
+      "status": "pending_owner",
+      "action": "Connect GitHub repo to Cloudflare Pages, build: 'cd artifacts/sentinel-app && pnpm run build', output: 'artifacts/sentinel-app/dist/public'",
+      "impact": "Frontend currently runs on Replit dev server only"
+    },
+    "stripe_link_env_vars_for_cf_worker": {
+      "status": "pending_owner",
+      "action": "Set STRIPE_BUY_LINK_* as CF Worker env vars in cloudflare/wrangler-api.toml secrets",
+      "impact": "CF api-worker.js buy endpoint returns 503 until set"
+    },
+    "pdf_generation": {
+      "status": "stub_registered",
+      "action": "Implement /api/builders/deal_pdf_builder/invoke with actual PDF generation (puppeteer or @react-pdf/renderer)",
+      "impact": "Builder registry entry exists; PDF generation not yet wired"
+    },
+    "builders_api_endpoint": {
+      "status": "being_built",
+      "action": "Adding /api/builders routes to Express API in this session",
+      "impact": "Builders were registry-only; now becoming callable endpoints"
+    }
+  }
+}

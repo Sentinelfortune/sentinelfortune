@@ -1,0 +1,30 @@
+{
+  "_schema": "sfl-r2-canon-index-v1",
+  "_version": "2.1.0",
+  "_updated": "2026-03-25",
+  "canonical_json_files": {
+    "originus/_canon/R2_MASTER_TREE.json":        { "type": "structure",  "read": "all_workers",       "write": "owner_only" },
+    "originus/_canon/R2_CANON_INDEX.json":        { "type": "index",      "read": "all_workers",       "write": "owner_only" },
+    "originus/_canon/PUBLIC_PRIVATE_BOUNDARY.json":{ "type": "governance", "read": "all_workers",      "write": "owner_only" },
+    "originus/_canon/WORKER_TO_R2_MAP.json":      { "type": "routing",    "read": "all_workers",       "write": "owner_only" },
+    "originus/_canon/SITE_TO_R2_MAP.json":        { "type": "routing",    "read": "all_workers",       "write": "owner_only" },
+    "originus/_canon/DELIVERY_GRAPH.json":        { "type": "delivery",   "read": "all_workers",       "write": "owner_only" },
+    "originus/global/agents/BUILDER_REGISTRY_MASTER.json": { "type": "builders", "read": "api_workers", "write": "owner_only" },
+    "originus/global/system/MASTER_SYSTEM_MAP.json":       { "type": "system",   "read": "all_workers", "write": "owner_only" },
+    "originus/global/system/API_ROUTE_REGISTRY.json":      { "type": "routing",  "read": "all_workers", "write": "owner_only" },
+    "originus/global/system/TELEGRAM_COMMAND_MAP.json":    { "type": "bot",      "read": "bot_worker",  "write": "owner_only" },
+    "originus/products/registry/PRODUCT_REGISTRY.json":   { "type": "products", "read": "api_workers", "write": "owner_only" },
+    "originus/access/channel_invites.json":               { "type": "delivery", "read": "bot_worker",  "write": "owner_only" },
+    "originus/access/tier_map.json":                      { "type": "access",   "read": "api_workers", "write": "owner_only" },
+    "originus/workers/health/SYSTEM_HEALTH.json":         { "type": "health",   "read": "all_workers", "write": "health_checker" },
+    "originus/workers/health/AUTO_HEAL_LOGS.json":        { "type": "logs",     "read": "ops_only",    "write": "health_checker" }
+  },
+  "live_data_paths": {
+    "originus/users/{id}/profile.json":    { "write": "bot_and_api", "read": "bot_and_api" },
+    "originus/users/{id}/delivery.json":   { "write": "bot_only",    "read": "bot_and_api" },
+    "originus/sales/leads/{uid}_{ts}.json":{ "write": "bot_only",    "read": "owner_only" },
+    "originus/sales/stripe_events/{ts}_{event_id}.json": { "write": "webhook", "read": "owner_only" },
+    "originus/payments/webhooks/{ts}.json":               { "write": "webhook", "read": "owner_only" },
+    "originus/finance/revenue/{period}.json":             { "write": "owner_only", "read": "owner_only" }
+  }
+}

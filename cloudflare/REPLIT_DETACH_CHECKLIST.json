@@ -1,0 +1,17 @@
+{
+  "_schema": "sfl-replit-detach-checklist-v1",
+  "checklist": [
+    { "id": 1,  "task": "All STRIPE_BUY_LINK_* set as CF Worker secrets",       "done": false },
+    { "id": 2,  "task": "STRIPE_WEBHOOK_SECRET set in CF Worker",                "done": false },
+    { "id": 3,  "task": "R2 bucket 'originus' bound as ORIGINUS_R2",             "done": false },
+    { "id": 4,  "task": "originus/_canon/*.json uploaded to R2",                  "done": false },
+    { "id": 5,  "task": "CF Pages connected to GitHub repo",                      "done": false },
+    { "id": 6,  "task": "CF Pages build tested (pnpm build → dist/public)",       "done": false },
+    { "id": 7,  "task": "All 6 API routes verified via CF Worker (not Replit)",   "done": false },
+    { "id": 8,  "task": "Bot migrated to VPS or confirmed stable on Replit",      "done": false },
+    { "id": 9,  "task": "Official logo uploaded to originus/public/assets/branding/", "done": false },
+    { "id": 10, "task": "GitHub → CF Pages CI/CD confirmed working",              "done": false },
+    { "id": 11, "task": "DNS for all 8 domains confirmed pointing to CF",         "done": false },
+    { "id": 12, "task": "Stripe webhook URL updated if bot moves off Replit",     "done": false }
+  ]
+}

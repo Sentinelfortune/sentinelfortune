@@ -1,0 +1,22 @@
+{
+  "_schema": "sfl-builder-activation-status-v1",
+  "_date": "2026-03-25",
+  "summary": { "total": 15, "registered": 15, "callable": 15, "invocable_via_api": 15, "pending_implementation": 3 },
+  "builders": {
+    "app_builder":              { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "assets_builder":           { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "house_signature_builder":  { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": false, "pending": "PDF generation engine" },
+    "bot_builder":              { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "cartoon_builder":          { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "mini_web_games_builder":   { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "snippets_builder":         { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "ebook_builder":            { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "audiobook_builder":        { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "video_builder":            { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "image_rebuilder":          { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "deal_pdf_builder":         { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": false, "pending": "PDF generation engine" },
+    "offer_pack_builder":       { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "landing_page_builder":     { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": true },
+    "agent_service_builder":    { "registered": true, "api_callable": true, "r2_wired": true, "impl_complete": false, "pending": "Agent execution runtime" }
+  }
+}

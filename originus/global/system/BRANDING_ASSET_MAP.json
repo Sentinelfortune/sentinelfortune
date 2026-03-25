@@ -1,0 +1,31 @@
+{
+  "_schema": "sfl-branding-asset-map-v1",
+  "logo": {
+    "path":      "/public/assets/branding/sf-logo.svg",
+    "r2_path":   "originus/public/assets/branding/sf-logo.svg",
+    "status":    "svg_placeholder_active",
+    "target":    "Replace SVG with official PNG/SVG via /ops/upload",
+    "used_as":   ["header_logo","favicon","og_default","optional_watermark"]
+  },
+  "color_system": {
+    "bg_primary":   "#070c18",
+    "bg_surface":   "#0d1528",
+    "accent_gold":  "#c9a34f",
+    "text_primary": "#e8e8e8",
+    "text_muted":   "#7a8fa6"
+  },
+  "typography": {
+    "heading": "Space Grotesk",
+    "mono":    "JetBrains Mono"
+  },
+  "brand_marks": {
+    "MOB AREA":    { "r2_path": "originus/global/assets/brands/mob_area/",    "status": "pending_upload" },
+    "IZZZ":        { "r2_path": "originus/global/assets/brands/izzz/",        "status": "pending_upload" },
+    "DUDE STUNNA": { "r2_path": "originus/global/assets/brands/dude_stunna/", "status": "pending_upload" },
+    "O.G":         { "r2_path": "originus/global/assets/brands/og/",          "status": "pending_upload" },
+    "O.O'$":       { "r2_path": "originus/global/assets/brands/oos/",         "status": "pending_upload" },
+    "GRAND":       { "r2_path": "originus/global/assets/brands/grand/",       "status": "pending_upload" },
+    "KNI$":        { "r2_path": "originus/global/assets/brands/knis/",        "status": "pending_upload" },
+    "AURA BOARD":  { "r2_path": "originus/global/assets/brands/aura_board/",  "status": "pending_upload" }
+  }
+}

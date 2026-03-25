@@ -1,0 +1,53 @@
+{
+  "_schema": "sfl-site-to-r2-map-v1",
+  "sites": {
+    "sentinelfortune.com": {
+      "label": "Sentinel Fortune", "category": "hub",
+      "r2_content": "originus/sites/sentinelfortune.com/",
+      "brands": ["O.G","O.O'$","GRAND"],
+      "default_tier": "starter",
+      "analytics_path": "originus/analytics/sentinelfortune/",
+      "lead_path": "originus/sales/leads/"
+    },
+    "sentinelfortunerecords.one": {
+      "label": "Records", "category": "music",
+      "r2_content": "originus/sites/sentinelfortunerecords.one/",
+      "brands": ["IZZZ"],
+      "default_tier": "starter"
+    },
+    "codexworldtv.homes": {
+      "label": "Codex World TV", "category": "film",
+      "r2_content": "originus/sites/codexworldtv.homes/",
+      "ip": ["RATOU", "CODEX SHARDS"],
+      "default_tier": "pro"
+    },
+    "lumengame.vip": {
+      "label": "Lumen Game", "category": "games",
+      "r2_content": "originus/sites/lumengame.vip/",
+      "ip": ["RATOU"],
+      "default_tier": "pro"
+    },
+    "lumenschoolacademy.online": {
+      "label": "Lumen School Academy", "category": "education",
+      "r2_content": "originus/sites/lumenschoolacademy.online/",
+      "default_tier": "starter"
+    },
+    "vibraflowmedia.casa": {
+      "label": "VibraFlow Media", "category": "spirituality",
+      "r2_content": "originus/sites/vibraflowmedia.casa/",
+      "brands": ["AURA BOARD"],
+      "default_tier": "oem"
+    },
+    "lightnodesystems.my": {
+      "label": "LightNode Systems", "category": "systems",
+      "r2_content": "originus/sites/lightnodesystems.my/",
+      "default_tier": "licensing"
+    },
+    "oglegacystore.homes": {
+      "label": "OG Legacy Store", "category": "commerce",
+      "r2_content": "originus/sites/oglegacystore.homes/",
+      "brands": ["MOB AREA","DUDE STUNNA","KNI$"],
+      "default_tier": "starter"
+    }
+  }
+}

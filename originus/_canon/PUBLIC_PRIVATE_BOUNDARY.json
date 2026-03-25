@@ -1,0 +1,38 @@
+{
+  "_schema": "sfl-public-private-boundary-v1",
+  "_rule": "This document defines what may be served publicly vs what is private. Never cross these boundaries in code.",
+  "public": {
+    "paths": ["originus/public/", "originus/hub/manifests/", "originus/hub/indexes/", "originus/sites/*/public/"],
+    "served_by": "Cloudflare Workers via /api/* or direct asset response",
+    "frontend_access": "HTTP API only — never direct R2 presigned URL from browser",
+    "examples": ["brand assets", "public page content", "OG images", "content indexes"]
+  },
+  "semi_public": {
+    "paths": ["originus/products/registry/PRODUCT_REGISTRY.json", "originus/access/tier_map.json"],
+    "served_by": "API worker on authenticated read",
+    "frontend_access": "via /api/products or /api/status endpoint",
+    "examples": ["product tiers", "price information"]
+  },
+  "private_bot_only": {
+    "paths": ["originus/users/", "originus/sales/", "originus/delivery/", "originus/access/channel_invites.json"],
+    "served_by": "Bot + webhook worker only",
+    "frontend_access": "NONE — never expose to browser",
+    "examples": ["user profiles", "delivery records", "channel invite links"]
+  },
+  "private_api_accessible": {
+    "paths": ["originus/analytics/", "originus/payments/webhooks/"],
+    "served_by": "Ops dashboard via authenticated /api/ops/* endpoints",
+    "frontend_access": "Ops routes only with owner session",
+    "examples": ["analytics data", "payment events"]
+  },
+  "owner_only": {
+    "paths": ["originus/private/", "originus/finance/", "originus/backups/", "originus/_canon/"],
+    "served_by": "Owner direct R2 access or trusted worker with owner token",
+    "frontend_access": "NONE — never through public API",
+    "examples": ["revenue reports", "deal records", "canon config files"]
+  },
+  "never_expose": {
+    "paths": ["originus/_canon/"],
+    "note": "_canon is also write-blocked at worker level. Only owner can modify via R2 console."
+  }
+}

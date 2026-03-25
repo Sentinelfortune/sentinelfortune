@@ -1,0 +1,25 @@
+{
+  "_schema": "sfl-deployment-readiness-r2-v1",
+  "_date": "2026-03-25",
+  "overall_status": "build_complete_migration_pending",
+  "layers": {
+    "r2_structure":         { "status": "complete", "note": "All canon directories and JSON templates written to repo, ready for R2 upload" },
+    "cloudflare_workers":   { "status": "deployed", "note": "sentinel-fortune-ecosystem v1.4.0 + sentinelfortunellc v2 live" },
+    "cloudflare_pages":     { "status": "pending_owner", "note": "Connect GitHub → CF Pages in dashboard" },
+    "r2_binding":           { "status": "pending_owner", "note": "Bind originus bucket as ORIGINUS_R2 in CF Worker settings" },
+    "stripe_secrets":       { "status": "pending_owner", "note": "Set STRIPE_BUY_LINK_* in CF Worker env" },
+    "express_api":          { "status": "live", "note": "All 6 routes + /api/builders live on port 8080" },
+    "telegram_bot":         { "status": "live", "note": "Bot polling, webhook :8082, scheduler running" },
+    "frontend":             { "status": "live_dev", "note": "Vite dev server :22543 — needs CF Pages build for production" },
+    "builders_layer":       { "status": "registered_and_callable", "note": "All 15 builders registered, /api/builders endpoints live" },
+    "github_sync":          { "status": "synced", "note": "Repo at v2.1.0 — this session files will be pushed after all phases" }
+  },
+  "blockers": {
+    "hard": [],
+    "soft": [
+      "STRIPE_BUY_LINK_* not set → /buy and /enter return null checkout_url",
+      "ORIGINUS_R2 binding not set → /api/status fallback to local data/ files",
+      "CF Pages not connected → frontend only on Replit"
+    ]
+  }
+}

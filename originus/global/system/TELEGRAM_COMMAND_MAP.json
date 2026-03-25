@@ -1,0 +1,13 @@
+{
+  "_schema": "sfl-telegram-command-map-v1",
+  "commands": {
+    "/start":   { "handler": "start.py", "deep_link": "entry_{slug}_{tier}", "api_call": null },
+    "/menu":    { "handler": "menu.py / money.py", "api_call": null },
+    "/enter":   { "handler": "enter.py", "api_call": "POST /api/enter-system", "surfaces_checkout_url": true },
+    "/buy":     { "handler": "buy.py", "api_call": null, "generates_stripe_url": true, "cri_embedded": true },
+    "/status":  { "handler": "status_cmd.py", "api_call": "GET /api/status/:id" }
+  },
+  "deep_link_format": "https://t.me/sentinelfortune_bot?start=entry_{slug}_{tier}",
+  "sales_loop": "start → enter → buy → stripe → webhook → activate_user → deliver_tier_access → channel invite",
+  "critical_rule": "activate_user and deliver_tier_access MUST use await, never create_task"
+}

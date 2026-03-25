@@ -1,0 +1,12 @@
+{
+  "_schema": "sfl-builder-queue-map-v1",
+  "sync_builders": {
+    "description": "Return immediately with accepted status. Fast builders.",
+    "builders": ["app_builder","bot_builder","house_signature_builder","snippets_builder","offer_pack_builder","landing_page_builder","deal_pdf_builder","agent_service_builder"]
+  },
+  "async_builders": {
+    "description": "Return queued status. Execution happens out-of-band.",
+    "builders": ["assets_builder","cartoon_builder","mini_web_games_builder","ebook_builder","audiobook_builder","video_builder","image_rebuilder"],
+    "note": "Async execution pipeline not yet wired. Jobs are logged to R2 for manual processing."
+  }
+}

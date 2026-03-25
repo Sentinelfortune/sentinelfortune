@@ -1,0 +1,36 @@
+{
+  "_schema": "sfl-worker-to-r2-map-v1",
+  "workers": {
+    "sentinel-fortune-ecosystem": {
+      "version": "v1.4.0",
+      "routes": ["sentinelfortune.com/api/*", "*.sentinelfortune.com/api/*"],
+      "r2_reads": [
+        "originus/users/{id}/profile.json",
+        "originus/users/{id}/delivery.json",
+        "originus/access/tier_map.json",
+        "originus/products/registry/PRODUCT_REGISTRY.json"
+      ],
+      "r2_writes": [
+        "originus/users/{id}/profile.json",
+        "originus/payments/webhooks/{ts}.json"
+      ],
+      "r2_never_write": ["originus/_canon/*"],
+      "binding": "ORIGINUS_R2"
+    },
+    "sentinelfortunellc": {
+      "version": "v2",
+      "routes": ["sentinelfortune.com/*"],
+      "role": "Static asset router + API proxy",
+      "r2_reads": ["originus/public/*", "originus/hub/*"],
+      "r2_writes": [],
+      "api_proxy": "/api/* → sentinel-fortune-ecosystem"
+    },
+    "cloudflare/api-worker.js": {
+      "status": "migration_ready",
+      "role": "Drop-in CF Workers API — replaces Express API",
+      "r2_reads": ["originus/users/{id}/delivery.json", "originus/users/{id}/profile.json"],
+      "r2_writes": ["originus/users/{id}/profile.json", "originus/payments/webhooks/*"],
+      "binding": "ORIGINUS_R2"
+    }
+  }
+}

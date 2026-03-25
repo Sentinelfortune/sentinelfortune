@@ -1,0 +1,24 @@
+{
+  "_schema": "sfl-cta-matrix-v1",
+  "rule": "Every public page must contain at least one of these CTA types",
+  "cta_types": {
+    "buy":            { "action": "POST /api/buy or Stripe direct link", "tiers": "all" },
+    "subscribe":      { "action": "Stripe subscription link", "tier": "monthly" },
+    "membership":     { "action": "Redirect to /membership page", "tiers": "all" },
+    "unlock":         { "action": "Tier-gated content unlock button", "tiers": ["starter","pro","oem"] },
+    "streaming":      { "action": "Redirect to private channel after tier verification", "tiers": ["pro","oem","licensing"] },
+    "email_capture":  { "action": "Lead capture form → originus/sales/leads/", "tiers": "none_required" },
+    "oem_cta":        { "action": "OEM license CTA → /api/buy?tier=oem", "tier": "oem" },
+    "licensing_cta":  { "action": "Institutional license CTA → /api/buy?tier=licensing", "tier": "licensing" }
+  },
+  "page_cta_map": {
+    "/":            ["buy","membership"],
+    "/store":       ["buy","oem_cta","licensing_cta"],
+    "/membership":  ["subscribe","buy"],
+    "/agent":       ["licensing_cta","oem_cta"],
+    "/corridors":   ["membership","unlock"],
+    "/teachings/*": ["buy","email_capture"],
+    "/music":       ["streaming","buy"],
+    "/games/*":     ["unlock","buy"]
+  }
+}
