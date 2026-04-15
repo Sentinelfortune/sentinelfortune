@@ -29,6 +29,7 @@ const HUB_BLOCKED_PREFIXES = [
   "/health",
   "/enter",
   "/buy",
+  "/success",
 ];
 
 // =============================================================================
@@ -496,6 +497,15 @@ export default {
     // ------------------------------------------------------------------
     if (method === "GET" && url.pathname.startsWith("/api/status/")) {
       return handleStatus(url.pathname, apiBase, r2);
+    }
+
+    // ------------------------------------------------------------------
+    // GET /success
+    // Stripe post-payment redirect — send users to the Telegram bot,
+    // which is the real post-payment access point (channel delivery).
+    // ------------------------------------------------------------------
+    if (method === "GET" && path === "/success") {
+      return redirect(`https://t.me/${BOT_USERNAME}`);
     }
 
     // ------------------------------------------------------------------
