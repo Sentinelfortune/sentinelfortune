@@ -1,1 +1,223 @@
-<h1>Welcome to Sentinel Fortune LLC</h1>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<title>Sentinel Fortune LLC</title>
+
+<style>
+:root{
+--bg:#05070d;
+--bg2:#0b1220;
+--gold:#d4af37;
+--text:#e8ecf1;
+--muted:#9aa3b2;
+--card:rgba(255,255,255,0.04);
+--stroke:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:system-ui;
+background:linear-gradient(180deg,var(--bg),var(--bg2));
+color:var(--text);
+}
+
+.wrap{max-width:1200px;margin:auto;padding:20px}
+
+.topbar{
+display:flex;justify-content:space-between;align-items:center;
+padding:12px 18px;border:1px solid var(--stroke);
+border-radius:999px;background:rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
+}
+
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{width:40px;height:40px;border-radius:10px}
+.logo b{font-size:13px;letter-spacing:.15em}
+
+.nav{display:flex;gap:10px}
+.nav a{
+padding:8px 14px;border-radius:999px;
+border:1px solid var(--stroke);
+color:var(--muted);text-decoration:none;font-size:13px
+}
+.nav a:hover{color:white}
+
+.cta{
+background:linear-gradient(180deg,var(--gold),#b8952f);
+color:black;font-weight:800;
+}
+
+.hero{
+margin-top:30px;padding:50px 30px;
+border-radius:30px;border:1px solid var(--stroke);
+background:radial-gradient(circle at top,rgba(212,175,55,0.15),transparent);
+text-align:center;
+}
+
+.hero h1{font-size:48px;margin:0}
+.hero span{color:var(--gold)}
+.hero p{color:var(--muted);max-width:600px;margin:20px auto}
+
+.section{margin-top:60px}
+.section h2{margin-bottom:10px}
+
+.grid{
+display:grid;gap:20px;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+}
+
+.card{
+padding:20px;border-radius:20px;
+border:1px solid var(--stroke);
+background:var(--card);
+}
+
+.card h3{margin:0 0 8px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+
+.btn{
+display:inline-block;margin-top:12px;
+padding:10px 16px;border-radius:999px;
+border:1px solid var(--gold);
+color:var(--gold);text-decoration:none;
+font-weight:700;font-size:13px;
+}
+
+.btn:hover{background:rgba(212,175,55,0.1)}
+
+.center{text-align:center}
+
+.footer{
+margin-top:60px;text-align:center;
+color:var(--muted);font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<!-- NAV -->
+<div class="topbar">
+<div class="logo">
+<img src="/sf-logo.png"/>
+<b>SENTINEL FORTUNE LLC</b>
+</div>
+
+<div class="nav">
+<a href="#">Home</a>
+<a href="#domains">Network</a>
+<a href="#content">Explore</a>
+<a href="#private" class="cta">Private Access</a>
+</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+<h1>We don’t chase.<br><span>We are.</span></h1>
+<p>
+A connected house of music, media, systems, learning and lifestyle.
+Publicly visible in selected form. Privately experienced in deeper corridors.
+</p>
+<a class="btn" href="#content">Explore the House</a>
+<a class="btn" href="#private">Enter Private</a>
+</div>
+
+<!-- NETWORK -->
+<div id="domains" class="section">
+<h2>One mother hub. Eight living worlds.</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>sentinelfortune.com</h3>
+<p>Mother hub and gateway</p>
+</div>
+
+<div class="card">
+<h3>sentinelfortunerecords.one</h3>
+<p>Music & releases</p>
+</div>
+
+<div class="card">
+<h3>lumengame.vip</h3>
+<p>Games & interactive worlds</p>
+</div>
+
+<div class="card">
+<h3>lumenschoolacademy.online</h3>
+<p>Learning & knowledge</p>
+</div>
+
+<div class="card">
+<h3>vibraflowmedia.casa</h3>
+<p>Spirituality, Media & storytelling</p>
+</div>
+
+<div class="card">
+<h3>lightnodesystems.my</h3>
+<p>Systems & infrastructure</p>
+</div>
+
+<div class="card">
+<h3>codexworldtv.homes</h3>
+<p>Films & animation</p>
+</div>
+
+<div class="card">
+<h3>oglegacystore.homes</h3>
+<p>Store & lifestyle</p>
+</div>
+
+</div>
+</div>
+
+<!-- CONTENT -->
+<div id="content" class="section">
+<h2>Selected categories</h2>
+
+<div class="grid">
+
+<div class="card"><h3>Music</h3><p>Releases & sound</p></div>
+<div class="card"><h3>Stories</h3><p>Narratives & worlds</p></div>
+<div class="card"><h3>Films</h3><p>Visual experiences</p></div>
+<div class="card"><h3>Games</h3><p>Interactive systems</p></div>
+<div class="card"><h3>Learning</h3><p>Knowledge & structure</p></div>
+<div class="card"><h3>Visual Drops</h3><p>Digital art</p></div>
+<div class="card"><h3>Audio</h3><p>Immersive sound</p></div>
+<div class="card"><h3>Store</h3><p>Products & assets</p></div>
+
+</div>
+</div>
+
+<!-- PRIVATE -->
+<div id="private" class="section center">
+<h2>Go deeper</h2>
+<p class="muted">
+Private access unlocks deeper corridors, full libraries and premium experiences.
+</p>
+<a class="btn" href="#">Enter Private Access</a>
+</div>
+
+<!-- INSTITUTIONAL -->
+<div class="section center">
+<h2>Institutional</h2>
+<p class="muted">
+Licensing, OEM and partnerships are handled through controlled channels.
+</p>
+<a class="btn" href="mailto:contact@sentinelfortune.com">Contact</a>
+</div>
+
+<div class="footer">
+© Sentinel Fortune LLC — All rights reserved
+</div>
+
+</div>
+
+</body>
+</html>
