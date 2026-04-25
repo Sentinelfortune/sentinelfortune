@@ -434,9 +434,10 @@ RESPONSIVE
 <p class="hero-w">Publicly visible in selected form · Privately experienced in deeper corridors.</p>
 
 <div class="hero-btns">
-  <a href="#xp"    class="btn btn-line">Experience the House</a>
+  <a href="#xp" class="btn btn-line">Experience the House</a>
   <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold">Enter Private Access</a>
 </div>
+<p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);margin-top:20px;text-transform:uppercase">Access is guided. Enter your pathway.</p>
 
 <!-- Live waveform -->
 <div class="hero-wave" id="heroWave">
@@ -621,6 +622,10 @@ RESPONSIVE
     <h2 class="sh reveal">Public Drops</h2>
     <p class="sp reveal">The house is always in motion.</p>
     <div class="drops-row" id="dropsRow"></div>
+    <div style="text-align:center;margin-top:48px">
+      <p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);text-transform:uppercase;margin-bottom:20px">Some experiences are not displayed publicly. Access is guided through private corridors.</p>
+      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-line">Access All Drops</a>
+    </div>
   </div>
 </section>
 
@@ -634,7 +639,7 @@ RESPONSIVE
       <h2 class="gate-h">The public layer is<br/>only the entrance.</h2>
       <p class="gate-p">Deeper experiences, libraries, games, premium audio, systems and selected pathways are accessed privately.</p>
       <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold btn-xl">Enter Private Access</a>
-      <p class="gate-note">Access is guided. Visitors only enter the pathway assigned to their level.</p>
+      <p class="gate-note">Access is assigned based on pathway.<br/>Visitors only enter the corridor aligned to their level.</p>
     </div>
   </div>
 </section>
@@ -837,33 +842,53 @@ document.querySelectorAll(".pod-btn").forEach(function(btn){btn.addEventListener
 
 // ─── UNIVERSE CARDS ───────────────────────────────────
 var UNIVERSE=[
-  {icon:"♪",tag:"Sound",title:"Music & Sound",desc:"Releases, sound worlds, artists, sonic identity, and immersive audio experiences."},
-  {icon:"◈",tag:"Cinema",title:"Visual Stories",desc:"Films, animations, trailers, characters, and cinematic universes."},
-  {icon:"⬡",tag:"Interactive",title:"Games & Interactive",desc:"Mini-games, interactive worlds, challenges, and playable concepts."},
-  {icon:"◎",tag:"Knowledge",title:"Learning & Masterclasses",desc:"Structured knowledge, personal growth, business themes, and guided lessons."},
-  {icon:"▣",tag:"Narrative",title:"Books & Storytelling",desc:"Narratives, story worlds, written works, audio stories, and universe lore."},
-  {icon:"◇",tag:"Culture",title:"Product Culture",desc:"Lifestyle, design language, fashion energy, digital products, and curated collections."},
-  {icon:"⊕",tag:"Digital",title:"Digital Experiences",desc:"Web modules, portals, tools, lightweight systems, and guided digital journeys."},
-  {icon:"⟁",tag:"Private",title:"Private Corridors",desc:"Deeper libraries, premium experiences, structured access, and advanced pathways."}
+  {icon:"♪",tag:"Sound",       title:"Music & Sound",          desc:"Releases, sound worlds, artists, sonic identity, and immersive audio.",  cta:"Listen",           href:"https://t.me/sentinelfortune_bot"},
+  {icon:"◈",tag:"Cinema",      title:"Visual Stories",         desc:"Films, animations, trailers, characters, and cinematic universes.",       cta:"Explore",          href:"https://t.me/sentinelfortune_bot"},
+  {icon:"⬡",tag:"Interactive", title:"Games & Interactive",    desc:"Mini-games, interactive worlds, challenges, and playable concepts.",      cta:"Play Beta",        href:"https://t.me/sentinelfortune_bot"},
+  {icon:"◎",tag:"Knowledge",   title:"Learning & Masterclasses",desc:"Structured knowledge, personal growth, business themes, guided lessons.",cta:"Unlock Preview",   href:"https://t.me/sentinelfortune_bot"},
+  {icon:"▣",tag:"Narrative",   title:"Books & Storytelling",   desc:"Narratives, story worlds, written works, audio stories, universe lore.",  cta:"Enter",            href:"https://t.me/sentinelfortune_bot"},
+  {icon:"◇",tag:"Culture",     title:"Product Culture",        desc:"Lifestyle, design language, digital products, curated collections.",       cta:"Access Collection",href:"https://t.me/sentinelfortune_bot"},
+  {icon:"⊕",tag:"Digital",     title:"Digital Experiences",    desc:"Web modules, portals, tools, lightweight systems, guided journeys.",       cta:"Enter",            href:"https://t.me/sentinelfortune_bot"},
+  {icon:"⟁",tag:"Private",     title:"Private Corridors",      desc:"Deeper libraries, premium experiences, structured access, advanced pathways.",cta:"Request Access", href:"https://t.me/sentinelfortune_bot"}
 ];
 var ug=document.getElementById("univGrid");
-if(ug){UNIVERSE.forEach(function(item,i){var d=document.createElement("div");d.className="u-cell reveal";d.style.transitionDelay=(i*50)+"ms";d.innerHTML="<span class=\"u-icon\">"+item.icon+"</span><div class=\"u-tag\">"+item.tag+"</div><div class=\"u-name\">"+item.title+"</div><div class=\"u-desc\">"+item.desc+"</div>";ug.appendChild(d);if(window.IntersectionObserver)io.observe(d);});}
+if(ug){UNIVERSE.forEach(function(item,i){
+  var d=document.createElement("div");d.className="u-cell reveal";d.style.transitionDelay=(i*50)+"ms";
+  d.innerHTML=
+    "<span class=\"u-icon\">"+item.icon+"</span>"+
+    "<div class=\"u-tag\">"+item.tag+"</div>"+
+    "<div class=\"u-name\">"+item.title+"</div>"+
+    "<div class=\"u-desc\">"+item.desc+"</div>"+
+    "<a href=\""+item.href+"\" target=\"_blank\" rel=\"noopener\" style=\"display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.2em;color:#c8a84b;text-transform:uppercase;text-decoration:none\">"+item.cta+" →</a>";
+  ug.appendChild(d);if(window.IntersectionObserver)io.observe(d);
+});}
 
 // ─── DROPS ───────────────────────────────────────────
+var TG="https://t.me/sentinelfortune_bot";
 var DROPS=[
-  {cat:"Music & Sound",name:"New Sound Preview",desc:"A first listen into the sonic direction of the next release cycle.",status:"Preview",badge:"b-prev"},
-  {cat:"Visual Stories",name:"Storyworld Teaser",desc:"A glimpse into an expanding narrative universe in development.",status:"In Development",badge:"b-dev"},
-  {cat:"Games",name:"Interactive Challenge",desc:"A new playable experience in the Sentinel Fortune games catalogue.",status:"Coming Soon",badge:"b-soon"},
-  {cat:"Learning",name:"Masterclass Preview",desc:"A curated preview module from the upcoming learning series.",status:"Preview",badge:"b-prev"},
-  {cat:"Visual",name:"Visual Drop",desc:"A limited visual release from the creative direction archive.",status:"Live",badge:"b-live"},
-  {cat:"Product Culture",name:"Product Culture Preview",desc:"Selected lifestyle and design artefacts from the product universe.",status:"Coming Soon",badge:"b-soon"}
+  {cat:"Music & Sound",   name:"New Sound Preview",       desc:"A first listen into the sonic direction of the next release cycle.",      status:"Preview",          badge:"b-prev", cta:"Listen",           href:TG},
+  {cat:"Visual Stories",  name:"Storyworld Teaser",       desc:"An expanding narrative universe. Selected previews available privately.", status:"View Teaser",      badge:"b-prev", cta:"Explore",          href:TG},
+  {cat:"Games",           name:"Interactive Challenge",   desc:"A new playable experience in the Sentinel Fortune games catalogue.",       status:"Play Beta",        badge:"b-prev", cta:"Play Beta",        href:TG},
+  {cat:"Learning",        name:"Masterclass Preview",     desc:"A curated preview module from the Sentinel Fortune learning series.",      status:"Unlock Preview",   badge:"b-prev", cta:"Unlock Preview",   href:TG},
+  {cat:"Visual",          name:"Visual Drop",             desc:"A limited visual release from the creative direction archive.",           status:"View Drop",        badge:"b-live", cta:"View Drop",        href:TG},
+  {cat:"Product Culture", name:"Product Culture Preview", desc:"Selected lifestyle and design artefacts. Access curated collection.",     status:"Access Collection",badge:"b-prev", cta:"Access Collection",href:TG}
 ];
 var dr=document.getElementById("dropsRow");
-if(dr){DROPS.forEach(function(item,i){var d=document.createElement("div");d.className="drop-card reveal";d.style.transitionDelay=(i*55)+"ms";d.innerHTML="<div class=\"drop-cat\">"+item.cat+"</div><div class=\"drop-name\">"+item.name+"</div><div class=\"drop-desc\">"+item.desc+"</div><span class=\"badge "+item.badge+"\">"+item.status+"</span>";dr.appendChild(d);if(window.IntersectionObserver)io.observe(d);});}
+if(dr){DROPS.forEach(function(item,i){
+  var d=document.createElement("div");d.className="drop-card reveal";d.style.transitionDelay=(i*55)+"ms";
+  d.innerHTML="<div class=\"drop-cat\">"+item.cat+"</div>"+
+    "<div class=\"drop-name\">"+item.name+"</div>"+
+    "<div class=\"drop-desc\">"+item.desc+"</div>"+
+    "<div style=\"display:flex;align-items:center;justify-content:space-between;margin-top:14px\">"+
+    "<span class=\"badge "+item.badge+"\">"+item.status+"</span>"+
+    "<a href=\""+item.href+"\" target=\"_blank\" rel=\"noopener\" style=\"font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.2em;color:#c8a84b;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:6px\">"+item.cta+" →</a>"+
+    "</div>";
+  dr.appendChild(d);if(window.IntersectionObserver)io.observe(d);
+});}
 
 // ─── SUPPORT BTN ─────────────────────────────────────
 var sb=document.getElementById("supBtn");
-if(sb){sb.style.opacity=".45";sb.style.pointerEvents="none";sb.textContent="Support (Coming Soon)";}
+if(sb){sb.setAttribute("href","https://t.me/sentinelfortune_bot");sb.setAttribute("target","_blank");sb.setAttribute("rel","noopener");}
 
 // ─── LOGO UPLOAD ──────────────────────────────────────
 var logoInput=document.getElementById("logoUpload");
