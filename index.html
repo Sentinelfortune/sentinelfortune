@@ -1,223 +1,262 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-
-<title>Sentinel Fortune LLC</title>
-
-<style>
-:root{
---bg:#05070d;
---bg2:#0b1220;
---gold:#d4af37;
---text:#e8ecf1;
---muted:#9aa3b2;
---card:rgba(255,255,255,0.04);
---stroke:rgba(255,255,255,0.08);
-}
-
-*{box-sizing:border-box}
-body{
-margin:0;
-font-family:system-ui;
-background:linear-gradient(180deg,var(--bg),var(--bg2));
-color:var(--text);
-}
-
-.wrap{max-width:1200px;margin:auto;padding:20px}
-
-.topbar{
-display:flex;justify-content:space-between;align-items:center;
-padding:12px 18px;border:1px solid var(--stroke);
-border-radius:999px;background:rgba(0,0,0,0.4);
-backdrop-filter:blur(10px);
-}
-
-.logo{display:flex;align-items:center;gap:10px}
-.logo img{width:40px;height:40px;border-radius:10px}
-.logo b{font-size:13px;letter-spacing:.15em}
-
-.nav{display:flex;gap:10px}
-.nav a{
-padding:8px 14px;border-radius:999px;
-border:1px solid var(--stroke);
-color:var(--muted);text-decoration:none;font-size:13px
-}
-.nav a:hover{color:white}
-
-.cta{
-background:linear-gradient(180deg,var(--gold),#b8952f);
-color:black;font-weight:800;
-}
-
-.hero{
-margin-top:30px;padding:50px 30px;
-border-radius:30px;border:1px solid var(--stroke);
-background:radial-gradient(circle at top,rgba(212,175,55,0.15),transparent);
-text-align:center;
-}
-
-.hero h1{font-size:48px;margin:0}
-.hero span{color:var(--gold)}
-.hero p{color:var(--muted);max-width:600px;margin:20px auto}
-
-.section{margin-top:60px}
-.section h2{margin-bottom:10px}
-
-.grid{
-display:grid;gap:20px;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-}
-
-.card{
-padding:20px;border-radius:20px;
-border:1px solid var(--stroke);
-background:var(--card);
-}
-
-.card h3{margin:0 0 8px}
-.card p{margin:0;color:var(--muted);font-size:14px}
-
-.btn{
-display:inline-block;margin-top:12px;
-padding:10px 16px;border-radius:999px;
-border:1px solid var(--gold);
-color:var(--gold);text-decoration:none;
-font-weight:700;font-size:13px;
-}
-
-.btn:hover{background:rgba(212,175,55,0.1)}
-
-.center{text-align:center}
-
-.footer{
-margin-top:60px;text-align:center;
-color:var(--muted);font-size:12px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sentinel Fortune LLC — We don't chase. We are.</title>
+  <meta name="description" content="A connected house of music, media, systems, learning, lifestyle and digital experiences." />
+  <meta property="og:title" content="Sentinel Fortune LLC" />
+  <meta property="og:description" content="We don't chase. We are." />
+  <meta name="theme-color" content="#000428" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
 
-<div class="wrap">
+  <!-- Particle canvas — referenced by initParticles() in app.js -->
 
-<!-- NAV -->
-<div class="topbar">
-<div class="logo">
-<img src="/sf-logo.png"/>
-<b>SENTINEL FORTUNE LLC</b>
+<canvas id="particles" aria-hidden="true"></canvas>
+
+  <!-- ══ HEADER ══ -->
+
+  <header class="header" id="header">
+    <div class="header-wrap">
+
+```
+  <a href="#hero" class="logo" aria-label="Sentinel Fortune LLC">
+    <img
+      src="./assets/sf-logo.png"
+      alt="Sentinel Fortune"
+      class="logo-img"
+      onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'"
+    />
+    <span class="logo-fallback" id="logoFallback">
+      <span class="logo-sf">SF</span>
+      <span class="logo-name">SENTINEL FORTUNE</span>
+    </span>
+  </a>
+
+  <!-- Desktop nav — links use class="nav-a" matched in app.js -->
+  <nav class="nav" id="desktopNav" aria-label="Main navigation">
+    <a href="#hero"        class="nav-a">Home</a>
+    <a href="#universe"    class="nav-a">Universe</a>
+    <a href="#experiences" class="nav-a">Experiences</a>
+    <a href="#access"      class="nav-a">Access</a>
+    <a href="#contact"     class="nav-a">Contact</a>
+  </nav>
+
+  <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="header-cta">
+    Enter Access
+  </a>
+
+  <!-- Burger — toggles #mobileNav -->
+  <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </div>
 
-<div class="nav">
-<a href="#">Home</a>
-<a href="#domains">Network</a>
-<a href="#content">Explore</a>
-<a href="#private" class="cta">Private Access</a>
+<!-- Mobile nav — ID is mobileNav, links use class="mnav-a" -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <a href="#hero"        class="mnav-a">Home</a>
+  <a href="#universe"    class="mnav-a">Universe</a>
+  <a href="#experiences" class="mnav-a">Experiences</a>
+  <a href="#access"      class="mnav-a">Access</a>
+  <a href="#contact"     class="mnav-a">Contact</a>
+  <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="mnav-cta">
+    Enter Private Access
+  </a>
 </div>
-</div>
+```
 
-<!-- HERO -->
-<div class="hero">
-<h1>We don’t chase.<br><span>We are.</span></h1>
-<p>
-A connected house of music, media, systems, learning and lifestyle.
-Publicly visible in selected form. Privately experienced in deeper corridors.
-</p>
-<a class="btn" href="#content">Explore the House</a>
-<a class="btn" href="#private">Enter Private</a>
-</div>
+  </header>
 
-<!-- NETWORK -->
-<div id="domains" class="section">
-<h2>One mother hub. Eight living worlds.</h2>
+  <main>
 
-<div class="grid">
+```
+<!-- ① HERO -->
+<section class="hero" id="hero">
+  <div class="hero-nebula"  aria-hidden="true"></div>
+  <div class="hero-glow-l"  aria-hidden="true"></div>
+  <div class="hero-glow-r"  aria-hidden="true"></div>
+  <div class="hero-content">
+    <p class="hero-overline" id="heroOverline">Sentinel Fortune LLC</p>
+    <h1 class="hero-title">
+      We don't chase.<br />
+      <em class="hero-em">We are.</em>
+    </h1>
+    <p class="hero-sub">
+      A connected house of music, media, systems,<br class="br-desk" />
+      learning, lifestyle and digital experiences.
+    </p>
+    <p class="hero-whisper">
+      Publicly visible in selected form.
+      Privately experienced in deeper corridors.
+    </p>
+    <div class="hero-btns">
+      <a href="#universe" class="btn btn-ghost">Explore the House</a>
+      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold">
+        Enter Private Access
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-beam"></div>
+    <span>scroll</span>
+  </div>
+</section>
 
-<div class="card">
-<h3>sentinelfortune.com</h3>
-<p>Mother hub and gateway</p>
-</div>
+<!-- ② WHO WE ARE -->
+<section class="wwa section" id="about">
+  <div class="container">
+    <div class="section-tag">Who We Are</div>
+    <h2 class="section-h">A creative ecosystem<br />built for curated experience.</h2>
+    <p class="section-p">
+      Sentinel Fortune LLC is a creative ecosystem built around curated experiences,
+      storytelling, sound, interactive systems, learning and digital culture.
+    </p>
+    <div class="pillars">
+      <div class="pillar reveal">
+        <div class="pillar-num">01</div>
+        <div class="pillar-title">Create</div>
+        <div class="pillar-body">Music, stories, visuals, games, lessons, and digital assets.</div>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.1s">
+        <div class="pillar-num">02</div>
+        <div class="pillar-title">Curate</div>
+        <div class="pillar-body">Selected public previews and structured experience spaces.</div>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.2s">
+        <div class="pillar-num">03</div>
+        <div class="pillar-title">Unlock</div>
+        <div class="pillar-body">Deeper private corridors through guided access.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="card">
-<h3>sentinelfortunerecords.one</h3>
-<p>Music & releases</p>
-</div>
+<!-- ③ PUBLIC UNIVERSE — cards injected by app.js into #universeGrid -->
+<section class="universe section" id="universe">
+  <div class="container">
+    <div class="section-tag">The House</div>
+    <h2 class="section-h">Public Universe</h2>
+    <p class="section-p">Eight spaces. Each a world of its own.</p>
+    <div class="universe-grid" id="universeGrid"></div>
+  </div>
+</section>
 
-<div class="card">
-<h3>lumengame.vip</h3>
-<p>Games & interactive worlds</p>
-</div>
+<!-- ④ FEATURED — cards injected by app.js into #featuredGrid -->
+<section class="featured section" id="experiences">
+  <div class="container">
+    <div class="section-tag">Selected Previews</div>
+    <h2 class="section-h">Featured Experiences</h2>
+    <div class="featured-grid" id="featuredGrid"></div>
+  </div>
+</section>
 
-<div class="card">
-<h3>lumenschoolacademy.online</h3>
-<p>Learning & knowledge</p>
-</div>
+<!-- ⑤ DROPS — cards injected by app.js into #dropsGrid -->
+<section class="drops section" id="drops">
+  <div class="container">
+    <div class="section-tag">Latest Activity</div>
+    <h2 class="section-h">Public Drops</h2>
+    <p class="section-p">The house is always in motion.</p>
+    <div class="drops-grid" id="dropsGrid"></div>
+  </div>
+</section>
 
-<div class="card">
-<h3>vibraflowmedia.casa</h3>
-<p>Spirituality, Media & storytelling</p>
-</div>
+<!-- ⑥ PRIVATE ACCESS -->
+<section class="access section" id="access">
+  <div class="container">
+    <div class="access-card">
+      <div class="access-aurora" aria-hidden="true"></div>
+      <div class="section-tag">Deeper Corridors</div>
+      <h2 class="access-h">The public layer is<br />only the entrance.</h2>
+      <p class="access-p">
+        Deeper experiences, libraries, systems, and premium pathways
+        are accessed privately.
+      </p>
+      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener"
+         class="btn btn-gold btn-xl">Enter Private Access</a>
+      <p class="access-note">
+        Access is guided. Visitors only enter the pathway assigned to their level.
+      </p>
+    </div>
+  </div>
+</section>
 
-<div class="card">
-<h3>lightnodesystems.my</h3>
-<p>Systems & infrastructure</p>
-</div>
+<!-- ⑦ SUPPORT -->
+<section class="support section" id="support">
+  <div class="container">
+    <div class="support-wrap">
+      <div class="support-text">
+        <div class="section-tag">Support</div>
+        <h2 class="section-h">Support the Vision</h2>
+        <p class="section-p">
+          Support the development of the Sentinel Fortune universe —
+          its public experiences, creative releases, and digital world.
+        </p>
+        <a href="#" class="btn btn-gold" id="supportBtn">Support the Vision</a>
+        <p class="support-disc">
+          Support does not grant private access, ownership, investment rights,
+          or financial participation.
+        </p>
+      </div>
+      <div class="qr-box" aria-label="QR Code placeholder">
+        <div class="qr-sym">◈</div>
+        <p>QR Support</p>
+        <span>Insert QR Here</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="card">
-<h3>codexworldtv.homes</h3>
-<p>Films & animation</p>
-</div>
+<!-- ⑧ INSTITUTIONAL -->
+<section class="inst section" id="contact">
+  <div class="container">
+    <div class="inst-bar">
+      <span class="inst-label">Institutional</span>
+      <p class="inst-text">
+        Licensing, OEM, distribution and partnerships are handled through controlled channels.
+      </p>
+      <a href="mailto:contact@sentinelfortune.com" class="btn btn-outline-sm">Contact</a>
+    </div>
+  </div>
+</section>
+```
 
-<div class="card">
-<h3>oglegacystore.homes</h3>
-<p>Store & lifestyle</p>
-</div>
+  </main>
 
-</div>
-</div>
+  <!-- FOOTER -->
 
-<!-- CONTENT -->
-<div id="content" class="section">
-<h2>Selected categories</h2>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="footer-name">SENTINEL FORTUNE LLC</span>
+          <a href="mailto:contact@sentinelfortune.com" class="footer-mail">
+            contact@sentinelfortune.com
+          </a>
+        </div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="#hero">Home</a>
+          <a href="#universe">Universe</a>
+          <a href="#access">Access</a>
+          <a href="mailto:contact@sentinelfortune.com">Contact</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Sentinel Fortune LLC. All rights reserved.</p>
+        <p class="footer-disc">
+          This website is informational and does not constitute an offer to sell
+          securities, investments, or financial products.
+        </p>
+      </div>
+    </div>
+  </footer>
 
-<div class="grid">
-
-<div class="card"><h3>Music</h3><p>Releases & sound</p></div>
-<div class="card"><h3>Stories</h3><p>Narratives & worlds</p></div>
-<div class="card"><h3>Films</h3><p>Visual experiences</p></div>
-<div class="card"><h3>Games</h3><p>Interactive systems</p></div>
-<div class="card"><h3>Learning</h3><p>Knowledge & structure</p></div>
-<div class="card"><h3>Visual Drops</h3><p>Digital art</p></div>
-<div class="card"><h3>Audio</h3><p>Immersive sound</p></div>
-<div class="card"><h3>Store</h3><p>Products & assets</p></div>
-
-</div>
-</div>
-
-<!-- PRIVATE -->
-<div id="private" class="section center">
-<h2>Go deeper</h2>
-<p class="muted">
-Private access unlocks deeper corridors, full libraries and premium experiences.
-</p>
-<a class="btn" href="#">Enter Private Access</a>
-</div>
-
-<!-- INSTITUTIONAL -->
-<div class="section center">
-<h2>Institutional</h2>
-<p class="muted">
-Licensing, OEM and partnerships are handled through controlled channels.
-</p>
-<a class="btn" href="mailto:contact@sentinelfortune.com">Contact</a>
-</div>
-
-<div class="footer">
-© Sentinel Fortune LLC — All rights reserved
-</div>
-
-</div>
+  <script src="app.js"></script>
 
 </body>
 </html>
