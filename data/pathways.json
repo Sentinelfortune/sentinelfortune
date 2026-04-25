@@ -1,0 +1,23 @@
+[
+  {
+    "id": "visitor",
+    "level": "Public",
+    "title": "Visitor",
+    "description": "Explore the public universe. Access selected previews and public drops.",
+    "entry": "Open"
+  },
+  {
+    "id": "guided",
+    "level": "Guided",
+    "title": "Guided Access",
+    "description": "Enter through the Telegram bot. Receive your pathway assignment.",
+    "entry": "https://t.me/sentinelfortune_bot"
+  },
+  {
+    "id": "private",
+    "level": "Private",
+    "title": "Private Corridor",
+    "description": "Deeper libraries, premium content, and advanced structured experiences.",
+    "entry": "By Assignment"
+  }
+]
