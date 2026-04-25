@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sound-preview",
+    "category": "Music & Sound",
+    "title": "New Sound Preview",
+    "description": "A first listen into the sonic direction of the next Sentinel Fortune release cycle.",
+    "status": "Preview"
+  },
+  {
+    "id": "storyworld-teaser",
+    "category": "Visual Stories",
+    "title": "Storyworld Teaser",
+    "description": "A glimpse into an expanding narrative universe currently in development.",
+    "status": "In Development"
+  },
+  {
+    "id": "interactive-challenge",
+    "category": "Games",
+    "title": "Interactive Challenge",
+    "description": "A new playable experience in the Sentinel Fortune games catalogue.",
+    "status": "Coming Soon"
+  },
+  {
+    "id": "masterclass-preview",
+    "category": "Learning",
+    "title": "Masterclass Preview",
+    "description": "A curated preview module from the upcoming Sentinel Fortune learning series.",
+    "status": "Preview"
+  },
+  {
+    "id": "visual-drop",
+    "category": "Visual",
+    "title": "Visual Drop",
+    "description": "A limited visual release from the Sentinel Fortune creative direction archive.",
+    "status": "Live"
+  },
+  {
+    "id": "product-culture-preview",
+    "category": "Product Culture",
+    "title": "Product Culture Preview",
+    "description": "Selected lifestyle and design artefacts from the Sentinel Fortune product universe.",
+    "status": "Coming Soon"
+  }
+]
