@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<title>S.5 — Strategic Survival Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   S.5 — STRATEGIC SURVIVAL BOARD
+   Dark Luxury Military · Think before you move.
+   ═══════════════════════════════════════════ */
+:root{
+  --ink:    #030508;
+  --deep:   #07090f;
+  --slate:  #0c1018;
+  --panel:  #111520;
+  --card:   #161c28;
+  --gold:   #c8a84b;
+  --gold2:  #e8c86a;
+  --gold3:  #f5d980;
+  --ember:  #d4603a;
+  --teal:   #3a8fa8;
+  --white:  #e8e4dc;
+  --muted:  #6a6660;
+  --dim:    rgba(232,228,220,.05);
+  --border: rgba(200,168,75,.15);
+  --ff1:    "Cormorant Garamond",Georgia,serif;
+  --ff2:    "Cinzel",Georgia,serif;
+  --ff3:    "Jost",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--ink);
+  color:var(--white);
+  font-family:var(--ff3);
+  font-weight:300;
+  -webkit-font-smoothing:antialiased;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+/* ── SCREENS ── */
+.screen{
+position:absolute;inset:0;
+display:flex;flex-direction:column;
+align-items:center;justify-content:center;
+transition:opacity .5s,transform .5s;
+}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(20px)}
+
+/* ── INTRO SCREEN ── */
+#introScreen{
+background:
+radial-gradient(ellipse 60% 60% at 50% 30%,rgba(10,15,30,.95),transparent 70%),
+var(–ink);
+text-align:center;
+padding:24px;
+overflow-y:auto;
+}
+.intro-symbol{
+font-size:4.5rem;
+letter-spacing:.05em;
+background:linear-gradient(135deg,var(–gold3),var(–gold),var(–gold2));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;
+font-family:var(–ff2);
+font-weight:600;
+line-height:1;
+margin-bottom:4px;
+animation:pulseGold 3s ease-in-out infinite alternate;
+}
+@keyframes pulseGold{
+0%{filter:drop-shadow(0 0 8px rgba(200,168,75,.3))}
+100%{filter:drop-shadow(0 0 24px rgba(200,168,75,.7))}
+}
+.intro-tagline{
+font-family:var(–ff2);
+font-size:8px;
+letter-spacing:.5em;
+color:rgba(200,168,75,.5);
+text-transform:uppercase;
+margin-bottom:36px;
+}
+.intro-title{
+font-family:var(–ff1);
+font-size:clamp(1.6rem,5vw,3rem);
+font-weight:300;
+line-height:1.2;
+color:var(–white);
+margin-bottom:12px;
+}
+.intro-title em{font-style:italic;color:var(–gold)}
+.intro-sub{
+font-size:.82rem;
+color:var(–muted);
+line-height:1.9;
+max-width:380px;
+margin:0 auto 36px;
+}
+.rules-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+max-width:440px;
+margin:0 auto 36px;
+}
+.rule-card{
+background:var(–panel);
+border:1px solid var(–border);
+padding:14px 16px;
+text-align:left;
+}
+.rc-icon{font-size:1.2rem;margin-bottom:6px;display:block}
+.rc-name{
+font-family:var(–ff2);font-size:9px;
+letter-spacing:.22em;color:var(–gold);
+text-transform:uppercase;margin-bottom:4px;
+}
+.rc-desc{font-size:.74rem;color:var(–muted);line-height:1.6}
+.energy-box{
+background:var(–panel);
+border:1px solid var(–border);
+padding:16px 20px;
+max-width:380px;
+margin:0 auto 32px;
+text-align:left;
+}
+.eb-title{
+font-family:var(–ff2);font-size:8px;
+letter-spacing:.3em;color:var(–gold);
+text-transform:uppercase;margin-bottom:10px;
+}
+.eb-row{
+display:flex;justify-content:space-between;
+font-size:.78rem;color:var(–muted);
+padding:4px 0;border-bottom:1px solid var(–dim);
+}
+.eb-row:last-child{border-bottom:none}
+.eb-cost{color:var(–white);font-weight:400}
+.intro-quote{
+font-family:var(–ff1);
+font-size:1.1rem;
+font-style:italic;
+color:rgba(200,168,75,.6);
+margin-bottom:32px;
+max-width:340px;
+margin-left:auto;margin-right:auto;
+line-height:1.7;
+}
+
+/* ── BUTTONS ── */
+.btn{
+display:inline-flex;align-items:center;gap:8px;
+padding:14px 36px;
+font-family:var(–ff2);
+font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+border:none;border-radius:1px;cursor:pointer;
+transition:all .35s;
+}
+.btn-gold{
+background:linear-gradient(135deg,var(–gold),var(–gold2) 50%,var(–gold));
+color:#050810;font-weight:600;
+box-shadow:0 0 30px rgba(200,168,75,.25);
+}
+.btn-gold:hover{
+background:var(–gold2);
+box-shadow:0 0 60px rgba(200,168,75,.5);
+transform:translateY(-1px);
+}
+.btn-ghost{
+background:transparent;color:var(–muted);
+border:1px solid rgba(232,228,220,.12);
+}
+.btn-ghost:hover{color:var(–white);border-color:rgba(232,228,220,.3)}
+
+/* ── GAME SCREEN ── */
+#gameScreen{
+flex-direction:row;
+align-items:stretch;
+padding:0;
+background:var(–deep);
+gap:0;
+}
+
+/* LEFT PANEL */
+.left-panel{
+width:220px;
+flex-shrink:0;
+background:var(–slate);
+border-right:1px solid var(–border);
+display:flex;flex-direction:column;
+padding:20px 16px;
+gap:16px;
+overflow-y:auto;
+}
+.lp-logo{
+font-family:var(–ff2);
+font-size:1.4rem;
+color:var(–gold);
+letter-spacing:.1em;
+font-weight:600;
+margin-bottom:4px;
+text-align:center;
+}
+.lp-sub{
+font-family:var(–ff2);
+font-size:6.5px;
+letter-spacing:.35em;
+color:rgba(200,168,75,.4);
+text-align:center;
+text-transform:uppercase;
+margin-bottom:4px;
+}
+.divider{
+height:1px;
+background:linear-gradient(90deg,transparent,var(–border),transparent);
+}
+
+/* PLAYER PANELS */
+.player-panel{
+background:var(–panel);
+border:1px solid var(–border);
+padding:14px;
+position:relative;
+transition:all .3s;
+}
+.player-panel.active-player{
+border-color:var(–gold);
+box-shadow:0 0 20px rgba(200,168,75,.15);
+}
+.pp-header{
+display:flex;align-items:center;
+justify-content:space-between;
+margin-bottom:10px;
+}
+.pp-name{
+font-family:var(–ff2);
+font-size:8px;letter-spacing:.25em;
+text-transform:uppercase;
+}
+.pp-name.p1{color:var(–gold)}
+.pp-name.p2{color:var(–teal)}
+.pp-turn-dot{
+width:7px;height:7px;border-radius:50%;
+background:var(–gold);
+animation:dotPulse .8s ease-in-out infinite alternate;
+display:none;
+}
+.active-player .pp-turn-dot{display:block}
+@keyframes dotPulse{0%{opacity:.4}100%{opacity:1}}
+
+/* ENERGY BAR */
+.energy-label{
+font-family:var(–ff2);font-size:7px;
+letter-spacing:.2em;text-transform:uppercase;
+color:var(–muted);margin-bottom:5px;
+display:flex;justify-content:space-between;
+align-items:center;
+}
+.energy-val{color:var(–white);font-size:9px}
+.energy-track{
+height:6px;
+background:rgba(255,255,255,.06);
+border-radius:3px;
+overflow:hidden;
+margin-bottom:10px;
+}
+.energy-fill{
+height:100%;
+border-radius:3px;
+transition:width .5s;
+}
+.e-fill-p1{background:linear-gradient(90deg,var(–gold),var(–gold2))}
+.e-fill-p2{background:linear-gradient(90deg,var(–teal),#5abfd8)}
+
+/* UNIT COUNT */
+.pp-units{
+display:flex;gap:6px;flex-wrap:wrap;
+margin-bottom:8px;
+}
+.unit-pip{
+width:24px;height:24px;
+border-radius:2px;
+display:flex;align-items:center;justify-content:center;
+font-size:.65rem;
+border:1px solid;
+transition:all .2s;
+}
+.unit-pip.m{border-color:rgba(200,168,75,.4);color:var(–gold);background:rgba(200,168,75,.06)}
+.unit-pip.s{border-color:rgba(212,96,58,.4);color:var(–ember);background:rgba(212,96,58,.06)}
+.unit-pip.g{border-color:rgba(58,143,168,.4);color:var(–teal);background:rgba(58,143,168,.06)}
+.unit-pip.c{border-color:rgba(200,168,75,.6);color:var(–gold2);background:rgba(200,168,75,.12)}
+.unit-pip.dead{opacity:.18;filter:grayscale(1)}
+
+/* LOG */
+.log-box{
+flex:1;
+background:var(–panel);
+border:1px solid var(–border);
+padding:10px;
+overflow-y:auto;
+min-height:0;
+}
+.log-title{
+font-family:var(–ff2);font-size:7px;
+letter-spacing:.25em;color:var(–muted);
+text-transform:uppercase;margin-bottom:8px;
+}
+.log-entry{
+font-size:.7rem;color:var(–muted);
+line-height:1.6;padding:3px 0;
+border-bottom:1px solid var(–dim);
+}
+.log-entry.gold{color:rgba(200,168,75,.8)}
+.log-entry.teal{color:rgba(58,143,168,.8)}
+.log-entry.alert{color:var(–ember)}
+
+/* LEGEND */
+.legend{background:var(–panel);border:1px solid var(–border);padding:10px}
+.legend-title{
+font-family:var(–ff2);font-size:7px;
+letter-spacing:.2em;color:var(–muted);
+text-transform:uppercase;margin-bottom:8px;
+}
+.legend-row{
+display:flex;align-items:center;gap:8px;
+margin-bottom:5px;font-size:.68rem;color:var(–muted);
+}
+.legend-icon{
+width:22px;height:22px;border-radius:2px;
+display:flex;align-items:center;justify-content:center;
+font-size:.65rem;border:1px solid;flex-shrink:0;
+}
+
+/* ── BOARD AREA ── */
+.board-area{
+flex:1;
+display:flex;flex-direction:column;
+align-items:center;justify-content:center;
+padding:20px;
+position:relative;
+}
+.turn-bar{
+text-align:center;
+margin-bottom:16px;
+}
+.tb-phase{
+font-family:var(–ff2);font-size:8px;
+letter-spacing:.35em;color:rgba(200,168,75,.5);
+text-transform:uppercase;margin-bottom:4px;
+}
+.tb-msg{
+font-family:var(–ff1);font-size:1.2rem;
+font-style:italic;color:var(–white);
+}
+
+/* BOARD */
+.board-wrap{
+position:relative;
+}
+#board{
+display:grid;
+grid-template-columns:repeat(8,1fr);
+border:1px solid var(–border);
+box-shadow:0 0 60px rgba(0,0,0,.6),0 0 0 1px rgba(200,168,75,.05);
+}
+.cell{
+width:56px;height:56px;
+display:flex;align-items:center;justify-content:center;
+position:relative;
+cursor:pointer;
+transition:all .2s;
+}
+@media(max-width:800px){
+.cell{width:40px;height:40px}
+.left-panel{width:180px}
+}
+@media(max-width:600px){
+.cell{width:34px;height:34px}
+.left-panel{display:none}
+}
+.cell.light{background:#0e1520}
+.cell.dark {background:#080e18}
+.cell:hover{filter:brightness(1.3)}
+.cell.selected{
+background:rgba(200,168,75,.2) !important;
+box-shadow:inset 0 0 0 2px var(–gold);
+}
+.cell.move-hint{
+background:rgba(200,168,75,.07) !important;
+}
+.cell.move-hint::after{
+content:””;
+position:absolute;
+width:16px;height:16px;border-radius:50%;
+background:rgba(200,168,75,.35);
+}
+.cell.attack-hint{
+background:rgba(212,96,58,.08) !important;
+box-shadow:inset 0 0 0 1px rgba(212,96,58,.4);
+}
+
+/* PIECES */
+.piece{
+width:44px;height:44px;
+border-radius:3px;
+display:flex;align-items:center;justify-content:center;
+flex-direction:column;
+gap:2px;
+font-size:.8rem;
+position:relative;
+z-index:2;
+transition:all .25s;
+border:1px solid;
+cursor:pointer;
+}
+@media(max-width:800px){.piece{width:32px;height:32px;font-size:.65rem}}
+@media(max-width:600px){.piece{width:28px;height:28px;font-size:.55rem}}
+.piece:hover{transform:scale(1.05)}
+
+/* P1 — GOLD */
+.piece.p1.M{background:rgba(200,168,75,.1);border-color:rgba(200,168,75,.6);color:var(–gold)}
+.piece.p1.S{background:rgba(200,168,75,.08);border-color:rgba(212,96,58,.5);color:var(–ember)}
+.piece.p1.G{background:rgba(200,168,75,.08);border-color:rgba(58,143,168,.5);color:var(–teal)}
+.piece.p1.C{background:rgba(200,168,75,.15);border-color:var(–gold);color:var(–gold2);box-shadow:0 0 10px rgba(200,168,75,.2)}
+/* P2 — TEAL */
+.piece.p2.M{background:rgba(58,143,168,.1);border-color:rgba(58,143,168,.6);color:var(–teal)}
+.piece.p2.S{background:rgba(58,143,168,.08);border-color:rgba(212,96,58,.5);color:var(–ember)}
+.piece.p2.G{background:rgba(58,143,168,.08);border-color:rgba(58,143,168,.5);color:#5abfd8}
+.piece.p2.C{background:rgba(58,143,168,.15);border-color:var(–teal);color:#5abfd8;box-shadow:0 0 10px rgba(58,143,168,.2)}
+
+.piece-sym{font-size:.9em;line-height:1}
+.piece-lbl{font-family:var(–ff2);font-size:4.5px;letter-spacing:.15em;opacity:.7;line-height:1}
+
+/* ACTION PANEL */
+.action-bar{
+margin-top:14px;
+display:flex;gap:8px;
+align-items:center;
+flex-wrap:wrap;
+justify-content:center;
+}
+.act-btn{
+padding:8px 18px;
+font-family:var(–ff2);font-size:8px;
+letter-spacing:.2em;text-transform:uppercase;
+border:1px solid;border-radius:1px;
+cursor:pointer;transition:all .25s;
+background:transparent;
+}
+.act-move{border-color:rgba(200,168,75,.4);color:var(–gold)}
+.act-move:hover,.act-move.active{background:rgba(200,168,75,.12);border-color:var(–gold)}
+.act-attack{border-color:rgba(212,96,58,.4);color:var(–ember)}
+.act-attack:hover,.act-attack.active{background:rgba(212,96,58,.1);border-color:var(–ember)}
+.act-defend{border-color:rgba(58,143,168,.4);color:var(–teal)}
+.act-defend:hover,.act-defend.active{background:rgba(58,143,168,.1);border-color:var(–teal)}
+.act-end{border-color:rgba(232,228,220,.2);color:var(–muted)}
+.act-end:hover{border-color:rgba(232,228,220,.4);color:var(–white)}
+.action-hint{
+font-family:var(–ff1);font-size:.78rem;
+font-style:italic;color:var(–muted);
+text-align:center;margin-top:8px;
+min-height:20px;
+}
+
+/* RIGHT PANEL */
+.right-panel{
+width:180px;flex-shrink:0;
+background:var(–slate);
+border-left:1px solid var(–border);
+display:flex;flex-direction:column;
+padding:20px 16px;gap:16px;
+}
+@media(max-width:900px){.right-panel{display:none}}
+.rp-phase-title{
+font-family:var(–ff2);font-size:7px;
+letter-spacing:.3em;text-transform:uppercase;
+color:var(–muted);margin-bottom:8px;
+}
+.phase-info{
+background:var(–panel);
+border:1px solid var(–border);
+padding:12px;
+}
+.pi-title{
+font-family:var(–ff1);font-size:1rem;
+font-style:italic;color:var(–gold);
+margin-bottom:6px;
+}
+.pi-body{font-size:.72rem;color:var(–muted);line-height:1.65}
+.cost-list{margin-top:10px}
+.cost-row{
+display:flex;justify-content:space-between;
+font-size:.68rem;padding:3px 0;
+border-bottom:1px solid var(–dim);
+color:var(–muted);
+}
+.cost-val{color:var(–white)}
+
+/* ── VICTORY SCREEN ── */
+#victoryScreen{
+background:radial-gradient(ellipse 70% 70% at 50% 40%,rgba(10,15,30,.98),var(–ink));
+text-align:center;padding:24px;
+}
+.v-sym{
+font-family:var(–ff2);font-size:3rem;
+color:var(–gold);margin-bottom:8px;
+animation:pulseGold 2s ease-in-out infinite alternate;
+}
+.v-title{
+font-family:var(–ff1);
+font-size:clamp(2rem,6vw,3.5rem);
+font-weight:300;color:var(–white);
+margin-bottom:8px;
+}
+.v-winner{
+font-family:var(–ff2);font-size:10px;
+letter-spacing:.35em;text-transform:uppercase;
+margin-bottom:4px;
+}
+.v-reason{
+font-family:var(–ff1);font-size:1rem;
+font-style:italic;color:var(–muted);
+margin-bottom:36px;
+}
+.v-stats{
+display:grid;grid-template-columns:1fr 1fr 1fr;
+gap:12px;max-width:360px;margin:0 auto 36px;
+}
+.vs-box{
+background:var(–panel);border:1px solid var(–border);
+padding:12px 8px;
+}
+.vs-num{
+font-family:var(–ff1);font-size:1.8rem;
+color:var(–gold);font-weight:300;margin-bottom:2px;
+}
+.vs-lbl{
+font-family:var(–ff2);font-size:6.5px;
+letter-spacing:.2em;color:var(–muted);
+text-transform:uppercase;
+}
+.v-quote{
+font-family:var(–ff1);font-size:.95rem;
+font-style:italic;color:rgba(200,168,75,.5);
+margin-bottom:28px;max-width:320px;
+margin-left:auto;margin-right:auto;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ① INTRO SCREEN -->
+
+<div class="screen" id="introScreen">
+  <div class="intro-symbol">S.5</div>
+  <div class="intro-tagline">Strategic Survival Board</div>
+
+  <h1 class="intro-title">Think before you move.<br/><em>Or lose before you start.</em></h1>
+  <p class="intro-sub">A board of consequence. Every action costs energy. Every move shapes the next. This is not a game of speed — it is a game of mind.</p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <span class="rc-icon">◈</span>
+      <div class="rc-name">Mover</div>
+      <div class="rc-desc">Moves freely up to 2 squares in any direction. Costs 1 energy.</div>
+    </div>
+    <div class="rule-card">
+      <span class="rc-icon">⚔</span>
+      <div class="rc-name">Striker</div>
+      <div class="rc-desc">Attacks adjacent enemies. Costs 2 energy. Eliminates target.</div>
+    </div>
+    <div class="rule-card">
+      <span class="rc-icon">⬡</span>
+      <div class="rc-name">Guardian</div>
+      <div class="rc-desc">Blocks. Restore 1 energy when defending. Cannot attack.</div>
+    </div>
+    <div class="rule-card">
+      <span class="rc-icon">◉</span>
+      <div class="rc-name">Core</div>
+      <div class="rc-desc">Your essence. If captured, you fall. Protect it at all cost.</div>
+    </div>
+  </div>
+
+  <div class="energy-box">
+    <div class="eb-title">⚡ Energy System</div>
+    <div class="eb-row"><span>Move unit</span><span class="eb-cost">− 1 energy</span></div>
+    <div class="eb-row"><span>Attack enemy</span><span class="eb-cost">− 2 energy</span></div>
+    <div class="eb-row"><span>Defend (Guardian)</span><span class="eb-cost">+ 1 energy</span></div>
+    <div class="eb-row"><span>End turn</span><span class="eb-cost">+ 2 energy</span></div>
+    <div class="eb-row"><span>Energy depleted</span><span class="eb-cost">→ you fall</span></div>
+  </div>
+
+  <p class="intro-quote">"The one who acts without thinking<br/>has already lost."</p>
+
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <button class="btn btn-gold" id="startBtn">Begin the Game</button>
+    <button class="btn btn-ghost" id="vsAiBtn">Play vs System</button>
+  </div>
+</div>
+
+<!-- ② GAME SCREEN -->
+
+<div class="screen hidden" id="gameScreen">
+
+  <!-- LEFT PANEL -->
+
+  <div class="left-panel">
+    <div>
+      <div class="lp-logo">S.5</div>
+      <div class="lp-sub">Survival Board</div>
+    </div>
+    <div class="divider"></div>
+
+```
+<!-- P1 -->
+<div class="player-panel active-player" id="pp1">
+  <div class="pp-header">
+    <span class="pp-name p1">Sentinel</span>
+    <div class="pp-turn-dot"></div>
+  </div>
+  <div class="energy-label">
+    <span>Energy</span>
+    <span class="energy-val" id="e1val">10</span>
+  </div>
+  <div class="energy-track">
+    <div class="energy-fill e-fill-p1" id="e1bar" style="width:100%"></div>
+  </div>
+  <div class="pp-units" id="units1"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- P2 -->
+<div class="player-panel" id="pp2">
+  <div class="pp-header">
+    <span class="pp-name p2">Fortune</span>
+    <div class="pp-turn-dot"></div>
+  </div>
+  <div class="energy-label">
+    <span>Energy</span>
+    <span class="energy-val" id="e2val">10</span>
+  </div>
+  <div class="energy-track">
+    <div class="energy-fill e-fill-p2" id="e2bar" style="width:100%"></div>
+  </div>
+  <div class="pp-units" id="units2"></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LOG -->
+<div class="log-box">
+  <div class="log-title">⬛ Combat Log</div>
+  <div id="logContent"></div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">Units</div>
+  <div class="legend-row">
+    <div class="legend-icon" style="border-color:rgba(200,168,75,.5);color:var(--gold)">◈</div>
+    <span>Mover · moves 2</span>
+  </div>
+  <div class="legend-row">
+    <div class="legend-icon" style="border-color:rgba(212,96,58,.5);color:var(--ember)">⚔</div>
+    <span>Striker · attacks</span>
+  </div>
+  <div class="legend-row">
+    <div class="legend-icon" style="border-color:rgba(58,143,168,.5);color:var(--teal)">⬡</div>
+    <span>Guardian · defends</span>
+  </div>
+  <div class="legend-row">
+    <div class="legend-icon" style="border-color:var(--gold);color:var(--gold2)">◉</div>
+    <span>Core · protect!</span>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- BOARD AREA -->
+
+  <div class="board-area">
+    <div class="turn-bar">
+      <div class="tb-phase" id="turnPhase">Turn 1 — Selection</div>
+      <div class="tb-msg" id="turnMsg">Sentinel, choose your piece.</div>
+    </div>
+
+```
+<div class="board-wrap">
+  <div id="board"></div>
+</div>
+
+<div class="action-bar">
+  <button class="act-btn act-move" id="actMove">◈ Move (-1)</button>
+  <button class="act-btn act-attack" id="actAttack">⚔ Attack (-2)</button>
+  <button class="act-btn act-defend" id="actDefend">⬡ Defend (+1)</button>
+  <button class="act-btn act-end" id="actEnd">End Turn (+2)</button>
+</div>
+<div class="action-hint" id="actionHint">Select a piece to begin.</div>
+```
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+
+  <div class="right-panel">
+    <div class="rp-phase-title">Phase Guide</div>
+    <div class="phase-info">
+      <div class="pi-title">Select</div>
+      <div class="pi-body">Choose one of your units on the board. Think about energy cost before acting.</div>
+    </div>
+    <div class="phase-info">
+      <div class="pi-title">Energy</div>
+      <div class="pi-body">Each action drains your reserve. Zero energy = defeat. Manage carefully.</div>
+      <div class="cost-list">
+        <div class="cost-row"><span>Move</span><span class="cost-val">−1</span></div>
+        <div class="cost-row"><span>Attack</span><span class="cost-val">−2</span></div>
+        <div class="cost-row"><span>Defend</span><span class="cost-val">+1</span></div>
+        <div class="cost-row"><span>End Turn</span><span class="cost-val">+2</span></div>
+      </div>
+    </div>
+    <div class="phase-info" style="margin-top:auto">
+      <div class="pi-title" style="color:var(--ember)">Victory</div>
+      <div class="pi-body">Capture the Core. Exhaust all energy. Or block every move.</div>
+    </div>
+    <button class="btn btn-ghost" id="menuBtn" style="font-size:8px;padding:10px 16px;margin-top:4px">← Menu</button>
+  </div>
+</div>
+
+<!-- ③ VICTORY SCREEN -->
+
+<div class="screen hidden" id="victoryScreen">
+  <div class="v-sym">◉</div>
+  <h2 class="v-title">The board<br/>has spoken.</h2>
+  <div class="v-winner" id="vWinner" style="color:var(--gold)">Sentinel Wins</div>
+  <div class="v-reason" id="vReason">Core captured</div>
+  <div class="v-stats">
+    <div class="vs-box">
+      <div class="vs-num" id="vTurns">0</div>
+      <div class="vs-lbl">Turns</div>
+    </div>
+    <div class="vs-box">
+      <div class="vs-num" id="vEnergy">0</div>
+      <div class="vs-lbl">Energy Left</div>
+    </div>
+    <div class="vs-box">
+      <div class="vs-num" id="vKills">0</div>
+      <div class="vs-lbl">Captures</div>
+    </div>
+  </div>
+  <div class="v-quote" id="vQuote">"Patience. Precision. Power."</div>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <button class="btn btn-gold" id="rematchBtn">Play Again</button>
+    <button class="btn btn-ghost" id="menuBtn2">Return to Menu</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ═══════════════════════════════════════════
+   S.5 GAME ENGINE
+   ═══════════════════════════════════════════ */
+
+// ── Unit types ──
+var TYPES={M:"M",S:"S",G:"G",C:"C"};
+var SYMS={M:"◈",S:"⚔",G:"⬡",C:"◉"};
+var LBLS={M:"MOVER",S:"STRIKER",G:"GUARD",C:"CORE"};
+
+// ── Game state ──
+var G={
+  board:null,       // 8x8 array
+  turn:1,           // 1 or 2
+  phase:"select",   // select | action
+  selected:null,    // {r,c}
+  mode:null,        // move | attack | defend
+  energy:[10,10],
+  turnNum:1,
+  kills:[0,0],
+  vsAI:false,
+  aiThinking:false,
+  quotes:[
+    "Patience. Precision. Power.",
+    "The mind wins before the hand moves.",
+    "Every capture is a consequence of thought.",
+    "Energy is life. Spend it wisely.",
+    "The Guardian saves more than the Striker wins.",
+  ]
+};
+
+// ── Piece constructor ──
+function piece(player,type){
+  return{player:player,type:type,id:Math.random().toString(36).slice(2,8)};
+}
+
+// ── Initial board layout ──
+function initBoard(){
+  var b=Array.from({length:8},function(){return Array(8).fill(null);});
+  // Player 1 (bottom rows) — row 6,7
+  b[7][0]=piece(1,"C"); // Core
+  b[7][2]=piece(1,"M"); // Mover
+  b[7][4]=piece(1,"S"); // Striker
+  b[7][6]=piece(1,"G"); // Guardian
+  b[6][1]=piece(1,"M");
+  b[6][5]=piece(1,"S");
+  // Player 2 (top rows) — row 0,1
+  b[0][7]=piece(2,"C");
+  b[0][5]=piece(2,"M");
+  b[0][3]=piece(2,"S");
+  b[0][1]=piece(2,"G");
+  b[1][6]=piece(2,"M");
+  b[1][2]=piece(2,"S");
+  return b;
+}
+
+// ── DOM refs ──
+var $ = function(id){return document.getElementById(id);};
+
+// ── Screens ──
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(function(s){
+    s.classList.add("hidden");
+  });
+  $(id).classList.remove("hidden");
+}
+
+// ── LOG ──
+function log(msg,cls){
+  var el=document.createElement("div");
+  el.className="log-entry"+(cls?" "+cls:"");
+  el.textContent=msg;
+  var box=$("logContent");
+  box.insertBefore(el,box.firstChild);
+  if(box.children.length>40)box.removeChild(box.lastChild);
+}
+
+// ── Draw board ──
+function drawBoard(){
+  var board=$("board");
+  board.innerHTML="";
+  for(var r=0;r<8;r++){
+    for(var c=0;c<8;c++){
+      var cell=document.createElement("div");
+      cell.className="cell "+((r+c)%2===0?"light":"dark");
+      cell.dataset.r=r;cell.dataset.c=c;
+
+      var p=G.board[r][c];
+      if(p){
+        var el=document.createElement("div");
+        el.className="piece p"+p.player+" "+p.type;
+        el.innerHTML="<span class='piece-sym'>"+SYMS[p.type]+"</span><span class='piece-lbl'>"+LBLS[p.type]+"</span>";
+        cell.appendChild(el);
+      }
+
+      // Highlights
+      if(G.selected&&G.selected.r===r&&G.selected.c===c){
+        cell.classList.add("selected");
+      }
+      var hints=G.hints||[];
+      hints.forEach(function(h){
+        if(h.r===r&&h.c===c){
+          cell.classList.add(h.attack?"attack-hint":"move-hint");
+        }
+      });
+
+      cell.addEventListener("click",onCellClick);
+      board.appendChild(cell);
+    }
+  }
+  updateUI();
+}
+
+// ── Get valid moves for a piece ──
+function getMoves(r,c){
+  var p=G.board[r][c];
+  if(!p)return[];
+  var moves=[];
+  var range=p.type==="M"?2:1;
+
+  // All directions (8-directional)
+  var dirs=[-1,0,1];
+  dirs.forEach(function(dr){
+    dirs.forEach(function(dc){
+      if(dr===0&&dc===0)return;
+      for(var step=1;step<=range;step++){
+        var nr=r+dr*step,nc=c+dc*step;
+        if(nr<0||nr>7||nc<0||nc>7)break;
+        if(G.board[nr][nc])break; // blocked
+        moves.push({r:nr,c:nc,attack:false});
+      }
+    });
+  });
+  return moves;
+}
+
+// ── Get valid attacks ──
+function getAttacks(r,c){
+  var p=G.board[r][c];
+  if(!p||p.type==="G"||p.type==="C")return[];
+  var attacks=[];
+  var dirs=[-1,0,1];
+  dirs.forEach(function(dr){
+    dirs.forEach(function(dc){
+      if(dr===0&&dc===0)return;
+      var nr=r+dr,nc=c+dc;
+      if(nr<0||nr>7||nc<0||nc>7)return;
+      var target=G.board[nr][nc];
+      if(target&&target.player!==p.player){
+        attacks.push({r:nr,c:nc,attack:true});
+      }
+    });
+  });
+  return attacks;
+}
+
+// ── Cell click handler ──
+function onCellClick(e){
+  if(G.aiThinking)return;
+  var r=parseInt(this.dataset.r),c=parseInt(this.dataset.c);
+
+  // Check if clicking on a hint
+  var hints=G.hints||[];
+  var hint=hints.find(function(h){return h.r===r&&h.c===c;});
+  if(hint&&G.selected){
+    executeAction(G.selected.r,G.selected.c,r,c,hint.attack);
+    return;
+  }
+
+  // Select a piece
+  var p=G.board[r][c];
+  if(p&&p.player===G.turn){
+    G.selected={r:r,c:c};
+    G.mode=null;
+    G.hints=[];
+    $("actionHint").textContent="Choose an action below.";
+    drawBoard();
+    log("Selected "+LBLS[p.type]+" at "+pos(r,c),(G.turn===1?"gold":"teal"));
+  } else {
+    G.selected=null;G.hints=[];
+    $("actionHint").textContent="Select your piece.";
+    drawBoard();
+  }
+}
+
+// ── Execute action ──
+function executeAction(fr,fc,tr,tc,isAttack){
+  var actor=G.board[fr][fc];
+  var target=G.board[tr][tc];
+
+  if(isAttack){
+    if(G.energy[G.turn-1]<2){
+      $("actionHint").textContent="Not enough energy to attack.";
+      return;
+    }
+    G.energy[G.turn-1]-=2;
+    var wasCore=target.type==="C";
+    G.board[tr][tc]=null;
+    G.kills[G.turn-1]++;
+    log("⚔ "+LBLS[actor.type]+" captures "+LBLS[target.type]+" at "+pos(tr,tc),(G.turn===1?"gold":"teal"));
+    if(wasCore){
+      endGame("core");return;
+    }
+  } else {
+    if(actor.type==="G"&&G.mode==="defend"){
+      // Guardian defends — restore energy
+      G.energy[G.turn-1]=Math.min(10,G.energy[G.turn-1]+1);
+      log("⬡ Guardian defends at "+pos(fr,fc),(G.turn===1?"gold":"teal"));
+    } else {
+      if(G.energy[G.turn-1]<1){
+        $("actionHint").textContent="Not enough energy to move.";
+        return;
+      }
+      G.energy[G.turn-1]-=1;
+      G.board[tr][tc]=actor;
+      G.board[fr][fc]=null;
+      log("◈ "+LBLS[actor.type]+" moves to "+pos(tr,tc),(G.turn===1?"gold":"teal"));
+    }
+  }
+
+  // Check energy death
+  if(G.energy[G.turn-1]<=0){
+    endGame("energy");return;
+  }
+
+  G.selected=null;G.hints=[];G.mode=null;
+  checkBlocked();
+  drawBoard();
+  $("actionHint").textContent="Action done. Continue or end turn.";
+
+  // AI turn
+  if(G.vsAI&&G.turn===1){
+    // check if AI should auto-play after human
+  }
+}
+
+function pos(r,c){
+  return String.fromCharCode(65+c)+(8-r);
+}
+
+// ── Check if player is blocked ──
+function checkBlocked(){
+  var units=[];
+  for(var r=0;r<8;r++){
+    for(var c=0;c<8;c++){
+      var p=G.board[r][c];
+      if(p&&p.player===G.turn){
+        var m=getMoves(r,c);
+        var a=getAttacks(r,c);
+        if(m.length||a.length)return;
+      }
+    }
+  }
+  endGame("blocked");
+}
+
+// ── End game ──
+function endGame(reason){
+  var winner=G.turn;
+  var loser=G.turn===1?2:1;
+  var reasonText={
+    core:"Core was captured",
+    energy:"Energy fully depleted",
+    blocked:"All units were blocked"
+  }[reason]||"";
+
+  $("vWinner").textContent=(winner===1?"Sentinel":"Fortune")+" claims victory";
+  $("vWinner").style.color=winner===1?"var(--gold)":"var(--teal)";
+  $("vReason").textContent=reasonText;
+  $("vTurns").textContent=G.turnNum;
+  $("vEnergy").textContent=G.energy[winner-1];
+  $("vKills").textContent=G.kills[winner-1];
+  var q=G.quotes[Math.floor(Math.random()*G.quotes.length)];
+  $("vQuote").textContent="\u201C"+q+"\u201D";
+
+  setTimeout(function(){showScreen("victoryScreen");},800);
+}
+
+// ── Action buttons ──
+function setMode(m){
+  if(!G.selected){$("actionHint").textContent="Select a piece first.";return;}
+  G.mode=m;
+  var p=G.board[G.selected.r][G.selected.c];
+
+  if(m==="move"){
+    G.hints=getMoves(G.selected.r,G.selected.c);
+    if(!G.hints.length){$("actionHint").textContent="No valid moves for this unit.";return;}
+    $("actionHint").textContent="Tap a highlighted square to move. Cost: 1 energy.";
+  } else if(m==="attack"){
+    if(p.type==="G"||p.type==="C"){$("actionHint").textContent="This unit cannot attack.";return;}
+    G.hints=getAttacks(G.selected.r,G.selected.c);
+    if(!G.hints.length){$("actionHint").textContent="No enemies in attack range.";return;}
+    $("actionHint").textContent="Tap a red-highlighted enemy to attack. Cost: 2 energy.";
+  } else if(m==="defend"){
+    if(p.type!=="G"){$("actionHint").textContent="Only Guardian can defend.";return;}
+    G.hints=[];
+    executeAction(G.selected.r,G.selected.c,G.selected.r,G.selected.c,false);
+    return;
+  }
+
+  // Set active btn
+  document.querySelectorAll(".act-btn").forEach(function(b){b.classList.remove("active");});
+  if(m==="move")$("actMove").classList.add("active");
+  if(m==="attack")$("actAttack").classList.add("active");
+
+  drawBoard();
+}
+
+function endTurn(){
+  G.energy[G.turn-1]=Math.min(10,G.energy[G.turn-1]+2);
+  log("— Turn "+G.turnNum+" ended",(G.turn===1?"gold":"teal"));
+  G.turn=G.turn===1?2:1;
+  G.turnNum++;
+  G.selected=null;G.hints=[];G.mode=null;
+  document.querySelectorAll(".act-btn").forEach(function(b){b.classList.remove("active");});
+
+  updateTurnUI();
+  drawBoard();
+
+  if(G.vsAI&&G.turn===2){
+    setTimeout(aiTurn,900);
+  }
+}
+
+// ── AI (basic heuristic) ──
+function aiTurn(){
+  G.aiThinking=true;
+  $("actionHint").textContent="System is thinking...";
+  $("turnMsg").textContent="Fortune is calculating.";
+
+  setTimeout(function(){
+    // Find all AI pieces
+    var pieces=[];
+    for(var r=0;r<8;r++){
+      for(var c=0;c<8;c++){
+        if(G.board[r][c]&&G.board[r][c].player===2){
+          pieces.push({r:r,c:c});
+        }
+      }
+    }
+
+    // Try to attack first
+    var attacked=false;
+    var shuffled=pieces.sort(function(){return Math.random()-.5;});
+    for(var i=0;i<shuffled.length;i++){
+      var pc=shuffled[i];
+      var attacks=getAttacks(pc.r,pc.c);
+      if(attacks.length&&G.energy[1]>=2){
+        var t=attacks[Math.floor(Math.random()*attacks.length)];
+        G.selected={r:pc.r,c:pc.c};
+        executeAction(pc.r,pc.c,t.r,t.c,true);
+        attacked=true;break;
+      }
+    }
+
+    if(!attacked){
+      // Move toward player 1 pieces
+      for(var j=0;j<shuffled.length;j++){
+        var pc2=shuffled[j];
+        var moves=getMoves(pc2.r,pc2.c);
+        if(moves.length&&G.energy[1]>=1){
+          // Pick move closest to p1 core
+          var p1core=null;
+          for(var rr=0;rr<8;rr++){
+            for(var cc=0;cc<8;cc++){
+              if(G.board[rr][cc]&&G.board[rr][cc].player===1&&G.board[rr][cc].type==="C"){
+                p1core={r:rr,c:cc};
+              }
+            }
+          }
+          var best=moves[0];
+          if(p1core){
+            moves.forEach(function(m){
+              var d=Math.abs(m.r-p1core.r)+Math.abs(m.c-p1core.c);
+              var db=Math.abs(best.r-p1core.r)+Math.abs(best.c-p1core.c);
+              if(d<db)best=m;
+            });
+          }
+          G.selected={r:pc2.r,c:pc2.c};
+          executeAction(pc2.r,pc2.c,best.r,best.c,false);
+          break;
+        }
+      }
+    }
+
+    G.aiThinking=false;
+    G.selected=null;G.hints=[];
+    drawBoard();
+
+    // AI ends turn
+    if(G.turn===2){
+      setTimeout(function(){
+        endTurn();
+      },600);
+    }
+  },700);
+}
+
+// ── Update UI ──
+function updateUI(){
+  // Energy bars
+  var e1=Math.max(0,G.energy[0]);
+  var e2=Math.max(0,G.energy[1]);
+  $("e1val").textContent=e1;
+  $("e2val").textContent=e2;
+  $("e1bar").style.width=(e1/10*100)+"%";
+  $("e2bar").style.width=(e2/10*100)+"%";
+
+  // Player panel active state
+  $("pp1").classList.toggle("active-player",G.turn===1);
+  $("pp2").classList.toggle("active-player",G.turn===2);
+
+  // Unit counts
+  renderUnitPips(1);
+  renderUnitPips(2);
+}
+
+function renderUnitPips(player){
+  var box=$(player===1?"units1":"units2");
+  box.innerHTML="";
+  for(var r=0;r<8;r++){
+    for(var c=0;c<8;c++){
+      var p=G.board[r][c];
+      if(p&&p.player===player){
+        var pip=document.createElement("div");
+        pip.className="unit-pip "+p.type.toLowerCase();
+        pip.textContent=SYMS[p.type];
+        pip.title=LBLS[p.type];
+        box.appendChild(pip);
+      }
+    }
+  }
+}
+
+function updateTurnUI(){
+  var name=G.turn===1?"Sentinel":"Fortune";
+  $("turnPhase").textContent="Turn "+G.turnNum+" — "+name;
+  $("turnMsg").textContent=name+", choose your piece.";
+  $("actionHint").textContent="Select a piece to begin.";
+}
+
+// ── Start game ──
+function startGame(vsAI){
+  G.board=initBoard();
+  G.turn=1;G.turnNum=1;
+  G.energy=[10,10];
+  G.kills=[0,0];
+  G.selected=null;G.hints=[];G.mode=null;
+  G.vsAI=!!vsAI;
+  G.aiThinking=false;
+  $("logContent").innerHTML="";
+  log("S.5 begins. Think carefully.","alert");
+  updateTurnUI();
+  showScreen("gameScreen");
+  drawBoard();
+}
+
+// ── Event listeners ──
+$("startBtn").addEventListener("click",function(){startGame(false);});
+$("vsAiBtn").addEventListener("click",function(){startGame(true);});
+$("rematchBtn").addEventListener("click",function(){startGame(G.vsAI);});
+$("menuBtn").addEventListener("click",function(){showScreen("introScreen");});
+$("menuBtn2").addEventListener("click",function(){showScreen("introScreen");});
+$("actMove").addEventListener("click",function(){setMode("move");});
+$("actAttack").addEventListener("click",function(){setMode("attack");});
+$("actDefend").addEventListener("click",function(){setMode("defend");});
+$("actEnd").addEventListener("click",function(){endTurn();});
+
+// Keyboard shortcuts
+document.addEventListener("keydown",function(e){
+  if($("gameScreen").classList.contains("hidden"))return;
+  if(e.key==="m"||e.key==="M")setMode("move");
+  if(e.key==="a"||e.key==="A")setMode("attack");
+  if(e.key==="d"||e.key==="D")setMode("defend");
+  if(e.key==="Enter")endTurn();
+  if(e.key==="Escape"){G.selected=null;G.hints=[];G.mode=null;drawBoard();}
+});
+</script>
+
+</body>
+</html>
