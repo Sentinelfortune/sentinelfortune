@@ -834,8 +834,34 @@ if(dr){DROPS.forEach(function(item,i){var d=document.createElement("div");d.clas
 var sb=document.getElementById("supBtn");
 if(sb){sb.style.opacity=".45";sb.style.pointerEvents="none";sb.textContent="Support (Coming Soon)";}
 
-// ─── Re-observe dynamically added reveals ─────────────
-// Already handled inline above for universe/drops
+// ─── LOGO UPLOAD ──────────────────────────────────────
+var logoInput=document.getElementById("logoUpload");
+var logoPreview=document.getElementById("logoPreview");
+var logoDefault=document.getElementById("logoDefault");
+var logoLabel=document.getElementById("logoLabel");
+
+if(logoInput){
+  // Load saved logo on page load
+  try{var saved=localStorage.getItem("sf_logo");if(saved){logoPreview.src=saved;logoPreview.style.display="block";logoDefault.style.display="none";}}catch(e){}
+
+  logoInput.addEventListener("change",function(){
+    var file=logoInput.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var src=e.target.result;
+      logoPreview.src=src;
+      logoPreview.style.display="block";
+      logoDefault.style.display="none";
+      logoLabel.style.border="2px solid rgba(200,168,75,.6)";
+      try{localStorage.setItem("sf_logo",src);}catch(e){}
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Hover effect
+  logoLabel.addEventListener("mouseenter",function(){logoLabel.style.background="rgba(200,168,75,.1)";logoLabel.style.borderColor="rgba(200,168,75,.8)";});
+  logoLabel.addEventListener("mouseleave",function(){logoLabel.style.background="rgba(200,168,75,.06)";logoLabel.style.borderColor=logoPreview.style.display==="block"?"rgba(200,168,75,.6)":"rgba(200,168,75,.5)";});
+}
 </script>
 
 </body>
