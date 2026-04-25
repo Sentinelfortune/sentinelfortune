@@ -1,0 +1,34 @@
+[
+  {
+    "id": "focus-run",
+    "type": "Interactive · Game",
+    "title": "Focus Run",
+    "description": "A lightweight browser challenge built around focus and movement.",
+    "link": "./modules/games/focus-run/index.html",
+    "cta": "Play Now"
+  },
+  {
+    "id": "vision-trailer",
+    "type": "Media · Cinematic",
+    "title": "Vision Trailer",
+    "description": "A cinematic preview of the Sentinel Fortune creative direction.",
+    "link": "./modules/media/vision-trailer/index.html",
+    "cta": "Watch"
+  },
+  {
+    "id": "origin-echo",
+    "type": "Audio · Immersive",
+    "title": "Origin Echo",
+    "description": "An immersive sound experience for atmosphere, rhythm, and reflection.",
+    "link": "./modules/audio/origin-echo/index.html",
+    "cta": "Listen"
+  },
+  {
+    "id": "foundation-lesson",
+    "type": "Learning · Structured",
+    "title": "Foundation Lesson",
+    "description": "A structured learning preview introducing system thinking and creative discipline.",
+    "link": "./modules/learning/foundation-lesson/index.html",
+    "cta": "Begin"
+  }
+]
