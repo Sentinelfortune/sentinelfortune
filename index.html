@@ -53,16 +53,16 @@ section{position:relative}
 
 /* ══ BUTTONS ══ */
 .btn{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;font-family:var(–ff2);font-size:9px;letter-spacing:.28em;text-transform:uppercase;border-radius:1px;transition:all .4s var(–ease);position:relative;overflow:hidden;white-space:nowrap}
-.btn-gold{background:linear-gradient(135deg,var(–gold),var(–gold2) 50%,var(–gold));background-size:200%;color:#050810;font-weight:500;box-shadow:0 0 40px rgba(200,168,75,.3)}
-.btn-gold:hover{background-position:right;box-shadow:0 0 70px rgba(200,168,75,.55);transform:translateY(-2px)}
-.btn-line{background:transparent;color:var(–gold);border:1px solid var(–gold-line)}
-.btn-line:hover{border-color:var(–gold);background:var(–gold-dim)}
+.btn-gold{background:#c8a84b;background:linear-gradient(135deg,#c8a84b,#e8c86a 50%,#c8a84b);color:#050810 !important;font-weight:500;box-shadow:0 0 40px rgba(200,168,75,.4)}
+.btn-gold:hover{background:#e8c86a;box-shadow:0 0 70px rgba(200,168,75,.6);transform:translateY(-2px)}
+.btn-line{background:transparent;color:#c8a84b !important;border:1px solid rgba(200,168,75,.5)}
+.btn-line:hover{border-color:#c8a84b;background:rgba(200,168,75,.08)}
 
 /* ══ SECTION TYPE ══ */
-.stag{display:inline-flex;align-items:center;gap:14px;font-family:var(–ff2);font-size:8px;letter-spacing:.45em;text-transform:uppercase;color:var(–gold);margin-bottom:24px}
-.stag::before{content:””;width:32px;height:1px;background:var(–gold);opacity:.5}
-.sh{font-family:var(–ff1);font-size:clamp(2.2rem,5vw,4rem);font-weight:300;line-height:1.12;color:var(–white);margin-bottom:22px;letter-spacing:-.01em}
-.sp{font-family:var(–ff3);font-size:.98rem;color:var(–muted);line-height:1.9;max-width:520px;margin-bottom:52px;font-weight:300}
+.stag{display:inline-flex;align-items:center;gap:14px;font-family:‘Cinzel’,Georgia,serif;font-size:8px;letter-spacing:.45em;text-transform:uppercase;color:#c8a84b;margin-bottom:24px}
+.stag::before{content:””;width:32px;height:1px;background:#c8a84b;opacity:.5}
+.sh{font-family:‘Cormorant Garamond’,Georgia,serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:300;line-height:1.12;color:#ede8e0;margin-bottom:22px;letter-spacing:-.01em}
+.sp{font-family:‘Jost’,system-ui,sans-serif;font-size:.98rem;color:#7a7570;line-height:1.9;max-width:520px;margin-bottom:52px;font-weight:300}
 
 /* ══ NOISE GRAIN ══ */
 body::after{content:””;position:fixed;inset:0;background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 512 512’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=’.75’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);opacity:.022;pointer-events:none;z-index:1000}
@@ -80,20 +80,19 @@ HEADER
 .logo-text{font-family:var(–ff2);font-size:8.5px;letter-spacing:.32em;color:rgba(237,232,224,.45);text-transform:uppercase}
 
 .hdr-nav{display:flex;gap:0;margin-left:auto}
-.hdr-a{padding:8px 16px;font-family:var(–ff2);font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(237,232,224,.4);transition:color .25s}
-.hdr-a:hover{color:var(–gold)}
+.hdr-a{padding:8px 16px;font-family:‘Cinzel’,Georgia,serif;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(237,232,224,.45);transition:color .25s}
+.hdr-a:hover{color:#c8a84b}
+.hdr-cta{margin-left:8px;font-family:‘Cinzel’,Georgia,serif;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#c8a84b;border:1px solid rgba(200,168,75,.4);padding:10px 20px;border-radius:1px;transition:all .3s;white-space:nowrap;text-decoration:none;display:inline-block}
+.hdr-cta:hover{background:#c8a84b;color:#050810}
 
-.hdr-cta{margin-left:8px;font-family:var(–ff2);font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(–gold);border:1px solid var(–gold-line);padding:10px 20px;border-radius:1px;transition:all .3s;white-space:nowrap}
-.hdr-cta:hover{background:var(–gold);color:#050810}
+.burger{display:none;flex-direction:column;gap:6px;padding:10px;margin-left:auto;background:rgba(200,168,75,.15);border:2px solid #c8a84b;border-radius:6px;cursor:pointer}
+.burger span{display:block;width:24px;height:2px;background:#c8a84b;border-radius:2px;transition:.3s}
 
-.burger{display:none;flex-direction:column;gap:6px;padding:8px;margin-left:auto;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.3);border-radius:4px;cursor:pointer}
-.burger span{display:block;width:22px;height:1.5px;background:var(–gold);transition:.3s;border-radius:2px}
-
-.mob-nav{display:none;flex-direction:column;background:rgba(4,6,15,.98);border-top:1px solid var(–gold-dim);padding:20px 32px 28px}
+.mob-nav{display:none;flex-direction:column;background:rgba(4,6,15,.98);border-top:1px solid rgba(200,168,75,.15);padding:20px 32px 28px}
 .mob-nav.open{display:flex}
-.mob-a{padding:14px 0;font-family:var(–ff2);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(237,232,224,.5);border-bottom:1px solid var(–dim);transition:color .2s}
-.mob-a:hover{color:var(–gold)}
-.mob-cta{margin-top:20px;text-align:center;padding:15px;background:var(–gold);color:#050810;font-family:var(–ff2);font-size:9px;letter-spacing:.22em;text-transform:uppercase;border-radius:1px}
+.mob-a{padding:14px 0;font-family:‘Cinzel’,Georgia,serif;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(237,232,224,.55);border-bottom:1px solid rgba(237,232,224,.06);transition:color .2s;text-decoration:none;display:block}
+.mob-a:hover{color:#c8a84b}
+.mob-cta{margin-top:20px;text-align:center;padding:15px;background:#c8a84b;color:#050810;font-family:‘Cinzel’,Georgia,serif;font-size:9px;letter-spacing:.22em;text-transform:uppercase;border-radius:1px;text-decoration:none;display:block}
 
 /* ══════════════════════════════════════
 HERO — Le silence avant la frappe
@@ -123,7 +122,7 @@ HERO — Le silence avant la frappe
 .hero-pre{font-family:var(–ff2);font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:rgba(200,168,75,.5);margin-bottom:28px;animation:fadeUp .9s var(–ease) .25s both;display:block}
 
 .hero-h{font-family:var(–ff1);font-size:clamp(2.6rem,9vw,7.8rem);font-weight:300;line-height:1.08;letter-spacing:-.02em;color:var(–white);margin-bottom:32px;animation:fadeUp 1s var(–ease) .35s both}
-.hero-h em{display:block;font-style:italic;color:var(–gold);background:linear-gradient(120deg,var(–gold) 20%,var(–gold3) 55%,var(–gold) 90%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmerText 5s linear infinite}
+.hero-h em{display:block;font-style:italic;color:#c8a84b;background:linear-gradient(120deg,#c8a84b 20%,#f5d980 55%,#c8a84b 90%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmerText 5s linear infinite}
 @keyframes shimmerText{0%{background-position:0}100%{background-position:200%}}
 
 .hero-sub{font-family:var(–ff1);font-size:clamp(1rem,2.2vw,1.35rem);font-weight:300;color:rgba(237,232,224,.55);line-height:1.75;margin-bottom:14px;animation:fadeUp .9s var(–ease) .5s both}
@@ -413,15 +412,17 @@ RESPONSIVE
 
 ```
 <!-- LOGO UPLOAD — clique pour uploader ton logo -->
-<div class="hero-logo" style="margin-bottom:40px">
-  <label for="logoUpload" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;width:130px;height:130px;border-radius:50%;border:2px dashed rgba(200,168,75,.6);background:rgba(200,168,75,.08);gap:10px;transition:all .3s;position:relative;-webkit-tap-highlight-color:rgba(200,168,75,.2)" id="logoLabel">
-    <img id="logoPreview" src="" alt="" style="display:none;width:130px;height:130px;border-radius:50%;object-fit:contain;position:absolute;inset:0"/>
+<div class="hero-logo" style="margin-bottom:40px;position:relative;display:inline-flex;align-items:center;justify-content:center">
+  <div style="position:absolute;width:155px;height:155px;border-radius:50%;border:1px solid rgba(200,168,75,.2);animation:ringPulse 3s ease-in-out infinite;pointer-events:none"></div>
+  <div style="position:absolute;width:185px;height:185px;border-radius:50%;border:1px solid rgba(200,168,75,.08);animation:ringPulse 3s ease-in-out infinite .8s;pointer-events:none"></div>
+  <label for="logoUpload" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;width:130px;height:130px;border-radius:50%;border:2px dashed #c8a84b;background:rgba(10,17,40,.6);gap:10px;transition:all .3s;position:relative;z-index:2" id="logoLabel">
+    <img id="logoPreview" src="" alt="" style="display:none;width:128px;height:128px;border-radius:50%;object-fit:contain;position:absolute;inset:0"/>
     <div id="logoDefault" style="display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
         <path d="M12 3L12 17M7 9L12 3L17 9" stroke="#c8a84b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M4 20L4 22L20 22L20 20" stroke="#c8a84b" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <span style="font-family:var(--ff2);font-size:7px;letter-spacing:.22em;color:rgba(200,168,75,.8);text-transform:uppercase;font-weight:500">Tap to Upload</span>
+      <span style="font-family:'Cinzel',Georgia,serif;font-size:7px;letter-spacing:.22em;color:#c8a84b;text-transform:uppercase;font-weight:500">Tap to Upload</span>
     </div>
     <input type="file" id="logoUpload" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%"/>
   </label>
