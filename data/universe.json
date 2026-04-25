@@ -1,0 +1,58 @@
+[
+  {
+    "id": "music",
+    "icon": "♪",
+    "tag": "Sound",
+    "title": "Music & Sound",
+    "description": "Releases, sound worlds, artists, sonic identity, and immersive audio."
+  },
+  {
+    "id": "visual",
+    "icon": "◈",
+    "tag": "Cinema",
+    "title": "Visual Stories",
+    "description": "Films, animations, trailers, characters, and cinematic universes."
+  },
+  {
+    "id": "games",
+    "icon": "⬡",
+    "tag": "Interactive",
+    "title": "Games & Interactive",
+    "description": "Mini-games, interactive worlds, challenges, and playable concepts."
+  },
+  {
+    "id": "learning",
+    "icon": "◎",
+    "tag": "Knowledge",
+    "title": "Learning & Masterclasses",
+    "description": "Structured knowledge, personal growth, business themes, creative discipline, and guided lessons."
+  },
+  {
+    "id": "books",
+    "icon": "▣",
+    "tag": "Narrative",
+    "title": "Books & Storytelling",
+    "description": "Narratives, story worlds, written works, audio stories, and universe lore."
+  },
+  {
+    "id": "product",
+    "icon": "◇",
+    "tag": "Culture",
+    "title": "Product Culture",
+    "description": "Lifestyle, design language, fashion energy, digital products, and curated collections."
+  },
+  {
+    "id": "digital",
+    "icon": "⊕",
+    "tag": "Digital",
+    "title": "Digital Experiences",
+    "description": "Web modules, portals, tools, lightweight systems, and guided digital journeys."
+  },
+  {
+    "id": "private",
+    "icon": "⟁",
+    "tag": "Private",
+    "title": "Private Corridors",
+    "description": "Deeper libraries, premium experiences, structured access, and advanced pathways."
+  }
+]
