@@ -2,211 +2,653 @@
 
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sentinel Fortune LLC — We don't chase. We are.</title>
-  <meta name="description" content="A connected house of music, media, systems, learning, lifestyle and digital experiences." />
-  <meta property="og:title" content="Sentinel Fortune LLC" />
-  <meta property="og:description" content="We don't chase. We are." />
-  <meta name="theme-color" content="#000428" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@200;300;400;500&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sentinel Fortune LLC</title>
+<meta name="description" content="A connected house of music, media, systems, learning, lifestyle and digital experiences."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════════════
+   SENTINEL FORTUNE LLC — DEMO SITE
+   Vision: Palace noir. Or vivant. Silence habité.
+   ═══════════════════════════════════════════════════════ */
+:root{
+  --ink:#04060f;
+  --deep:#060a18;
+  --layer:#0a1128;
+  --card:#0d1530;
+  --gold:#c8a84b;
+  --gold2:#e8c86a;
+  --gold3:#f5d980;
+  --gold-dim:rgba(200,168,75,.12);
+  --gold-line:rgba(200,168,75,.25);
+  --white:#ede8e0;
+  --muted:#7a7570;
+  --dim:rgba(237,232,224,.06);
+  --ff1:"Cormorant Garamond",Georgia,serif;
+  --ff2:"Cinzel",Georgia,serif;
+  --ff3:"Jost",system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--white);font-family:var(--ff3);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
+
+/* Custom cursor */
+#cur{position:fixed;width:8px;height:8px;border-radius:50%;background:var(–gold);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s,opacity .3s;mix-blend-mode:difference}
+#cur2{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(200,168,75,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .12s var(–ease),top .12s var(–ease),width .3s,height .3s,opacity .3s}
+@media(pointer:coarse){#cur,#cur2{display:none}body{cursor:auto}}
+
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{cursor:pointer;font-family:var(–ff3);border:none;background:none}
+canvas{display:block}
+
+/* ══ LAYOUT ══ */
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
+section{position:relative}
+[id]{scroll-margin-top:80px}
+
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;font-family:var(–ff2);font-size:9px;letter-spacing:.28em;text-transform:uppercase;border-radius:1px;transition:all .4s var(–ease);position:relative;overflow:hidden;white-space:nowrap}
+.btn-gold{background:linear-gradient(135deg,var(–gold),var(–gold2) 50%,var(–gold));background-size:200%;color:#050810;font-weight:500;box-shadow:0 0 40px rgba(200,168,75,.3)}
+.btn-gold:hover{background-position:right;box-shadow:0 0 70px rgba(200,168,75,.55);transform:translateY(-2px)}
+.btn-line{background:transparent;color:var(–gold);border:1px solid var(–gold-line)}
+.btn-line:hover{border-color:var(–gold);background:var(–gold-dim)}
+
+/* ══ SECTION TYPE ══ */
+.stag{display:inline-flex;align-items:center;gap:14px;font-family:var(–ff2);font-size:8px;letter-spacing:.45em;text-transform:uppercase;color:var(–gold);margin-bottom:24px}
+.stag::before{content:””;width:32px;height:1px;background:var(–gold);opacity:.5}
+.sh{font-family:var(–ff1);font-size:clamp(2.2rem,5vw,4rem);font-weight:300;line-height:1.12;color:var(–white);margin-bottom:22px;letter-spacing:-.01em}
+.sp{font-family:var(–ff3);font-size:.98rem;color:var(–muted);line-height:1.9;max-width:520px;margin-bottom:52px;font-weight:300}
+
+/* ══ NOISE GRAIN ══ */
+body::after{content:””;position:fixed;inset:0;background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 512 512’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=’.75’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);opacity:.022;pointer-events:none;z-index:1000}
+
+/* ══════════════════════════════════════
+HEADER
+══════════════════════════════════════ */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:500;transition:background .5s,border-color .5s;border-bottom:1px solid transparent}
+.hdr.scrolled{background:rgba(4,6,15,.92);backdrop-filter:blur(20px);border-color:rgba(200,168,75,.08)}
+.hdr-inner{display:flex;align-items:center;height:72px;gap:16px;max-width:1080px;margin:0 auto;padding:0 32px}
+
+.logo-mark{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo-sf{font-family:var(–ff2);font-size:20px;letter-spacing:.06em;color:var(–gold);font-weight:500;line-height:1}
+.logo-sep{width:1px;height:20px;background:var(–gold-line)}
+.logo-text{font-family:var(–ff2);font-size:8.5px;letter-spacing:.32em;color:rgba(237,232,224,.45);text-transform:uppercase}
+
+.hdr-nav{display:flex;gap:0;margin-left:auto}
+.hdr-a{padding:8px 16px;font-family:var(–ff2);font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(237,232,224,.4);transition:color .25s}
+.hdr-a:hover{color:var(–gold)}
+
+.hdr-cta{margin-left:8px;font-family:var(–ff2);font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(–gold);border:1px solid var(–gold-line);padding:10px 20px;border-radius:1px;transition:all .3s;white-space:nowrap}
+.hdr-cta:hover{background:var(–gold);color:#050810}
+
+.burger{display:none;flex-direction:column;gap:5px;padding:6px;margin-left:auto}
+.burger span{display:block;width:22px;height:1px;background:var(–gold);transition:.3s}
+
+.mob-nav{display:none;flex-direction:column;background:rgba(4,6,15,.98);border-top:1px solid var(–gold-dim);padding:20px 32px 28px}
+.mob-nav.open{display:flex}
+.mob-a{padding:14px 0;font-family:var(–ff2);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(237,232,224,.5);border-bottom:1px solid var(–dim);transition:color .2s}
+.mob-a:hover{color:var(–gold)}
+.mob-cta{margin-top:20px;text-align:center;padding:15px;background:var(–gold);color:#050810;font-family:var(–ff2);font-size:9px;letter-spacing:.22em;text-transform:uppercase;border-radius:1px}
+
+/* ══════════════════════════════════════
+HERO — Le silence avant la frappe
+══════════════════════════════════════ */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 32px 80px;overflow:hidden;position:relative}
+
+/* Layered background */
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg::before{content:””;position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 35%,rgba(12,20,50,.95),var(–ink) 70%)}
+.hero-bg::after{content:””;position:absolute;inset:0;background:radial-gradient(ellipse 40% 40% at 30% 60%,rgba(200,168,75,.04),transparent)}
+
+/* Floating orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.orb1{width:500px;height:500px;top:-150px;left:-180px;background:radial-gradient(circle,rgba(200,168,75,.07),transparent 70%);animation:orbFloat 18s ease-in-out infinite alternate}
+.orb2{width:350px;height:350px;bottom:-80px;right:-100px;background:radial-gradient(circle,rgba(8,20,70,.8),transparent 70%);animation:orbFloat 14s ease-in-out infinite alternate-reverse}
+@keyframes orbFloat{0%{transform:translate(0,0)}100%{transform:translate(25px,35px)}}
+
+.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;width:100%}
+
+/* LOGO in hero */
+.hero-logo{position:relative;display:inline-flex;align-items:center;justify-content:center;margin-bottom:44px;animation:fadeUp .9s var(–ease) .1s both}
+.hero-logo svg{width:110px;height:110px}
+.logo-ring{position:absolute;width:145px;height:145px;border-radius:50%;border:1px solid rgba(200,168,75,.15);animation:ringPulse 3s ease-in-out infinite}
+.logo-ring2{position:absolute;width:175px;height:175px;border-radius:50%;border:1px solid rgba(200,168,75,.06);animation:ringPulse 3s ease-in-out infinite .8s}
+@keyframes ringPulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.1);opacity:0}}
+
+.hero-pre{font-family:var(–ff2);font-size:8px;letter-spacing:.55em;text-transform:uppercase;color:rgba(200,168,75,.5);margin-bottom:28px;animation:fadeUp .9s var(–ease) .25s both;display:block}
+
+.hero-h{font-family:var(–ff1);font-size:clamp(3.5rem,11vw,7.8rem);font-weight:300;line-height:1.0;letter-spacing:-.02em;color:var(–white);margin-bottom:32px;animation:fadeUp 1s var(–ease) .35s both}
+.hero-h em{display:block;font-style:italic;background:linear-gradient(120deg,var(–gold) 20%,var(–gold3) 55%,var(–gold) 90%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmerText 5s linear infinite}
+@keyframes shimmerText{0%{background-position:0}100%{background-position:200%}}
+
+.hero-sub{font-family:var(–ff1);font-size:clamp(1rem,2.2vw,1.35rem);font-weight:300;color:rgba(237,232,224,.55);line-height:1.75;margin-bottom:14px;animation:fadeUp .9s var(–ease) .5s both}
+.hero-w{font-size:.82rem;color:rgba(237,232,224,.25);letter-spacing:.06em;margin-bottom:52px;animation:fadeUp .9s var(–ease) .6s both;line-height:2}
+
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:60px;animation:fadeUp .9s var(–ease) .7s both}
+
+/* LIVE WAVEFORM teaser */
+.hero-wave{width:100%;max-width:460px;margin:0 auto;cursor:pointer;position:relative;animation:fadeUp .9s var(–ease) .85s both}
+.hero-wave canvas{width:100%;height:56px;display:block}
+.wave-hint{font-family:var(–ff2);font-size:7px;letter-spacing:.35em;text-transform:uppercase;color:rgba(200,168,75,.35);text-align:center;margin-top:10px;transition:color .3s}
+.hero-wave:hover .wave-hint{color:var(–gold)}
+
+/* Scroll indicator */
+.hero-sc{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2;animation:fadeIn 2s 1.6s both}
+.sc-line{width:1px;height:50px;background:linear-gradient(180deg,transparent,rgba(200,168,75,.4));animation:scPulse 2.5s ease-in-out infinite}
+@keyframes scPulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.15)}}
+.sc-txt{font-family:var(–ff2);font-size:7px;letter-spacing:.4em;text-transform:uppercase;color:rgba(200,168,75,.3)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ══════════════════════════════════════
+MANIFESTO STRIP
+══════════════════════════════════════ */
+.manifesto{padding:80px 0;background:var(–deep);border-top:1px solid var(–dim);border-bottom:1px solid var(–dim);overflow:hidden;position:relative}
+.manifesto-track{display:flex;gap:80px;white-space:nowrap;animation:trackScroll 30s linear infinite}
+.manifesto-track span{font-family:var(–ff1);font-size:1.1rem;font-weight:300;font-style:italic;color:rgba(237,232,224,.2);flex-shrink:0}
+.manifesto-track span.gold{color:var(–gold);font-weight:400;font-style:normal;font-family:var(–ff2);font-size:.75rem;letter-spacing:.3em}
+@keyframes trackScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ══════════════════════════════════════
+WHO WE ARE
+══════════════════════════════════════ */
+.wwa{padding:120px 0;background:var(–ink)}
+.wwa-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.wwa-right{display:grid;grid-template-columns:1fr;gap:0}
+.pillar-row{display:flex;gap:24px;padding:32px 0;border-bottom:1px solid var(–dim);transition:background .3s;cursor:default}
+.pillar-row:first-child{border-top:1px solid var(–dim)}
+.pillar-row:hover{background:rgba(200,168,75,.025);padding-left:8px}
+.pil-num{font-family:var(–ff2);font-size:11px;letter-spacing:.2em;color:rgba(200,168,75,.35);width:40px;flex-shrink:0;padding-top:4px}
+.pil-body{}
+.pil-title{font-family:var(–ff1);font-size:1.5rem;font-style:italic;color:var(–gold);margin-bottom:8px}
+.pil-text{font-size:.88rem;color:var(–muted);line-height:1.8}
+
+/* ══════════════════════════════════════
+LIVE EXPERIENCES — proof of life
+══════════════════════════════════════ */
+.xp{padding:120px 0;background:linear-gradient(180deg,var(–deep) 0%,var(–ink) 100%)}
+.xp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(–dim);border:1px solid var(–dim)}
+.xp-card{background:var(–card);padding:36px 32px;position:relative;overflow:hidden;transition:background .35s}
+.xp-card:hover{background:#101832}
+.xp-card::before{content:””;position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(–gold),transparent);transform:scaleX(0);transition:transform .5s var(–ease)}
+.xp-card:hover::before{transform:scaleX(1)}
+.xp-tag{font-family:var(–ff2);font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(200,168,75,.5);margin-bottom:14px}
+.xp-title{font-family:var(–ff1);font-size:1.6rem;font-weight:400;color:var(–white);margin-bottom:10px}
+.xp-desc{font-size:.84rem;color:var(–muted);line-height:1.75;margin-bottom:22px}
+
+/* GAME card */
+.game-arena{background:#020510;border-radius:6px;overflow:hidden;border:1px solid var(–dim);position:relative}
+#gameCanvas{width:100%;height:140px;display:block}
+.game-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,5,16,.75);backdrop-filter:blur(3px)}
+.game-hud{display:flex;justify-content:space-between;padding:5px 12px;font-family:var(–ff2);font-size:8px;letter-spacing:.15em;color:rgba(200,168,75,.5);background:rgba(0,0,0,.4);border-top:1px solid var(–dim)}
+
+/* AUDIO card */
+.audio-scene{background:#020510;border-radius:6px;overflow:hidden;border:1px solid var(–dim)}
+#audioViz{width:100%;height:80px}
+.audio-ctrl{display:flex;align-items:center;gap:14px;padding:10px 14px;border-top:1px solid var(–dim)}
+.a-btn{width:34px;height:34px;border-radius:50%;background:var(–gold);color:#050810;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border:none;transition:.25s;flex-shrink:0}
+.a-btn:hover{background:var(–gold2);transform:scale(1.06)}
+.a-bars{display:flex;gap:2.5px;align-items:flex-end;height:28px;flex:1}
+.ab{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(180deg,var(–gold),rgba(200,168,75,.3));height:4px;min-height:4px;transition:height .08s}
+.a-label{font-family:var(–ff2);font-size:7px;letter-spacing:.2em;color:rgba(200,168,75,.35);padding:6px 14px 10px}
+
+/* VIDEO card */
+.vid-scene{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#020814,#0a1428);border-radius:6px;overflow:hidden;border:1px solid var(–dim)}
+.vid-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.vid-sf{font-family:var(–ff2);font-size:2.2rem;color:var(–gold);letter-spacing:.08em;text-shadow:0 0 40px rgba(200,168,75,.5);animation:vidPulse 3s ease-in-out infinite alternate}
+@keyframes vidPulse{0%{text-shadow:0 0 20px rgba(200,168,75,.3)}100%{text-shadow:0 0 60px rgba(200,168,75,.7)}}
+.vid-sub{font-family:var(–ff2);font-size:.5rem;letter-spacing:.4em;color:rgba(200,168,75,.4)}
+.scan{position:absolute;width:100%;height:1px;background:rgba(200,168,75,.08);animation:scanMove 5s linear infinite}
+@keyframes scanMove{0%{top:0}100%{top:100%}}
+.vid-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent}
+.vid-play-btn{width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(200,168,75,.5);background:rgba(200,168,75,.08);display:flex;align-items:center;justify-content:center;color:var(–gold);font-size:18px;transition:.35s;backdrop-filter:blur(4px)}
+.vid-play:hover .vid-play-btn{background:var(–gold);color:#050810;border-color:var(–gold);transform:scale(1.06)}
+.vpb-ring{position:absolute;width:80px;height:80px;border-radius:50%;border:1px solid rgba(200,168,75,.2);animation:ringPulse 2.2s ease-in-out infinite}
+
+/* PODCAST card */
+.pod-list{background:#020510;border-radius:6px;overflow:hidden;border:1px solid var(–dim)}
+.pod-row{display:flex;align-items:center;gap:14px;padding:13px 15px;border-bottom:1px solid var(–dim);cursor:pointer;transition:background .2s}
+.pod-row:last-child{border-bottom:none}
+.pod-row:hover,.pod-row.active{background:rgba(200,168,75,.04)}
+.pod-row.active .pod-ep{color:var(–gold)}
+.pod-ep{font-family:var(–ff2);font-size:7.5px;letter-spacing:.2em;color:rgba(200,168,75,.35);width:36px;flex-shrink:0}
+.pod-meta{flex:1;min-width:0}
+.pod-name{font-family:var(–ff1);font-size:.95rem;color:var(–white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.pod-dur{font-size:.72rem;color:var(–muted)}
+.pod-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(–gold-line);color:var(–gold);font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex-shrink:0;background:none}
+.pod-btn:hover,.pod-row.active .pod-btn{background:var(–gold);color:#050810;border-color:var(–gold)}
+.pod-prog{padding:10px 15px;display:flex;align-items:center;gap:12px}
+.pod-bar{flex:1;height:1.5px;background:rgba(237,232,224,.08);border-radius:2px;overflow:hidden;cursor:pointer}
+.pod-fill{height:100%;background:var(–gold);width:0%;transition:width .3s linear}
+.pod-t{font-family:var(–ff2);font-size:7.5px;letter-spacing:.15em;color:rgba(200,168,75,.4)}
+
+/* VIDEO MODAL */
+.vid-modal{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(2,4,12,.92);backdrop-filter:blur(10px)}
+.vm-box{position:relative;width:min(90vw,720px);background:var(–layer);border:1px solid var(–gold-line);border-radius:4px;overflow:hidden}
+.vm-screen{aspect-ratio:16/9;background:linear-gradient(135deg,#020814,#0a1428);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.vm-sf{font-family:var(–ff2);font-size:4.5rem;color:var(–gold);letter-spacing:.1em;animation:vidPulse 2s ease-in-out infinite alternate}
+.vm-txt{font-family:var(–ff1);font-size:1rem;color:rgba(237,232,224,.5);font-style:italic}
+.vm-sub{font-family:var(–ff2);font-size:.55rem;letter-spacing:.3em;color:rgba(200,168,75,.35);margin-top:4px}
+.vm-x{position:absolute;top:12px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(–dim);color:var(–muted);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.vm-x:hover{background:var(–gold);color:#050810;border-color:var(–gold)}
+
+/* ══════════════════════════════════════
+UNIVERSE — 8 spaces
+══════════════════════════════════════ */
+.univ{padding:120px 0;background:var(–ink)}
+.univ-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(–dim)}
+.u-cell{background:var(–card);padding:32px 24px;transition:background .35s,transform .3s var(–ease);cursor:default;position:relative;overflow:hidden;min-height:190px}
+.u-cell::after{content:””;position:absolute;bottom:0;left:0;right:0;height:1px;background:var(–gold);transform:scaleX(0);transform-origin:left;transition:transform .5s var(–ease)}
+.u-cell:hover{background:#101832;transform:translateY(-3px)}
+.u-cell:hover::after{transform:scaleX(1)}
+.u-cell:hover .u-icon{color:var(–gold);transform:scale(1.1)}
+.u-icon{font-size:1.6rem;color:rgba(200,168,75,.35);transition:.35s var(–ease);display:block;margin-bottom:14px}
+.u-tag{font-family:var(–ff2);font-size:7px;letter-spacing:.25em;text-transform:uppercase;color:rgba(200,168,75,.35);margin-bottom:6px}
+.u-name{font-family:var(–ff1);font-size:1.1rem;color:var(–white);margin-bottom:10px}
+.u-desc{font-size:.8rem;color:var(–muted);line-height:1.65}
+
+/* ══════════════════════════════════════
+DROPS
+══════════════════════════════════════ */
+.drops{padding:100px 0;background:var(–deep)}
+.drops-row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.drop-card{background:var(–card);border:1px solid var(–dim);padding:28px 24px;transition:.35s;cursor:default}
+.drop-card:hover{border-color:var(–gold-line);background:#101832}
+.drop-cat{font-family:var(–ff2);font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:rgba(200,168,75,.4);margin-bottom:10px}
+.drop-name{font-family:var(–ff1);font-size:1.15rem;color:var(–white);margin-bottom:10px}
+.drop-desc{font-size:.82rem;color:var(–muted);line-height:1.65;margin-bottom:16px}
+.badge{display:inline-flex;padding:4px 12px;border-radius:20px;font-family:var(–ff2);font-size:7px;letter-spacing:.18em;text-transform:uppercase}
+.b-live{background:rgba(80,200,100,.1);color:#6ecb7a;border:1px solid rgba(80,200,100,.18)}
+.b-prev{background:rgba(200,168,75,.1);color:var(–gold);border:1px solid rgba(200,168,75,.18)}
+.b-soon{background:rgba(120,130,160,.08);color:rgba(180,185,210,.4);border:1px solid var(–dim)}
+.b-dev {background:rgba(80,130,220,.08);color:#8ab4e8;border:1px solid rgba(80,130,220,.18)}
+
+/* ══════════════════════════════════════
+PRIVATE ACCESS — cinematic card
+══════════════════════════════════════ */
+.gate{padding:120px 0;background:var(–ink)}
+.gate-card{position:relative;background:linear-gradient(145deg,#0b1228,#081020);border:1px solid rgba(200,168,75,.2);padding:100px 60px;text-align:center;overflow:hidden}
+.gate-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(200,168,75,.1),transparent 70%);animation:gateGlow 5s ease-in-out infinite alternate}
+@keyframes gateGlow{0%{opacity:.5;transform:translateX(-50%) scale(1)}100%{opacity:1;transform:translateX(-50%) scale(1.2)}}
+.gate-h{font-family:var(–ff1);font-size:clamp(2.2rem,5vw,4rem);font-weight:300;line-height:1.15;color:var(–white);margin-bottom:24px;position:relative;z-index:1}
+.gate-p{font-size:.98rem;color:var(–muted);max-width:480px;margin:0 auto 48px;line-height:1.85;position:relative;z-index:1}
+.gate-note{margin-top:24px;font-size:.78rem;color:rgba(237,232,224,.2);font-style:italic;position:relative;z-index:1;font-family:var(–ff1)}
+
+/* ══════════════════════════════════════
+SUPPORT
+══════════════════════════════════════ */
+.sup{padding:100px 0;background:var(–deep)}
+.sup-inner{display:grid;grid-template-columns:1fr 220px;gap:80px;align-items:center}
+.sup-disc{font-size:.78rem;color:rgba(237,232,224,.2);font-style:italic;margin-top:20px;line-height:1.7;font-family:var(–ff1)}
+.qr{width:220px;height:220px;border:1px solid var(–gold-line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(–card);flex-shrink:0}
+.qr-sym{font-size:3rem;color:rgba(200,168,75,.3);line-height:1}
+.qr p{font-family:var(–ff2);font-size:8.5px;letter-spacing:.22em;color:var(–muted)}
+.qr span{font-size:7.5px;color:rgba(237,232,224,.2)}
+
+/* ══════════════════════════════════════
+INSTITUTIONAL
+══════════════════════════════════════ */
+.inst{padding:64px 0;background:var(–ink);border-top:1px solid var(–dim)}
+.inst-row{display:flex;align-items:center;gap:32px;background:var(–card);border:1px solid var(–dim);padding:36px 44px}
+.inst-lbl{font-family:var(–ff2);font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:rgba(200,168,75,.4);white-space:nowrap}
+.inst-txt{font-size:.88rem;color:var(–muted);flex:1;line-height:1.65}
+
+/* ══════════════════════════════════════
+FOOTER
+══════════════════════════════════════ */
+.footer{background:#030508;border-top:1px solid var(–dim);padding:56px 0 32px}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;margin-bottom:48px}
+.footer-brand{}
+.footer-sf{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.footer-sf-mark{font-family:var(–ff2);font-size:16px;color:var(–gold)}
+.footer-sf-name{font-family:var(–ff2);font-size:8px;letter-spacing:.28em;color:rgba(237,232,224,.3)}
+.footer-mail{font-size:.8rem;color:var(–muted);transition:color .2s;font-family:var(–ff3)}
+.footer-mail:hover{color:var(–gold)}
+.footer-nav{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.footer-nav a{font-family:var(–ff2);font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(237,232,224,.25);transition:color .2s}
+.footer-nav a:hover{color:var(–gold)}
+.footer-bot{border-top:1px solid var(–dim);padding-top:24px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-bot p{font-size:.72rem;color:rgba(237,232,224,.18);font-family:var(–ff3)}
+.footer-disc{max-width:480px;font-style:italic}
+
+/* ══════════════════════════════════════
+SCROLL REVEAL
+══════════════════════════════════════ */
+.reveal{opacity:1;transition:opacity .8s var(–ease),transform .8s var(–ease)}
+body.js-on .reveal{opacity:0;transform:translateY(20px)}
+body.js-on .reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ══════════════════════════════════════
+RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:900px){
+.hdr-nav,.hdr-cta{display:none}
+.burger{display:flex;margin-left:auto}
+.wwa-grid{grid-template-columns:1fr;gap:48px}
+.xp-grid{grid-template-columns:1fr}
+.univ-grid{grid-template-columns:repeat(2,1fr)}
+.drops-row{grid-template-columns:repeat(2,1fr)}
+.sup-inner{grid-template-columns:1fr}
+.qr{margin:0 auto}
+.inst-row{flex-direction:column;align-items:flex-start}
+.footer-top{flex-direction:column;gap:24px}
+.footer-bot{flex-direction:column}
+.gate-card{padding:60px 24px}
+}
+@media(max-width:600px){
+.hero-h{font-size:clamp(3rem,14vw,5rem)}
+.hero-btns{flex-direction:column;align-items:center}
+.univ-grid{grid-template-columns:1fr}
+.drops-row{grid-template-columns:1fr}
+.footer-nav{gap:16px}
+.wwa-grid{gap:32px}
+}
+</style>
+
 </head>
 <body>
 
-  <!-- Particle canvas — referenced by initParticles() in app.js -->
+<!-- CURSOR -->
 
-<canvas id="particles" aria-hidden="true"></canvas>
+<div id="cur"></div>
+<div id="cur2"></div>
 
-  <!-- ══ HEADER ══ -->
+<!-- VIDEO MODAL (hidden) -->
 
-  <header class="header" id="header">
-    <div class="header-wrap">
-
-```
-  <a href="#hero" class="logo" aria-label="Sentinel Fortune LLC">
-    <img
-      src="./assets/sf-logo.png"
-      alt="Sentinel Fortune"
-      class="logo-img"
-      onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'"
-    />
-    <span class="logo-fallback" id="logoFallback">
-      <span class="logo-sf">SF</span>
-      <span class="logo-name">SENTINEL FORTUNE</span>
-    </span>
-  </a>
-
-  <!-- Desktop nav — links use class="nav-a" matched in app.js -->
-  <nav class="nav" id="desktopNav" aria-label="Main navigation">
-    <a href="#hero"        class="nav-a">Home</a>
-    <a href="#universe"    class="nav-a">Universe</a>
-    <a href="#experiences" class="nav-a">Experiences</a>
-    <a href="#access"      class="nav-a">Access</a>
-    <a href="#contact"     class="nav-a">Contact</a>
-  </nav>
-
-  <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="header-cta">
-    Enter Access
-  </a>
-
-  <!-- Burger — toggles #mobileNav -->
-  <button class="burger" id="burger" aria-label="Toggle menu" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
+<div class="vid-modal" id="vidModal" style="display:none">
+  <div class="vm-box">
+    <div class="vm-screen">
+      <div class="vm-sf">SF</div>
+      <div class="vm-txt">Vision Trailer</div>
+      <div class="vm-sub">In Production · 2026</div>
+    </div>
+    <button class="vm-x" id="vmClose">✕</button>
+  </div>
 </div>
 
-<!-- Mobile nav — ID is mobileNav, links use class="mnav-a" -->
-<div class="mobile-nav" id="mobileNav" aria-hidden="true">
-  <a href="#hero"        class="mnav-a">Home</a>
-  <a href="#universe"    class="mnav-a">Universe</a>
-  <a href="#experiences" class="mnav-a">Experiences</a>
-  <a href="#access"      class="mnav-a">Access</a>
-  <a href="#contact"     class="mnav-a">Contact</a>
-  <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="mnav-cta">
-    Enter Private Access
-  </a>
-</div>
-```
+<!-- HEADER -->
 
-  </header>
+<header class="hdr" id="hdr">
+  <div class="hdr-inner">
+    <div class="logo-mark">
+      <span style="font-family:var(--ff2);font-size:13px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;background:linear-gradient(135deg,#f5d980,#c8a84b 50%,#e8c86a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">SENTINEL FORTUNE LLC</span>
+    </div>
+    <nav class="hdr-nav">
+      <a href="#about"   class="hdr-a">About</a>
+      <a href="#xp"      class="hdr-a">Experience</a>
+      <a href="#universe" class="hdr-a">Universe</a>
+      <a href="#gate"    class="hdr-a">Access</a>
+      <a href="#contact" class="hdr-a">Contact</a>
+    </nav>
+    <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="hdr-cta">Enter Private Access</a>
+    <button class="burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mob-nav" id="mobNav">
+    <a href="#about"    class="mob-a">About</a>
+    <a href="#xp"       class="mob-a">Experience</a>
+    <a href="#universe" class="mob-a">Universe</a>
+    <a href="#gate"     class="mob-a">Access</a>
+    <a href="#contact"  class="mob-a">Contact</a>
+    <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="mob-cta">Enter Private Access</a>
+  </div>
+</header>
 
-  <main>
+<main>
 
-```
 <!-- ① HERO -->
+
 <section class="hero" id="hero">
-  <div class="hero-nebula"  aria-hidden="true"></div>
-  <div class="hero-glow-l"  aria-hidden="true"></div>
-  <div class="hero-glow-r"  aria-hidden="true"></div>
+  <div class="hero-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
   <div class="hero-content">
-    <div class="hero-logo-wrap">
-      <img src="./assets/sf-logo.png" alt="Sentinel Fortune" class="hero-logo" />
-    </div>
-    <p class="hero-overline" id="heroOverline">Sentinel Fortune LLC</p>
-    <h1 class="hero-title">
-      We don't chase.<br />
-      <em class="hero-em">We are.</em>
-    </h1>
-    <p class="hero-sub">
-      A connected house of music, media, systems,<br class="br-desk" />
-      learning, lifestyle and digital experiences.
-    </p>
-    <p class="hero-whisper">
-      Publicly visible in selected form.
-      Privately experienced in deeper corridors.
-    </p>
-    <div class="hero-btns">
-      <a href="#universe" class="btn btn-ghost">Explore the House</a>
-      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold">
-        Enter Private Access
-      </a>
-    </div>
+
+```
+<!-- LOGO PLACEHOLDER — upload your logo once live -->
+<div class="hero-logo">
+  <div class="logo-ring"></div>
+  <div class="logo-ring2"></div>
+  <div style="width:110px;height:110px;border-radius:50%;border:2px dashed rgba(200,168,75,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(200,168,75,.04)">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M12 4L12 16M7 9L12 4L17 9" stroke="#c8a84b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 19L4 21L20 21L20 19" stroke="#c8a84b" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span style="font-family:var(--ff2);font-size:6px;letter-spacing:.2em;color:rgba(200,168,75,.5);text-transform:uppercase">Your Logo</span>
   </div>
-  <div class="hero-scroll" aria-hidden="true">
-    <div class="scroll-beam"></div>
-    <span>scroll</span>
+</div>
+
+<span class="hero-pre" id="heroPre">Sentinel Fortune LLC</span>
+<h1 class="hero-h">We don't chase.<br/><em class="hero-em">We are.</em></h1>
+<p class="hero-sub">A connected house of music, media, systems,<br class="brd"/> learning, lifestyle and digital experiences.</p>
+<p class="hero-w">Publicly visible in selected form · Privately experienced in deeper corridors.</p>
+
+<div class="hero-btns">
+  <a href="#xp"    class="btn btn-line">Experience the House</a>
+  <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold">Enter Private Access</a>
+</div>
+
+<!-- Live waveform -->
+<div class="hero-wave" id="heroWave">
+  <canvas id="waveCanvas"></canvas>
+  <div class="wave-hint" id="waveHint">◈ Touch to activate</div>
+</div>
+```
+
   </div>
+  <div class="hero-sc"><div class="sc-line"></div><span class="sc-txt">Scroll</span></div>
 </section>
+
+<!-- MANIFESTO STRIP -->
+
+<div class="manifesto" aria-hidden="true">
+  <div class="manifesto-track" id="mTrack">
+    <span>Music &amp; Sound</span><span class="gold">·</span>
+    <span>Visual Stories</span><span class="gold">·</span>
+    <span>Interactive Games</span><span class="gold">·</span>
+    <span>Learning &amp; Masterclasses</span><span class="gold">·</span>
+    <span>Digital Experiences</span><span class="gold">·</span>
+    <span>Product Culture</span><span class="gold">·</span>
+    <span>Private Corridors</span><span class="gold">·</span>
+    <span>Books &amp; Storytelling</span><span class="gold">·</span>
+    <span>Music &amp; Sound</span><span class="gold">·</span>
+    <span>Visual Stories</span><span class="gold">·</span>
+    <span>Interactive Games</span><span class="gold">·</span>
+    <span>Learning &amp; Masterclasses</span><span class="gold">·</span>
+    <span>Digital Experiences</span><span class="gold">·</span>
+    <span>Product Culture</span><span class="gold">·</span>
+    <span>Private Corridors</span><span class="gold">·</span>
+    <span>Books &amp; Storytelling</span><span class="gold">·</span>
+  </div>
+</div>
 
 <!-- ② WHO WE ARE -->
-<section class="wwa section" id="about">
-  <div class="container">
-    <div class="section-tag">Who We Are</div>
-    <h2 class="section-h">A creative ecosystem<br />built for curated experience.</h2>
-    <p class="section-p">
-      Sentinel Fortune LLC is a creative ecosystem built around curated experiences,
-      storytelling, sound, interactive systems, learning and digital culture.
-    </p>
-    <div class="pillars">
-      <div class="pillar reveal">
-        <div class="pillar-num">01</div>
-        <div class="pillar-title">Create</div>
-        <div class="pillar-body">Music, stories, visuals, games, lessons, and digital assets.</div>
+
+<section class="wwa" id="about">
+  <div class="wrap">
+    <div class="wwa-grid">
+      <div>
+        <div class="stag reveal">Who We Are</div>
+        <h2 class="sh reveal">A creative ecosystem<br/>built for curated<br/>experience.</h2>
+        <p class="sp reveal">Sentinel Fortune LLC is not a platform. It is a house — built around curated experiences, storytelling, sound, interactive systems, learning and digital culture. Everything here is intentional.</p>
+        <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold reveal">Discover More</a>
       </div>
-      <div class="pillar reveal" style="transition-delay:.1s">
-        <div class="pillar-num">02</div>
-        <div class="pillar-title">Curate</div>
-        <div class="pillar-body">Selected public previews and structured experience spaces.</div>
-      </div>
-      <div class="pillar reveal" style="transition-delay:.2s">
-        <div class="pillar-num">03</div>
-        <div class="pillar-title">Unlock</div>
-        <div class="pillar-body">Deeper private corridors through guided access.</div>
+      <div class="wwa-right">
+        <div class="pillar-row reveal">
+          <div class="pil-num">01</div>
+          <div class="pil-body"><div class="pil-title">Create</div><div class="pil-text">Music, stories, visuals, games, lessons, and digital assets crafted with purpose and intent.</div></div>
+        </div>
+        <div class="pillar-row reveal" style="transition-delay:.1s">
+          <div class="pil-num">02</div>
+          <div class="pil-body"><div class="pil-title">Curate</div><div class="pil-text">Selected public previews and structured experience spaces, chosen deliberately.</div></div>
+        </div>
+        <div class="pillar-row reveal" style="transition-delay:.2s">
+          <div class="pil-num">03</div>
+          <div class="pil-body"><div class="pil-title">Unlock</div><div class="pil-text">Deeper private corridors through guided access. The public entrance is only the beginning.</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ③ PUBLIC UNIVERSE — cards injected by app.js into #universeGrid -->
-<section class="universe section" id="universe">
-  <div class="container">
-    <div class="section-tag">The House</div>
-    <h2 class="section-h">Public Universe</h2>
-    <p class="section-p">Eight spaces. Each a world of its own.</p>
-    <div class="universe-grid" id="universeGrid"></div>
+<!-- ③ LIVE EXPERIENCES -->
+
+<section class="xp" id="xp">
+  <div class="wrap">
+    <div class="stag reveal">Live Experiences</div>
+    <h2 class="sh reveal">The house is alive.<br/>Feel it now.</h2>
+    <p class="sp reveal">Not mockups. Not screenshots. Real working experiences built directly into this page.</p>
+    <div class="xp-grid">
+
+```
+  <!-- GAME -->
+  <div class="xp-card reveal">
+    <div class="xp-tag">🎮 Interactive · Focus Run</div>
+    <div class="xp-title">Mini Game</div>
+    <div class="xp-desc">A live browser game. Dodge. Focus. Survive.</div>
+    <div class="game-arena">
+      <canvas id="gameCanvas" width="380" height="140"></canvas>
+      <div class="game-ov" id="gameOv">
+        <button class="btn btn-gold" id="gameStart" style="padding:12px 28px;font-size:9px">▶ Play Now</button>
+      </div>
+      <div class="game-hud" id="gameHud" style="display:none">
+        <span>Score <b id="gScore">0</b></span>
+        <span>Best <b id="gBest">0</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO -->
+  <div class="xp-card reveal" style="transition-delay:.08s">
+    <div class="xp-tag">🎵 Audio · Origin Echo</div>
+    <div class="xp-title">Sound Experience</div>
+    <div class="xp-desc">An ambient sonic world generated live in your browser.</div>
+    <div class="audio-scene">
+      <canvas id="audioViz" width="380" height="80"></canvas>
+      <div class="audio-ctrl">
+        <button class="a-btn" id="aPlay">▶</button>
+        <div class="a-bars" id="aBars">
+          <div class="ab"></div><div class="ab"></div><div class="ab"></div>
+          <div class="ab"></div><div class="ab"></div><div class="ab"></div>
+          <div class="ab"></div><div class="ab"></div>
+        </div>
+        <button class="a-btn" id="aStop">■</button>
+      </div>
+      <div class="a-label">Origin Echo — Sentinel Fortune</div>
+    </div>
+  </div>
+
+  <!-- VIDEO -->
+  <div class="xp-card reveal" style="transition-delay:.16s">
+    <div class="xp-tag">🎬 Visual · Vision Trailer</div>
+    <div class="xp-title">Cinematic Preview</div>
+    <div class="xp-desc">A preview of the Sentinel Fortune creative direction. In production.</div>
+    <div class="vid-scene">
+      <div class="vid-inner">
+        <div class="vid-sf">SF</div>
+        <div class="vid-sub">SENTINEL FORTUNE · 2026</div>
+      </div>
+      <div class="scan"></div>
+      <button class="vid-play" id="vidPlay">
+        <div class="vid-play-btn"><span>▶</span></div>
+        <div class="vpb-ring"></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- PODCAST -->
+  <div class="xp-card reveal" style="transition-delay:.24s">
+    <div class="xp-tag">🎙 Podcast · The SF Broadcast</div>
+    <div class="xp-title">Listen Now</div>
+    <div class="xp-desc">Conversations on creative systems, culture, and building in silence.</div>
+    <div class="pod-list">
+      <div class="pod-row" data-ep="0">
+        <div class="pod-ep">E01</div>
+        <div class="pod-meta"><div class="pod-name">Building the Invisible House</div><div class="pod-dur">Preview · 2:30</div></div>
+        <button class="pod-btn" data-ep="0">▶</button>
+      </div>
+      <div class="pod-row" data-ep="1">
+        <div class="pod-ep">E02</div>
+        <div class="pod-meta"><div class="pod-name">Sound as Architecture</div><div class="pod-dur">Preview · 1:45</div></div>
+        <button class="pod-btn" data-ep="1">▶</button>
+      </div>
+      <div class="pod-row" data-ep="2">
+        <div class="pod-ep">E03</div>
+        <div class="pod-meta"><div class="pod-name">Access Is a Doorway</div><div class="pod-dur">Preview · 3:10</div></div>
+        <button class="pod-btn" data-ep="2">▶</button>
+      </div>
+      <div class="pod-prog">
+        <div class="pod-bar"><div class="pod-fill" id="podFill"></div></div>
+        <span class="pod-t" id="podTime">0:00</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+```
+
   </div>
 </section>
 
-<!-- ④ FEATURED — cards injected by app.js into #featuredGrid -->
-<section class="featured section" id="experiences">
-  <div class="container">
-    <div class="section-tag">Selected Previews</div>
-    <h2 class="section-h">Featured Experiences</h2>
-    <div class="featured-grid" id="featuredGrid"></div>
+<!-- ④ UNIVERSE -->
+
+<section class="univ" id="universe">
+  <div class="wrap">
+    <div class="stag reveal">The House</div>
+    <h2 class="sh reveal">Public Universe</h2>
+    <p class="sp reveal">Eight spaces. Each alive. Each a world of its own.</p>
+    <div class="univ-grid" id="univGrid">
+      <!-- Rendered by JS -->
+    </div>
   </div>
 </section>
 
-<!-- ⑤ DROPS — cards injected by app.js into #dropsGrid -->
-<section class="drops section" id="drops">
-  <div class="container">
-    <div class="section-tag">Latest Activity</div>
-    <h2 class="section-h">Public Drops</h2>
-    <p class="section-p">The house is always in motion.</p>
-    <div class="drops-grid" id="dropsGrid"></div>
+<!-- ⑤ DROPS -->
+
+<section class="drops" id="drops">
+  <div class="wrap">
+    <div class="stag reveal">Latest Activity</div>
+    <h2 class="sh reveal">Public Drops</h2>
+    <p class="sp reveal">The house is always in motion.</p>
+    <div class="drops-row" id="dropsRow"></div>
   </div>
 </section>
 
 <!-- ⑥ PRIVATE ACCESS -->
-<section class="access section" id="access">
-  <div class="container">
-    <div class="access-card">
-      <div class="access-aurora" aria-hidden="true"></div>
-      <div class="section-tag">Deeper Corridors</div>
-      <h2 class="access-h">The public layer is<br />only the entrance.</h2>
-      <p class="access-p">
-        Deeper experiences, libraries, systems, and premium pathways
-        are accessed privately.
-      </p>
-      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener"
-         class="btn btn-gold btn-xl">Enter Private Access</a>
-      <p class="access-note">
-        Access is guided. Visitors only enter the pathway assigned to their level.
-      </p>
+
+<section class="gate" id="gate">
+  <div class="wrap">
+    <div class="gate-card reveal">
+      <div class="gate-glow"></div>
+      <div class="stag" style="justify-content:center">Deeper Corridors</div>
+      <h2 class="gate-h">The public layer is<br/>only the entrance.</h2>
+      <p class="gate-p">Deeper experiences, libraries, games, premium audio, systems and selected pathways are accessed privately.</p>
+      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener" class="btn btn-gold btn-xl">Enter Private Access</a>
+      <p class="gate-note">Access is guided. Visitors only enter the pathway assigned to their level.</p>
     </div>
   </div>
 </section>
 
 <!-- ⑦ SUPPORT -->
-<section class="support section" id="support">
-  <div class="container">
-    <div class="support-wrap">
-      <div class="support-text">
-        <div class="section-tag">Support</div>
-        <h2 class="section-h">Support the Vision</h2>
-        <p class="section-p">
-          Support the development of the Sentinel Fortune universe —
-          its public experiences, creative releases, and digital world.
-        </p>
-        <a href="#" class="btn btn-gold" id="supportBtn">Support the Vision</a>
-        <p class="support-disc">
-          Support does not grant private access, ownership, investment rights,
-          or financial participation.
-        </p>
+
+<section class="sup" id="support">
+  <div class="wrap">
+    <div class="sup-inner">
+      <div>
+        <div class="stag reveal">Support</div>
+        <h2 class="sh reveal">Support the Vision</h2>
+        <p class="sp reveal">Support the development of the Sentinel Fortune universe — its public experiences, creative releases, and digital world.</p>
+        <a href="#" class="btn btn-gold reveal" id="supBtn">Support the Vision</a>
+        <p class="sup-disc reveal">Support does not grant private access, ownership, investment rights, or financial participation.</p>
       </div>
-      <div class="qr-box" aria-label="QR Code placeholder">
+      <div class="qr reveal">
         <div class="qr-sym">◈</div>
         <p>QR Support</p>
         <span>Insert QR Here</span>
@@ -216,50 +658,183 @@
 </section>
 
 <!-- ⑧ INSTITUTIONAL -->
-<section class="inst section" id="contact">
-  <div class="container">
-    <div class="inst-bar">
-      <span class="inst-label">Institutional</span>
-      <p class="inst-text">
-        Licensing, OEM, distribution and partnerships are handled through controlled channels.
-      </p>
-      <a href="mailto:contact@sentinelfortune.com" class="btn btn-outline-sm">Contact</a>
+
+<section class="inst" id="contact">
+  <div class="wrap">
+    <div class="inst-row reveal">
+      <span class="inst-lbl">Institutional</span>
+      <p class="inst-txt">Licensing, OEM, distribution and partnerships are handled through controlled channels.</p>
+      <a href="mailto:contact@sentinelfortune.com" class="btn btn-line" style="font-size:8.5px;padding:12px 24px">Contact</a>
     </div>
   </div>
 </section>
-```
 
-  </main>
+</main>
 
-  <!-- FOOTER -->
+<!-- FOOTER -->
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <span class="footer-name">SENTINEL FORTUNE LLC</span>
-          <a href="mailto:contact@sentinelfortune.com" class="footer-mail">
-            contact@sentinelfortune.com
-          </a>
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-sf">
+          <span class="footer-sf-mark">SF</span>
+          <span class="footer-sf-name">Sentinel Fortune LLC</span>
         </div>
-        <nav class="footer-nav" aria-label="Footer navigation">
-          <a href="#hero">Home</a>
-          <a href="#universe">Universe</a>
-          <a href="#access">Access</a>
-          <a href="mailto:contact@sentinelfortune.com">Contact</a>
-        </nav>
+        <a href="mailto:contact@sentinelfortune.com" class="footer-mail">contact@sentinelfortune.com</a>
       </div>
-      <div class="footer-bottom">
-        <p>© 2026 Sentinel Fortune LLC. All rights reserved.</p>
-        <p class="footer-disc">
-          This website is informational and does not constitute an offer to sell
-          securities, investments, or financial products.
-        </p>
-      </div>
+      <nav class="footer-nav">
+        <a href="#about">About</a>
+        <a href="#xp">Experiences</a>
+        <a href="#universe">Universe</a>
+        <a href="#gate">Access</a>
+        <a href="mailto:contact@sentinelfortune.com">Contact</a>
+      </nav>
     </div>
-  </footer>
+    <div class="footer-bot">
+      <p>© 2026 Sentinel Fortune LLC. All rights reserved.</p>
+      <p class="footer-disc">This website is informational and does not constitute an offer to sell securities, investments, or financial products.</p>
+    </div>
+  </div>
+</footer>
 
-  <script src="app.js"></script>
+<script>
+"use strict";
+// ─── Cursor ───────────────────────────────────────────
+var cur=document.getElementById("cur"),cur2=document.getElementById("cur2"),cx=0,cy=0,c2x=0,c2y=0;
+if(cur&&cur2){
+  window.addEventListener("mousemove",function(e){cx=e.clientX;cy=e.clientY;cur.style.left=cx+"px";cur.style.top=cy+"px";},{passive:true});
+  setInterval(function(){c2x+=(cx-c2x)*.15;c2y+=(cy-c2y)*.15;cur2.style.left=c2x+"px";cur2.style.top=c2y+"px";},16);
+  document.addEventListener("mousedown",function(){cur.style.transform="translate(-50%,-50%) scale(2.5)";cur2.style.width="20px";cur2.style.height="20px";});
+  document.addEventListener("mouseup",function(){cur.style.transform="translate(-50%,-50%) scale(1)";cur2.style.width="36px";cur2.style.height="36px";});
+}
+
+// ─── Header ──────────────────────────────────────────
+var hdr=document.getElementById("hdr");
+window.addEventListener("scroll",function(){hdr.classList.toggle("scrolled",window.scrollY>60);},{passive:true});
+var burger=document.getElementById("burger"),mob=document.getElementById("mobNav");
+if(burger&&mob){
+  burger.addEventListener("click",function(){var o=mob.classList.toggle("open");burger.setAttribute("aria-expanded",o);});
+  mob.querySelectorAll(".mob-a").forEach(function(a){a.addEventListener("click",function(){mob.classList.remove("open");});});
+}
+
+// ─── Smooth scroll ───────────────────────────────────
+document.querySelectorAll("a[href^=\"#\"]").forEach(function(a){
+  a.addEventListener("click",function(e){
+    var t=document.querySelector(a.getAttribute("href"));
+    if(t){e.preventDefault();window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-70,behavior:"smooth"});}
+  });
+});
+
+// ─── Typing hero ──────────────────────────────────────
+var pre=document.getElementById("heroPre");
+if(pre){var txt=pre.textContent.trim();pre.textContent="";var i=0;var ti=setInterval(function(){if(i<txt.length){pre.textContent+=txt[i++];}else clearInterval(ti);},55);}
+
+// ─── Scroll reveal ────────────────────────────────────
+document.body.classList.add("js-on");
+if(window.IntersectionObserver){
+  var io=new IntersectionObserver(function(ents){ents.forEach(function(e,i){if(e.isIntersecting){setTimeout(function(){e.target.classList.add("vis");},i*65);io.unobserve(e.target);}});},{threshold:.07});
+  document.querySelectorAll(".reveal").forEach(function(el){io.observe(el);});
+}
+
+// ─── Hero waveform ───────────────────────────────────
+var waveActive=false,waveACtx=null,waveOscs=[],waveGain=null;
+var wc=document.getElementById("waveCanvas"),wp=document.getElementById("heroWave"),wh=document.getElementById("waveHint");
+if(wc&&wp){
+  var wCtx=wc.getContext("2d");wc.width=wp.offsetWidth||400;wc.height=56;
+  function drawIdleWave(){if(waveActive)return;var t=Date.now()/1000;wCtx.clearRect(0,0,wc.width,wc.height);for(var x=0;x<wc.width;x++){var y=wc.height/2+Math.sin(x*.035+t*1.8)*7+Math.sin(x*.07+t*1.2)*3;var a=.1+Math.abs(Math.sin(x*.035+t))*.18;wCtx.fillStyle="rgba(200,168,75,"+a+")";wCtx.fillRect(x,y,1,wc.height-y);}requestAnimationFrame(drawIdleWave);}
+  drawIdleWave();
+  function drawLiveWave(){if(!waveActive)return;var t=Date.now()/1000;wCtx.clearRect(0,0,wc.width,wc.height);var bars=Math.floor(wc.width/4);for(var i=0;i<bars;i++){var h=wc.height*.2+Math.abs(Math.sin(i*.15+t*3))*wc.height*.72;var a=.25+Math.abs(Math.sin(i*.1+t*2))*.7;wCtx.fillStyle="rgba(200,168,75,"+a+")";wCtx.fillRect(i*4,wc.height-h,3,h);}requestAnimationFrame(drawLiveWave);}
+  wp.addEventListener("click",function(){
+    if(waveActive){waveOscs.forEach(function(o){try{o.stop();}catch(e){}});waveOscs=[];waveActive=false;if(waveACtx){waveACtx.close();waveACtx=null;}if(wh)wh.textContent="◈ Touch to activate";drawIdleWave();return;}
+    try{waveACtx=new(window.AudioContext||window.webkitAudioContext)();waveGain=waveACtx.createGain();waveGain.gain.value=.1;waveGain.connect(waveACtx.destination);
+    [55,110,165,220].forEach(function(f,i){var o=waveACtx.createOscillator();o.type=i===0?"sine":"triangle";o.frequency.value=f;var g=waveACtx.createGain();g.gain.value=i<2?.4:.12;o.connect(g);g.connect(waveGain);o.start();waveOscs.push(o);});
+    waveActive=true;if(wh)wh.textContent="◈ Tap to stop";drawLiveWave();}catch(e){}
+  });
+}
+
+// ─── MINI GAME ────────────────────────────────────────
+var gc=document.getElementById("gameCanvas"),gov=document.getElementById("gameOv"),gst=document.getElementById("gameStart"),ghud=document.getElementById("gameHud"),gsc=document.getElementById("gScore"),gb=document.getElementById("gBest");
+if(gc){
+  var gCtx=gc.getContext("2d"),W=380,H=140,gBest=0,gScore=0,gRunning=false,gRaf,gSpeed=2.5,gFrame=0,gTimer=0,gObs=[],gP={x:48,y:H-36,w:18,h:18,vy:0,grnd:true};
+  function gReset(){gScore=0;gSpeed=2.5;gFrame=0;gTimer=0;gObs=[];gP.y=H-36;gP.vy=0;gP.grnd=true;if(gsc)gsc.textContent="0";}
+  function gJump(){if(gP.grnd){gP.vy=-7.5;gP.grnd=false;}}
+  function gUpdate(){gFrame++;gSpeed+=.0006;gP.vy+=.45;gP.y+=gP.vy;if(gP.y>=H-36){gP.y=H-36;gP.vy=0;gP.grnd=true;}gTimer++;if(gTimer>Math.max(48,88-gSpeed*3)){gTimer=0;var h=18+Math.random()*28;gObs.push({x:W,y:H-18-h,w:12,h:h});}for(var i=gObs.length-1;i>=0;i--){gObs[i].x-=gSpeed;if(gObs[i].x+gObs[i].w<0){gObs.splice(i,1);gScore++;if(gsc)gsc.textContent=gScore;}if(gP.x<gObs[i].x+gObs[i].w&&gP.x+gP.w>gObs[i].x&&gP.y<gObs[i].y+gObs[i].h&&gP.y+gP.h>gObs[i].y){gOver();return;}}}
+  function gDraw(){gCtx.clearRect(0,0,W,H);gCtx.fillStyle="rgba(200,168,75,.12)";gCtx.fillRect(0,H-18,W,1);for(var s=0;s<25;s++){gCtx.fillStyle="rgba(200,168,75,"+(Math.abs(Math.sin(s+gFrame*.02))*.25+.05)+")";gCtx.fillRect((s*79+gFrame*.4)%W,(s*37)%110,1,1);}var pg=gCtx.createLinearGradient(gP.x,gP.y,gP.x,gP.y+gP.h);pg.addColorStop(0,"#f5d980");pg.addColorStop(1,"#7a6020");gCtx.fillStyle=pg;gCtx.beginPath();if(gCtx.roundRect)gCtx.roundRect(gP.x,gP.y,gP.w,gP.h,3);else gCtx.rect(gP.x,gP.y,gP.w,gP.h);gCtx.fill();gObs.forEach(function(o){var og=gCtx.createLinearGradient(o.x,o.y,o.x,o.y+o.h);og.addColorStop(0,"rgba(200,168,75,.8)");og.addColorStop(1,"rgba(200,168,75,.2)");gCtx.fillStyle=og;gCtx.fillRect(o.x,o.y,o.w,o.h);});}
+  function gOver(){cancelAnimationFrame(gRaf);gRunning=false;if(gScore>gBest){gBest=gScore;if(gb)gb.textContent=gBest;}if(gov){gov.innerHTML="";var d=document.createElement("div");d.style.cssText="text-align:center";d.innerHTML="<div style=\"font-family:Cinzel,serif;font-size:10px;letter-spacing:.2em;color:#c8a84b;margin-bottom:12px\">SCORE "+gScore+"</div>";var btn=document.createElement("button");btn.className="btn btn-gold";btn.style.cssText="padding:11px 26px;font-size:8.5px";btn.textContent="▶ Play Again";btn.addEventListener("click",gStartGame);d.appendChild(btn);gov.appendChild(d);gov.style.display="flex";if(ghud)ghud.style.display="none";}}
+  function gStartGame(){if(gov)gov.style.display="none";if(ghud)ghud.style.display="flex";gReset();gRunning=true;function loop(){if(!gRunning)return;gUpdate();gDraw();gRaf=requestAnimationFrame(loop);}loop();}
+  if(gst)gst.addEventListener("click",gStartGame);
+  document.addEventListener("keydown",function(e){if((e.code==="Space"||e.code==="ArrowUp")&&gRunning){e.preventDefault();gJump();}});
+  gc.addEventListener("click",function(){if(gRunning)gJump();});
+  gc.addEventListener("touchstart",function(e){e.preventDefault();if(gRunning)gJump();},{passive:false});
+  // idle draw
+  (function idleLoop(){if(gRunning)return;gCtx.clearRect(0,0,W,H);var t=Date.now()/1000;gCtx.fillStyle="rgba(200,168,75,.1)";gCtx.fillRect(0,H-18,W,1);for(var s=0;s<20;s++){gCtx.fillStyle="rgba(200,168,75,"+(Math.abs(Math.sin(s+t))*.2+.06)+")";gCtx.fillRect((s*79+t*18)%W,(s*37)%110,1,1);}requestAnimationFrame(idleLoop);})();
+}
+
+// ─── AUDIO PLAYER ─────────────────────────────────────
+var aCtx=null,aOscs=[],aGain=null,aPlaying=false,aRaf2;
+var av=document.getElementById("audioViz"),ab2=document.getElementById("aBars"),apb=document.getElementById("aPlay"),asb=document.getElementById("aStop");
+if(av){
+  var avCtx=av.getContext("2d");av.width=380;av.height=80;
+  var bars2=ab2?ab2.querySelectorAll(".ab"):[];
+  function aAnimate(){var t=Date.now()/1000;bars2.forEach(function(b,i){b.style.height=Math.max(4,8+Math.abs(Math.sin(i*1.4+t*2.8+i*.35))*38)+"px";});avCtx.clearRect(0,0,380,80);var n=55;for(var i=0;i<n;i++){var h=8+Math.abs(Math.sin(i*.18+t*3.2))*60+Math.abs(Math.sin(i*.32+t*1.8))*16;var a=.25+Math.abs(Math.sin(i*.12+t*2.2))*.65;avCtx.fillStyle="rgba(200,168,75,"+a+")";avCtx.fillRect(i*(380/n),80-h,380/n-1.5,h);}if(aPlaying)aRaf2=requestAnimationFrame(aAnimate);}
+  function aStart(){if(aPlaying)return;try{aCtx=new(window.AudioContext||window.webkitAudioContext)();aGain=aCtx.createGain();aGain.gain.value=.07;aGain.connect(aCtx.destination);[55,82.5,110,138,165,220,275,330].forEach(function(f,i){var o=aCtx.createOscillator();o.type=i%2===0?"sine":"triangle";o.frequency.value=f;var g=aCtx.createGain();g.gain.value=i<2?.38:.11;o.connect(g);g.connect(aGain);o.start();aOscs.push(o);});aPlaying=true;if(apb)apb.textContent="⏸";aAnimate();}catch(e){}}
+  function aStop(){aOscs.forEach(function(o){try{o.stop();}catch(e){}});aOscs=[];aPlaying=false;if(aCtx){aCtx.close();aCtx=null;}if(apb)apb.textContent="▶";cancelAnimationFrame(aRaf2);avCtx.clearRect(0,0,380,80);bars2.forEach(function(b){b.style.height="4px";});}
+  if(apb)apb.addEventListener("click",function(){if(aPlaying)aStop();else aStart();});
+  if(asb)asb.addEventListener("click",aStop);
+}
+
+// ─── VIDEO MODAL ──────────────────────────────────────
+var vp=document.getElementById("vidPlay"),vm=document.getElementById("vidModal"),vx=document.getElementById("vmClose");
+if(vp&&vm){
+  vp.addEventListener("click",function(){vm.style.display="flex";document.body.style.overflow="hidden";});
+  if(vx)vx.addEventListener("click",function(){vm.style.display="none";document.body.style.overflow="";});
+  vm.addEventListener("click",function(e){if(e.target===vm){vm.style.display="none";document.body.style.overflow="";}});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&vm.style.display==="flex"){vm.style.display="none";document.body.style.overflow="";}});
+}
+
+// ─── PODCAST ─────────────────────────────────────────
+var pCtx=null,pOscs2=[],pPlaying=false,pEp=-1,pTimer2=null,pElapsed=0;
+var pDurs=[150,105,190];
+var pFill=document.getElementById("podFill"),pTime=document.getElementById("podTime");
+function pStop(){pOscs2.forEach(function(o){try{o.stop();}catch(e){}});pOscs2=[];pPlaying=false;if(pCtx){pCtx.close();pCtx=null;}clearInterval(pTimer2);document.querySelectorAll(".pod-row").forEach(function(r){r.classList.remove("active");});document.querySelectorAll(".pod-btn").forEach(function(b){b.textContent="▶";});}
+function pStart(idx){pStop();pEp=idx;pElapsed=0;pPlaying=true;var rows=document.querySelectorAll(".pod-row");var btns=document.querySelectorAll(".pod-btn");if(rows[idx])rows[idx].classList.add("active");if(btns[idx])btns[idx].textContent="■";try{pCtx=new(window.AudioContext||window.webkitAudioContext)();var g=pCtx.createGain();g.gain.value=.055;g.connect(pCtx.destination);[[55,110,220],[82.5,165,330],[65,130,195,260]][idx].forEach(function(f,i){var o=pCtx.createOscillator();o.type=i===0?"sine":"triangle";o.frequency.value=f;var og=pCtx.createGain();og.gain.value=i===0?.38:.13;o.connect(og);og.connect(g);o.start();pOscs2.push(o);});}catch(e){}var dur=pDurs[idx]||120;pTimer2=setInterval(function(){pElapsed++;var pct=Math.min((pElapsed/dur)*100,100);if(pFill)pFill.style.width=pct+"%";var m=Math.floor(pElapsed/60),s=pElapsed%60;if(pTime)pTime.textContent=m+":"+(s<10?"0":"")+s;if(pElapsed>=dur){pStop();if(pFill)pFill.style.width="0%";if(pTime)pTime.textContent="0:00";}},1000);}
+document.querySelectorAll(".pod-row").forEach(function(row){row.addEventListener("click",function(){var idx=parseInt(row.getAttribute("data-ep"));if(pPlaying&&pEp===idx)pStop();else pStart(idx);});});
+document.querySelectorAll(".pod-btn").forEach(function(btn){btn.addEventListener("click",function(e){e.stopPropagation();var idx=parseInt(btn.getAttribute("data-ep"));if(pPlaying&&pEp===idx)pStop();else pStart(idx);});});
+
+// ─── UNIVERSE CARDS ───────────────────────────────────
+var UNIVERSE=[
+  {icon:"♪",tag:"Sound",title:"Music & Sound",desc:"Releases, sound worlds, artists, sonic identity, and immersive audio experiences."},
+  {icon:"◈",tag:"Cinema",title:"Visual Stories",desc:"Films, animations, trailers, characters, and cinematic universes."},
+  {icon:"⬡",tag:"Interactive",title:"Games & Interactive",desc:"Mini-games, interactive worlds, challenges, and playable concepts."},
+  {icon:"◎",tag:"Knowledge",title:"Learning & Masterclasses",desc:"Structured knowledge, personal growth, business themes, and guided lessons."},
+  {icon:"▣",tag:"Narrative",title:"Books & Storytelling",desc:"Narratives, story worlds, written works, audio stories, and universe lore."},
+  {icon:"◇",tag:"Culture",title:"Product Culture",desc:"Lifestyle, design language, fashion energy, digital products, and curated collections."},
+  {icon:"⊕",tag:"Digital",title:"Digital Experiences",desc:"Web modules, portals, tools, lightweight systems, and guided digital journeys."},
+  {icon:"⟁",tag:"Private",title:"Private Corridors",desc:"Deeper libraries, premium experiences, structured access, and advanced pathways."}
+];
+var ug=document.getElementById("univGrid");
+if(ug){UNIVERSE.forEach(function(item,i){var d=document.createElement("div");d.className="u-cell reveal";d.style.transitionDelay=(i*50)+"ms";d.innerHTML="<span class=\"u-icon\">"+item.icon+"</span><div class=\"u-tag\">"+item.tag+"</div><div class=\"u-name\">"+item.title+"</div><div class=\"u-desc\">"+item.desc+"</div>";ug.appendChild(d);if(window.IntersectionObserver)io.observe(d);});}
+
+// ─── DROPS ───────────────────────────────────────────
+var DROPS=[
+  {cat:"Music & Sound",name:"New Sound Preview",desc:"A first listen into the sonic direction of the next release cycle.",status:"Preview",badge:"b-prev"},
+  {cat:"Visual Stories",name:"Storyworld Teaser",desc:"A glimpse into an expanding narrative universe in development.",status:"In Development",badge:"b-dev"},
+  {cat:"Games",name:"Interactive Challenge",desc:"A new playable experience in the Sentinel Fortune games catalogue.",status:"Coming Soon",badge:"b-soon"},
+  {cat:"Learning",name:"Masterclass Preview",desc:"A curated preview module from the upcoming learning series.",status:"Preview",badge:"b-prev"},
+  {cat:"Visual",name:"Visual Drop",desc:"A limited visual release from the creative direction archive.",status:"Live",badge:"b-live"},
+  {cat:"Product Culture",name:"Product Culture Preview",desc:"Selected lifestyle and design artefacts from the product universe.",status:"Coming Soon",badge:"b-soon"}
+];
+var dr=document.getElementById("dropsRow");
+if(dr){DROPS.forEach(function(item,i){var d=document.createElement("div");d.className="drop-card reveal";d.style.transitionDelay=(i*55)+"ms";d.innerHTML="<div class=\"drop-cat\">"+item.cat+"</div><div class=\"drop-name\">"+item.name+"</div><div class=\"drop-desc\">"+item.desc+"</div><span class=\"badge "+item.badge+"\">"+item.status+"</span>";dr.appendChild(d);if(window.IntersectionObserver)io.observe(d);});}
+
+// ─── SUPPORT BTN ─────────────────────────────────────
+var sb=document.getElementById("supBtn");
+if(sb){sb.style.opacity=".45";sb.style.pointerEvents="none";sb.textContent="Support (Coming Soon)";}
+
+// ─── Re-observe dynamically added reveals ─────────────
+// Already handled inline above for universe/drops
+</script>
 
 </body>
 </html>
