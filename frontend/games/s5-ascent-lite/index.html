@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+  <meta name="theme-color" content="#03060e"/>
+  <title>S.5 JUMP: ASCENT</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- Game canvas -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- ── HUD ─────────────────────────────────────────────── -->
+  <div id="hud" class="hidden">
+    <div class="hud-block">
+      <span class="hud-label">Score</span>
+      <span class="hud-value" id="hud-score">0</span>
+    </div>
+    <div class="hud-block center">
+      <span class="hud-label" id="hud-level">Level 1</span>
+      <span id="hud-level-name">Awakening</span>
+    </div>
+    <div class="hud-block" style="text-align:right;align-items:flex-end;">
+      <span class="hud-label">Gold</span>
+      <span class="hud-value" id="hud-gold">⬡ 0</span>
+    </div>
+  </div>
+
+  <!-- ── MOBILE CONTROLS ──────────────────────────────────── -->
+  <div id="mobile-controls" class="hidden">
+    <div class="ctrl-group">
+      <button id="btn-left"  class="ctrl-btn" aria-label="Move left">◀</button>
+      <button id="btn-right" class="ctrl-btn" aria-label="Move right">▶</button>
+    </div>
+    <div class="ctrl-group">
+      <button id="btn-jump" class="ctrl-btn jump-btn" aria-label="Jump">▲</button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: MENU ─────────────────────────────────────── -->
+  <div id="screen-menu" class="screen">
+    <p class="menu-eyebrow">Sentinel Fortune · S.5</p>
+    <h1 class="menu-logo">JUMP</h1>
+    <h2 class="menu-title">Ascent</h2>
+    <div class="menu-rule"></div>
+    <p class="menu-tagline">Observe · Choose · Rise</p>
+    <p class="menu-desc">
+      You are The Ascendant.<br>
+      Climb the ASCENT Tower.<br>
+      Avoid traps. Collect gold.<br>
+      Reach the portal.
+    </p>
+    <button id="btn-start" class="btn-gold">Begin Ascent</button>
+  </div>
+
+  <!-- ── SCREEN: LEVEL COMPLETE ───────────────────────────── -->
+  <div id="screen-level-complete" class="screen hidden">
+    <p class="lc-title">Level Complete</p>
+    <div class="lc-badge">⬡</div>
+    <p class="lc-name" id="lc-name">Awakening</p>
+    <p class="lc-subtitle" id="lc-subtitle">Control</p>
+    <div class="lc-stats">
+      <div class="lc-stat">
+        <span class="lc-stat-value" id="lc-gold">0</span>
+        <span class="lc-stat-label">Gold</span>
+      </div>
+      <div class="lc-stat">
+        <span class="lc-stat-value" id="lc-score">0</span>
+        <span class="lc-stat-label">Score</span>
+      </div>
+    </div>
+    <button id="btn-next-level" class="btn-gold">Continue ↑</button>
+  </div>
+
+  <!-- ── SCREEN: GAME OVER ────────────────────────────────── -->
+  <div id="screen-gameover" class="screen hidden">
+    <p class="go-icon">▼</p>
+    <h2 class="go-title">The Ascendant Fell</h2>
+    <p class="go-sub">Observe. Choose. Rise again.</p>
+    <button id="btn-retry" class="btn-gold">Retry Level</button>
+    <button id="btn-menu-go" class="btn-secondary">Menu</button>
+  </div>
+
+  <!-- ── SCREEN: THRESHOLD (premium unlock) ──────────────── -->
+  <div id="screen-threshold" class="screen hidden">
+    <div class="threshold-glow">
+      <span class="threshold-icon">⬡</span>
+    </div>
+    <p class="threshold-eyebrow">Level 5 Complete</p>
+    <h2 class="threshold-title">The Threshold</h2>
+    <div class="threshold-rule"></div>
+    <p class="threshold-text">You reached The Threshold.</p>
+    <p class="threshold-sub">
+      Unlock Full ASCENT to continue the climb.<br>
+      Levels 6–20 await beyond the gate.
+    </p>
+    <!-- IMPORTANT: Replace the href below with a real Stripe payment link before going live -->
+    <a href="https://buy.stripe.com/REPLACE_WITH_REAL_LINK"
+       id="btn-unlock"
+       class="btn-unlock"
+       target="_blank"
+       rel="noopener noreferrer">
+      Unlock Full ASCENT
+    </a>
+    <button id="btn-restart-all" class="btn-secondary">Play Again</button>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
