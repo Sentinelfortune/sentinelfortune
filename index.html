@@ -913,7 +913,170 @@ body > div[style*="position:fixed"] a:hover{
 </section>
 
 </main>
+<!-- 🐆 SENTINEL FORTUNE LLC — CINEMATIC HTML/CSS VISION -->
 
+<section class="sfl-cinema">
+  <div class="sfl-cinema-frame">
+
+    <div class="sfl-gold-orbit"></div>
+    <div class="sfl-light"></div>
+
+    <div class="sfl-cinema-content">
+      <p class="sfl-kicker">SENTINEL FORTUNE LLC</p>
+
+      <h2>A House of Systems,<br/>Sound & Worlds.</h2>
+
+      <p class="sfl-desc">
+        A connected ecosystem built for music, media, learning, interactive experiences,
+        digital culture, private access, and long-term creative expansion.
+      </p>
+
+      <div class="sfl-line"></div>
+
+      <p class="sfl-final">WE DON’T CHASE. WE ARE.</p>
+
+      <div class="sfl-jaguar">🐆</div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.sfl-cinema{
+  padding:110px 20px;
+  background:#04060f;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.sfl-cinema-frame{
+  max-width:960px;
+  height:520px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid rgba(200,168,75,.28);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(200,168,75,.18), transparent 22%),
+    radial-gradient(circle at 20% 70%, rgba(200,168,75,.10), transparent 30%),
+    linear-gradient(135deg,#02040a,#081020,#02040a);
+  box-shadow:
+    0 0 80px rgba(200,168,75,.16),
+    inset 0 0 80px rgba(0,0,0,.75);
+}
+
+.sfl-gold-orbit{
+  position:absolute;
+  inset:-45%;
+  background:conic-gradient(
+    from 0deg,
+    transparent,
+    rgba(200,168,75,.22),
+    transparent,
+    rgba(245,217,128,.12),
+    transparent
+  );
+  animation:sflSpin 18s linear infinite;
+}
+
+.sfl-light{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(120deg, transparent 20%, rgba(255,255,255,.08) 50%, transparent 80%);
+  transform:translateX(-100%);
+  animation:sflSweep 6s ease-in-out infinite;
+}
+
+.sfl-cinema-content{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:34px;
+}
+
+.sfl-kicker{
+  font-family:'Cinzel',serif;
+  letter-spacing:.38em;
+  font-size:10px;
+  color:rgba(200,168,75,.75);
+  margin-bottom:24px;
+}
+
+.sfl-cinema h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.4rem,6vw,5rem);
+  line-height:1.05;
+  font-weight:300;
+  color:#ede8e0;
+  text-shadow:0 0 35px rgba(200,168,75,.22);
+  margin:0;
+}
+
+.sfl-desc{
+  max-width:680px;
+  margin:28px auto 0;
+  font-family:'Jost',sans-serif;
+  font-size:1rem;
+  line-height:1.9;
+  color:rgba(237,232,224,.76);
+}
+
+.sfl-line{
+  width:180px;
+  height:1px;
+  margin:34px auto 24px;
+  background:linear-gradient(90deg,transparent,#c8a84b,transparent);
+  box-shadow:0 0 24px rgba(200,168,75,.8);
+}
+
+.sfl-final{
+  font-family:'Cinzel',serif;
+  letter-spacing:.28em;
+  font-size:11px;
+  color:#c8a84b;
+}
+
+.sfl-jaguar{
+  position:absolute;
+  bottom:34px;
+  right:48px;
+  font-size:46px;
+  filter:drop-shadow(0 0 20px rgba(200,168,75,.55));
+  opacity:.85;
+  animation:sflJaguar 5s ease-in-out infinite;
+}
+
+@keyframes sflSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+
+@keyframes sflSweep{
+  0%{transform:translateX(-100%);opacity:0}
+  35%{opacity:.8}
+  70%{transform:translateX(100%);opacity:0}
+  100%{transform:translateX(100%);opacity:0}
+}
+
+@keyframes sflJaguar{
+  0%,100%{transform:translateX(0) scale(1);opacity:.65}
+  50%{transform:translateX(-18px) scale(1.08);opacity:1}
+}
+
+@media(max-width:600px){
+  .sfl-cinema-frame{height:560px}
+  .sfl-jaguar{right:28px;bottom:28px;font-size:38px}
+}
+</style>
+
+</section>
 <!-- FOOTER -->
 
 <footer class="footer">
