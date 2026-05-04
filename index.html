@@ -571,6 +571,19 @@ body > div[style*="position:fixed"] a:hover{
   }
 }
 
+
+/* ── Public Signals Feed ───────────────────────────────────────────────── */
+.sig{padding:120px 0 80px}
+.sig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;margin-top:40px}
+.sig-card{background:var(--card);border:1px solid var(--gold-line);border-radius:2px;padding:36px 32px;display:flex;flex-direction:column;gap:0;transition:border-color .3s}
+.sig-card:hover{border-color:rgba(200,168,75,.5)}
+.sig-cat{font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.38em;text-transform:uppercase;color:#c8a84b;margin-bottom:16px;display:block}
+.sig-title{font-family:var(--ff2);font-size:18px;font-weight:500;letter-spacing:-.01em;color:#ede8e0;margin:0 0 12px;line-height:1.3}
+.sig-summary{font-size:.82rem;color:var(--muted);line-height:1.75;margin:0 0 12px}
+.sig-body{font-size:.78rem;color:rgba(237,232,224,.35);line-height:1.8;margin:0 0 20px;font-family:var(--ff3,'Jost',sans-serif)}
+.sig-cta{margin-top:auto;font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:#c8a84b;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s}
+.sig-cta:hover{opacity:.75}
+.sig-empty{font-size:.82rem;color:var(--muted);margin-top:32px;font-style:italic}
 </style>
 
 </head>
@@ -605,6 +618,7 @@ body > div[style*="position:fixed"] a:hover{
       <a href="#about"   class="hdr-a">About</a>
       <a href="#xp"      class="hdr-a">Experience</a>
       <a href="#universe" class="hdr-a">Universe</a>
+      <a href="#signals" class="hdr-a">Signals</a>
       <a href="#gate"    class="hdr-a">Access</a>
       <a href="#contact" class="hdr-a">Contact</a>
     </nav>
@@ -617,6 +631,7 @@ body > div[style*="position:fixed"] a:hover{
     <a href="#about"    class="mob-a">About</a>
     <a href="#xp"       class="mob-a">Experience</a>
     <a href="#universe" class="mob-a">Universe</a>
+    <a href="#signals"  class="mob-a">Signals</a>
     <a href="#gate"     class="mob-a">Access</a>
     <a href="#contact"  class="mob-a">Contact</a>
     <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="mob-cta">Enter Private Access</a>
@@ -888,6 +903,29 @@ Entry is aligned with the corresponding experience level.
         </p>
       </div>
     </div>
+  </div>
+</section>
+
+
+<!-- SIGNALS — Latest Public Signals -->
+
+<section class="sig" id="signals">
+  <div class="wrap">
+
+    <div class="stag reveal">Public Signals</div>
+
+    <h2 class="sh reveal">Latest Dispatches</h2>
+
+    <p class="sp reveal" style="max-width:60ch">
+      Selected insights and dispatches from the Sentinel Fortune system.
+      Published after editorial review. Updated periodically.
+    </p>
+
+    <div class="sig-grid" id="sfSignalsGrid" style="display:none"></div>
+    <p class="sig-empty" id="sfSignalsEmpty" style="display:none">
+      No signals published yet — check back shortly.
+    </p>
+
   </div>
 </section>
 
@@ -1330,6 +1368,94 @@ if(logoInput){
     ENTER ASCENT
   </a>
 </div>
+
+
+<script>
+/* ── Public Signals Feed — Phase 3 ─────────────────────────────────────────
+   Fetches https://sentinelfortune.com/api/public/signals
+   Renders cards using only textContent — no innerHTML with API data.
+   CTA URLs gated to approved prefixes only.
+──────────────────────────────────────────────────────────────────────────── */
+(function loadPublicSignals(){
+  var ALLOWED=[
+    "https://t.me/",
+    "https://sentinelfortune.com",
+    "http://sentinelfortune.com",
+    "mailto:"
+  ];
+  function safeCta(u){
+    if(!u||typeof u!=="string")return false;
+    return ALLOWED.some(function(p){return u.indexOf(p)===0;});
+  }
+  function t(el,s){el.textContent=String(s||"");}
+
+  function buildCard(item){
+    var card=document.createElement("article");
+    card.className="sig-card reveal";
+
+    if(item.category){
+      var cat=document.createElement("span");
+      cat.className="sig-cat";
+      t(cat,item.category);
+      card.appendChild(cat);
+    }
+
+    if(item.title){
+      var h=document.createElement("h3");
+      h.className="sig-title";
+      t(h,item.title);
+      card.appendChild(h);
+    }
+
+    if(item.short_summary){
+      var sm=document.createElement("p");
+      sm.className="sig-summary";
+      t(sm,item.short_summary);
+      card.appendChild(sm);
+    }
+
+    if(item.public_body){
+      var words=String(item.public_body).trim().split(/\s+/);
+      var excerpt=words.slice(0,55).join(" ")+(words.length>55?"…":"");
+      var bd=document.createElement("p");
+      bd.className="sig-body";
+      t(bd,excerpt);
+      card.appendChild(bd);
+    }
+
+    if(item.cta_link&&item.cta_label&&safeCta(item.cta_link)){
+      var a=document.createElement("a");
+      a.className="sig-cta";
+      a.href=item.cta_link;
+      if(item.cta_link.indexOf("mailto:")<0){
+        a.target="_blank";a.rel="noopener noreferrer";
+      }
+      t(a,item.cta_label+" →");
+      card.appendChild(a);
+    }
+
+    return card;
+  }
+
+  var grid=document.getElementById("sfSignalsGrid");
+  var empty=document.getElementById("sfSignalsEmpty");
+  if(!grid||!empty)return;
+
+  fetch("https://sentinelfortune.com/api/public/signals",{cache:"no-store"})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var items=Array.isArray(data&&data.items)?data.items:[];
+      if(items.length===0){empty.style.display="";return;}
+      items.forEach(function(item){
+        var c=buildCard(item);
+        grid.appendChild(c);
+        if(window._sfIo)window._sfIo.observe(c);
+      });
+      grid.style.display="";
+    })
+    .catch(function(){/* silently fail — section header stays */});
+})();
+</script>
 
 </body>
 </html>
