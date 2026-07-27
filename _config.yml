@@ -1,0 +1,32 @@
+# GitHub Pages (Jekyll) publish exclusions.
+#
+# This repository's GitHub Pages site is served with "Deploy from a branch"
+# (verified: the repo has an active, system-generated `pages-build-deployment`
+# Actions workflow triggered on pushes to `main`, and no custom Pages Actions
+# workflow exists — see SHOP_ARCHITECTURE.md / the Digital Shop PR description
+# for the exact evidence). With no `.nojekyll` file present, that deployment
+# mode runs every push through Jekyll and publishes the repository root as-is,
+# apart from Jekyll's own default excludes.
+#
+# The two directories below must NOT be published as public web pages:
+#
+#   admin/        Owner Admin UI source. Intended for a separate Cloudflare
+#                 Pages deployment protected by Cloudflare Access — GitHub
+#                 Pages has no mechanism to enforce Access, so serving these
+#                 files from here would make the admin UI shell publicly
+#                 reachable (the Shop Worker's API still independently
+#                 rejects unauthenticated admin requests either way, but the
+#                 UI itself should never be served from this origin).
+#
+#   shop-worker/  Cloudflare Worker backend source (TypeScript, tests,
+#                 migrations, wrangler config, node_modules if ever present
+#                 locally). Not a web asset — deployed separately via
+#                 `wrangler deploy`. No secrets are committed here (see
+#                 .gitignore), but it has no reason to be served over HTTP.
+#
+# This file only adds an exclude list — it does not enable Jekyll processing
+# that wasn't already happening, and does not change how any other existing
+# page is served. Removing this file (or the two entries) fully reverses it.
+exclude:
+  - admin
+  - shop-worker
