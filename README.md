@@ -30,3 +30,10 @@
 - Never modify `originus/_canon/` in R2
 - Never touch `delivery_service.py`
 - All bot→API calls via HTTP (no direct R2 access)
+
+## Digital Shop (new, isolated)
+
+A separate, isolated Digital Shop MVP for one-time digital-product sales lives in `/shop-worker`
+(Cloudflare Worker backend), `/shop` (public storefront pages), and `/admin` (Owner Admin UI). It does not
+modify, extend, or depend on anything above — no live product is published yet. Start at
+`SHOP_MVP_README.md`.

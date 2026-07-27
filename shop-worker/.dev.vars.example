@@ -1,0 +1,16 @@
+# Copy this file to .dev.vars for local `wrangler dev` only.
+# .dev.vars is already covered by the repo's .gitignore pattern (*.vars is
+# added below) — never commit a real .dev.vars file.
+#
+# These are SECRETS. In production they are set with:
+#   wrangler secret put STRIPE_SECRET_KEY
+#   wrangler secret put STRIPE_WEBHOOK_SECRET
+#   wrangler secret put RESEND_API_KEY
+# — never written into wrangler.toml.
+
+# Stripe TEST MODE keys only, until a verified end-to-end test transaction
+# has been completed and the Owner explicitly approves switching to live keys.
+STRIPE_SECRET_KEY=sk_test_REPLACE_ME
+STRIPE_WEBHOOK_SECRET=whsec_REPLACE_ME
+
+RESEND_API_KEY=re_REPLACE_ME

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Settings — Sentinel Fortune LLC Shop Admin</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#04060f"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body data-page="settings">
+<div class="admin-app" style="display:flex;width:100%">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">SENTINEL FORTUNE LLC<small>Shop Owner Admin</small></div>
+    <nav class="admin-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="products.html">Products</a>
+      <a href="orders.html">Orders</a>
+      <a href="licenses.html">Licenses</a>
+      <a href="files.html">Files</a>
+      <a href="settings.html" aria-current="page">Settings</a>
+    </nav>
+    <div class="admin-sidebar-foot">
+      <div class="admin-whoami" id="whoami">—</div>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-head">
+      <div>
+        <div class="admin-title">Settings</div>
+        <div class="admin-sub">Shop-wide defaults. Individual products can override the download expiry and limit on their own editor page.</div>
+      </div>
+    </div>
+
+    <div id="settingsMessages"></div>
+
+    <div class="panel">
+      <form id="settingsForm">
+        <div class="form-grid">
+          <div class="field"><label>Default Download Link Expiry (hours)</label><input type="number" name="defaultDownloadExpiryHours" min="1" max="720"></div>
+          <div class="field"><label>Default Max Downloads Per Link</label><input type="number" name="defaultMaxDownloads" min="1" max="100"></div>
+          <div class="field"><label>Support Email</label><input type="email" name="supportEmail"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Settings</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h2>About this admin app</h2>
+      <p style="color:var(--muted);font-size:.85rem;line-height:1.8">
+        This UI has no password login of its own — access is controlled entirely by Cloudflare Access at the
+        edge, and independently re-verified by the Shop Worker on every request. If this app is reachable
+        without an Access challenge, it is not deployed correctly — see
+        <code>CLOUDFLARE_SHOP_SETUP.md</code> in the repository.
+      </p>
+    </div>
+  </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

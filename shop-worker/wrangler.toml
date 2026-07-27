@@ -1,0 +1,90 @@
+# Sentinel Fortune LLC — Digital Shop Worker
+#
+# This is a standalone Cloudflare Worker, isolated from the existing
+# "sentinel-fortune-ecosystem" Worker (cloudflare/wrangler-api.toml) and from
+# the existing ORIGINUS_R2 bucket. It has its own D1 database and its own
+# two R2 buckets. It shares nothing with, and does not modify, the existing
+# tier-access system.
+#
+# Deploy with: wrangler deploy --config shop-worker/wrangler.toml
+# (run from shop-worker/, or pass --config with the path adjusted)
+#
+# See CLOUDFLARE_SHOP_SETUP.md at the repo root for full setup instructions,
+# including how to create the D1 database and R2 buckets referenced below
+# before the IDs/names here will resolve to anything real.
+
+name = "sentinel-fortune-digital-shop"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+# ---------------------------------------------------------------------------
+# D1 database — products, orders, customers, licenses, download auth, etc.
+# Replace database_id with the real ID returned by:
+#   wrangler d1 create sentinel-fortune-shop
+# ---------------------------------------------------------------------------
+[[d1_databases]]
+binding = "SHOP_DB"
+database_name = "sentinel-fortune-shop"
+database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"
+
+# ---------------------------------------------------------------------------
+# R2 buckets — private downloads, public cover/preview assets.
+# Create with:
+#   wrangler r2 bucket create sentinel-fortune-shop-downloads
+#   wrangler r2 bucket create sentinel-fortune-shop-assets
+# The downloads bucket must NEVER be given public bucket access in the
+# Cloudflare dashboard — all reads go through this Worker's token-gated
+# /shop/download/:token route. The assets bucket is intentionally public
+# (covers/previews only — never purchasable files).
+# ---------------------------------------------------------------------------
+[[r2_buckets]]
+binding = "SHOP_DOWNLOADS_BUCKET"
+bucket_name = "sentinel-fortune-shop-downloads"
+
+[[r2_buckets]]
+binding = "SHOP_ASSETS_BUCKET"
+bucket_name = "sentinel-fortune-shop-assets"
+
+# ---------------------------------------------------------------------------
+# Non-secret configuration. Secrets (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
+# RESEND_API_KEY) are NOT set here — they're set with `wrangler secret put`
+# per environment. See STRIPE_SHOP_SETUP.md / RESEND_SETUP.md.
+# ---------------------------------------------------------------------------
+[vars]
+ENVIRONMENT = "development"
+RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
+SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
+SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_ASSETS_BUCKET_PUBLIC_URL"
+SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
+CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
+CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+
+# ---------------------------------------------------------------------------
+# Production environment overrides.
+# Deploy to production explicitly with: wrangler deploy --env production
+# Do NOT deploy to production until Owner approval per the release checklist.
+# ---------------------------------------------------------------------------
+[env.production]
+name = "sentinel-fortune-digital-shop"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
+SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
+SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_ASSETS_BUCKET_PUBLIC_URL"
+SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
+CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
+CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+
+[[env.production.d1_databases]]
+binding = "SHOP_DB"
+database_name = "sentinel-fortune-shop"
+database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"
+
+[[env.production.r2_buckets]]
+binding = "SHOP_DOWNLOADS_BUCKET"
+bucket_name = "sentinel-fortune-shop-downloads"
+
+[[env.production.r2_buckets]]
+binding = "SHOP_ASSETS_BUCKET"
+bucket_name = "sentinel-fortune-shop-assets"

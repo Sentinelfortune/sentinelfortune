@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Licenses — Sentinel Fortune LLC Shop Admin</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#04060f"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body data-page="licenses">
+<div class="admin-app" style="display:flex;width:100%">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">SENTINEL FORTUNE LLC<small>Shop Owner Admin</small></div>
+    <nav class="admin-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="products.html">Products</a>
+      <a href="orders.html">Orders</a>
+      <a href="licenses.html" aria-current="page">Licenses</a>
+      <a href="files.html">Files</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <div class="admin-sidebar-foot">
+      <div class="admin-whoami" id="whoami">—</div>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-head">
+      <div>
+        <div class="admin-title">Licenses</div>
+        <div class="admin-sub">Every completed order issues one license. Revoking here immediately stops that customer's download access.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <table class="data-table">
+        <thead><tr><th>License #</th><th>Product</th><th>Purchaser</th><th>Type</th><th>Status</th><th></th></tr></thead>
+        <tbody id="licensesTableBody"><tr class="empty-row"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
