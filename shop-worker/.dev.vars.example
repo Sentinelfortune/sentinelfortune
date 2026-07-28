@@ -1,6 +1,6 @@
 # Copy this file to .dev.vars for local `wrangler dev` only.
-# .dev.vars is already covered by the repo's .gitignore pattern (*.vars is
-# added below) — never commit a real .dev.vars file.
+# The repo's .gitignore lists `.dev.vars` and `shop-worker/.dev.vars`
+# explicitly — never commit a real .dev.vars file.
 #
 # These are SECRETS. In production they are set with:
 #   wrangler secret put STRIPE_SECRET_KEY

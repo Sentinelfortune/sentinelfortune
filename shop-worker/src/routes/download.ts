@@ -100,6 +100,10 @@ export async function handleDownload(request: Request, env: Env, params: Record<
         "Content-Length": String(targetFile.size_bytes),
         "Cache-Control": "no-store",
         "X-Robots-Tag": "noindex",
+        // Uploads are already restricted to a safe extension/content-type allow-list, but this
+        // endpoint is the one place the Worker serves operator-supplied bytes to a browser —
+        // nosniff stops any content-type/extension mismatch from being reinterpreted as HTML.
+        "X-Content-Type-Options": "nosniff",
       },
     });
   } catch (err) {
