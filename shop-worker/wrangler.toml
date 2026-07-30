@@ -65,6 +65,52 @@ CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
 ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_ADMIN_PAGES_ORIGIN"
 
 # ---------------------------------------------------------------------------
+# TEST environment — created 2026-07-30 against the Owner's Cloudflare account.
+# Deploy with: wrangler deploy --env test
+#
+# These are REAL, already-created resources (not placeholders):
+#   D1  sentinel-fortune-shop-test          (migrations 0001+0002 applied and verified)
+#   R2  sentinel-fortune-shop-downloads-test (PRIVATE — never enable public access)
+#   R2  sentinel-fortune-shop-assets-test    (public covers/previews; enable public
+#                                             access + set SHOP_ASSETS_PUBLIC_BASE_URL)
+#
+# A database_id is an account-scoped identifier, not a credential — using it still
+# requires Cloudflare authentication. Secrets are NOT here; set them with:
+#   wrangler secret put STRIPE_SECRET_KEY --env test        (sk_test_... ONLY)
+#   wrangler secret put STRIPE_WEBHOOK_SECRET --env test    (whsec_...)
+#   wrangler secret put RESEND_API_KEY --env test
+#
+# SHOP_WORKER_BASE_URL below is unknown until the first deploy prints the
+# workers.dev hostname — set it then and redeploy so emailed download links
+# point at the right host.
+# ---------------------------------------------------------------------------
+[env.test]
+name = "sentinel-fortune-digital-shop-test"
+
+[env.test.vars]
+ENVIRONMENT = "test"
+RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
+SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
+SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_TEST_ASSETS_BUCKET_PUBLIC_URL"
+SHOP_WORKER_BASE_URL = "https://REPLACE_WITH_TEST_WORKER_HOSTNAME.workers.dev"
+CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
+CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_TEST_ADMIN_PAGES_ORIGIN"
+
+[[env.test.d1_databases]]
+binding = "SHOP_DB"
+database_name = "sentinel-fortune-shop-test"
+database_id = "54dbbd38-85b6-40e9-a879-55f717c7404b"
+
+[[env.test.r2_buckets]]
+binding = "SHOP_DOWNLOADS_BUCKET"
+bucket_name = "sentinel-fortune-shop-downloads-test"
+
+[[env.test.r2_buckets]]
+binding = "SHOP_ASSETS_BUCKET"
+bucket_name = "sentinel-fortune-shop-assets-test"
+
+# ---------------------------------------------------------------------------
 # Production environment overrides.
 # Deploy to production explicitly with: wrangler deploy --env production
 # Do NOT deploy to production until Owner approval per the release checklist.
