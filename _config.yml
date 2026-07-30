@@ -1,0 +1,93 @@
+# GitHub Pages (Jekyll) publication boundary — Sentinel Fortune LLC
+#
+# This repository's Pages site is served with "Deploy from a branch" (evidence:
+# an active, system-generated `pages-build-deployment` Actions workflow that
+# fires on pushes to `main`; no custom Pages workflow exists in the repo).
+# In that mode, with no `.nojekyll` present, Jekyll publishes the repository
+# root, minus whatever is listed under `exclude:` below.
+#
+# The repository intentionally holds public web content, private operational
+# source, and internal governance material side by side. Only the first of
+# those belongs on the public web, so the exclusion list below is the boundary
+# between them.
+#
+# ---------------------------------------------------------------------------
+# WHAT REMAINS PUBLIC (verified as actually required by the live site)
+# ---------------------------------------------------------------------------
+#   index.html                      institutional homepage (self-contained:
+#                                   inline CSS + inline JS, no external local
+#                                   dependencies)
+#   IMG_7098.jpeg                   referenced by index.html and its OG tags
+#   shop/                           public storefront (self-contained; its only
+#                                   outbound local link is ../index.html)
+#   frontend/games/                 S.5 ASCENT game — linked from index.html at
+#                                   /sentinelfortune/frontend/games/s5-ascent-lite/
+#                                   and verified self-contained. This is why
+#                                   `frontend` is excluded per-subdirectory
+#                                   below rather than wholesale: excluding the
+#                                   whole tree would break that live link.
+#   sitemap.xml, README.md          harmless, conventional
+#   app.js, styles.css, data/       orphaned legacy files. index.html does NOT
+#                                   load them, and they contain no secrets.
+#                                   Left published deliberately: excluding them
+#                                   buys no security and could only break
+#                                   something not visible from this repo.
+#
+# ---------------------------------------------------------------------------
+# WHY EACH EXCLUSION EXISTS
+# ---------------------------------------------------------------------------
+# Nothing below is deleted, moved, or modified — this only stops Jekyll from
+# copying it into the published site. Every path stays in version control and
+# stays available to its real deployment target (Cloudflare, the bot host, etc).
+exclude:
+  # --- Digital Shop private surfaces -------------------------------------
+  # Owner Admin UI. Belongs on a separate Cloudflare Pages project behind
+  # Cloudflare Access; Access cannot protect a github.io URL, so this must
+  # never be served from here.
+  - admin
+  # Cloudflare Worker source (TypeScript, tests, migrations, wrangler config).
+  # Deployed via `wrangler deploy`; not a web asset.
+  - shop-worker
+
+  # --- Verified sensitive content ----------------------------------------
+  # Telegram bot source. Contains private channel invite links and internal
+  # Worker hostnames in plain source. Highest-priority exclusion.
+  - bot
+  # React app source. Its /ops pages embed private channel invite codes and an
+  # internal Worker hostname client-side. NOTE: this is a per-subdirectory
+  # exclusion — frontend/games/ above stays public.
+  - frontend/src
+  - frontend/modules
+  - frontend/package.json
+
+  # --- Internal infrastructure and governance ----------------------------
+  # Express API source: internal domain/tier maps, R2 key layout.
+  - backend
+  # Worker source, secrets manifest template, deploy sequences, health/migration
+  # plans. Operational, not public.
+  - cloudflare
+  # Build/start scripts and the ecosystem Worker.
+  - config
+  # ORIGINUS governance manifests and canon.
+  - originus
+  # ORIGINUS vault manifests.
+  - vault
+  # Stale build mirrors of the frontend/backend source.
+  - artifacts
+
+  # --- Internal operational documentation ---------------------------------
+  # These describe deployment procedure, required configuration keys, and known
+  # security gaps. SHOP_SECURITY_CHECKLIST.md in particular documents an
+  # unresolved pre-existing issue, which should not be published while it is
+  # still open. (README.md stays public — it is the repository's front door and
+  # contains nothing operational.)
+  - SHOP_MVP_README.md
+  - SHOP_ARCHITECTURE.md
+  - SHOP_SECURITY_CHECKLIST.md
+  - SHOP_RELEASE_CHECKLIST.md
+  - SHOP_KNOWN_LIMITATIONS.md
+  - CLOUDFLARE_SHOP_SETUP.md
+  - STRIPE_SHOP_SETUP.md
+  - RESEND_SETUP.md
+  - OWNER_SHOP_GUIDE.md
+  - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md

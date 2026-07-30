@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Checkout Cancelled — Sentinel Fortune LLC Digital Shop</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#04060f"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shop.css"/>
+</head>
+<body>
+
+<header class="shop-hdr">
+  <div class="shop-hdr-inner">
+    <a class="shop-logo" href="../index.html">SENTINEL FORTUNE LLC<small>Digital Shop</small></a>
+    <nav class="shop-hdr-nav">
+      <a href="index.html">Catalog</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="status-page">
+    <div class="status-icon info">i</div>
+    <h1 class="page-title" style="font-size:1.9rem">Checkout Cancelled</h1>
+    <p class="page-sub" style="margin-top:14px">
+      No charge was made. Your Stripe checkout session was cancelled before payment completed.
+    </p>
+    <div id="returnLinkWrap" style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-gold" id="returnLink" href="index.html">Return to Product</a>
+      <a class="btn btn-line" href="index.html">Back to Catalog</a>
+    </div>
+  </div>
+</main>
+
+<footer class="shop-ftr">
+  <nav class="shop-ftr-links">
+    <a href="index.html">Catalog</a>
+    <a href="licenses.html">Licenses</a>
+    <a href="refund-policy.html">Refund Policy</a>
+    <a href="terms-of-sale.html">Terms of Sale</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="shop-ftr-copy">© Sentinel Fortune LLC. All rights reserved.</div>
+</footer>
+
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var slug = params.get("slug");
+  var link = document.getElementById("returnLink");
+  if (slug && link) {
+    link.href = "product.html?slug=" + encodeURIComponent(slug);
+  } else if (link) {
+    link.style.display = "none";
+  }
+})();
+</script>
+</body>
+</html>

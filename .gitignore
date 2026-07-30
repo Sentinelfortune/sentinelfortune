@@ -7,3 +7,8 @@ dist/
 .replit
 replit.nix
 *.tsbuildinfo
+
+# Shop Worker — Cloudflare local dev state and secrets, never committed
+shop-worker/.wrangler/
+shop-worker/.dev.vars
+.dev.vars
