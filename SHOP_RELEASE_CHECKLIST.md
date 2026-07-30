@@ -58,6 +58,10 @@ Follow `CLOUDFLARE_SHOP_SETUP.md`. Nothing below has been performed.
       `CF_ACCESS_AUD`
 - [ ] `/admin` deployed to a **separate Cloudflare Pages project** behind that Access application
       (never GitHub Pages — see `SHOP_ARCHITECTURE.md`)
+- [ ] `ADMIN_ALLOWED_ORIGIN` in `wrangler.toml` set to that Pages deployment's origin, and the Worker
+      redeployed. **Until this is set the admin UI cannot call the Worker from a browser** — its
+      credentialed cross-origin requests are not CORS-permitted (deliberately fail-safe)
+- [ ] `window.SHOP_API_BASE` set in **both** `shop/shop-config.js` and `admin/admin-config.js`
 - [ ] Verified: opening the admin URL in a logged-out/private browser window produces a Cloudflare Access
       challenge, not the admin UI
 - [ ] Verified: calling any `/shop/admin/*` Worker route without an Access JWT returns HTTP 401
@@ -146,9 +150,11 @@ None of this can be verified before merge — the Shop pages do not exist on the
 - [ ] The **Shop** nav link is visible in the mobile menu and navigates to the storefront
 - [ ] `https://sentinelfortune.github.io/sentinelfortune/shop/` loads the catalog, with CSS and JS applied
       (confirms base-path correctness on the real host)
-- [ ] `https://sentinelfortune.github.io/sentinelfortune/admin/` returns **404** — confirms the
-      `_config.yml` exclusion worked and the Owner Admin is not publicly served
-- [ ] `https://sentinelfortune.github.io/sentinelfortune/shop-worker/` returns **404**
+- [ ] Each of these returns **404**, confirming the `_config.yml` publication boundary took effect:
+      `/admin/`, `/shop-worker/`, `/bot/`, `/backend/`, `/cloudflare/`, `/config/`, `/originus/`,
+      `/vault/`, `/artifacts/`, `/frontend/src/`
+- [ ] `https://sentinelfortune.github.io/sentinelfortune/frontend/games/s5-ascent-lite/` still **loads**
+      (this subdirectory is deliberately kept public and is linked from the homepage)
 - [ ] Storefront policy pages (licenses, refund, terms, privacy, contact) all load and cross-link correctly
 
 ---

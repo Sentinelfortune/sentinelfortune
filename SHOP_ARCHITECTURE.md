@@ -163,3 +163,108 @@ the UI would just be an empty shell with no login form and no way to authenticat
    `now` passed in explicitly (fully unit-testable without wall-clock flakiness).
 3. On success, the Worker streams the R2 object body directly in the response — the private downloads
    bucket's contents are never exposed as a public URL at any point.
+
+---
+
+# Public / private boundary (pre-launch alignment)
+
+The repository holds public web content, private operational source, and internal
+governance material side by side. This section is the authoritative statement of which
+is which, and who serves what.
+
+## 1. What is public
+
+Only these are intended to reach the open web:
+
+| Surface | Served by | Contents |
+|---|---|---|
+| Institutional homepage | GitHub Pages | `index.html` (self-contained: inline CSS + JS), `IMG_7098.jpeg`, `sitemap.xml` |
+| Digital Shop storefront | GitHub Pages | `shop/` — catalog, product pages, success/cancel, policy pages |
+| S.5 ASCENT game | GitHub Pages | `frontend/games/` — linked from the homepage |
+| Product covers / previews | Cloudflare R2 (public assets bucket) | Uploaded by the Owner through the admin |
+
+`app.js`, `styles.css`, and `data/` remain published but are orphaned legacy files —
+`index.html` does not load them. They contain no secrets and are left in place
+deliberately rather than risk breaking something not visible from this repository.
+
+## 2. What is private
+
+Never public, regardless of where the file lives in this repository:
+
+- `admin/` — Owner Admin UI (separate Cloudflare Pages project, behind Cloudflare Access)
+- `shop-worker/` — Worker source, tests, migrations, wrangler config
+- `bot/` — Telegram bot source (contains private channel invite links)
+- `frontend/src`, `frontend/modules` — React app source (its `/ops` pages embed private
+  channel invite codes and an internal Worker hostname client-side)
+- `backend/`, `cloudflare/`, `config/` — internal API/Worker/build infrastructure
+- `originus/`, `vault/` — ORIGINUS governance manifests and canon
+- `artifacts/` — stale build mirrors
+- The Shop's internal operational documentation (setup guides, security and release
+  checklists, known limitations)
+
+## 3. What GitHub Pages publishes
+
+Pages serves the repository root under `/sentinelfortune/`, minus everything in
+`_config.yml`'s `exclude:` list. After the pre-launch hardening that list reduces the
+published surface from **342 tracked files to 33**. Every entry in that list carries an
+inline comment explaining why it is excluded; `frontend` is excluded *per subdirectory*
+precisely so `frontend/games/` stays reachable.
+
+Nothing is deleted or moved by this — excluded paths stay in version control and stay
+available to their real deployment targets.
+
+## 4. What Cloudflare serves
+
+- **Worker** — the entire Shop API: catalog, checkout, Stripe webhook, token-gated
+  downloads, and all admin endpoints
+- **D1** — products, orders, customers, licenses, download authorizations, Stripe event
+  ledger, admin audit log
+- **R2 (downloads, private)** — purchasable files; never publicly readable, streamed only
+  through the Worker's `/shop/download/:token` route
+- **R2 (assets, public)** — cover and preview images only
+- **Cloudflare Pages + Access** — the Owner Admin UI
+
+## 5. What the admin interface is
+
+`admin/` is the Owner-only control surface for products, pricing, uploads, orders,
+licenses, and settings. It has **no username/password login by design**: Cloudflare Access
+authenticates at the edge, and the Worker independently re-verifies the Access JWT on
+every `/shop/admin/*` request. GitHub Pages cannot enforce Access, which is why `admin/`
+is excluded from the Pages surface and deployed separately.
+
+## 6. House of Assets
+
+House of Assets is the private production operating system of Sentinel Fortune LLC. It is
+**not part of this repository**, is not a public product, is not embedded in the
+storefront, and is outside the scope of the Digital Shop. Nothing in the public surface
+references it — verified.
+
+## 7. What the Owner must configure before test deployment
+
+Non-secret, committed in `shop-worker/wrangler.toml` (replace each `REPLACE_WITH_*`):
+`database_id`, `SHOP_ASSETS_PUBLIC_BASE_URL`, `SHOP_WORKER_BASE_URL`,
+`CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, `ADMIN_ALLOWED_ORIGIN`.
+
+Non-secret, in the front-end config files (one per front end, never inline in logic):
+`shop/shop-config.js` and `admin/admin-config.js` → `window.SHOP_API_BASE`.
+
+Secrets, via `wrangler secret put` only — never committed:
+`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`.
+
+Every one of these fails closed while unset: missing Stripe/Resend config produces a real
+error rather than a fabricated success, and an unset `ADMIN_ALLOWED_ORIGIN` simply leaves
+the admin origin off the CORS allow-list without affecting the storefront.
+
+## 8. Launch order
+
+1. Local validation (typecheck, tests, wrangler dry-run) — see `SHOP_RELEASE_CHECKLIST.md` Stage 1
+2. Cloudflare test deployment: D1 + R2 ×2 + Worker + Access + admin Pages (Stage 2)
+3. Stripe **test-mode** payment (Stage 3)
+4. Webhook validation, including idempotency and a bad-signature rejection (Stage 4)
+5. Secure download validation: limit, expiry, revocation (Stage 5)
+6. Email validation via Resend (Stage 6)
+7. Refund path validation (Stage 7)
+8. Merge PR #3, then GitHub Pages validation — including asserting `/admin/` and
+   `/shop-worker/` return 404 (Stage 8)
+9. Production deployment, live Stripe, first real product (Stage 9)
+10. Netlify retirement, last (Stage 10)

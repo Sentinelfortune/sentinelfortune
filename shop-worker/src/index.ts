@@ -92,7 +92,7 @@ function getIdentity(request: Request): { email: string; sub: string } {
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const preflight = handlePreflight(request);
+    const preflight = handlePreflight(request, env);
     if (preflight) return preflight;
 
     const url = new URL(request.url);
@@ -100,15 +100,15 @@ export default {
     if (url.pathname.startsWith("/shop/admin/")) {
       const identity = await requireOwnerAccess(request, env);
       if (!identity) {
-        return withCors(genericError(401, "Owner authentication required."), request);
+        return withCors(genericError(401, "Owner authentication required."), request, env);
       }
       (request as Request & { __identity?: { email: string; sub: string } }).__identity = identity;
     }
 
     const result = await router.handle(request, env, ctx, url.pathname);
     if (!result) {
-      return withCors(genericError(404, "Not found."), request);
+      return withCors(genericError(404, "Not found."), request, env);
     }
-    return withCors(result, request);
+    return withCors(result, request, env);
   },
 };

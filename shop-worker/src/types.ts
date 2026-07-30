@@ -67,6 +67,14 @@ export interface Env {
   CF_ACCESS_TEAM_DOMAIN: string;   // e.g. "sentinelfortune.cloudflareaccess.com"
   CF_ACCESS_AUD: string;           // Access application Audience (AUD) tag
 
+  /**
+   * Browser origin of the Owner Admin UI's Cloudflare Pages deployment,
+   * e.g. "https://sentinel-fortune-shop-admin.pages.dev". Added to the CORS
+   * allow-list at runtime. Optional: while unset, the storefront still works
+   * and admin browser calls are simply not CORS-permitted (fail-safe).
+   */
+  ADMIN_ALLOWED_ORIGIN?: string;
+
   SHOP_PUBLIC_BASE_URL: string;    // e.g. "https://sentinelfortune.github.io/sentinelfortune/shop"
   SHOP_ASSETS_PUBLIC_BASE_URL: string; // public URL prefix for SHOP_ASSETS_BUCKET
   SHOP_WORKER_BASE_URL: string;    // this Worker's own public URL

@@ -58,6 +58,11 @@ SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_ASSETS_BUCKET_PUBLIC_URL"
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
 CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
 CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# Browser origin of the Owner Admin Cloudflare Pages deployment. Required for
+# the admin UI to call this Worker cross-origin with its Access cookie. While
+# left as the placeholder it is ignored (storefront unaffected, admin calls
+# simply not CORS-permitted) — set it after deploying /admin to Pages.
+ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_ADMIN_PAGES_ORIGIN"
 
 # ---------------------------------------------------------------------------
 # Production environment overrides.
@@ -75,6 +80,11 @@ SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_ASSETS_BUCKET_PUBLIC_URL"
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
 CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
 CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# Browser origin of the Owner Admin Cloudflare Pages deployment. Required for
+# the admin UI to call this Worker cross-origin with its Access cookie. While
+# left as the placeholder it is ignored (storefront unaffected, admin calls
+# simply not CORS-permitted) — set it after deploying /admin to Pages.
+ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_ADMIN_PAGES_ORIGIN"
 
 [[env.production.d1_databases]]
 binding = "SHOP_DB"

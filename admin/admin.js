@@ -11,9 +11,15 @@ login form here by design.
 "use strict";
 
 // ---------------------------------------------------------------------------
-// Config — update after the Shop Worker is deployed (see CLOUDFLARE_SHOP_SETUP.md)
+// Config — single source of truth is admin/admin-config.js (loaded before this
+// file), mirroring the storefront's shop/shop-config.js convention. Do not
+// hardcode an environment URL in this file.
 // ---------------------------------------------------------------------------
-var SHOP_API_BASE = "https://REPLACE_WITH_SHOP_WORKER_URL.workers.dev";
+function apiBase() {
+  var base = (window.SHOP_API_BASE || "").trim();
+  if (!base || base.indexOf("REPLACE_WITH") !== -1) return null;
+  return base.replace(/\/$/, "");
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -35,7 +41,11 @@ async function api(path, options) {
   if (!(options.body instanceof FormData) && options.body) {
     headers["Content-Type"] = "application/json";
   }
-  var res = await fetch(SHOP_API_BASE.replace(/\/$/, "") + path, {
+  var base = apiBase();
+  if (base === null) {
+    return { ok: false, status: 0, data: { error: "Shop Worker URL is not configured. Set window.SHOP_API_BASE in admin/admin-config.js." } };
+  }
+  var res = await fetch(base + path, {
     method: options.method || "GET",
     headers: headers,
     body: options.body,
