@@ -144,11 +144,19 @@ export async function requireOwnerAccess(request: Request, env: Env): Promise<Ac
   const token = extractAccessJwt(request);
   if (!token) return null;
 
-  if (!env.CF_ACCESS_TEAM_DOMAIN || !env.CF_ACCESS_AUD) return null;
+  // CF_ACCESS_TEAM_DOMAIN is a plain var; CF_ACCESS_AUD arrives as a Wrangler
+  // secret and is undefined until it has been uploaded. Either one missing (or
+  // empty, or still a REPLACE_WITH_* placeholder) means Access is not configured
+  // for this deployment — reject rather than verify against a value that could
+  // never have come from a real Access application.
+  const teamDomain = env.CF_ACCESS_TEAM_DOMAIN;
+  const expectedAud = env.CF_ACCESS_AUD;
+  if (!teamDomain || teamDomain.includes("REPLACE_WITH")) return null;
+  if (!expectedAud || expectedAud.includes("REPLACE_WITH")) return null;
 
   try {
-    const jwks = await fetchJwks(env.CF_ACCESS_TEAM_DOMAIN);
-    return await verifyAccessJwtWithJwks(token, jwks, env.CF_ACCESS_AUD, new Date());
+    const jwks = await fetchJwks(teamDomain);
+    return await verifyAccessJwtWithJwks(token, jwks, expectedAud, new Date());
   } catch {
     return null;
   }

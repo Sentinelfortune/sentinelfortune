@@ -139,4 +139,53 @@ describe("requireOwnerAccess — unauthorized admin access rejection", () => {
     const identity = await requireOwnerAccess(request, env);
     expect(identity).toBeNull();
   });
+
+  // CF_ACCESS_AUD is supplied as a Wrangler secret, so it is genuinely absent
+  // from env until the Owner uploads it. That state must fail closed.
+  it("returns null when CF_ACCESS_AUD has not been uploaded as a secret yet", async () => {
+    const env = await buildTestEnv({ CF_ACCESS_TEAM_DOMAIN: "sentinelfortunellc.cloudflareaccess.com" });
+    delete (env as { CF_ACCESS_AUD?: string }).CF_ACCESS_AUD;
+
+    const request = new Request("https://shop.example.com/shop/admin/products", {
+      headers: { "Cf-Access-Jwt-Assertion": "abc.def.ghi" },
+    });
+
+    expect(env.CF_ACCESS_AUD).toBeUndefined();
+    expect(await requireOwnerAccess(request, env)).toBeNull();
+  });
+
+  it("returns null while either Access value is still a REPLACE_WITH_* placeholder", async () => {
+    const placeholderTeam = await buildTestEnv({ CF_ACCESS_TEAM_DOMAIN: "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com" });
+    const placeholderAud = await buildTestEnv({ CF_ACCESS_AUD: "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG" });
+    const request = new Request("https://shop.example.com/shop/admin/products", {
+      headers: { "Cf-Access-Jwt-Assertion": "abc.def.ghi" },
+    });
+
+    expect(await requireOwnerAccess(request, placeholderTeam)).toBeNull();
+    expect(await requireOwnerAccess(request, placeholderAud)).toBeNull();
+  });
+
+  it("reads a secret-supplied CF_ACCESS_AUD and accepts a JWT carrying that audience", async () => {
+    __resetJwksCacheForTests();
+    const secretAud = "aud-supplied-only-as-a-wrangler-secret";
+    const { privateKey, publicKey } = await generateTestKeyPair();
+    const jwk = (await crypto.subtle.exportKey("jwk", publicKey)) as { n: string; e: string };
+    const jwks = [{ kid: "kid-secret", kty: "RSA", alg: "RS256", use: "sig", n: jwk.n, e: jwk.e }];
+
+    const now = Math.floor(Date.now() / 1000);
+    const token = await signAccessJwt(privateKey, "kid-secret", {
+      aud: [secretAud],
+      email: "owner@sentinelfortune.com",
+      sub: "owner-1",
+      iat: now - 10,
+      exp: now + 3600,
+    });
+
+    // Same token, verified against the secret-supplied AUD vs. a different one.
+    expect(await verifyAccessJwtWithJwks(token, jwks, secretAud, new Date())).toEqual({
+      email: "owner@sentinelfortune.com",
+      sub: "owner-1",
+    });
+    expect(await verifyAccessJwtWithJwks(token, jwks, "some-other-application-aud", new Date())).toBeNull();
+  });
 });

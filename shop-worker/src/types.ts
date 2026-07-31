@@ -64,8 +64,20 @@ export interface Env {
   RESEND_API_KEY: string;
   RESEND_FROM_EMAIL: string;
 
-  CF_ACCESS_TEAM_DOMAIN: string;   // e.g. "sentinelfortune.cloudflareaccess.com"
-  CF_ACCESS_AUD: string;           // Access application Audience (AUD) tag
+  CF_ACCESS_TEAM_DOMAIN: string;   // e.g. "sentinelfortune.cloudflareaccess.com" — plain var
+
+  /**
+   * Cloudflare Access application Audience (AUD) tag.
+   *
+   * Supplied as a Wrangler SECRET (`wrangler secret put CF_ACCESS_AUD --env <env>`),
+   * never as a var in wrangler.toml — a binding name cannot be both, and declaring
+   * it as a var makes the secret upload fail with Cloudflare error 10053.
+   *
+   * Optional here because it is genuinely absent until that secret is uploaded.
+   * requireOwnerAccess() treats absent/empty as "not configured" and rejects every
+   * admin request with 401, so an unconfigured deployment fails closed.
+   */
+  CF_ACCESS_AUD?: string;
 
   /**
    * Browser origin of the Owner Admin UI's Cloudflare Pages deployment,

@@ -244,15 +244,20 @@ references it — verified.
 ## 7. What the Owner must configure before test deployment
 
 Non-secret, committed in `shop-worker/wrangler.toml` (replace each `REPLACE_WITH_*`):
-`database_id`, `SHOP_WORKER_BASE_URL`, `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`,
-`ADMIN_ALLOWED_ORIGIN`. (`SHOP_ASSETS_PUBLIC_BASE_URL` is optional and deliberately unset —
-see §"R2 (assets, private)" above.)
+`database_id`, `SHOP_WORKER_BASE_URL`, `CF_ACCESS_TEAM_DOMAIN`, `ADMIN_ALLOWED_ORIGIN`.
+(`SHOP_ASSETS_PUBLIC_BASE_URL` is optional and deliberately unset — see §"R2 (assets, private)"
+above.)
 
 Non-secret, in the front-end config files (one per front end, never inline in logic):
 `shop/shop-config.js` and `admin/admin-config.js` → `window.SHOP_API_BASE`.
 
 Secrets, via `wrangler secret put` only — never committed:
-`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`.
+`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `CF_ACCESS_AUD`.
+
+`CF_ACCESS_AUD` is a secret rather than a var for two reasons: it identifies a specific Access
+application and does not belong in Git, and Cloudflare rejects a `secret put` for a binding name
+already declared as a var (error 10053). `CF_ACCESS_TEAM_DOMAIN` stays a var — it is the public
+Zero Trust hostname that serves the JWKS.
 
 Every one of these fails closed while unset: missing Stripe/Resend config produces a real
 error rather than a fabricated success, and an unset `ADMIN_ALLOWED_ORIGIN` simply leaves

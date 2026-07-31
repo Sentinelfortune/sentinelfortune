@@ -57,7 +57,11 @@ RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
 SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
 CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
-CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# CF_ACCESS_AUD is NOT declared as a var in any environment — it is uploaded with
+# `wrangler secret put CF_ACCESS_AUD [--env <env>]`. A binding name cannot be both
+# a var and a secret; declaring it here makes that upload fail with Cloudflare
+# error 10053. src/lib/auth.ts fails closed (401 on every /shop/admin/* request)
+# for as long as the secret is missing.
 # Browser origin of the Owner Admin Cloudflare Pages deployment. Required for
 # the admin UI to call this Worker cross-origin with its Access cookie. While
 # left as the placeholder it is ignored (storefront unaffected, admin calls
@@ -82,6 +86,15 @@ ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_ADMIN_PAGES_ORIGIN"
 #   wrangler secret put STRIPE_SECRET_KEY --env test        (sk_test_... ONLY)
 #   wrangler secret put STRIPE_WEBHOOK_SECRET --env test    (whsec_...)
 #   wrangler secret put RESEND_API_KEY --env test
+#   wrangler secret put CF_ACCESS_AUD --env test            (Access application AUD tag)
+#
+# CF_ACCESS_AUD is deliberately ABSENT from [env.test.vars] below. A binding name
+# can be either a plain var or a secret, never both — declaring it here makes
+# `wrangler secret put CF_ACCESS_AUD --env test` fail with Cloudflare error 10053
+# ("binding name already in use"). The AUD tag identifies a specific Access
+# application, so it is kept out of Git and uploaded as a secret instead.
+# Until that secret is set, src/lib/auth.ts sees it undefined and every
+# /shop/admin/* request is rejected with 401 (fail-closed).
 #
 # SHOP_WORKER_BASE_URL is the hostname printed by the first successful deploy
 # (verified 2026-07-31: GET /shop/health -> {"ok":true,...}). Emailed download
@@ -98,8 +111,10 @@ ENVIRONMENT = "test"
 RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
 SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop-test.sentinelfortunellc.workers.dev"
-CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
-CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# Team domain is not a credential — it is the public Zero Trust hostname whose
+# /cdn-cgi/access/certs endpoint serves the JWKS. Safe as a plain var.
+CF_ACCESS_TEAM_DOMAIN = "sentinelfortunellc.cloudflareaccess.com"
+# CF_ACCESS_AUD is a secret — see the note above. Do not add it here.
 ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_TEST_ADMIN_PAGES_ORIGIN"
 
 [[env.test.d1_databases]]
@@ -130,7 +145,8 @@ SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
 # SHOP_ASSETS_PUBLIC_BASE_URL intentionally unset — see [vars] above.
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
 CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
-CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# CF_ACCESS_AUD: secret only — `wrangler secret put CF_ACCESS_AUD --env production`.
+# See the note in [vars] above. Never declare it as a var here.
 # Browser origin of the Owner Admin Cloudflare Pages deployment. Required for
 # the admin UI to call this Worker cross-origin with its Access cookie. While
 # left as the placeholder it is ignored (storefront unaffected, admin calls

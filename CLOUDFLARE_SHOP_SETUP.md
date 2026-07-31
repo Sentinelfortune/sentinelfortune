@@ -60,8 +60,9 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 |---|---|
 | `database_id` (×2) | From step 1 |
 | `SHOP_WORKER_BASE_URL` (×2) | The Worker's `*.workers.dev` URL (known after first deploy — step 5 — or your custom route) |
-| `CF_ACCESS_TEAM_DOMAIN` (×2) | Your Cloudflare Zero Trust team domain, e.g. `sentinelfortune.cloudflareaccess.com` |
-| `CF_ACCESS_AUD` (×2) | The Access application's Audience tag — created in step 6 |
+| `CF_ACCESS_TEAM_DOMAIN` (×2) | Your Cloudflare Zero Trust team domain, e.g. `sentinelfortunellc.cloudflareaccess.com` |
+
+`CF_ACCESS_AUD` is **not** in this table — it is a secret, see step 4.
 
 ## 4. Set secrets (never written to `wrangler.toml`)
 
@@ -69,7 +70,16 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 npx wrangler secret put STRIPE_SECRET_KEY        # sk_test_... first — see STRIPE_SHOP_SETUP.md
 npx wrangler secret put STRIPE_WEBHOOK_SECRET     # whsec_... — from the Stripe webhook endpoint
 npx wrangler secret put RESEND_API_KEY            # re_...
+npx wrangler secret put CF_ACCESS_AUD             # Access application Audience tag — from step 6
 ```
+
+A binding name can be a plain var **or** a secret, never both. `CF_ACCESS_AUD` is therefore absent from
+every `vars` block in `wrangler.toml`; adding it back there makes this upload fail with Cloudflare error
+**10053 — binding name already in use**. `CF_ACCESS_TEAM_DOMAIN` stays a plain var: it is the public Zero
+Trust hostname serving the JWKS, not a credential.
+
+Until the `CF_ACCESS_AUD` secret exists, `requireOwnerAccess()` treats Access as unconfigured and every
+`/shop/admin/*` request is rejected with 401 — an unconfigured deployment fails closed, it does not open.
 
 Repeat with `--env production` for the production environment once you're ready for it (not before — see
 `SHOP_RELEASE_CHECKLIST.md`).
@@ -94,7 +104,8 @@ Note the resulting `*.workers.dev` URL and fill it into `SHOP_WORKER_BASE_URL` i
    - Domain: the admin Pages project's hostname from step 2
    - Policy: allow only the Owner's email address (or a short allowlist) — no public access, no
      self-signup
-4. Copy the application's **Audience (AUD) tag** into `CF_ACCESS_AUD` (step 3).
+4. Upload the application's **Audience (AUD) tag** as the `CF_ACCESS_AUD` secret (step 4) — do not put it
+   in `wrangler.toml`.
 
 ## 7. Deploy `/admin` to Cloudflare Pages (NOT GitHub Pages)
 
