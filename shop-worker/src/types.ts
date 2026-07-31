@@ -76,7 +76,12 @@ export interface Env {
   ADMIN_ALLOWED_ORIGIN?: string;
 
   SHOP_PUBLIC_BASE_URL: string;    // e.g. "https://sentinelfortune.github.io/sentinelfortune/shop"
-  SHOP_ASSETS_PUBLIC_BASE_URL: string; // public URL prefix for SHOP_ASSETS_BUCKET
+  /**
+   * OPTIONAL CDN/custom-domain override for product cover/preview images.
+   * When unset (the default), images are served by this Worker itself at
+   * /shop/asset/:imageId, so the assets R2 bucket needs NO public access.
+   */
+  SHOP_ASSETS_PUBLIC_BASE_URL?: string;
   SHOP_WORKER_BASE_URL: string;    // this Worker's own public URL
 
   ENVIRONMENT: "development" | "test" | "production";

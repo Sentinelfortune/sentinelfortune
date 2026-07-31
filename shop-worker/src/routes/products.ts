@@ -1,12 +1,8 @@
 import type { Env, ProductImageRow, ProductRow } from "../types";
 import { getProductBySlug, listProductImages, listPublishedProducts } from "../lib/db";
 import { formatUsdFromCents } from "../lib/money";
+import { assetUrl } from "../lib/assets";
 import { genericError, jsonResponse, safeServerError } from "../lib/http";
-
-function assetUrl(env: Env, r2Key: string): string {
-  const base = env.SHOP_ASSETS_PUBLIC_BASE_URL.replace(/\/$/, "");
-  return `${base}/${r2Key}`;
-}
 
 function safeJsonArray(raw: string): unknown[] {
   try {
@@ -17,7 +13,7 @@ function safeJsonArray(raw: string): unknown[] {
   }
 }
 
-function toCatalogEntry(env: Env, product: ProductRow, coverKey: string | null) {
+function toCatalogEntry(env: Env, product: ProductRow, cover: ProductImageRow | null) {
   return {
     slug: product.slug,
     title: product.title,
@@ -27,7 +23,7 @@ function toCatalogEntry(env: Env, product: ProductRow, coverKey: string | null) 
     priceCents: product.price_cents,
     priceDisplay: product.price_cents !== null ? formatUsdFromCents(product.price_cents) : null,
     currency: product.currency,
-    coverImageUrl: coverKey ? assetUrl(env, coverKey) : null,
+    coverImageUrl: cover ? assetUrl(env, cover) : null,
   };
 }
 
@@ -56,8 +52,8 @@ function toDetailEntry(env: Env, product: ProductRow, images: ProductImageRow[])
     responsibleUseText: product.responsible_use_text,
     refundEligible: product.refund_eligible === 1,
     refundPolicySummary: product.refund_policy_summary,
-    coverImageUrl: cover ? assetUrl(env, cover.r2_key) : null,
-    previewImageUrls: previews.map((p) => assetUrl(env, p.r2_key)),
+    coverImageUrl: cover ? assetUrl(env, cover) : null,
+    previewImageUrls: previews.map((p) => assetUrl(env, p)),
     buyable: product.publicly_purchasable === 1 && product.price_confirmed === 1 && product.price_cents !== null,
   };
 }
@@ -68,8 +64,8 @@ export async function handleListProducts(_request: Request, env: Env): Promise<R
     const withCovers = await Promise.all(
       products.map(async (p) => {
         const images = await listProductImages(env.SHOP_DB, p.id);
-        const cover = images.find((img) => img.kind === "COVER");
-        return toCatalogEntry(env, p, cover ? cover.r2_key : null);
+        const cover = images.find((img) => img.kind === "COVER") ?? null;
+        return toCatalogEntry(env, p, cover);
       }),
     );
     return jsonResponse({ ok: true, products: withCovers });

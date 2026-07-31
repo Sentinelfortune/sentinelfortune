@@ -8,6 +8,7 @@ import { handleGetProduct, handleListProducts } from "./routes/products";
 import { handleCreateCheckout } from "./routes/checkout";
 import { handleStripeWebhook } from "./routes/webhook";
 import { handleDownload } from "./routes/download";
+import { handleGetAsset } from "./routes/asset";
 
 import {
   handleAdminArchiveProduct,
@@ -43,6 +44,9 @@ router.get("/shop/products/:slug", async (request, env, _ctx, params) => handleG
 router.post("/shop/checkout", async (request, env) => handleCreateCheckout(request, env));
 router.post("/shop/stripe/webhook", async (request, env) => handleStripeWebhook(request, env));
 router.get("/shop/download/:token", async (request, env, _ctx, params) => handleDownload(request, env, params));
+// Product cover/preview images, served from the (private) assets bucket so no
+// R2 bucket in this system needs public access. See src/lib/assets.ts.
+router.get("/shop/asset/:id", async (request, env, _ctx, params) => handleGetAsset(request, env, params));
 
 // ---------------------------------------------------------------------------
 // Admin routes — every one of these is wrapped by the auth gate in fetch()

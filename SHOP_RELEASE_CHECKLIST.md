@@ -48,8 +48,9 @@ Follow `CLOUDFLARE_SHOP_SETUP.md`. Nothing below has been performed.
 - [ ] Migrations applied remotely (`wrangler d1 migrations apply sentinel-fortune-shop --remote`)
 - [ ] R2 bucket `sentinel-fortune-shop-downloads` created — **public access NOT enabled** (verify in the
       Cloudflare dashboard; this bucket must never have an r2.dev URL or custom domain)
-- [ ] R2 bucket `sentinel-fortune-shop-assets` created — public access enabled; its public base URL written
-      into `SHOP_ASSETS_PUBLIC_BASE_URL` in `wrangler.toml`
+- [ ] R2 bucket `sentinel-fortune-shop-assets` created — **public access NOT enabled**; cover/preview
+      images are served by the Worker at `/shop/asset/:id`, so `SHOP_ASSETS_PUBLIC_BASE_URL` stays unset
+      (it is only an optional CDN override)
 - [ ] Worker deployed to the non-production environment (`npm run deploy`); resulting `*.workers.dev` URL
       written into `SHOP_WORKER_BASE_URL` and redeployed
 - [ ] `GET /shop/health` returns `{"ok":true,...}`

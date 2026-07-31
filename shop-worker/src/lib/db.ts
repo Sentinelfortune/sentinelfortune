@@ -99,6 +99,10 @@ export async function listProductImages(db: D1Like, productId: string): Promise<
   return result.results;
 }
 
+export async function getProductImageById(db: D1Like, id: string): Promise<ProductImageRow | null> {
+  return db.prepare(`SELECT * FROM product_images WHERE id = ?`).bind(id).first<ProductImageRow>();
+}
+
 export async function insertProductImage(db: D1Like, row: ProductImageRow): Promise<void> {
   await db
     .prepare(

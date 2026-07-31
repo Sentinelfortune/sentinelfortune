@@ -37,16 +37,20 @@ first product, seeded as an unpublished `DRAFT` — see `PRODUCT_UPLOAD_AND_PUBL
 
 ```bash
 npx wrangler r2 bucket create sentinel-fortune-shop-downloads   # PRIVATE — purchasable files
-npx wrangler r2 bucket create sentinel-fortune-shop-assets      # PUBLIC — covers/previews only
+npx wrangler r2 bucket create sentinel-fortune-shop-assets      # PRIVATE — covers/previews only
 ```
 
-**`sentinel-fortune-shop-downloads` must never be given public bucket access.** All reads of this bucket
-go through the Worker's token-gated `/shop/download/:token` route, which streams bytes — it never returns
-a direct R2 URL. Do not enable the R2.dev public URL or a custom domain on this bucket.
+**Neither bucket needs public access. Do not enable the `r2.dev` public URL on either one.**
 
-**`sentinel-fortune-shop-assets` is intentionally public** (cover/preview images shown on public product
-pages). Enable either the bucket's `r2.dev` public URL or bind a custom domain to it, then set
-`SHOP_ASSETS_PUBLIC_BASE_URL` in `wrangler.toml` (`[vars]` and `[env.production.vars]`) to that base URL.
+`sentinel-fortune-shop-downloads` is read only through the Worker's token-gated `/shop/download/:token`
+route, which streams bytes — it never returns a direct R2 URL.
+
+`sentinel-fortune-shop-assets` holds cover/preview images shown on public product pages. Those are read
+through the Worker's `/shop/asset/:id` route, which is keyed on the `product_images` row id, so only
+images registered against a product are reachable and the bucket's key space is never addressable.
+
+`SHOP_ASSETS_PUBLIC_BASE_URL` is therefore **optional** and unset by default. Set it only if you later
+want a CDN or custom domain in front of a public assets bucket; leaving it unset keeps everything private.
 
 ## 3. Update `wrangler.toml`
 
@@ -55,7 +59,6 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 | Placeholder | Value |
 |---|---|
 | `database_id` (×2) | From step 1 |
-| `SHOP_ASSETS_PUBLIC_BASE_URL` (×2) | From step 2 |
 | `SHOP_WORKER_BASE_URL` (×2) | The Worker's `*.workers.dev` URL (known after first deploy — step 5 — or your custom route) |
 | `CF_ACCESS_TEAM_DOMAIN` (×2) | Your Cloudflare Zero Trust team domain, e.g. `sentinelfortune.cloudflareaccess.com` |
 | `CF_ACCESS_AUD` (×2) | The Access application's Audience tag — created in step 6 |
