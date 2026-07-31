@@ -15,5 +15,9 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts"]
+  // ../functions is the Owner Admin's Cloudflare Pages Functions source. It is
+  // deployed by Pages, not by wrangler, but it is TypeScript with no toolchain
+  // of its own and it is exercised by this package's tests — so it is
+  // typechecked here rather than left unchecked.
+  "include": ["src/**/*.ts", "../functions/**/*.ts"]
 }

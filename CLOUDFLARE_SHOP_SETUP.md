@@ -120,9 +120,30 @@ npx wrangler pages deploy admin --project-name sentinel-fortune-shop-admin
 (Or connect the repo to a Cloudflare Pages project in the dashboard, with build output directory set to
 `admin/` and no build command — it's static HTML/CSS/JS, no build step.)
 
+**Project layout matters.** The admin ships a Pages Function at `functions/api/[[path]].ts` in the
+**repository root**, so the Pages project's *root directory* must stay `/` (the default) with *build
+output directory* set to `admin`. If the root directory is instead set to `admin`, Pages will not find
+`functions/` and `/api/*` will 404 — the admin will show "Access Denied" again.
+
 After deploying, attach the Access application from step 6 to this Pages project's hostname (or a custom
-domain pointed at it), and update `admin/admin.js`'s `SHOP_API_BASE` constant to point at the deployed
-Shop Worker URL from step 5.
+domain pointed at it). **Do not** point the admin at the Worker hostname: `admin/admin-config.js` must
+stay `window.SHOP_API_BASE = "/api"`.
+
+### Why the admin calls `/api`, not the Worker directly
+
+Cloudflare Access authenticates the Owner **on the Pages hostname**. It sets `CF_Authorization` scoped to
+that hostname and injects `Cf-Access-Jwt-Assertion` only on requests it forwards to that origin. A browser
+`fetch()` from Pages to the Worker's separate `*.workers.dev` hostname is cross-site, so the cookie is not
+sent and page JavaScript cannot set the header — the Worker sees no token and correctly returns 401.
+
+`functions/api/[[path]].ts` removes the origin boundary. The browser calls only its own origin; the
+Function runs server-side inside the authenticated request, reads the token there, and forwards it to the
+Worker over a server-to-server call. The Worker still verifies signature, issuer, audience and expiry, so
+the proxy is a transport, not an authority. The JWT is never handed to browser JavaScript.
+
+Because admin traffic is now same-origin, `ADMIN_ALLOWED_ORIGIN` is no longer required for the admin to
+function. It is left in `wrangler.toml` only for direct browser calls to the Worker, which the admin no
+longer makes.
 
 ## 8. Update `/shop`'s config
 

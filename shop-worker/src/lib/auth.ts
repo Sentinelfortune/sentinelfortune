@@ -44,6 +44,7 @@ function base64UrlDecodeJson<T>(segment: string): T {
 
 interface AccessJwtPayload {
   aud: string | string[];
+  iss?: string;
   email?: string;
   sub?: string;
   exp: number;
@@ -53,14 +54,26 @@ interface AccessJwtPayload {
 
 const CLOCK_SKEW_SECONDS = 60;
 
+/** The issuer Cloudflare Access stamps on tokens for a given team domain. */
+export function expectedIssuerFor(teamDomain: string): string {
+  return `https://${teamDomain.replace(/\/$/, "")}`;
+}
+
 /**
  * Pure verification against an already-fetched JWKS key set. Kept separate
  * from JWKS fetching so it can be unit tested without any network access.
+ *
+ * Checks, in order: structure, alg, known kid, signature, expiry/nbf,
+ * issuer, audience, and the presence of an identity. All four of signature,
+ * issuer, audience and expiry must pass — a token that is validly signed by
+ * Cloudflare but issued for a different team or a different Access
+ * application is rejected.
  */
 export async function verifyAccessJwtWithJwks(
   token: string,
   jwks: Jwk[],
   expectedAud: string,
+  expectedIssuer: string,
   now: Date,
 ): Promise<AccessIdentity | null> {
   const parts = token.split(".");
@@ -103,6 +116,8 @@ export async function verifyAccessJwtWithJwks(
   const nowSec = Math.floor(now.getTime() / 1000);
   if (payload.exp + CLOCK_SKEW_SECONDS < nowSec) return null;
   if (payload.nbf && payload.nbf - CLOCK_SKEW_SECONDS > nowSec) return null;
+
+  if (!payload.iss || payload.iss !== expectedIssuer) return null;
 
   const audList = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
   if (!audList.includes(expectedAud)) return null;
@@ -156,7 +171,7 @@ export async function requireOwnerAccess(request: Request, env: Env): Promise<Ac
 
   try {
     const jwks = await fetchJwks(teamDomain);
-    return await verifyAccessJwtWithJwks(token, jwks, expectedAud, new Date());
+    return await verifyAccessJwtWithJwks(token, jwks, expectedAud, expectedIssuerFor(teamDomain), new Date());
   } catch {
     return null;
   }

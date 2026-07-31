@@ -1,12 +1,17 @@
 /* =====================================================
 SENTINEL FORTUNE LLC — admin.js
-Owner Admin UI logic for the Digital Shop. Every request
-below is sent with credentials so the Cloudflare Access
-cookie (CF_Authorization) is included; the Shop Worker
-verifies that JWT server-side on every /shop/admin/* call
-regardless of how this page was reached. This file does
-not implement any username/password login — there is no
-login form here by design.
+Owner Admin UI logic for the Digital Shop.
+
+Every request below goes to this page's OWN origin (/api/*),
+which is the origin Cloudflare Access protects. The Pages
+Function behind /api/* runs server-side, reads the Access
+token from the authenticated request, and forwards it to the
+Shop Worker, which verifies signature, issuer and audience on
+every /shop/admin/* call. This file never sees, stores or
+sends the Access JWT itself.
+
+This file does not implement any username/password login —
+there is no login form here by design.
 ===================================================== */
 "use strict";
 
@@ -43,13 +48,17 @@ async function api(path, options) {
   }
   var base = apiBase();
   if (base === null) {
-    return { ok: false, status: 0, data: { error: "Shop Worker URL is not configured. Set window.SHOP_API_BASE in admin/admin-config.js." } };
+    return { ok: false, status: 0, data: { error: "Admin API base is not configured. Set window.SHOP_API_BASE in admin/admin-config.js." } };
   }
+  // Same-origin by design — base is "/api", served by this Pages project's
+  // own Function. "same-origin" rather than "include": if this is ever
+  // repointed at another host, the request loses its credentials instead of
+  // silently shipping them somewhere cross-site.
   var res = await fetch(base + path, {
     method: options.method || "GET",
     headers: headers,
     body: options.body,
-    credentials: "include",
+    credentials: "same-origin",
   });
   var data = null;
   try { data = await res.json(); } catch (e) { /* non-JSON response, e.g. file stream — not expected here */ }
@@ -80,8 +89,9 @@ async function requireAccess() {
       "<h1>Access Denied</h1>" +
       "<p>This page requires Cloudflare Access authentication as the Sentinel Fortune LLC Owner. " +
       "If you were expecting access, confirm you reached this page through the Access-protected admin URL " +
-      "(not a direct/unprotected copy), and that the Shop Worker's <code>CF_ACCESS_TEAM_DOMAIN</code> / " +
-      "<code>CF_ACCESS_AUD</code> configuration matches your Access application.</p>" +
+      "(not a direct/unprotected copy), that <code>window.SHOP_API_BASE</code> is the same-origin " +
+      "<code>/api</code> path rather than a Worker hostname, and that the Shop Worker's " +
+      "<code>CF_ACCESS_TEAM_DOMAIN</code> / <code>CF_ACCESS_AUD</code> match your Access application.</p>" +
       "</div>";
     return null;
   }

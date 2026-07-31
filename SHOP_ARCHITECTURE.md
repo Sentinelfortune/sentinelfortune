@@ -129,6 +129,31 @@ served from an unprotected location by mistake, every API call it makes would st
 the UI would just be an empty shell with no login form and no way to authenticate (see
 `SHOP_SECURITY_CHECKLIST.md`).
 
+**The admin browser never crosses an origin.** Access authenticates the Owner on the *Pages* hostname: it
+scopes `CF_Authorization` to that hostname and injects `Cf-Access-Jwt-Assertion` only on requests it
+forwards to that origin. A `fetch()` from Pages to the Worker's separate `*.workers.dev` hostname is
+cross-site, so the cookie is not sent and page JavaScript cannot set the header — the Worker would see no
+token and return 401, which is exactly what it should do.
+
+So the admin calls only its own origin (`window.SHOP_API_BASE = "/api"`), and a Pages Function
+(`functions/api/[[path]].ts` → `functions/_shared/proxy.ts`) runs server-side inside the
+Access-authenticated request, reads the token there, and forwards it to the Worker server-to-server:
+
+```
+browser ──same-origin──> /api/shop/admin/*  (Pages Function, behind Access)
+                              │  reads Cf-Access-Jwt-Assertion / CF_Authorization
+                              │  server-side; never returns it to the page
+                              ▼
+                    Worker /shop/admin/*  — verifies signature, issuer,
+                                            audience and expiry against JWKS
+```
+
+The proxy is transport, not authority: it forwards a token and returns the Worker's own status unchanged,
+so a forged or wrong-audience token still 401s, and a request with no token 401s at the proxy without the
+Worker being called at all. It refuses to forward anything but `/shop/health` and `/shop/admin/*`, so it
+cannot be used as a general relay. Direct calls to the Worker's hostname are unaffected and still require
+a valid token.
+
 ## Request flows
 
 ### Checkout
@@ -192,6 +217,7 @@ deliberately rather than risk breaking something not visible from this repositor
 Never public, regardless of where the file lives in this repository:
 
 - `admin/` — Owner Admin UI (separate Cloudflare Pages project, behind Cloudflare Access)
+- `functions/` — that Pages project's server-side `/api/*` proxy
 - `shop-worker/` — Worker source, tests, migrations, wrangler config
 - `bot/` — Telegram bot source (contains private channel invite links)
 - `frontend/src`, `frontend/modules` — React app source (its `/ops` pages embed private
@@ -224,7 +250,8 @@ available to their real deployment targets.
 - **R2 (assets, private)** — cover and preview images only, served through the Worker's
   `/shop/asset/:id` route (keyed on the `product_images` row id, so the bucket's key space
   is never directly addressable); no R2 bucket in this system needs public access
-- **Cloudflare Pages + Access** — the Owner Admin UI
+- **Cloudflare Pages + Access** — the Owner Admin UI, plus the same-origin `/api/*` Pages
+  Function that carries the Access token to the Worker (`functions/`)
 
 ## 5. What the admin interface is
 

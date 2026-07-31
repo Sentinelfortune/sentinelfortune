@@ -48,6 +48,10 @@ exclude:
   # Cloudflare Worker source (TypeScript, tests, migrations, wrangler config).
   # Deployed via `wrangler deploy`; not a web asset.
   - shop-worker
+  # Cloudflare Pages Functions for the Owner Admin project — the server-side
+  # /api/* proxy that carries the Access token to the Worker. Belongs to the
+  # Access-protected Pages deployment, never to the public GitHub Pages site.
+  - functions
 
   # --- Verified sensitive content ----------------------------------------
   # Telegram bot source. Contains private channel invite links and internal
