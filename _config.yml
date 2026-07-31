@@ -54,6 +54,8 @@ exclude:
   - functions
   # Build tooling for the above (admin/_worker.js). Operational, not a web asset.
   - scripts
+  # Built deployment packages (admin Pages ZIP). Artifacts, not web assets.
+  - dist
 
   # --- Verified sensitive content ----------------------------------------
   # Telegram bot source. Contains private channel invite links and internal
@@ -96,4 +98,5 @@ exclude:
   - STRIPE_SHOP_SETUP.md
   - RESEND_SETUP.md
   - OWNER_SHOP_GUIDE.md
+  - SHOP_MVP_RUNBOOK.md
   - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md

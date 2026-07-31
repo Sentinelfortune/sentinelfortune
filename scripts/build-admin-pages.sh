@@ -41,18 +41,23 @@ npx wrangler pages functions build \
   --output-routes-path=admin/_routes.json \
   --build-output-directory=admin
 
-if [ ! -f "$TMP_DIR/index.js" ]; then
-  echo "ERROR: wrangler produced no index.js — refusing to write a broken bundle." >&2
+# Wrangler has changed the emitted filename across versions: 4.114 writes
+# index.js, 4.118 writes _worker.js. Take whatever single .js file it produced
+# rather than hard-coding either name.
+BUILT="$(find "$TMP_DIR" -maxdepth 1 -name '*.js' -type f | head -1)"
+
+if [ -z "$BUILT" ]; then
+  echo "ERROR: wrangler produced no .js bundle — refusing to write a broken artifact." >&2
   exit 1
 fi
 
 # Guard against a multipart bundle ever being copied in.
-if head -c 2 "$TMP_DIR/index.js" | grep -q -- "--"; then
+if head -c 2 "$BUILT" | grep -q -- "--"; then
   echo "ERROR: build output looks like a multipart bundle, not JavaScript." >&2
   exit 1
 fi
 
-cp "$TMP_DIR/index.js" admin/_worker.js
+cp "$BUILT" admin/_worker.js
 
 echo "Wrote admin/_worker.js ($(wc -c < admin/_worker.js) bytes)"
 echo "Wrote admin/_routes.json:"

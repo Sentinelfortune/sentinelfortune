@@ -115,7 +115,7 @@ SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop-test.sentinelfortu
 # /cdn-cgi/access/certs endpoint serves the JWKS. Safe as a plain var.
 CF_ACCESS_TEAM_DOMAIN = "sentinelfortunellc.cloudflareaccess.com"
 # CF_ACCESS_AUD is a secret — see the note above. Do not add it here.
-ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_TEST_ADMIN_PAGES_ORIGIN"
+ADMIN_ALLOWED_ORIGIN = "https://sentinel-fortune-shop-admin.pages.dev"
 
 [[env.test.d1_databases]]
 binding = "SHOP_DB"

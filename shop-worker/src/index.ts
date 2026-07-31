@@ -9,6 +9,7 @@ import { handleCreateCheckout } from "./routes/checkout";
 import { handleStripeWebhook } from "./routes/webhook";
 import { handleDownload } from "./routes/download";
 import { handleGetAsset } from "./routes/asset";
+import { handleOrderStatus } from "./routes/order-status";
 
 import {
   handleAdminArchiveProduct,
@@ -42,6 +43,9 @@ router.get("/shop/health", async () => jsonResponse({ ok: true, service: "sentin
 router.get("/shop/products", async (request, env) => handleListProducts(request, env));
 router.get("/shop/products/:slug", async (request, env, _ctx, params) => handleGetProduct(request, env, params));
 router.post("/shop/checkout", async (request, env) => handleCreateCheckout(request, env));
+// Post-checkout delivery for the buyer's own browser, keyed on the Stripe
+// Checkout Session id from their redirect URL. See routes/order-status.ts.
+router.get("/shop/order/status", async (request, env) => handleOrderStatus(request, env));
 router.post("/shop/stripe/webhook", async (request, env) => handleStripeWebhook(request, env));
 router.get("/shop/download/:token", async (request, env, _ctx, params) => handleDownload(request, env, params));
 // Product cover/preview images, served from the (private) assets bucket so no

@@ -7,4 +7,4 @@
  * products" — that is expected and safe; it does not affect the existing
  * institutional site.
  */
-window.SHOP_API_BASE = "https://REPLACE_WITH_SHOP_WORKER_URL.workers.dev";
+window.SHOP_API_BASE = "https://sentinel-fortune-digital-shop-test.sentinelfortunellc.workers.dev";
