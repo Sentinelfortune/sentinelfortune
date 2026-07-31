@@ -113,17 +113,30 @@ GitHub Pages cannot enforce Cloudflare Access — see `SHOP_ARCHITECTURE.md` for
 deployed to a Cloudflare-proxied hostname instead:
 
 ```bash
-# From the repo root:
-npx wrangler pages deploy admin --project-name sentinel-fortune-shop-admin
+npx wrangler pages deploy admin --project-name sentinel-fortune-shop-admin --branch main
 ```
 
-(Or connect the repo to a Cloudflare Pages project in the dashboard, with build output directory set to
-`admin/` and no build command — it's static HTML/CSS/JS, no build step.)
+`--branch main` is required for a Direct Upload project: wrangler otherwise defaults the branch to the
+current git branch, which produces a *preview* deployment on a different hostname and leaves the live
+admin URL untouched.
 
-**Project layout matters.** The admin ships a Pages Function at `functions/api/[[path]].ts` in the
-**repository root**, so the Pages project's *root directory* must stay `/` (the default) with *build
-output directory* set to `admin`. If the root directory is instead set to `admin`, Pages will not find
-`functions/` and `/api/*` will 404 — the admin will show "Access Denied" again.
+**The Pages Function is prebuilt into `admin/_worker.js` — do not remove it.** `wrangler pages deploy`
+resolves the Functions source as `path.join(process.cwd(), "functions")`, i.e. relative to the shell's
+working directory, not to the asset directory argument and not to the repository root. Run from any
+directory other than the repository root it finds nothing, prints no warning, and uploads the static
+files alone — leaving `/api/*` dead, which Pages then answers by serving `index.html` (an unstyled admin
+page at `/api/shop/health` is the giveaway). Because wrangler prefers a `_worker.js` in the deploy
+directory over the `functions/` directory, committing the built bundle makes the deploy deterministic
+from any working directory.
+
+After changing anything under `functions/`, regenerate the bundle and commit it:
+
+```bash
+./scripts/build-admin-pages.sh
+```
+
+`shop-worker/tests/admin-worker-bundle.test.ts` exercises the committed bundle, so a missing or corrupt
+`admin/_worker.js` fails the test suite rather than the live site.
 
 After deploying, attach the Access application from step 6 to this Pages project's hostname (or a custom
 domain pointed at it). **Do not** point the admin at the Worker hostname: `admin/admin-config.js` must

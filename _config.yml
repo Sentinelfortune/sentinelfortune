@@ -52,6 +52,8 @@ exclude:
   # /api/* proxy that carries the Access token to the Worker. Belongs to the
   # Access-protected Pages deployment, never to the public GitHub Pages site.
   - functions
+  # Build tooling for the above (admin/_worker.js). Operational, not a web asset.
+  - scripts
 
   # --- Verified sensitive content ----------------------------------------
   # Telegram bot source. Contains private channel invite links and internal
