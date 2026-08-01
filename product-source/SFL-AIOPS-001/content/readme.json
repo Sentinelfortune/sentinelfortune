@@ -1,0 +1,134 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Thank you for your purchase. This package gives your business a documented, trade-specific way to use AI tools you already have access to — with clear boundaries around what AI must never be allowed to decide."
+    },
+    {
+      "t": "note",
+      "x": "This is a document package. It is not software, it does not install anything, and it does not run on its own. Everything here is a PDF you read or a Word file you edit."
+    },
+    {
+      "t": "h2",
+      "x": "What is in this package"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Folder",
+        "What it is",
+        "Read or edit"
+      ],
+      "rows": [
+        [
+          "01-Implementation-Guide",
+          "The spine. Read this first.",
+          "Read"
+        ],
+        [
+          "02-Workflow-Map-and-Opportunity-Worksheet",
+          "Decide which two workflows to change first. Includes a scoring spreadsheet.",
+          "Edit"
+        ],
+        [
+          "03-Prompt-Library",
+          "40 copy-ready prompts. The core of the package.",
+          "Reference"
+        ],
+        [
+          "04-SOP-Builder",
+          "Turn undocumented knowledge into written procedure.",
+          "Edit"
+        ],
+        [
+          "05-Customer-Communication-Templates",
+          "Nine message types, ready to adapt.",
+          "Edit"
+        ],
+        [
+          "06-Quality-Control-Checklist",
+          "The review gate. Print it.",
+          "Print"
+        ],
+        [
+          "07-Weekly-Operations-Review",
+          "A 30-minute standing review.",
+          "Edit"
+        ],
+        [
+          "08-Responsible-Use-Policy",
+          "Your written internal standard, plus a staff page to sign.",
+          "Edit"
+        ],
+        [
+          "09-Business-Customization-Worksheet",
+          "Your business facts, captured once.",
+          "Edit"
+        ],
+        [
+          "10-30-Day-Implementation-Roadmap",
+          "Four weeks, sequenced.",
+          "Read"
+        ]
+      ],
+      "widths": [
+        0.32,
+        0.5,
+        0.18
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Do these three things first"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Read the Implementation Guide, sections 1 to 3. About 20 minutes.",
+        "Complete the Business Customization Worksheet (folder 09). About 45 minutes. Every template in this package draws on it, so doing it first saves you repeating yourself in every document.",
+        "Print the Quality-Control Checklist (folder 06) and put it where the work actually happens."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Then follow the 30-Day Roadmap in folder 10. It sequences the rest."
+    },
+    {
+      "t": "h2",
+      "x": "What you need"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "An account with a general-purpose AI assistant. Any of the widely available ones will do. This package names no vendor and requires none in particular.",
+        "Word or a compatible editor for the DOCX files, and a PDF reader.",
+        "Optionally, a spreadsheet application for the workflow scoring worksheet in folder 02.",
+        "About two to four focused hours for the initial customization."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "The one rule that matters most"
+    },
+    {
+      "t": "warn",
+      "x": "AI drafts. Qualified people decide. Nothing in this package authorises AI to set a price, interpret a building code, determine a permit requirement, make a safety decision, or replace licensed technical judgement. Every customer-facing output is reviewed by a person before it is sent."
+    },
+    {
+      "t": "h2",
+      "x": "Your licence"
+    },
+    {
+      "t": "p",
+      "x": "This package is licensed for use within one business entity, including its employees. It may not be resold, redistributed, shared with other businesses, or used to deliver paid consulting to third parties. Full terms are in LICENSE-Single-Business.pdf at the root of this package."
+    },
+    {
+      "t": "h2",
+      "x": "Version and updates"
+    },
+    {
+      "t": "p",
+      "x": "This is version 1.0. Updates within version 1.x are provided at no additional cost to licensed purchasers. Check PRODUCT-MANIFEST.json in this package for the complete file inventory and build date."
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "sku": "SFL-AIOPS-001",
+  "slug": "ai-operations-playbook-toolkit",
+  "title": "AI Operations Playbook & Toolkit",
+  "edition": "Standard Self-Customization Edition",
+  "version": "1.0",
+  "license": "Single Business",
+  "audience": "HVAC, plumbing, electrical, and home-service businesses",
+  "package_stem": "SFL-AIOPS-001-AI-Operations-Playbook-Toolkit-v1.0",
+  "spreadsheet": {
+    "id": "A02-XLSX",
+    "title": "Operations Workflow Scoring Worksheet",
+    "folder": "02-Workflow-Map-and-Opportunity-Worksheet",
+    "filename": "Operations-Workflow-Scoring-Worksheet"
+  },
+  "documents": [
+    {
+      "id": "A00",
+      "source": "readme.json",
+      "folder": "",
+      "filename": "README-START-HERE",
+      "title": "Start Here",
+      "subtitle": "AI Operations Playbook & Toolkit \u00b7 Standard Self-Customization Edition \u00b7 Version 1.0",
+      "formats": [
+        "pdf"
+      ]
+    },
+    {
+      "id": "A01",
+      "source": "implementation-guide.json",
+      "folder": "01-Implementation-Guide",
+      "filename": "AI-Operations-Implementation-Guide",
+      "title": "AI Operations Implementation Guide",
+      "subtitle": "Where AI helps in a home-service operation, where it must be kept out, and how to stand the system up",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A02",
+      "source": "workflow-map.json",
+      "folder": "02-Workflow-Map-and-Opportunity-Worksheet",
+      "filename": "Operations-Workflow-Map-and-Opportunity-Worksheet",
+      "title": "Operations Workflow Map & Opportunity Worksheet",
+      "subtitle": "Map your eight core workflows and decide which two to change first",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A03",
+      "source": "prompt-library.json",
+      "folder": "03-Prompt-Library",
+      "filename": "Home-Service-AI-Prompt-Library",
+      "title": "Home-Service AI Prompt Library",
+      "subtitle": "40 copy-ready prompts for HVAC, plumbing, electrical and home-service operations",
+      "formats": [
+        "pdf",
+        "docx"
+      ],
+      "inject": "prompts"
+    },
+    {
+      "id": "A04",
+      "source": "sop-builder.json",
+      "folder": "04-SOP-Builder",
+      "filename": "SOP-Builder-Template-and-Interview-Prompts",
+      "title": "SOP Builder Template & Interview Prompt Set",
+      "subtitle": "Turn what is in your head into a procedure someone else can follow",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A05",
+      "source": "customer-comms.json",
+      "folder": "05-Customer-Communication-Templates",
+      "filename": "Customer-Communication-Template-Pack",
+      "title": "Customer Communication Template Pack",
+      "subtitle": "Nine core message types, ready to send and ready to adapt",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A06",
+      "source": "qc-checklist.json",
+      "folder": "06-Quality-Control-Checklist",
+      "filename": "AI-Output-Quality-Control-Checklist",
+      "title": "AI Output Quality-Control Checklist",
+      "subtitle": "The review gate. Print this and put it where the work happens.",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A07",
+      "source": "weekly-review.json",
+      "folder": "07-Weekly-Operations-Review",
+      "filename": "Weekly-Operations-Review-Template",
+      "title": "Weekly Operations Review Template",
+      "subtitle": "A 30-minute standing review that keeps the system in use",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A08",
+      "source": "responsible-use.json",
+      "folder": "08-Responsible-Use-Policy",
+      "filename": "Responsible-Use-and-Operational-Boundaries-Policy",
+      "title": "Responsible Use & Operational Boundaries Policy",
+      "subtitle": "Your written internal standard for AI use",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A08b",
+      "source": "staff-summary.json",
+      "folder": "08-Responsible-Use-Policy",
+      "filename": "Staff-One-Page-Summary-and-Acknowledgement",
+      "title": "AI Use \u2014 Staff Summary & Acknowledgement",
+      "subtitle": "One page. Read it, sign it, keep it on file.",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A09",
+      "source": "customization.json",
+      "folder": "09-Business-Customization-Worksheet",
+      "filename": "Business-Customization-Worksheet",
+      "title": "Business Customization Worksheet",
+      "subtitle": "Capture your business facts once. Every template inherits them.",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A10",
+      "source": "roadmap.json",
+      "folder": "10-30-Day-Implementation-Roadmap",
+      "filename": "30-Day-Implementation-Roadmap",
+      "title": "30-Day Implementation Roadmap",
+      "subtitle": "Four weeks from unopened package to working system",
+      "formats": [
+        "pdf",
+        "docx"
+      ]
+    },
+    {
+      "id": "A11",
+      "source": "license.json",
+      "folder": "",
+      "filename": "LICENSE-Single-Business",
+      "title": "Single Business License",
+      "subtitle": "AI Operations Playbook & Toolkit v1.0 \u2014 Licence terms",
+      "formats": [
+        "pdf"
+      ]
+    }
+  ]
+}

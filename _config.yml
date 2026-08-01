@@ -54,8 +54,10 @@ exclude:
   - functions
   # Build tooling for the above (admin/_worker.js). Operational, not a web asset.
   - scripts
-  # Built deployment packages (admin Pages ZIP). Artifacts, not web assets.
+  # Built deployment packages and product ZIPs. Artifacts, not web assets.
   - dist
+  # Commercial product source (SFL-AIOPS-001). Paid content — never published.
+  - product-source
 
   # --- Verified sensitive content ----------------------------------------
   # Telegram bot source. Contains private channel invite links and internal

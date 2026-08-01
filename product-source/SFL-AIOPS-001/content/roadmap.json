@@ -1,0 +1,378 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Four weeks from unopened package to working system. Each week is designed around a few hours of real work, not a full-time project. The sequence matters more than the speed — do these in order."
+    },
+    {
+      "t": "warn",
+      "x": "The most common failure is starting week 2 before week 1 is genuinely done. Adopting six workflows partially is worse than adopting two completely."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "Week 1 — Decide and customize"
+    },
+    {
+      "t": "p",
+      "x": "Goal: know what you are changing, and have your business facts captured once."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Day",
+        "Task",
+        "Time",
+        "Done"
+      ],
+      "rows": [
+        [
+          "1",
+          "Read the Implementation Guide, sections 1 to 3",
+          "20 min",
+          "☐"
+        ],
+        [
+          "1",
+          "Set up your AI tool: check the training-on-your-data setting, decide shared or individual accounts",
+          "15 min",
+          "☐"
+        ],
+        [
+          "2",
+          "Complete the Business Customization Worksheet (folder 09) in full",
+          "45 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Complete the Workflow Map and score all ten workflows (folder 02)",
+          "30 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Pick your top two workflows. Write them down.",
+          "5 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Read the Prompt Library sections covering those two workflows",
+          "20 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Set your saved AI instruction from the Implementation Guide, section 4",
+          "10 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Print the Quality-Control Checklist and put it where the work happens",
+          "5 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Run three prompts on real jobs from this week. Note what needed fixing.",
+          "30 min",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.63,
+        0.16,
+        0.14
+      ]
+    },
+    {
+      "t": "note",
+      "x": "End of week 1 you should have used the tool on real work at least three times. If you have not, week 2 will not stick."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "Week 2 — Field notes and estimates"
+    },
+    {
+      "t": "p",
+      "x": "Goal: the two highest-value drafting workflows running daily."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Day",
+        "Task",
+        "Time",
+        "Done"
+      ],
+      "rows": [
+        [
+          "1",
+          "Run FN-01 on every field note that arrives today",
+          "As it happens",
+          "☐"
+        ],
+        [
+          "2",
+          "Run FN-01 again. Adjust the prompt with your own required fields.",
+          "15 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Draft your next estimate with ES-01. Compare its exclusions against your last estimate.",
+          "30 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Add anything missing to your standard exclusions in the Customization Worksheet",
+          "10 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Run FN-03 (Callback Risk Flagger) across the week's closed jobs",
+          "20 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Use the Quality-Control Checklist on everything customer-facing sent this week",
+          "20 min",
+          "☐"
+        ],
+        [
+          "5",
+          "First Weekly Operations Review (folder 07). Record your baseline numbers.",
+          "30 min",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.63,
+        0.16,
+        0.14
+      ]
+    },
+    {
+      "t": "warn",
+      "x": "Record your baseline numbers in week 2, not week 1. A baseline taken before you have used anything is a guess."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "Week 3 — Customer communication and procedures"
+    },
+    {
+      "t": "p",
+      "x": "Goal: consistent customer messaging, and the first procedures out of your head."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Day",
+        "Task",
+        "Time",
+        "Done"
+      ],
+      "rows": [
+        [
+          "1",
+          "Adapt the appointment confirmation and post-job summary templates (folder 05)",
+          "30 min",
+          "☐"
+        ],
+        [
+          "1",
+          "Check the warranty paragraph word for word against your written warranty",
+          "10 min",
+          "☐"
+        ],
+        [
+          "2",
+          "Put both into use. Every job this week gets a post-job summary.",
+          "As it happens",
+          "☐"
+        ],
+        [
+          "2",
+          "Issue the Responsible Use Policy. Have staff read and sign the one-page summary.",
+          "20 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Run the SOP-01 interview on your highest single-person-dependency procedure",
+          "45 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Run SOP-05 (Test Read) on that draft. Resolve every [CLARIFY].",
+          "20 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Have the person who performs the task read it and mark what is wrong",
+          "15 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Document a second procedure",
+          "45 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Weekly Operations Review",
+          "30 min",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.63,
+        0.16,
+        0.14
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "Week 4 — Extend, review, lock in"
+    },
+    {
+      "t": "p",
+      "x": "Goal: it survives without you thinking about it."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Day",
+        "Task",
+        "Time",
+        "Done"
+      ],
+      "rows": [
+        [
+          "1",
+          "Introduce the prompts to one other person. Sit with them the first time.",
+          "45 min",
+          "☐"
+        ],
+        [
+          "2",
+          "Set up your morning triage using TR-01",
+          "20 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Prepare CSR objection responses (CSR-01 to CSR-06) for whoever answers the phone",
+          "40 min",
+          "☐"
+        ],
+        [
+          "3",
+          "Have that person practise the responses aloud once",
+          "20 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Document a third procedure",
+          "45 min",
+          "☐"
+        ],
+        [
+          "4",
+          "Build the escalation matrix with SOP-06",
+          "30 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Weekly Operations Review — compare all four weeks of numbers",
+          "30 min",
+          "☐"
+        ],
+        [
+          "5",
+          "Book the recurring weekly review in the calendar. Same time, every week.",
+          "5 min",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.63,
+        0.16,
+        0.14
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "At the end of four weeks"
+    },
+    {
+      "t": "p",
+      "x": "You should have:"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Your business facts captured once and reused everywhere.",
+        "Two workflows changed and running daily rather than six changed halfway.",
+        "At least three procedures written down that previously existed only verbally.",
+        "A written Responsible Use policy with signed staff acknowledgements.",
+        "Consistent post-job summaries going to every customer.",
+        "Four weeks of real numbers rather than an impression.",
+        "A recurring review in the calendar."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "If you are behind"
+    },
+    {
+      "t": "p",
+      "x": "Being behind on this schedule is ordinary — you run a business, and this is not the only thing in your week. The order is what matters, not the calendar. Two workflows genuinely adopted over eight weeks beats six adopted badly over four."
+    },
+    {
+      "t": "h2",
+      "x": "What to do next"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Extend to a third workflow, but only once the first two are habitual.",
+        "Keep documenting procedures. Aim for one a fortnight until your single-person dependencies are gone.",
+        "Revisit the Workflow Map after two months. The scores change once you can see the work more clearly.",
+        "Keep the weekly review. It is the smallest commitment here and the one that determines whether any of the rest survives."
+      ]
+    },
+    {
+      "t": "note",
+      "x": "Nothing in this roadmap promises a financial outcome. It sequences work. What that work is worth depends on your business, and we have not seen your business."
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Thirty minutes, same time every week. This is what stops the package becoming a folder you bought and stopped opening. Adoption without a standing review decays in about three weeks — not because people object to it, but because nothing brings it back to attention."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Week ending",
+        "Present",
+        "Facilitator"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "1. The numbers (5 minutes)"
+    },
+    {
+      "t": "p",
+      "x": "Record these every week. Four weeks of real numbers is worth more than any estimate of time saved."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Measure",
+        "This week",
+        "Last week",
+        "Direction"
+      ],
+      "rows": [
+        [
+          "Notes returned to technicians for clarification",
+          "",
+          "",
+          ""
+        ],
+        [
+          "Average days from job completion to invoice",
+          "",
+          "",
+          ""
+        ],
+        [
+          "Estimates sent within 24 hours (%)",
+          "",
+          "",
+          ""
+        ],
+        [
+          "Customers who received a post-job summary (%)",
+          "",
+          "",
+          ""
+        ],
+        [
+          "Procedures documented (running total)",
+          "",
+          "",
+          ""
+        ],
+        [
+          "Callbacks attributable to unclear scope",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.46,
+        0.18,
+        0.18,
+        0.18
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "2. What worked (5 minutes)"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Which prompt earned its place this week",
+        "Who used it and for what",
+        "Anything worth telling the rest of the team"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3. What did not (10 minutes)"
+    },
+    {
+      "t": "p",
+      "x": "This is the part that matters. Be specific — \"the AI was unhelpful\" cannot be fixed; \"the estimate prompt keeps leaving out our disposal exclusion\" can be fixed in two minutes."
+    },
+    {
+      "t": "table",
+      "head": [
+        "What went wrong",
+        "Which prompt or template",
+        "Root cause",
+        "Fix, and who owns it"
+      ],
+      "rows": [
+        [
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.28,
+        0.22,
+        0.22,
+        0.28
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4. Quality control spot-check (5 minutes)"
+    },
+    {
+      "t": "p",
+      "x": "Pick two customer-facing documents sent this week at random. Run them through the Quality-Control Checklist now, together."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Document 1 — passed / failed, and on which item",
+        "Document 2 — passed / failed, and on which item",
+        "Pattern worth acting on"
+      ]
+    },
+    {
+      "t": "warn",
+      "x": "If the same checklist item fails twice in a month, the problem is the prompt or the training, not the person. Fix the upstream cause."
+    },
+    {
+      "t": "h2",
+      "x": "5. Next week (5 minutes)"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "One thing we are adding",
+        "One thing we are stopping",
+        "Who is doing what by when"
+      ]
+    },
+    {
+      "t": "hr"
+    },
+    {
+      "t": "h2",
+      "x": "Every four weeks, add these"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Read three SOPs written more than a month ago. Are they still accurate? Procedures drift and nobody notices until a new hire follows the old one.",
+        "Check that new staff have signed the Responsible Use acknowledgement.",
+        "Review whether any prohibited use has crept in — particularly pricing and anything customer-facing going out unreviewed.",
+        "Ask: what are we still doing manually that we said we would change?"
+      ]
+    },
+    {
+      "t": "note",
+      "x": "Keep the completed forms. Twelve weeks of these is the clearest record you will have of whether this actually changed anything."
+    }
+  ]
+}

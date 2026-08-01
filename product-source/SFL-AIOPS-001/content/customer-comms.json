@@ -1,0 +1,190 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Nine message types covering the customer interactions that recur in every home-service business. Each is supplied as a ready-to-adapt template. Where you need a situation-specific variant, the matching prompt in the Prompt Library (section 3) produces one."
+    },
+    {
+      "t": "warn",
+      "x": "Before using any template: complete the Business Customization Worksheet (folder 09) and replace every [BRACKETED FIELD]. A template sent with brackets still in it does more damage than sending nothing."
+    },
+    {
+      "t": "h2",
+      "x": "The nine messages"
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Message",
+        "When it goes out",
+        "Matching prompt"
+      ],
+      "rows": [
+        [
+          "1",
+          "Appointment confirmation",
+          "At booking",
+          "CC-01"
+        ],
+        [
+          "2",
+          "Running late",
+          "The moment you know",
+          "CC-02"
+        ],
+        [
+          "3",
+          "Post-job summary",
+          "Within 24 hours",
+          "CC-03"
+        ],
+        [
+          "4",
+          "Review request",
+          "2 to 3 days after, no open issues",
+          "CC-04"
+        ],
+        [
+          "5",
+          "Estimate follow-up",
+          "Day 3, 10 and 30",
+          "ES-05"
+        ],
+        [
+          "6",
+          "Maintenance plan renewal",
+          "30 days before lapse",
+          "CC-05"
+        ],
+        [
+          "7",
+          "Service recovery",
+          "Any complaint, promptly",
+          "CC-06"
+        ],
+        [
+          "8",
+          "Payment reminder",
+          "Per your terms",
+          "CC-07"
+        ],
+        [
+          "9",
+          "Seasonal reminder",
+          "Ahead of your peak",
+          "CC-08"
+        ]
+      ],
+      "widths": [
+        0.06,
+        0.3,
+        0.36,
+        0.28
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "1. Appointment confirmation"
+    },
+    {
+      "t": "code",
+      "x": "Subject: Your [COMPANY] appointment — [DAY], [DATE]\n\nHello [NAME],\n\nYou are booked for [DAY], [DATE], between [WINDOW]. [TECHNICIAN NAME] will call about [LEAD TIME] before arriving.\n\nWhat we are coming for: [ONE LINE]\n\nSo we can get straight to work, please have ready:\n- Clear access to [EQUIPMENT LOCATION]\n- [Someone 18 or older on site / no requirement]\n- Pets secured away from the work area\n- [PARKING NOTE]\n\nPlease be aware that [water / gas / power] may be interrupted for a short period while we work.\n\nNeed to change this? Call [PHONE] before [CUTOFF] and we will find another time.\n\n[SIGNATURE BLOCK]"
+    },
+    {
+      "t": "note",
+      "x": "The access list is the reason this message exists. Edit it for each job type — a generic list trains customers to skip it."
+    },
+    {
+      "t": "h1",
+      "x": "2. Running late"
+    },
+    {
+      "t": "code",
+      "x": "Hello [NAME],\n\n[TECHNICIAN] is now expected between [NEW WINDOW] rather than the original [ORIGINAL WINDOW]. [ONE HONEST SENTENCE ON WHY.]\n\nIf that no longer works for you, call [PHONE] and we will reschedule at no cost and no hassle.\n\nSorry for the change of plan.\n[NAME AND ROLE]"
+    },
+    {
+      "t": "h1",
+      "x": "3. Post-job summary"
+    },
+    {
+      "t": "code",
+      "x": "Subject: What we did today at [ADDRESS] — [DATE]\n\nHello [NAME],\n\nHere is a record of today's visit for your files.\n\nWHAT WE CAME FOR: [PRESENTING COMPLAINT]\n\nWHAT WE FOUND: [PLAIN LANGUAGE FINDINGS]\n\nWHAT WE DID: [WORK PERFORMED]\n\nHOW WE LEFT IT: [SYSTEM STATE — operational, partially operational, isolated. Anything you need to watch or operate.]\n\nWHAT WE RECOMMEND NEXT: [RECOMMENDATION, OR \"nothing at this time\"]\n[If applicable: We will send a written estimate for this separately. There is no obligation.]\n\nYOUR WARRANTY: [EXACT WARRANTY TERMS — parts and labour separately, with the start date]\n\nIf anything is not right, call [PHONE] and ask for [ROLE]. We would rather hear from you early.\n\n[SIGNATURE BLOCK]"
+    },
+    {
+      "t": "warn",
+      "x": "The warranty paragraph is the highest-risk sentence you send. Copy it from your written warranty — never paraphrase it, and never let an AI reword it."
+    },
+    {
+      "t": "h1",
+      "x": "4. Review request"
+    },
+    {
+      "t": "code",
+      "x": "Hello [NAME],\n\n[TECHNICIAN] mentioned the [SPECIFIC WORK] at your place went smoothly. If you have a minute, an honest review helps other people in [AREA] decide who to call.\n\n[REVIEW LINK]\n\nEither way, thank you for the business.\n[NAME]"
+    },
+    {
+      "t": "warn",
+      "x": "Offer no incentive of any kind, and send the same request to everyone. Incentivised or filtered review requests breach most platform policies and consumer-protection rules."
+    },
+    {
+      "t": "h1",
+      "x": "5. Estimate follow-up (three-message sequence)"
+    },
+    {
+      "t": "code",
+      "x": "DAY 3\nHello [NAME], just checking the estimate for [WORK] reached you on [DATE]. Happy to walk through any part of it — some of the exclusions in particular are worth a two-minute conversation. [PHONE].\n\nDAY 10\nHello [NAME], one thing worth knowing about [WORK]: [ONE GENUINELY USEFUL PIECE OF CONTEXT ABOUT THE WORK ITSELF]. Still happy to answer questions, and no rush from our side. [PHONE].\n\nDAY 30\nHello [NAME], we will leave your file open in case [WORK] comes back around. Nothing needed from you — just call [PHONE] and we will pick it up from where we left off. Thanks for considering us."
+    },
+    {
+      "t": "note",
+      "x": "No deadlines, no price-increase warnings, no scarcity. If there is a genuine safety concern, it is a phone call from a licensed person, not a follow-up email."
+    },
+    {
+      "t": "h1",
+      "x": "6. Maintenance plan renewal"
+    },
+    {
+      "t": "code",
+      "x": "Subject: Your [PLAN NAME] renews [DATE]\n\nHello [NAME],\n\nYour [PLAN NAME] comes up for renewal on [DATE]. Here is what it covered this term:\n[LIST ACTUAL VISITS AND WORK PERFORMED — dates included]\n\nNext term includes: [WHAT IS COVERED]\nNot included: [WHAT IS NOT]\n\nTo renew, [HOW]. To let it lapse, [HOW] — and if you do, you are still welcome to book work with us any time; nothing changes about that.\n\nQuestions about what is covered? Call [PHONE].\n[SIGNATURE BLOCK]"
+    },
+    {
+      "t": "h1",
+      "x": "7. Service recovery"
+    },
+    {
+      "t": "code",
+      "x": "Hello [NAME],\n\nThank you for telling us about [WHAT THEY EXPERIENCED, IN THEIR WORDS]. That is not the standard we hold ourselves to.\n\nHere is what I am doing: [SPECIFIC ACTION] by [WHEN].\n[If authorised: Here is what I am offering: [AUTHORISED ITEM ONLY].]\n\nI am handling this personally. My direct line is [PHONE].\n\nWhat would make this right from your side? I would rather ask than assume.\n\n[NAME AND ROLE]"
+    },
+    {
+      "t": "warn",
+      "x": "Do not admit fault, do not speculate on cause, and do not blame anyone. If there is any allegation of property damage, injury, or legal action, this message goes nowhere until the owner and your insurer have seen it."
+    },
+    {
+      "t": "h1",
+      "x": "8. Payment reminder"
+    },
+    {
+      "t": "code",
+      "x": "Subject: Invoice [NUMBER] — [WORK]\n\nHello [NAME],\n\nInvoice [NUMBER] dated [DATE], for [WORK AT ADDRESS], shows as outstanding. The amount due is [COPY EXACTLY FROM THE INVOICE].\n\nYou can pay by [LIST EVERY METHOD YOU ACCEPT].\n\nIf something about the invoice is not right, or does not match what you expected, tell me and I will look into it before anything else happens.\n\n[NAME AND ROLE] · [PHONE]"
+    },
+    {
+      "t": "warn",
+      "x": "Do not add interest, late fees, or any mention of collections, liens or legal action unless those terms are in your written agreement and your legal adviser has approved the wording."
+    },
+    {
+      "t": "h1",
+      "x": "9. Seasonal reminder"
+    },
+    {
+      "t": "code",
+      "x": "Hello [NAME],\n\nYour [EQUIPMENT TYPE] was last serviced in [MONTH, YEAR]. [SEASON] service covers [WHAT IT ACTUALLY COVERS].\n\nBooking now generally means a wider choice of dates — [PEAK PERIOD] fills up and the flexibility goes first.\n\nBook: [HOW] or call [PHONE].\n[SIGNATURE BLOCK]"
+    },
+    {
+      "t": "note",
+      "x": "No predicted breakdowns, no efficiency percentages, no warranty-voiding claims. The honest reason to book early is scheduling, and it is reason enough."
+    }
+  ]
+}

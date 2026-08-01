@@ -1,0 +1,255 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "This worksheet does one job: it stops you from changing the wrong thing first. Most businesses start with whatever is easiest to change. The workflows worth changing are the ones that happen constantly, cost real time, and carry low risk if a person reviews the output."
+    },
+    {
+      "t": "note",
+      "x": "A spreadsheet version with automatic scoring is included in this folder: Operations-Workflow-Scoring-Worksheet.xlsx. Use whichever you prefer — the scoring is identical."
+    },
+    {
+      "t": "h2",
+      "x": "How the scoring works"
+    },
+    {
+      "t": "p",
+      "x": "Score each workflow from 1 to 5 on three dimensions, then calculate the priority."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Dimension",
+        "1",
+        "3",
+        "5"
+      ],
+      "rows": [
+        [
+          "Frequency",
+          "Monthly or less",
+          "Weekly",
+          "Many times daily"
+        ],
+        [
+          "Time cost",
+          "A couple of minutes",
+          "15 to 30 minutes",
+          "An hour or more each time"
+        ],
+        [
+          "Risk if AI-assisted",
+          "Internal only",
+          "Customer-facing",
+          "Touches pricing, code, permits or safety"
+        ]
+      ],
+      "widths": [
+        0.28,
+        0.24,
+        0.24,
+        0.24
+      ]
+    },
+    {
+      "t": "code",
+      "x": "Priority = (Frequency x Time cost) - (Risk x 2)"
+    },
+    {
+      "t": "p",
+      "x": "Risk is weighted double on purpose. A high-frequency, high-time-cost workflow that touches code or safety is not a good first candidate no matter how appealing the arithmetic looks — it is a workflow that needs a human decision, not a faster draft."
+    },
+    {
+      "t": "warn",
+      "x": "Anything scoring 5 on risk stays with a qualified person. Do not automate it because the priority score came out high. The score is an input to your judgement, not a substitute for it."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h2",
+      "x": "The eight core workflows"
+    },
+    {
+      "t": "p",
+      "x": "These are the workflows that exist in essentially every home-service business. Score each one honestly — the temptation is to score the annoying ones high rather than the expensive ones."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Workflow",
+        "What it covers",
+        "Freq",
+        "Time",
+        "Risk",
+        "Score"
+      ],
+      "rows": [
+        [
+          "1. Inbound call handling",
+          "From ring to booked or lost",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "2. Dispatch and scheduling",
+          "Assigning work to people and days",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "3. On-site diagnosis write-up",
+          "What the technician records",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "4. Field notes to office handoff",
+          "Getting usable information back",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "5. Estimate and scope drafting",
+          "From findings to a sent estimate",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "6. Invoice preparation",
+          "From completed job to invoice sent",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "7. Post-job follow-up",
+          "Summary, review request, next steps",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "8. Callback and complaint handling",
+          "When something goes wrong",
+          "",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.24,
+        0.34,
+        0.09,
+        0.09,
+        0.09,
+        0.15
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Two more worth scoring"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Workflow",
+        "What it covers",
+        "Freq",
+        "Time",
+        "Risk",
+        "Score"
+      ],
+      "rows": [
+        [
+          "9. New technician onboarding",
+          "First two weeks of a new hire",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "10. Maintenance plan renewals",
+          "Keeping recurring revenue",
+          "",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.24,
+        0.34,
+        0.09,
+        0.09,
+        0.09,
+        0.15
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h2",
+      "x": "Now answer these four questions"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Highest-scoring workflow",
+        "Second highest",
+        "Which of these could one person start changing this week, alone",
+        "What would have to be true for that change to still be in place in a month"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "The single-person dependency check"
+    },
+    {
+      "t": "p",
+      "x": "For each workflow, write the name of the only person who can currently perform it. If a name appears more than twice, that is your real operational risk, and the SOP Builder in folder 04 is where you should spend your effort before anything else."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Workflow 1 owner",
+        "Workflow 2 owner",
+        "Workflow 3 owner",
+        "Workflow 4 owner",
+        "Workflow 5 owner",
+        "Workflow 6 owner",
+        "Workflow 7 owner",
+        "Workflow 8 owner",
+        "Name appearing most often"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "What to do with the result"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Take your top two workflows into the Prompt Library and find the section covering them.",
+        "Use those prompts for two full weeks before adding a third workflow.",
+        "Record what happens in the Weekly Operations Review.",
+        "Do not start a third workflow until the first two are habitual. Partial adoption across six workflows is worse than complete adoption across two."
+      ]
+    }
+  ]
+}

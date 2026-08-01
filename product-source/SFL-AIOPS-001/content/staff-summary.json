@@ -1,0 +1,90 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Our business uses AI tools to help draft written work. This page explains what that means for you. It takes two minutes to read and it applies to everyone."
+    },
+    {
+      "t": "h2",
+      "x": "What we use AI for"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Tidying up field notes into a clear job record.",
+        "Drafting estimates, scopes of work and customer messages.",
+        "Writing down procedures that currently only exist in someone's head.",
+        "Sorting voicemails and emails into a priority order."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "What AI is never used for"
+    },
+    {
+      "t": "warn",
+      "x": "AI does not set prices. AI does not decide whether something meets code. AI does not decide whether a permit is needed. AI does not make safety decisions. AI does not replace the judgement of a licensed person. If an AI tool gives you an answer on any of these, ignore it and ask a qualified person."
+    },
+    {
+      "t": "h2",
+      "x": "What you must never put into an AI tool"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Customer payment details, card numbers or bank information.",
+        "Government identification numbers or dates of birth.",
+        "Anyone's medical information.",
+        "Employee records, disciplinary matters or pay information.",
+        "Confidential business documents, supplier agreements or anything marked confidential.",
+        "Photographs showing a customer's home interior, documents or personal belongings."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Where you need to use a customer's name or address to get useful output, use the minimum necessary and nothing more."
+    },
+    {
+      "t": "h2",
+      "x": "Your responsibility before anything is sent"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Read every word of the AI output. Do not skim it.",
+        "Check it against the source — the technician's note, the job record, the written warranty.",
+        "Run it through the Quality-Control Checklist.",
+        "Correct anything wrong. If you cannot verify something, remove it or ask.",
+        "If it touches gas, electrical hazard, water damage, injury, a customer alleging damage, code, permits, or work outside our licence — stop and escalate."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "The simple version"
+    },
+    {
+      "t": "p",
+      "x": "AI writes a first draft. You are responsible for what goes out. If you would not put your own name to it, do not send it."
+    },
+    {
+      "t": "hr"
+    },
+    {
+      "t": "h2",
+      "x": "Acknowledgement"
+    },
+    {
+      "t": "p",
+      "x": "I have read and understood this summary. I understand that I remain responsible for reviewing and verifying any AI-assisted output before it is sent, filed or acted upon, and that I must escalate rather than guess."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Name",
+        "Role",
+        "Signature",
+        "Date"
+      ]
+    }
+  ]
+}
