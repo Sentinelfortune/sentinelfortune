@@ -20,7 +20,7 @@
       "folder": "",
       "filename": "README-START-HERE",
       "title": "Start Here",
-      "subtitle": "AI Operations Playbook & Toolkit \u00b7 Standard Self-Customization Edition \u00b7 Version 1.0",
+      "subtitle": "AI Operations Playbook & Toolkit · Standard Self-Customization Edition · Version 1.0",
       "formats": [
         "pdf"
       ]
@@ -127,7 +127,7 @@
       "source": "staff-summary.json",
       "folder": "08-Responsible-Use-Policy",
       "filename": "Staff-One-Page-Summary-and-Acknowledgement",
-      "title": "AI Use \u2014 Staff Summary & Acknowledgement",
+      "title": "AI Use — Staff Summary & Acknowledgement",
       "subtitle": "One page. Read it, sign it, keep it on file.",
       "formats": [
         "pdf",
@@ -164,10 +164,87 @@
       "folder": "",
       "filename": "LICENSE-Single-Business",
       "title": "Single Business License",
-      "subtitle": "AI Operations Playbook & Toolkit v1.0 \u2014 Licence terms",
+      "subtitle": "AI Operations Playbook & Toolkit v1.0 — Licence terms",
       "formats": [
         "pdf"
       ]
     }
-  ]
+  ],
+  "contract_version": 1,
+  "producer": "Sentinel Fortune LLC — governed production studio",
+  "category": "Business Operations",
+  "license_type": "SINGLE_BUSINESS",
+  "supported_formats": "PDF, DOCX, XLSX",
+  "recommended_price_cents": 4900,
+  "currency": "usd",
+  "download_link_expiry_hours": 72,
+  "max_downloads": 5,
+  "refund_eligible": true,
+  "cover_image": null,
+  "listing": {
+    "short_description": "A practical, self-customizable system for applying AI to the daily operations of an HVAC, plumbing, electrical or home-service business — with the prompts, templates and boundaries already built for the trade.",
+    "problem_solved": "Owners of home-service businesses spend evenings writing estimates, cleaning up field notes, chasing follow-ups and re-explaining procedures that were never written down. General AI tools can absorb much of that drafting, but out of the box they produce text a licensed contractor cannot safely send — missing scope exclusions, inventing prices, and answering code and safety questions they have no business answering. This package supplies the missing system: trade-specific prompts, ready-to-edit templates, a written rule for what AI must never touch, and a 30-day sequence for putting it into practice.",
+    "description": "The AI Operations Playbook & Toolkit is a downloadable operations package built for HVAC, plumbing, electrical and home-service businesses running roughly two to twenty-five people.\n\nIt does not sell you software and it does not automate anything on your behalf. It gives you a documented way to use the AI tools you already have access to, configured for the way your trade actually works.\n\nYou start by mapping your eight core workflows and scoring which are worth changing first. You capture your own service area, warranty terms, payment terms and standard exclusions once, on a single worksheet, so every template in the package inherits your business's facts rather than generic placeholders. From there you work through a library of forty prompt templates covering field-notes cleanup, estimate and scope drafting, customer communication, SOP extraction, message triage and objection handling — each with fill-in fields, a worked example, and an explicit statement of what the AI must not do.\n\nThe package is built around a hard boundary. AI drafts; licensed people decide. Every prompt is written to keep pricing, code interpretation, permit requirements and safety determinations with the qualified human who is accountable for them. A one-page quality-control checklist sits at the review gate before anything reaches a customer, and a written Responsible Use policy — including a staff version for signature — gives you a standard you can point to rather than an informal habit.\n\nA 30-day roadmap sequences the work into four manageable weeks, and a weekly operations review template turns the initial setup into a standing rhythm instead of a project that stalls in week two.\n\nThis is the Standard Self-Customization Edition. The templates are yours to adapt to your business; the customization is work you do, and the package is organized to make that work fast rather than to pretend it isn't necessary.",
+    "deliverables": [
+      "AI Operations Implementation Guide (PDF, approximately 24-30 pages)",
+      "Operations Workflow Map & Opportunity Worksheet (PDF, DOCX and XLSX with automatic scoring)",
+      "Home-Service AI Prompt Library — 40 copy-ready prompts across six operational categories (PDF and DOCX)",
+      "SOP Builder Template & Interview Prompt Set (DOCX template with PDF instructions)",
+      "Customer Communication Template Pack — nine core message types (DOCX)",
+      "AI Output Quality-Control Checklist (PDF, print-ready)",
+      "Weekly Operations Review Template (DOCX and PDF)",
+      "Responsible Use & Operational Boundaries Policy, including a one-page staff summary (PDF and DOCX)",
+      "Business Customization Worksheet (DOCX)",
+      "30-Day Implementation Roadmap (PDF)",
+      "Single Business license covering one business entity",
+      "Free updates to version 1.x"
+    ],
+    "not_included": [
+      "Software, applications, integrations, or automated workflows",
+      "An AI subscription, account, or API access of any kind",
+      "Any connection to field-service management software",
+      "Legal, financial, tax, insurance, human-resources, safety, code, permit or licensing advice",
+      "Pricing guidance, rate tables, or margin recommendations",
+      "Done-for-you setup, consulting, implementation services, or training sessions",
+      "Marketing, advertising, or lead-generation material",
+      "Guaranteed results of any kind",
+      "Rights to resell, redistribute, sublicense, or share outside the licensed business"
+    ],
+    "faqs": [
+      {
+        "q": "Do I need to be technical or already using AI?",
+        "a": "No. The guide assumes no prior experience and works with common general-purpose AI assistants. You need an account with one of them; the package does not include or require any specific vendor."
+      },
+      {
+        "q": "Is this software?",
+        "a": "No. It is a downloadable document package — PDFs and editable DOCX files, plus one spreadsheet. Nothing installs, and nothing runs on its own."
+      },
+      {
+        "q": "How much work is the customization?",
+        "a": "Plan on two to four focused hours to complete the Business Customization Worksheet and adapt the core templates to your warranty, payment and service-area terms. The 30-day roadmap spreads the remainder across four weeks."
+      },
+      {
+        "q": "Will this tell me what to charge?",
+        "a": "No, and deliberately so. Pricing is a business decision that depends on your costs, market and margin. Every prompt in the library is written to keep AI out of pricing entirely."
+      },
+      {
+        "q": "Can I use it for code, permit or safety questions?",
+        "a": "No. The package explicitly prohibits it, and the Responsible Use policy states this in writing. Code interpretation, permit requirements and safety determinations belong with the licensed professional accountable for the work."
+      },
+      {
+        "q": "Does it work for my trade specifically?",
+        "a": "The material is written for HVAC, plumbing, electrical and adjacent home-service work, and the examples come from those trades. Businesses in related service trades will find most of it transferable, with some rewording."
+      },
+      {
+        "q": "What does the Single Business license cover?",
+        "a": "Use within one business entity, including your employees. It does not permit resale, redistribution, sharing with other businesses, or use in paid consulting delivered to third parties."
+      },
+      {
+        "q": "What format are the files?",
+        "a": "PDF for reading and printing, DOCX for anything you'll edit, and one XLSX for the workflow scoring. No proprietary formats."
+      }
+    ],
+    "responsible_use_text": "This package provides operational templates, prompt structures and general guidance. It is not legal, financial, tax, insurance, human-resources, safety, code, permit or licensing advice, and must not be used as a substitute for a qualified professional.\n\nAI-assisted output is drafting, never a decision. Every item intended for a customer, an employee, or any regulatory or contractual purpose must be reviewed and approved by a qualified person in your business before use. Pricing, code interpretation, permit requirements, safety determinations and licensed technical judgment remain entirely with the licensed professionals accountable for the work.\n\nDo not enter customer personal information, payment details, or confidential business records into public AI tools. Verify every factual claim, measurement, part specification and warranty term before it is sent. You remain fully responsible for all work performed and all communications issued by your business.",
+    "refund_policy_summary": "Because this is a digital product delivered immediately on purchase, refunds are handled case by case. If the package is not a fit for your business, contact us within 14 days of purchase and explain the reason; we will review each request individually and, where a refund is issued, download access for the associated license is withdrawn. Full terms appear in the Terms of Sale and Refund Policy."
+  }
 }

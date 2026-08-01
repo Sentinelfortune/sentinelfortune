@@ -32,6 +32,7 @@ import {
   handleAdminResendEmail,
   handleAdminRevokeLicense,
 } from "./routes/admin/orders";
+import { handleImportCommit, handleImportValidate } from "./routes/admin/import";
 import { handleAdminAuditLog, handleAdminGetSettings, handleAdminUpdateSettings, handleAdminWhoami } from "./routes/admin/settings";
 
 const router = new Router<Env>();
@@ -91,6 +92,11 @@ router.post("/shop/admin/licenses/:id/revoke", async (request, env, _ctx, params
 router.get("/shop/admin/settings", async (request, env) => handleAdminGetSettings(request, env));
 router.post("/shop/admin/settings", async (request, env) => handleAdminUpdateSettings(request, env, getIdentity(request)));
 router.get("/shop/admin/audit-log", async (request, env) => handleAdminAuditLog(request, env));
+
+// Governed product-package import. /validate writes nothing; /commit re-runs
+// the identical validation before touching D1 or R2. See routes/admin/import.ts.
+router.post("/shop/admin/import/validate", async (request, env) => handleImportValidate(request, env));
+router.post("/shop/admin/import/commit", async (request, env) => handleImportCommit(request, env, getIdentity(request)));
 
 function getIdentity(request: Request): { email: string; sub: string } {
   const identity = (request as Request & { __identity?: { email: string; sub: string } }).__identity;

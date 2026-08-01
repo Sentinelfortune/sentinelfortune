@@ -125,9 +125,17 @@ def main():
 
     # --- Manifest ----------------------------------------------------------
     manifest = json.loads((stage / "PRODUCT-MANIFEST.json").read_text(encoding="utf-8"))
-    check(manifest["prompt_count"] == 40,
-          f"Manifest reports {manifest['prompt_count']} prompts",
-          f"Manifest reports {manifest['prompt_count']} prompts, expected 40")
+    check(manifest["promptCount"] == 40,
+          f"Manifest reports {manifest['promptCount']} prompts",
+          f"Manifest reports {manifest['promptCount']} prompts, expected 40")
+    check(manifest.get("contractVersion") == 1, "Manifest declares import contract version 1",
+          f"Manifest contractVersion is {manifest.get('contractVersion')}, expected 1")
+    for field in ("sku", "slug", "title", "version", "licenseType", "supportedFormats",
+                  "shortDescription", "problemSolved", "description", "responsibleUseText",
+                  "refundPolicySummary"):
+        check(bool(manifest.get(field)), f"Manifest carries {field}", f"Manifest missing {field}")
+    for field in ("deliverables", "notIncluded", "faqs"):
+        check(bool(manifest.get(field)), f"Manifest carries a non-empty {field}", f"Manifest {field} is empty")
 
     disk_files = sorted(str(p.relative_to(stage)) for p in stage.rglob("*")
                         if p.is_file() and p.name != "PRODUCT-MANIFEST.json")

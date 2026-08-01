@@ -205,6 +205,156 @@ function productActionButtons(p) {
   return buttons;
 }
 
+
+// ---------------------------------------------------------------------------
+// Governed product-package import (products.html)
+//
+// Two server round trips by design. "Validate package" calls
+// /shop/admin/import/validate, which writes nothing and returns a preview.
+// Only after the Owner confirms does "Import" call /shop/admin/import/commit,
+// which re-runs the identical validation before it touches anything. The
+// browser is never the authority on whether a package is acceptable.
+// ---------------------------------------------------------------------------
+function initImport() {
+  var openBtn = document.getElementById("importBtn");
+  var panel = document.getElementById("importPanel");
+  if (!openBtn || !panel) return;
+
+  var fileInput = document.getElementById("importFile");
+  var validateBtn = document.getElementById("importValidateBtn");
+  var cancelBtn = document.getElementById("importCancelBtn");
+  var result = document.getElementById("importResult");
+
+  function reset() {
+    result.innerHTML = "";
+    fileInput.value = "";
+    validateBtn.disabled = false;
+  }
+
+  openBtn.addEventListener("click", function () {
+    panel.hidden = !panel.hidden;
+    if (!panel.hidden) { reset(); panel.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  });
+  cancelBtn.addEventListener("click", function () { panel.hidden = true; reset(); });
+
+  validateBtn.addEventListener("click", async function () {
+    var file = fileInput.files[0];
+    if (!file) { renderImportErrors(["Choose a package file first."], []); return; }
+
+    validateBtn.disabled = true;
+    result.innerHTML = '<div class="state-msg">Validating ' + esc(file.name) + "…</div>";
+
+    var form = new FormData();
+    form.set("file", file);
+    var res = await api("/shop/admin/import/validate", { method: "POST", body: form });
+    validateBtn.disabled = false;
+
+    var data = res.data || {};
+    if (!res.ok || data.valid === false) {
+      renderImportErrors(data.errors || ["The package could not be validated."], data.warnings || []);
+      return;
+    }
+    renderImportPreview(data, file);
+  });
+
+  function renderImportErrors(errors, warnings) {
+    result.innerHTML =
+      '<div class="import-verdict is-fail"><strong>Package rejected — nothing was imported.</strong></div>' +
+      '<ul class="import-issues">' + errors.map(function (e) { return "<li>" + esc(e) + "</li>"; }).join("") + "</ul>" +
+      (warnings.length
+        ? '<p class="hint" style="margin-top:10px">Also noted: ' + warnings.map(esc).join(" ") + "</p>"
+        : "");
+  }
+
+  function renderImportPreview(data, file) {
+    var p = data.preview || {};
+    var rows = [
+      ["SKU", p.sku], ["Version", p.version], ["Title", p.title], ["Slug", p.slug],
+      ["Edition", p.edition], ["Category", p.category], ["Audience", p.audience],
+      ["License", p.licenseType], ["Formats", p.supportedFormats],
+      ["Deliverables", (p.deliverables || []).length + " listed"],
+      ["Not included", (p.notIncluded || []).length + " listed"],
+      ["FAQs", (p.faqs || []).length],
+      ["Recommended price", p.recommendedPriceDisplay || "none in manifest"],
+      ["Cover image", p.coverImage || "none — you will need to upload one"],
+      ["Package", esc(p.packageFilename) + " · " + Math.round((p.packageBytes || 0) / 1024) + " KB · " + p.fileCount + " files"],
+      ["Produced by", p.producer || "not stated"],
+      ["Built", p.builtAt || "not stated"]
+    ];
+
+    var updating = p.existingProduct;
+    var html =
+      '<div class="import-verdict is-ok"><strong>Package valid.</strong> ' +
+      (updating
+        ? "This will UPDATE the existing draft &ldquo;" + esc(updating.title) + "&rdquo; (version " + esc(updating.version) + ")."
+        : "This will create a new draft product.") +
+      "</div>" +
+      (data.warnings && data.warnings.length
+        ? '<ul class="import-issues is-warn">' + data.warnings.map(function (w) { return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>"
+        : "") +
+      '<table class="data-table import-preview"><tbody>' +
+      rows.map(function (r) {
+        return "<tr><th>" + esc(r[0]) + "</th><td>" + esc(r[1] === undefined || r[1] === null || r[1] === "" ? "—" : r[1]) + "</td></tr>";
+      }).join("") +
+      "</tbody></table>" +
+      '<div class="import-governance">' +
+      "The import stops at a draft. It will <strong>not</strong> confirm the price, tick the Owner terms " +
+      "acknowledgement, make the product purchasable, or publish it. Those remain yours." +
+      "</div>" +
+      '<div class="btn-row" style="margin-top:16px">' +
+      '<button class="btn btn-primary" id="importCommitBtn" type="button">' +
+      (updating ? "Update the existing draft" : "Import as draft") + "</button>" +
+      '<button class="btn" id="importAbortBtn" type="button">Cancel</button>' +
+      "</div>";
+
+    result.innerHTML = html;
+
+    document.getElementById("importAbortBtn").addEventListener("click", function () { reset(); });
+    document.getElementById("importCommitBtn").addEventListener("click", async function () {
+      var btn = document.getElementById("importCommitBtn");
+      btn.disabled = true;
+      btn.textContent = "Importing…";
+
+      var form = new FormData();
+      form.set("file", file);
+      var path = "/shop/admin/import/commit" + (updating ? "?mode=update" : "");
+      var res = await api(path, { method: "POST", body: form });
+
+      var d = res.data || {};
+      if (!res.ok || !d.imported) {
+        renderImportErrors(d.errors || ["The import failed. Nothing was changed."], d.warnings || []);
+        return;
+      }
+      renderImportSuccess(d);
+    });
+  }
+
+  function renderImportSuccess(d) {
+    var remaining = d.remaining || [];
+    result.innerHTML =
+      '<div class="import-verdict is-ok"><strong>Imported as a draft.</strong> ' +
+      esc(d.title) + " (" + esc(d.sku) + " v" + esc(d.version) + ") — " +
+      (d.mode === "update" ? "existing draft updated" : "new draft created") + "." +
+      "</div>" +
+      "<ul class=\"import-issues is-done\">" +
+      "<li>Package stored privately and attached (" + Math.round((d.packageBytes || 0) / 1024) + " KB).</li>" +
+      "<li>Cover image: " + (d.coverImported ? "imported from the package." : "not in the package.") + "</li>" +
+      "<li>Recommended price " + esc(d.recommendedPriceDisplay || "not set") + " — <strong>not confirmed</strong>.</li>" +
+      "</ul>" +
+      (remaining.length
+        ? "<h3 style=\"margin-top:16px\">Before this can be published</h3>" +
+          '<ul class="import-issues is-warn">' + remaining.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul>"
+        : '<p class="hint" style="margin-top:12px">No outstanding readiness issues.</p>') +
+      '<div class="btn-row" style="margin-top:16px">' +
+      '<a class="btn btn-primary" href="product-editor.html?id=' + esc(d.productId) + '">Open the draft</a>' +
+      '<button class="btn" id="importDoneBtn" type="button">Import another</button>' +
+      "</div>";
+
+    document.getElementById("importDoneBtn").addEventListener("click", function () { reset(); });
+    renderProductsList();
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Product editor (product-editor.html)
 // ---------------------------------------------------------------------------
@@ -729,7 +879,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   var page = document.body.getAttribute("data-page");
   if (page === "dashboard") renderDashboard();
-  if (page === "products") renderProductsList();
+  if (page === "products") { renderProductsList(); initImport(); }
   if (page === "product-editor") { await renderProductEditor(); initUploadForms(); }
   if (page === "orders") renderOrdersList();
   if (page === "licenses") renderLicensesList();

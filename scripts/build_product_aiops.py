@@ -619,19 +619,49 @@ def main():
     })
     print(f"  {xlsx_path.relative_to(stage)}  ({xlsx_path.stat().st_size:,} bytes)")
 
+    # PRODUCT-MANIFEST.json is the governed import contract consumed by the Shop
+    # Admin (shop-worker/src/lib/product-manifest.ts). Field names are camelCase
+    # because that is the contract; see PRODUCT_MANIFEST_SCHEMA.md.
+    listing = product["listing"]
     manifest = {
+        "contractVersion": product["contract_version"],
+        "producer": product["producer"],
+        "builtAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+
         "sku": product["sku"],
+        "slug": product["slug"],
         "title": product["title"],
-        "edition": product["edition"],
         "version": product["version"],
-        "license": product["license"],
+        "edition": product["edition"],
+        "category": product["category"],
         "audience": product["audience"],
-        "built_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "prompt_count": len(prompts),
-        "prompt_categories": {key: sum(1 for p in prompts if p["category"] == key)
-                              for key, _ in CATEGORY_ORDER},
-        "asset_count": len(product["documents"]) + 1,
-        "file_count": len(manifest_files),
+        "licenseType": product["license_type"],
+        "licenseName": product["license"],
+        "supportedFormats": product["supported_formats"],
+
+        "shortDescription": listing["short_description"],
+        "problemSolved": listing["problem_solved"],
+        "description": listing["description"],
+        "deliverables": listing["deliverables"],
+        "notIncluded": listing["not_included"],
+        "faqs": listing["faqs"],
+        "responsibleUseText": listing["responsible_use_text"],
+        "refundEligible": product["refund_eligible"],
+        "refundPolicySummary": listing["refund_policy_summary"],
+
+        "recommendedPriceCents": product["recommended_price_cents"],
+        "currency": product["currency"],
+        "downloadLinkExpiryHours": product["download_link_expiry_hours"],
+        "maxDownloads": product["max_downloads"],
+        "coverImage": product["cover_image"],
+
+        # Production metadata — informational, not part of the import contract.
+        "promptCount": len(prompts),
+        "promptCategories": {key: sum(1 for p in prompts if p["category"] == key)
+                             for key, _ in CATEGORY_ORDER},
+        "assetCount": len(product["documents"]) + 1,
+        "fileCount": len(manifest_files),
+
         "files": sorted(manifest_files, key=lambda f: f["path"]),
     }
     with open(stage / "PRODUCT-MANIFEST.json", "w", encoding="utf-8") as fh:
@@ -647,8 +677,8 @@ def main():
                 zf.write(path, str(path.relative_to(stage)))
 
     print(f"\nPackage: {zip_path}  ({zip_path.stat().st_size:,} bytes)")
-    print(f"Assets: {manifest['asset_count']}   Files: {manifest['file_count']}   "
-          f"Prompts: {manifest['prompt_count']}")
+    print(f"Assets: {manifest['assetCount']}   Files: {manifest['fileCount']}   "
+          f"Prompts: {manifest['promptCount']}   Contract: v{manifest['contractVersion']}")
     return 0
 
 

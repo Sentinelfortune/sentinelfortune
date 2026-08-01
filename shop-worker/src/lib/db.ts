@@ -37,6 +37,10 @@ export async function getProductBySlug(db: D1Like, slug: string): Promise<Produc
   return db.prepare(`SELECT * FROM products WHERE slug = ?`).bind(slug).first<ProductRow>();
 }
 
+export async function getProductBySku(db: D1Like, sku: string): Promise<ProductRow | null> {
+  return db.prepare(`SELECT * FROM products WHERE sku = ?`).bind(sku).first<ProductRow>();
+}
+
 export async function getProductById(db: D1Like, id: string): Promise<ProductRow | null> {
   return db.prepare(`SELECT * FROM products WHERE id = ?`).bind(id).first<ProductRow>();
 }
