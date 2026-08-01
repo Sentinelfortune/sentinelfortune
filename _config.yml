@@ -58,6 +58,9 @@ exclude:
   - dist
   # Commercial product source (SFL-AIOPS-001). Paid content — never published.
   - product-source
+  # Internal infrastructure audits: Worker inventory, resource IDs, architecture
+  # maps. Operational intelligence — must never reach the public site.
+  - audit
 
   # --- Verified sensitive content ----------------------------------------
   # Telegram bot source. Contains private channel invite links and internal
