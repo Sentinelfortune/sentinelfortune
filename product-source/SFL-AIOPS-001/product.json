@@ -180,7 +180,12 @@
   "download_link_expiry_hours": 72,
   "max_downloads": 5,
   "refund_eligible": true,
-  "cover_image": null,
+  "cover_image": {
+    "source": "assets/cover.png",
+    "package_path": "cover.png",
+    "title": "Product cover",
+    "format": "png"
+  },
   "listing": {
     "short_description": "A practical, self-customizable system for applying AI to the daily operations of an HVAC, plumbing, electrical or home-service business — with the prompts, templates and boundaries already built for the trade.",
     "problem_solved": "Owners of home-service businesses spend evenings writing estimates, cleaning up field notes, chasing follow-ups and re-explaining procedures that were never written down. General AI tools can absorb much of that drafting, but out of the box they produce text a licensed contractor cannot safely send — missing scope exclusions, inventing prices, and answering code and safety questions they have no business answering. This package supplies the missing system: trade-specific prompts, ready-to-edit templates, a written rule for what AI must never touch, and a 30-day sequence for putting it into practice.",

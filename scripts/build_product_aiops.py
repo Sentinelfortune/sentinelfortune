@@ -623,6 +623,25 @@ def main():
     # Admin (shop-worker/src/lib/product-manifest.ts). Field names are camelCase
     # because that is the contract; see PRODUCT_MANIFEST_SCHEMA.md.
     listing = product["listing"]
+    # Cover image — copied into the package root and declared, so the governed
+    # import can attach it as the product's COVER without a separate upload.
+    cover_spec = product.get("cover_image")
+    if cover_spec:
+        cover_src = SRC / cover_spec["source"]
+        if not cover_src.exists():
+            raise SystemExit(f"Cover image missing: {cover_src}. Run scripts/build_cover_aiops.py first.")
+        cover_dest = stage / cover_spec["package_path"]
+        cover_dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(cover_src, cover_dest)
+        manifest_files.append({
+            "asset_id": "COVER",
+            "title": cover_spec.get("title", "Product cover"),
+            "path": cover_spec["package_path"],
+            "format": cover_spec.get("format", "png"),
+            "bytes": cover_dest.stat().st_size,
+        })
+        print(f"  {cover_spec['package_path']}  ({cover_dest.stat().st_size:,} bytes)")
+
     manifest = {
         "contractVersion": product["contract_version"],
         "producer": product["producer"],
@@ -653,7 +672,7 @@ def main():
         "currency": product["currency"],
         "downloadLinkExpiryHours": product["download_link_expiry_hours"],
         "maxDownloads": product["max_downloads"],
-        "coverImage": product["cover_image"],
+        "coverImage": (product.get("cover_image") or {}).get("package_path"),
 
         # Production metadata — informational, not part of the import contract.
         "promptCount": len(prompts),
