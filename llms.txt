@@ -1,0 +1,38 @@
+---
+layout: null
+---
+# Sentinel Fortune LLC
+
+> {{ site.description }}
+
+Sentinel Fortune LLC publishes operational systems and practical tools for small
+businesses. Public content covers how those systems work and where their limits
+are. Products are sold as downloadable digital packages.
+
+## Editorial position
+
+All published guidance is operational and general. It is not legal, financial,
+HR, safety, code, permit, or regulatory advice. Where a topic touches a licensed
+trade decision — pricing, code compliance, permit requirements, safety
+determinations — the content routes it to a qualified human rather than
+answering it.
+
+## Content
+
+{% assign ready = site.signals | concat: site.articles | concat: site.guides | where: "status", "ready" | sort: "date" | reverse -%}
+{%- for item in ready %}
+- [{{ item.title }}]({{ item.url | absolute_url }}): {{ item.summary }}
+{%- endfor %}
+{%- if ready.size == 0 %}
+- No content published yet.
+{%- endif %}
+
+## Commerce
+
+- [Digital Shop]({{ '/shop/' | absolute_url }}): downloadable operational products.
+- [Terms of Sale]({{ '/shop/terms-of-sale.html' | absolute_url }})
+- [Refund Policy]({{ '/shop/refund-policy.html' | absolute_url }})
+
+## Contact
+
+{{ site.org_email }}

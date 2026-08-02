@@ -1,0 +1,29 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title }} — Signals &amp; Articles</title>
+  <subtitle>{{ site.description }}</subtitle>
+  <link href="{{ '/feed.xml' | absolute_url }}" rel="self"/>
+  <link href="{{ '/' | absolute_url }}"/>
+  <id>{{ '/' | absolute_url }}</id>
+  {%- assign ready = site.signals | concat: site.articles | concat: site.guides | where: "status", "ready" | sort: "date" | reverse %}
+  {%- if ready.size > 0 %}
+  <updated>{{ ready[0].updated | default: ready[0].date | date_to_xmlschema }}</updated>
+  {%- else %}
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  {%- endif %}
+  <author><name>{{ site.author }}</name></author>
+  {%- for item in ready limit: 30 %}
+  <entry>
+    <title>{{ item.title | escape }}</title>
+    <link href="{{ item.url | absolute_url }}"/>
+    <id>{{ item.url | absolute_url }}</id>
+    <published>{{ item.date | date_to_xmlschema }}</published>
+    <updated>{{ item.updated | default: item.date | date_to_xmlschema }}</updated>
+    <category term="{{ item.kind }}"/>
+    <summary>{{ item.summary | escape }}</summary>
+  </entry>
+  {%- endfor %}
+</feed>

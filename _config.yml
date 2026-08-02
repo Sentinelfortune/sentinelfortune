@@ -1,3 +1,46 @@
+# ---------------------------------------------------------------------------
+# Site identity and content system
+# ---------------------------------------------------------------------------
+# Added for the public Content & Commerce Hub. `url` + `baseurl` are what let
+# Jekyll build correct absolute URLs for canonical tags, the sitemap and the
+# feed — without them every generated URL is relative and useless to a crawler.
+#
+# No plugins are used. GitHub Pages whitelists jekyll-seo-tag/-sitemap/-feed,
+# but hand-rolled templates give exact control over the markup and remove a
+# dependency whose output would have to be audited anyway.
+title: "Sentinel Fortune LLC"
+description: "Operational systems, field-tested tools, and practical intelligence for small businesses that run on execution."
+url: "https://sentinelfortune.github.io"
+baseurl: "/sentinelfortune"
+lang: en_US
+author: "Sentinel Fortune LLC"
+publisher: "Sentinel Fortune LLC"
+org_email: "contact@sentinelfortune.com"
+default_og_image: "/sentinelfortune/IMG_7098.jpeg"
+
+collections:
+  signals:
+    output: true
+    permalink: /signals/:name/
+  articles:
+    output: true
+    permalink: /articles/:name/
+  guides:
+    output: true
+    permalink: /guides/:name/
+
+defaults:
+  - scope: { path: "", type: "signals" }
+    values: { layout: "content", kind: "Signal", collection_label: "Signals", schema_type: "BlogPosting" }
+  - scope: { path: "", type: "articles" }
+    values: { layout: "content", kind: "Article", collection_label: "Articles", schema_type: "Article" }
+  - scope: { path: "", type: "guides" }
+    values: { layout: "content", kind: "Guide", collection_label: "Guides", schema_type: "Article" }
+
+# Content that has not passed the editorial gate never renders.
+# scripts/validate_content.py enforces status: ready before publication.
+exclude_from_feed_unless_ready: true
+
 # GitHub Pages (Jekyll) publication boundary — Sentinel Fortune LLC
 #
 # This repository's Pages site is served with "Deploy from a branch" (evidence:

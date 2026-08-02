@@ -1,6 +1,43 @@
+---
+layout: null
+---
+{%- comment -%}
+Hand-rolled rather than plugin-generated so the ready-status filter is
+enforced here too: content that has not passed the editorial gate is never
+advertised to a crawler.
+{%- endcomment -%}
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sentinelfortune.github.io/sentinelfortune/</loc>
+    <loc>{{ '/' | absolute_url }}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
+  <url>
+    <loc>{{ '/shop/' | absolute_url }}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+{%- for c in site.collections %}{% if c.label != 'posts' %}
+  <url>
+    <loc>{{ '/' | append: c.label | append: '/' | absolute_url }}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+{%- endif %}{% endfor %}
+{%- assign ready = site.signals | concat: site.articles | concat: site.guides | where: "status", "ready" -%}
+{%- for item in ready %}
+  <url>
+    <loc>{{ item.url | absolute_url }}</loc>
+    <lastmod>{{ item.updated | default: item.date | date_to_xmlschema }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+{%- endfor %}
+{%- for p in site.pages %}{% if p.sitemap != false and p.url contains '/shop/' and p.url contains '.html' %}
+  <url>
+    <loc>{{ p.url | absolute_url }}</loc>
+    <priority>0.5</priority>
+  </url>
+{%- endif %}{% endfor %}
 </urlset>

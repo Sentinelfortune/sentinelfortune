@@ -1,0 +1,15 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="sf-head">
+  <div class="sf-head-in">
+    <a class="sf-brand" href="{{ '/' | relative_url }}">
+      Sentinel Fortune <span>LLC</span>
+    </a>
+    <nav class="sf-nav" aria-label="Primary">
+      <a href="{{ '/signals/' | relative_url }}"{% if page.collection == 'signals' %} aria-current="page"{% endif %}>Signals</a>
+      <a href="{{ '/articles/' | relative_url }}"{% if page.collection == 'articles' %} aria-current="page"{% endif %}>Articles</a>
+      <a href="{{ '/guides/' | relative_url }}"{% if page.collection == 'guides' %} aria-current="page"{% endif %}>Guides</a>
+      <a href="{{ '/shop/' | relative_url }}">Shop</a>
+      <a href="{{ '/' | relative_url }}#contact">Contact</a>
+    </nav>
+  </div>
+</header>

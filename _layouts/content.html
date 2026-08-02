@@ -1,0 +1,84 @@
+---
+layout: base
+---
+{%- comment -%}
+GEO structure: the answer comes first. Every content item leads with a
+one-paragraph direct answer before any narrative, because that is the block an
+answer engine can quote and a reader can act on without scrolling.
+{%- endcomment -%}
+<article class="sf-article">
+
+  <nav class="sf-crumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}">Home</a>
+    <span aria-hidden="true">/</span>
+    <a href="{{ '/' | append: page.collection | append: '/' | relative_url }}">{{ page.collection_label }}</a>
+  </nav>
+
+  <header class="sf-article-head">
+    <p class="sf-kicker">{{ page.kind }}{% if page.category %} · {{ page.category }}{% endif %}</p>
+    <h1>{{ page.title }}</h1>
+    {%- if page.summary %}
+    <p class="sf-standfirst">{{ page.summary }}</p>
+    {%- endif %}
+    <p class="sf-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
+      {%- if page.updated %} · <span>Updated <time datetime="{{ page.updated | date_to_xmlschema }}">{{ page.updated | date: "%-d %B %Y" }}</time></span>{% endif %}
+      {%- if page.reading_time %} · {{ page.reading_time }} min read{% endif %}
+      {%- if page.audience %} · For {{ page.audience }}{% endif %}
+    </p>
+  </header>
+
+  {%- if page.answer %}
+  <div class="sf-answer">
+    <p class="sf-answer-label">In short</p>
+    <p>{{ page.answer }}</p>
+  </div>
+  {%- endif %}
+
+  <div class="sf-prose">
+    {{ content }}
+  </div>
+
+  {%- if page.faqs %}
+  <section class="sf-faq" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">Common questions</h2>
+    <dl>
+      {%- for f in page.faqs %}
+      <dt>{{ f.q }}</dt>
+      <dd>{{ f.a }}</dd>
+      {%- endfor %}
+    </dl>
+  </section>
+  {%- endif %}
+
+  {%- if page.related_product %}
+  <aside class="sf-product-card" aria-labelledby="rp-heading">
+    <p class="sf-kicker">Related product</p>
+    <h2 id="rp-heading">{{ page.related_product.title }}</h2>
+    <p>{{ page.related_product.blurb }}</p>
+    <a class="sf-btn" href="{{ page.related_product.url | relative_url }}">View in the Shop</a>
+  </aside>
+  {%- endif %}
+
+  {%- if page.related_reading %}
+  <nav class="sf-related" aria-labelledby="related-heading">
+    <h2 id="related-heading">Related reading</h2>
+    <ul>
+      {%- for r in page.related_reading %}
+      <li><a href="{{ r.url | relative_url }}">{{ r.title }}</a></li>
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- endif %}
+
+  {%- if page.sources %}
+  <section class="sf-sources" aria-labelledby="sources-heading">
+    <h2 id="sources-heading">Sources</h2>
+    <ul>
+      {%- for s in page.sources %}
+      <li>{{ s }}</li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+</article>
