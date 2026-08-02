@@ -1,0 +1,268 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Every AI-assisted output passes this checklist before it reaches a customer, an employee, or any file. It takes under a minute. Print it and keep it where the work happens."
+    },
+    {
+      "t": "warn",
+      "x": "If any item in Section A fails, do not send. Fix it or escalate it. There is no exception for being busy."
+    },
+    {
+      "t": "h2",
+      "x": "Section A — Stop items"
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Check",
+        "Pass"
+      ],
+      "rows": [
+        [
+          "A1",
+          "No price, rate, hourly figure or total appears anywhere unless an authorised person put it there.",
+          "☐"
+        ],
+        [
+          "A2",
+          "No statement that anything is or is not code-compliant.",
+          "☐"
+        ],
+        [
+          "A3",
+          "No statement about whether a permit is or is not required.",
+          "☐"
+        ],
+        [
+          "A4",
+          "No statement that anything is safe, unsafe, hazardous or dangerous.",
+          "☐"
+        ],
+        [
+          "A5",
+          "No instruction telling a customer to shut off, reset, bleed, bypass or operate anything.",
+          "☐"
+        ],
+        [
+          "A6",
+          "No promise of an outcome, a lifespan, or that a problem will not recur.",
+          "☐"
+        ],
+        [
+          "A7",
+          "No admission of fault, liability, negligence or defective work.",
+          "☐"
+        ],
+        [
+          "A8",
+          "Nothing appears that was not in the source material. No invented facts.",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.83,
+        0.1
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Section B — Accuracy"
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Check",
+        "Pass"
+      ],
+      "rows": [
+        [
+          "B1",
+          "Customer name spelled correctly.",
+          "☐"
+        ],
+        [
+          "B2",
+          "Address correct, checked against the job record.",
+          "☐"
+        ],
+        [
+          "B3",
+          "Equipment make, model and location match the record.",
+          "☐"
+        ],
+        [
+          "B4",
+          "Dates and times correct, including the year.",
+          "☐"
+        ],
+        [
+          "B5",
+          "Every measurement and specification matches the technician's note exactly.",
+          "☐"
+        ],
+        [
+          "B6",
+          "Warranty terms quoted match the written warranty word for word.",
+          "☐"
+        ],
+        [
+          "B7",
+          "Every part named was actually used, per the confirmed parts list.",
+          "☐"
+        ],
+        [
+          "B8",
+          "Any figure carried over from another document is copied, not recalculated.",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.83,
+        0.1
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Section C — Completeness"
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Check",
+        "Pass"
+      ],
+      "rows": [
+        [
+          "C1",
+          "Every [BRACKETED PLACEHOLDER] has been replaced.",
+          "☐"
+        ],
+        [
+          "C2",
+          "Nothing marked NOT RECORDED, CLARIFY or UNCLEAR remains unresolved.",
+          "☐"
+        ],
+        [
+          "C3",
+          "Exclusions listed are the ones that apply to this job, not generic boilerplate.",
+          "☐"
+        ],
+        [
+          "C4",
+          "Next step is stated, with who does it and by when.",
+          "☐"
+        ],
+        [
+          "C5",
+          "Contact details are correct and monitored.",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.83,
+        0.1
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Section D — Tone"
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Check",
+        "Pass"
+      ],
+      "rows": [
+        [
+          "D1",
+          "Sounds like our business, not like a template.",
+          "☐"
+        ],
+        [
+          "D2",
+          "No pressure, urgency or scarcity that is not genuinely true.",
+          "☐"
+        ],
+        [
+          "D3",
+          "No jargon left unexplained for a residential customer.",
+          "☐"
+        ],
+        [
+          "D4",
+          "Nothing that would embarrass us if it were screenshotted and posted publicly.",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.83,
+        0.1
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Section E — Data handling"
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Check",
+        "Pass"
+      ],
+      "rows": [
+        [
+          "E1",
+          "No customer payment details were entered into an AI tool.",
+          "☐"
+        ],
+        [
+          "E2",
+          "No government identification, date of birth or financial account data was entered.",
+          "☐"
+        ],
+        [
+          "E3",
+          "No confidential business record, employee record or supplier agreement was entered.",
+          "☐"
+        ],
+        [
+          "E4",
+          "Where personal information was necessary, only the minimum was used.",
+          "☐"
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.83,
+        0.1
+      ]
+    },
+    {
+      "t": "hr"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Reviewed by",
+        "Date",
+        "Document reviewed",
+        "Sent / filed / escalated"
+      ]
+    },
+    {
+      "t": "note",
+      "x": "Escalate rather than send whenever an item touches gas, electrical hazard, water damage in progress, injury, a customer alleging damage, or anything outside your licence scope."
+    }
+  ]
+}

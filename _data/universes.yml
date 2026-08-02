@@ -1,0 +1,95 @@
+# The five public product universes.
+#
+# Single source of truth. The homepage, the /products/ page and the shop
+# catalogue filter all read from this file, so adding a sixth universe later
+# is one entry here rather than an edit in three places.
+#
+# `category` is the value matched against the Shop Worker's `category` column
+# on each product. It is the contract between this file and the catalogue —
+# a product whose category does not match one of these five falls into the
+# catalogue's "All products" view and nowhere else, which is a visible,
+# recoverable failure rather than a silent one.
+#
+# `examples` describe the KINDS of thing a universe holds. They are not claims
+# that such a product exists today. The catalogue is the only authority on
+# what is actually for sale.
+
+- slug: business
+  category: Business & Professional
+  title: Business & Professional
+  image: /assets/img/universes/business.svg
+  image_alt: Layered documents above a rising measure, drawn in gold on navy
+  blurb: >-
+    Operational material for people who run the business day to day: the
+    checklists, templates and decision structures that keep work repeatable
+    when the person who invented the process is busy.
+  examples:
+    - Business toolkits
+    - Workbooks and templates
+    - AI operations resources
+    - Productivity systems
+    - Professional digital tools
+
+- slug: education
+  category: Education & Learning
+  title: Education & Learning
+  image: /assets/img/universes/education.svg
+  image_alt: An open book beneath an arc of marked progress, drawn in gold on navy
+  blurb: >-
+    Structured material for learning something properly rather than skimming
+    it — sequenced, with exercises that have answers and a defined finish
+    line.
+  examples:
+    - Study materials
+    - Educational guides
+    - Courses and masterclasses
+    - Exam preparation
+    - Exercises with worked corrections
+    - Learning workbooks
+
+- slug: books
+  category: Books & Publishing
+  title: Books & Publishing
+  image: /assets/img/universes/books.svg
+  image_alt: A fan of bound spines, drawn in gold on navy
+  blurb: >-
+    Long-form written work. Narrative and non-fiction alike, published as
+    finished books rather than serialised fragments.
+  examples:
+    - eBooks and guides
+    - Journals
+    - Novels and narrative books
+    - Historical writing
+    - Fiction
+    - Children's books
+    - Long-form articles
+
+- slug: spirituality
+  category: Spirituality & Reflection
+  title: Spirituality & Reflection
+  image: /assets/img/universes/spirituality.svg
+  image_alt: Concentric rings of light above a still horizon, drawn in gold on navy
+  blurb: >-
+    Reflective and devotional writing, meant to be returned to rather than
+    read once.
+  examples:
+    - Spiritual books
+    - Rhapsodies
+    - Devotionals
+    - Reflective writing
+    - Teachings
+    - Spiritual guides
+
+- slug: software
+  category: Software & Digital Tools
+  title: Software & Digital Tools
+  image: /assets/img/universes/software.svg
+  image_alt: Connected nodes held inside code brackets, drawn in gold on navy
+  blurb: >-
+    Things that do work rather than describe it — downloadable utilities,
+    prompt sets and templates that plug into what you already use.
+  examples:
+    - Downloadable tools and utilities
+    - Prompt libraries
+    - Templates
+    - Bundles

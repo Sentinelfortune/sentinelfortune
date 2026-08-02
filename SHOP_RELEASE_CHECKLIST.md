@@ -48,14 +48,18 @@ Follow `CLOUDFLARE_SHOP_SETUP.md`. Nothing below has been performed.
 - [ ] Migrations applied remotely (`wrangler d1 migrations apply sentinel-fortune-shop --remote`)
 - [ ] R2 bucket `sentinel-fortune-shop-downloads` created — **public access NOT enabled** (verify in the
       Cloudflare dashboard; this bucket must never have an r2.dev URL or custom domain)
-- [ ] R2 bucket `sentinel-fortune-shop-assets` created — public access enabled; its public base URL written
-      into `SHOP_ASSETS_PUBLIC_BASE_URL` in `wrangler.toml`
+- [ ] R2 bucket `sentinel-fortune-shop-assets` created — **public access NOT enabled**; cover/preview
+      images are served by the Worker at `/shop/asset/:id`, so `SHOP_ASSETS_PUBLIC_BASE_URL` stays unset
+      (it is only an optional CDN override)
 - [ ] Worker deployed to the non-production environment (`npm run deploy`); resulting `*.workers.dev` URL
       written into `SHOP_WORKER_BASE_URL` and redeployed
 - [ ] `GET /shop/health` returns `{"ok":true,...}`
 - [ ] `GET /shop/products` returns `{"ok":true,"products":[]}` (empty until a product is published)
-- [ ] Cloudflare Access application created; team domain + AUD tag written into `CF_ACCESS_TEAM_DOMAIN` /
-      `CF_ACCESS_AUD`
+- [ ] Cloudflare Access application created; team domain written into `CF_ACCESS_TEAM_DOMAIN` in
+      `wrangler.toml`, AUD tag uploaded as the `CF_ACCESS_AUD` **secret**
+      (`wrangler secret put CF_ACCESS_AUD --env <env>`). The AUD must never be a var in `wrangler.toml` —
+      a binding cannot be both, and the secret upload fails with Cloudflare error 10053 if it is
+- [ ] Verified: `/shop/admin/whoami` returns **401** before the `CF_ACCESS_AUD` secret is set (fail-closed)
 - [ ] `/admin` deployed to a **separate Cloudflare Pages project** behind that Access application
       (never GitHub Pages — see `SHOP_ARCHITECTURE.md`)
 - [ ] `ADMIN_ALLOWED_ORIGIN` in `wrangler.toml` set to that Pages deployment's origin, and the Worker

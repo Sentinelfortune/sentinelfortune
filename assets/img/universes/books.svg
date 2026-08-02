@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1530"/><stop offset="1" stop-color="#060a18"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5d980"/><stop offset="0.5" stop-color="#c8a84b"/><stop offset="1" stop-color="#9a7f2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <title>Books and Publishing — a fan of bound spines</title>
+  <g fill="none" stroke="url(#gold)" stroke-width="1.7">
+    <rect x="118" y="82" width="34" height="150" rx="3" stroke-opacity=".4"/>
+    <rect x="158" y="66" width="34" height="166" rx="3" stroke-opacity=".62"/>
+    <rect x="198" y="78" width="34" height="154" rx="3" stroke-opacity=".85"/>
+    <rect x="238" y="60" width="34" height="172" rx="3"/>
+  </g>
+  <g stroke="#c8a84b" stroke-opacity=".5" stroke-width="1.2" stroke-linecap="round">
+    <path d="M126 104h18M126 210h18M166 90h18M166 210h18M206 100h18M206 210h18M246 84h18M246 210h18"/>
+  </g>
+  <path d="M104 246h192" stroke="url(#gold)" stroke-width="2.2" stroke-linecap="round"/>
+  <rect x="0.5" y="0.5" width="399" height="299" fill="none" stroke="#c8a84b" stroke-opacity=".22"/>
+</svg>

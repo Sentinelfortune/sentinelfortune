@@ -1,0 +1,379 @@
+{
+  "blocks": [
+    {
+      "t": "h1",
+      "x": "1. What this package is, and what it is not"
+    },
+    {
+      "t": "p",
+      "x": "This is an operations package for HVAC, plumbing, electrical and related home-service businesses, typically running between two and twenty-five people. It gives you a documented way to use general-purpose AI tools inside your business, with the prompts already written for your trade and clear rules about where AI must not be allowed to operate."
+    },
+    {
+      "t": "p",
+      "x": "It is not software. Nothing installs, nothing runs automatically, and nothing connects to your field-service system. It is a set of documents, prompts and procedures that you and your staff use with an AI assistant you already have access to."
+    },
+    {
+      "t": "p",
+      "x": "It is also not a strategy document. Every section here ends in something you do."
+    },
+    {
+      "t": "h2",
+      "x": "Why most home-service businesses stall on this"
+    },
+    {
+      "t": "p",
+      "x": "Most owners in these trades have already tried an AI assistant. They asked it to write a customer email or an estimate, got back something that read plausibly but was missing every exclusion that matters, invented a price, or confidently stated something about code that no licensed contractor could safely send. They tried twice, decided it was not built for their work, and stopped."
+    },
+    {
+      "t": "p",
+      "x": "That reaction is correct as far as it goes. A general-purpose AI given a blank instruction will produce generic output, because a blank instruction is generic. The gap is not the tool. The gap is that nobody hands you the configured version — the prompt that already knows a plumbing scope of work needs an exclusions block, that permit questions get routed to a human, and that price is never the AI's business."
+    },
+    {
+      "t": "p",
+      "x": "That configured version is what this package contains."
+    },
+    {
+      "t": "h2",
+      "x": "The organising principle"
+    },
+    {
+      "t": "warn",
+      "x": "AI drafts. Qualified people decide. Every prompt, template and procedure in this package is built on that division, and none of them will work safely if you collapse it."
+    },
+    {
+      "t": "p",
+      "x": "Drafting is the part of your written work that is slow, repetitive and mostly mechanical: turning a technician's fragments into a job record, structuring a scope of work, writing the fourth follow-up message this week. Deciding is the part that requires a licence, judgement, or accountability: what something costs, whether it meets code, whether a permit is needed, whether a condition is safe."
+    },
+    {
+      "t": "p",
+      "x": "AI is genuinely good at the first and must never be allowed near the second. Everything in this package holds that line."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "2. Where AI helps, and where it must be kept out"
+    },
+    {
+      "t": "h2",
+      "x": "Where it helps"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Workflow",
+        "What AI does",
+        "What it does not do"
+      ],
+      "rows": [
+        [
+          "Field notes",
+          "Reconstructs a structured job record from fragments and marks what is missing",
+          "Decide whether the work was done correctly"
+        ],
+        [
+          "Estimates",
+          "Structures scope, inclusions, exclusions and conditions consistently",
+          "Set any price"
+        ],
+        [
+          "Customer messages",
+          "Drafts in one consistent voice, carrying your terms as placeholders",
+          "Send anything without human review"
+        ],
+        [
+          "Procedures",
+          "Extracts what is in your head by interview and formats it",
+          "Invent a step you did not describe"
+        ],
+        [
+          "Message triage",
+          "Sorts a backlog into priority order and surfaces safety language",
+          "Decide whether a situation is genuinely dangerous"
+        ],
+        [
+          "Phone objections",
+          "Prepares consistent, honest responses in advance",
+          "Answer a customer live, or authorise a discount"
+        ]
+      ],
+      "widths": [
+        0.18,
+        0.44,
+        0.38
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Where it must be kept out — the four hard boundaries"
+    },
+    {
+      "t": "p",
+      "x": "These four appear in every prompt in this package, deliberately and repetitively."
+    },
+    {
+      "t": "ol",
+      "x": [
+        "PRICING. AI does not set, estimate, calculate or imply a price, rate, labour hour or total. Pricing depends on your costs, your market and your margin, none of which an AI knows. An invented price in a customer-facing document is a misrepresentation you may be held to.",
+        "CODE. AI does not state whether work is or is not code-compliant. Codes vary by jurisdiction, are amended locally, and are interpreted by inspectors. A confident AI statement about code is confident and wrong often enough to be dangerous.",
+        "PERMITS. AI does not determine whether a permit is required. Same reasoning. Every template in this package writes: permit requirements to be confirmed by the company prior to scheduling.",
+        "SAFETY. AI does not determine whether a condition is safe or unsafe, and never instructs a customer to operate, shut off, reset or bypass anything. That is a licensed determination made by a qualified person with eyes on the equipment."
+      ]
+    },
+    {
+      "t": "note",
+      "x": "There is a fifth boundary that is about your business rather than your trade: AI does not decide employment, disciplinary or pay matters, and does not draft legal terms you then adopt without your own adviser reading them."
+    },
+    {
+      "t": "h2",
+      "x": "What must never go into a public AI tool"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Customer payment details, card numbers, bank details.",
+        "Government identification numbers, dates of birth, medical information.",
+        "Employee records, disciplinary matters, pay information.",
+        "Confidential business documents, supplier pricing agreements, anything under an NDA.",
+        "Photographs showing a customer's home interior, documents or personal belongings."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Where you need a customer's name or address to get useful output, use the minimum necessary. Most of the prompts in this package work perfectly well with the customer described as \"the customer\"."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "3. How the package fits together"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Order",
+        "Asset",
+        "What it produces"
+      ],
+      "rows": [
+        [
+          "1",
+          "Business Customization Worksheet (09)",
+          "Your business facts, captured once, feeding everything else"
+        ],
+        [
+          "2",
+          "Workflow Map & Opportunity Worksheet (02)",
+          "A ranked shortlist of what to change first"
+        ],
+        [
+          "3",
+          "Prompt Library (03)",
+          "The working tool your staff use daily"
+        ],
+        [
+          "4",
+          "Quality-Control Checklist (06)",
+          "The review gate before anything is sent"
+        ],
+        [
+          "5",
+          "Responsible Use Policy (08)",
+          "Your written standard, plus a page staff sign"
+        ],
+        [
+          "6",
+          "Customer Communication Templates (05)",
+          "Consistent customer messaging"
+        ],
+        [
+          "7",
+          "SOP Builder (04)",
+          "Undocumented knowledge, written down"
+        ],
+        [
+          "8",
+          "Weekly Operations Review (07)",
+          "The rhythm that stops adoption decaying"
+        ],
+        [
+          "9",
+          "30-Day Roadmap (10)",
+          "The sequence that gets all of the above done"
+        ]
+      ],
+      "widths": [
+        0.09,
+        0.4,
+        0.51
+      ]
+    },
+    {
+      "t": "p",
+      "x": "The order matters. Doing the Customization Worksheet first means you enter your warranty terms, standard exclusions and escalation roles once instead of nine times. Doing the Workflow Map second means you spend your effort on the two workflows that actually cost you, rather than the ones that are easiest to change."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "4. Choosing and setting up your AI tool"
+    },
+    {
+      "t": "p",
+      "x": "This package names no vendor and requires none. Any widely available general-purpose AI assistant will run these prompts. What matters is not which one you pick but how you set it up."
+    },
+    {
+      "t": "h2",
+      "x": "Three setup decisions"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "PAID OR FREE. Free tiers work for these prompts. Paid tiers generally produce better output on the longer prompts — the field-note reconstruction and SOP interview prompts in particular. Start free, upgrade if the output quality is limiting you rather than because you assume it will be.",
+        "TRAINING ON YOUR DATA. Most tools offer a setting controlling whether your conversations are used to improve their models. For business use, turn it off. Check this before your first real job note goes in.",
+        "WHO HAS ACCOUNTS. Decide whether staff use one shared business account or individual accounts. Individual accounts give you accountability; a shared account is simpler to control. Either is defensible. Not deciding is not."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "A saved instruction that improves every prompt"
+    },
+    {
+      "t": "p",
+      "x": "Most AI assistants let you save a standing instruction applied to every conversation. Set yours to something like the following, adapted from your Customization Worksheet:"
+    },
+    {
+      "t": "code",
+      "x": "I run a [TRADE] company serving [SERVICE AREA]. Our customers are [residential / commercial / both].\n\nIn everything you produce for me:\n- Never state, estimate or imply a price, rate or labour hour.\n- Never state whether work is code-compliant or whether a permit is required.\n- Never make a safety determination or tell a customer to operate, shut off or reset anything.\n- Never invent a fact I have not given you. Mark gaps clearly instead.\n- Write plainly. Our customers are homeowners, not engineers.\n\nOur standard warranty is [TERM]. Our standard exclusions are [LIST]."
+    },
+    {
+      "t": "p",
+      "x": "This does not replace the rules inside each prompt — it reinforces them. Keep both."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "5. Rolling it out to your staff"
+    },
+    {
+      "t": "h2",
+      "x": "Sequence"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "You use it alone first, for at least a week. Do not roll out something you have not personally used on real jobs.",
+        "Issue the Responsible Use Policy and have every member of staff read and sign the one-page summary. This happens before anyone else starts using AI tools, not after.",
+        "Introduce it to one person — usually whoever handles the phones or the invoicing, because they feel the drafting load most.",
+        "Let that person use it for two weeks and tell you what is wrong with it.",
+        "Fix the prompts based on what they said, then extend to the rest of the team."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "What to say when you introduce it"
+    },
+    {
+      "t": "p",
+      "x": "Staff in the trades hear \"AI\" and reasonably wonder whether they are training their replacement. Address it directly rather than letting it sit. The honest position is straightforward: this is being introduced to reduce the amount of typing, not the number of people, and every output still requires a person to check it — which means the work requires more judgement, not less."
+    },
+    {
+      "t": "p",
+      "x": "Then be consistent with that. If you introduce it as an assistant and use it as a monitoring tool, you will get quiet non-adoption and you will deserve it."
+    },
+    {
+      "t": "h2",
+      "x": "The failure mode to watch for"
+    },
+    {
+      "t": "warn",
+      "x": "The most common failure is not bad AI output. It is staff pasting output without reading it because it looks finished. Polished text reads as verified text. It is not. The Quality-Control Checklist exists for exactly this reason, and it only works if you check that it is actually being used — spot-check outbound documents in your first month."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "6. Measuring whether it is working"
+    },
+    {
+      "t": "p",
+      "x": "Do not measure this by hours saved. You will not have a reliable baseline, and the number will be a guess you then quote to yourself as if it were data."
+    },
+    {
+      "t": "p",
+      "x": "Measure these instead, because they are countable and they matter:"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Measure",
+        "How to count it",
+        "What good looks like"
+      ],
+      "rows": [
+        [
+          "Field notes returned to technicians for clarification",
+          "Count per week",
+          "Falling"
+        ],
+        [
+          "Days from job completion to invoice sent",
+          "Average across the week",
+          "Falling"
+        ],
+        [
+          "Estimates sent within 24 hours of the visit",
+          "Percentage",
+          "Rising"
+        ],
+        [
+          "Customers who received a post-job summary",
+          "Percentage",
+          "Rising toward 100%"
+        ],
+        [
+          "Procedures documented",
+          "Running count",
+          "Rising, then plateauing where it should"
+        ],
+        [
+          "Callbacks attributable to unclear scope",
+          "Count per month",
+          "Falling"
+        ]
+      ],
+      "widths": [
+        0.36,
+        0.28,
+        0.36
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Record these in the Weekly Operations Review. Four weeks of numbers will tell you more than any estimate of time saved."
+    },
+    {
+      "t": "h2",
+      "x": "What this package cannot do for you"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "It will not make an unclear process clear. Documenting a bad procedure produces a written bad procedure.",
+        "It will not fix a staffing shortage. It reduces drafting, not field work.",
+        "It will not improve technical quality. Nothing here touches the work in the field.",
+        "It will not maintain itself. Without the weekly review, adoption decays in about three weeks."
+      ]
+    },
+    {
+      "t": "note",
+      "x": "Every claim in this guide is about what the tools and templates do. Nothing here promises a financial result, a time saving, or an outcome for your business, because that would depend on your business and we have not seen it."
+    }
+  ]
+}

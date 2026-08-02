@@ -1,0 +1,529 @@
+[
+  {
+    "id": "FN-01",
+    "category": "field-notes",
+    "title": "Fragment-to-Job-Record Reconstruction",
+    "purpose": "Turns a technician's shorthand into a structured job record the office can invoice from.",
+    "when": "Every time field notes arrive too thin to invoice from.",
+    "inputs": [
+      "The raw technician note, verbatim",
+      "Equipment make/model/serial if recorded",
+      "Job address type (residential/commercial)"
+    ],
+    "prompt": "You are helping a [TRADE: HVAC / plumbing / electrical] company convert a technician's raw field note into a structured job record.\n\nRAW NOTE (verbatim, do not correct facts):\n\"\"\"\n[PASTE THE TECHNICIAN'S NOTE EXACTLY AS WRITTEN]\n\"\"\"\n\nProduce this structure:\n1. PRESENTING COMPLAINT — what the customer reported\n2. EQUIPMENT — make, model, serial, approximate age, location on site\n3. FINDINGS — what the technician observed or measured\n4. WORK PERFORMED — actions taken, in order\n5. PARTS USED — description and quantity only\n6. SYSTEM STATE ON DEPARTURE — operational / partially operational / shut down / isolated\n7. RECOMMENDED FOLLOW-UP — deferred or declined work\n8. INFORMATION GAPS — anything the office must confirm with the technician\n\nAbsolute rules:\n- Use ONLY what is in the raw note. Invent nothing.\n- If a field is not covered by the note, write \"NOT RECORDED — confirm with technician\" and list it under INFORMATION GAPS.\n- Do not state, estimate or imply any price, rate or labour hours.\n- Do not state whether work is code-compliant, permitted, or safe. If the note mentions any code, permit or safety concern, copy it verbatim into RECOMMENDED FOLLOW-UP and flag it for a licensed review.\n- Do not soften or dramatise. Keep it factual.",
+    "warning": "The output is a draft record, not a verified one. A technician or licensed supervisor must confirm every reconstructed line before it is invoiced or filed. Anything marked NOT RECORDED must be resolved by asking the technician — never by guessing."
+  },
+  {
+    "id": "FN-02",
+    "category": "field-notes",
+    "title": "Shut-Off and Isolation Record",
+    "purpose": "Extracts and makes explicit what was isolated, shut off, or left de-energised, so the next visit does not start blind.",
+    "when": "Any job involving gas, water, refrigerant or electrical isolation.",
+    "inputs": [
+      "The raw note",
+      "Which utilities were involved"
+    ],
+    "prompt": "From the field note below, extract a SHUT-OFF AND ISOLATION RECORD for a [TRADE] job.\n\nFIELD NOTE:\n\"\"\"\n[PASTE NOTE]\n\"\"\"\n\nReport exactly these lines:\n- SERVICE ISOLATED: (gas / water / electrical / refrigerant / none stated)\n- ISOLATION POINT AND LOCATION: (as described in the note)\n- ISOLATION METHOD: (valve closed, breaker off and tagged, disconnect pulled, etc.)\n- RESTORED BEFORE DEPARTURE: yes / no / not stated\n- IF NOT RESTORED — who was informed, and what was the customer told\n- LOCK-OUT / TAG-OUT MENTIONED: yes / no / not stated\n- OUTSTANDING HAZARD NOTED BY TECHNICIAN: quote verbatim, or \"none stated\"\n\nRules:\n- Report only what the note says. Where the note is silent, write \"NOT STATED\".\n- Do not infer that an isolation was correct, complete or compliant.\n- Do not advise on isolation procedure. If any line reads NOT STATED for a job involving gas or electrical work, end your output with: \"INCOMPLETE ISOLATION RECORD — escalate to a licensed supervisor before closing this job.\"\n- Do not state, estimate or imply any price, labour hours or charge. This is a safety-relevant record, not a billing document.",
+    "warning": "This prompt records what a technician said, nothing more. It is not a safety verification and must never be treated as one. An incomplete isolation record on a gas or electrical job is escalated to a licensed person immediately, not filed."
+  },
+  {
+    "id": "FN-03",
+    "category": "field-notes",
+    "title": "Callback Risk Flagger",
+    "purpose": "Reads a completed job record and flags language patterns that commonly precede a callback.",
+    "when": "End of day, across the day's closed jobs.",
+    "inputs": [
+      "One or more completed job records"
+    ],
+    "prompt": "Review the [TRADE] job record below and identify anything that raises the risk of a callback or a billing dispute.\n\nJOB RECORD:\n\"\"\"\n[PASTE RECORD]\n\"\"\"\n\nFlag and quote any instance of:\n- Vague completion language (\"tested ok\", \"seems fine\", \"should be good\") with no measurement or observation behind it\n- Work described as temporary, partial, or pending a part, with no scheduled return\n- A customer concern mentioned but never resolved or explicitly deferred\n- Equipment condition noted as poor or ageing with no written recommendation\n- A deferred or declined recommendation with no record that the customer was told\n- Any mention of a code, permit, or safety concern with no escalation recorded\n\nFor each flag give: the quoted text, why it is a risk, and the single question the office should ask the technician.\n\nRules:\n- Quote the record; do not paraphrase into new facts.\n- Do not judge whether the technical work was correct — you are reviewing the written record only.\n- Do not suggest any code, permit or safety determination.\n- Do not comment on pricing, labour hours or whether the job was profitable. You are reviewing the written record only.",
+    "warning": "This flags gaps in a written record. It cannot assess whether the work itself was done correctly, and a clean result is not a quality assurance. Route every code, permit or safety flag to a licensed person."
+  },
+  {
+    "id": "FN-04",
+    "category": "field-notes",
+    "title": "Diagnostic Narrative for the Customer File",
+    "purpose": "Converts technical findings into a plain-language explanation a homeowner can understand, kept factual.",
+    "when": "Before sending a job summary to a residential customer.",
+    "inputs": [
+      "The technical findings",
+      "Customer name",
+      "Equipment description"
+    ],
+    "prompt": "Rewrite the technical findings below into a plain-language explanation for a residential customer of a [TRADE] company.\n\nTECHNICAL FINDINGS:\n\"\"\"\n[PASTE FINDINGS]\n\"\"\"\n\nCUSTOMER: [NAME]        EQUIPMENT: [MAKE / MODEL / LOCATION]\n\nRequirements:\n- Sixth-to-eighth grade reading level. No trade jargon without a short plain explanation in the same sentence.\n- Three short paragraphs maximum: what we found, what we did, what happens next.\n- Neutral and factual. Do not use alarming language, and do not minimise a real problem.\n- Where the technician recommended further work, state it as a recommendation and note that we will provide a written estimate separately.\n\nAbsolute rules:\n- Do not state, estimate or imply any price, and do not say work is \"cheap\", \"expensive\" or \"worth it\".\n- Do not state that anything is or is not code-compliant, permitted, safe, or dangerous.\n- Do not promise a lifespan, an outcome, or that a problem will not recur.\n- Do not invent any finding that is not in the technical notes.",
+    "warning": "A licensed person must confirm the technical accuracy of the plain-language version before it is sent. Simplification is where meaning is most easily lost — check that nothing has become a promise.",
+    "example": "A note reading \"cap start winding weak, 42uF measured on 45uF rated\" becomes an explanation that a specific electrical component is measuring below its rating and is likely to fail — without predicting when."
+  },
+  {
+    "id": "FN-05",
+    "category": "field-notes",
+    "title": "Parts and Materials List Extraction",
+    "purpose": "Pulls a clean parts list out of a narrative note so the office is not reading prose to build an invoice.",
+    "when": "Before invoicing any job where parts were used.",
+    "inputs": [
+      "The raw note"
+    ],
+    "prompt": "Extract every part, material and consumable mentioned in this [TRADE] field note.\n\nNOTE:\n\"\"\"\n[PASTE NOTE]\n\"\"\"\n\nReturn a table with these columns: Item description | Quantity | Size/rating/spec as stated | Where it was installed | Confidence (stated / implied / unclear)\n\nRules:\n- \"Stated\" means the note names it explicitly. \"Implied\" means the work described requires it but the note does not name it. \"Unclear\" means ambiguous.\n- List implied items separately under the heading \"IMPLIED — CONFIRM BEFORE INVOICING\". Never merge them into the confirmed list.\n- Do not supply prices, part numbers, or supplier names that are not in the note.\n- Do not substitute a manufacturer or specification you think is equivalent.\n- Record which piece of equipment each part was fitted to, using the make/model/serial from the job record. A part list with no equipment reference is useless at warranty-claim time.\n- If any listed part is covered by a manufacturer warranty per our records, mark it \"POSSIBLE WARRANTY PART — confirm before invoicing\". Do not decide the warranty question yourself.",
+    "warning": "Only the \"stated\" rows may go onto an invoice without checking. Every implied or unclear row is confirmed with the technician first — invoicing an implied part is how billing disputes start."
+  },
+  {
+    "id": "FN-06",
+    "category": "field-notes",
+    "title": "Multi-Visit Job History Summary",
+    "purpose": "Compresses several visits to the same address into one chronological history.",
+    "when": "Before a repeat visit, or when a customer disputes a recurring problem.",
+    "inputs": [
+      "All prior job records for the address",
+      "Address or customer reference"
+    ],
+    "prompt": "Summarise the visit history for this [TRADE] customer into one chronological record.\n\nVISIT RECORDS:\n\"\"\"\n[PASTE EACH RECORD, OLDEST FIRST, SEPARATED BY ---]\n\"\"\"\n\nProduce:\n1. TIMELINE — one line per visit: date, presenting complaint, work performed, outcome\n2. RECURRING ISSUE — has the same complaint returned? Quote the evidence.\n3. EQUIPMENT CHANGES — anything replaced, added or removed across the visits\n4. OPEN RECOMMENDATIONS — anything recommended and not yet done, with the date first recommended\n5. WHAT IS STILL UNKNOWN — questions the records do not answer\n\nRules:\n- Use only the records supplied.\n- If the records conflict, state the conflict; do not resolve it yourself.\n- Do not diagnose a root cause. Point to the pattern and let a licensed technician conclude.\n- Do not comment on whether prior work was adequate.\n- Do not state, compare or imply any price across the visits, and do not comment on whether the customer has been charged fairly.",
+    "warning": "A pattern in the paperwork is not a diagnosis. Give this summary to a licensed technician to interpret, especially where the same complaint has recurred."
+  },
+  {
+    "id": "FN-07",
+    "category": "field-notes",
+    "title": "End-of-Day Note Quality Audit",
+    "purpose": "Scores the day's field notes against your own minimum standard so coaching is specific.",
+    "when": "Weekly, as part of the operations review.",
+    "inputs": [
+      "The day's or week's field notes",
+      "Your minimum note standard"
+    ],
+    "prompt": "You are auditing field-note quality for a [TRADE] company.\n\nOUR MINIMUM STANDARD — a complete note must contain:\n[LIST YOUR REQUIRED FIELDS — e.g. presenting complaint, equipment identification, measurements taken, work performed, system state on departure, customer communication recorded]\n\nNOTES TO AUDIT:\n\"\"\"\n[PASTE NOTES, SEPARATED BY ---]\n\"\"\"\n\nFor each note return: technician identifier as written | which required fields are present | which are missing | one specific, non-judgemental coaching sentence.\n\nThen give an overall summary: the single most commonly missing field across all notes, and one change to the note template that would fix it.\n\nRules:\n- Assess the completeness of the written record only. Never assess the quality of the technical work.\n- Coaching language must be specific and neutral. No praise, no criticism of the individual.\n- Do not rank technicians against each other.\n- Do not comment on pricing, invoicing accuracy or job profitability. This audit covers note completeness only.",
+    "warning": "This audits paperwork, not workmanship, and must never be used as a performance rating on its own. Discuss results with technicians directly — a note-quality report is a coaching input, not an HR record."
+  },
+  {
+    "id": "ES-01",
+    "category": "estimates",
+    "title": "Scope of Work with Mandatory Exclusions",
+    "purpose": "Drafts a scope of work that states what is included AND what is explicitly excluded.",
+    "when": "Every written estimate above your minimum threshold.",
+    "inputs": [
+      "Technician findings and recommendation",
+      "Your standard exclusions list",
+      "Access conditions observed"
+    ],
+    "prompt": "Draft a scope of work for a [TRADE] estimate.\n\nWORK TO BE PERFORMED (from the technician):\n\"\"\"\n[PASTE]\n\"\"\"\n\nOUR STANDARD EXCLUSIONS: [PASTE FROM YOUR BUSINESS CUSTOMIZATION WORKSHEET]\nACCESS CONDITIONS OBSERVED: [e.g. crawlspace, attic, occupied unit, restricted parking, tenant coordination required]\n\nStructure:\n1. SCOPE — what will be performed, itemised\n2. INCLUDED — materials, labour, disposal, clean-up, and site protection covered by this price\n3. NOT INCLUDED — an explicit list. Always include, unless we have confirmed otherwise: permit fees and permit applications; correction of pre-existing non-compliant work; concealed conditions not visible at estimate; asbestos, lead or mould remediation; drywall repair, patching, painting and finish restoration; structural modification; landscaping restoration; work on equipment not named in the SCOPE\n4. ACCESS REQUIRED — what the customer must arrange for us to work\n5. CONDITIONS THAT WOULD CHANGE THIS SCOPE — each requires a written change order before work continues\n6. WARRANTY — [INSERT YOUR WARRANTY TERM]. State parts and labour separately.\n\nAbsolute rules:\n- Do not state, calculate, suggest or imply any price, rate, labour hour or total.\n- Do not state whether the work requires a permit or is code-compliant. Write: \"Permit requirements to be confirmed by [COMPANY] prior to scheduling.\"\n- Do not guarantee a completion date.\n- Every exclusion must be plain enough for a homeowner to understand.",
+    "warning": "Pricing and permit determinations are added by an authorised person after this draft exists. Confirm the exclusions list matches this specific job — a copied exclusion that does not apply reads as boilerplate and undermines the ones that matter."
+  },
+  {
+    "id": "ES-02",
+    "category": "estimates",
+    "title": "Good-Better-Best Option Framing",
+    "purpose": "Structures three genuine options so the customer can choose on merit rather than on price alone.",
+    "when": "Replacement and major repair decisions.",
+    "inputs": [
+      "The three technical options",
+      "What differs between them"
+    ],
+    "prompt": "Present three options for a [TRADE] customer decision. Do not include any prices.\n\nOPTION A (minimum viable): [DESCRIBE]\nOPTION B (recommended): [DESCRIBE]\nOPTION C (most comprehensive): [DESCRIBE]\n\nFor each option produce:\n- What it does about the problem the customer actually reported\n- What it does NOT address\n- Expected service life as stated by the manufacturer, or \"not specified\" — never your own estimate\n- Warranty coverage: [INSERT TERMS PER OPTION]\n- Disruption: access needed, expected time on site, whether the system is out of service and for how long\n- What it leaves the customer free to do later\n\nThen write one honest paragraph on why B is recommended for THIS situation, referencing the customer's stated priority: [PRIORITY]\n\nAbsolute rules:\n- No prices, no financing language, no \"best value\" or \"most popular\" claims.\n- Do not disparage Option A. A customer choosing the minimum is making a legitimate decision.\n- Do not predict equipment failure timing.\n- Do not claim energy or cost savings unless quoting a manufacturer's published figure, and label it as such.\n- Do not state whether any option requires a permit, an inspection, or brings the work into a different code scope. Write: \"Permit and inspection requirements to be confirmed by [COMPANY] prior to scheduling.\"",
+    "warning": "Efficiency and savings claims are a regulated area in many jurisdictions. Quote only published manufacturer figures, attribute them, and have an authorised person confirm before sending."
+  },
+  {
+    "id": "ES-03",
+    "category": "estimates",
+    "title": "Concealed Conditions Clause Drafting",
+    "purpose": "Writes a specific concealed-conditions clause for the actual job, instead of generic boilerplate.",
+    "when": "Any job opening walls, floors, ceilings, or working in unsurveyed spaces.",
+    "inputs": [
+      "What is being opened up",
+      "What is realistically likely to be found"
+    ],
+    "prompt": "Draft a concealed conditions clause for this [TRADE] job.\n\nWORK REQUIRING ACCESS: [DESCRIBE WHAT WILL BE OPENED OR ENTERED]\nBUILDING AGE AND TYPE: [DESCRIBE]\nREALISTIC POSSIBILITIES BEHIND THE ACCESS POINT: [LIST — e.g. undersized existing wiring, non-compliant prior work, corroded pipe, no accessible shut-off, insulation of unknown type]\n\nWrite a clause that:\n- Names the specific possibilities above rather than saying \"unforeseen conditions\"\n- States plainly that these cannot be confirmed without opening the access point\n- States that if any is found, work stops and a written change order is issued before continuing\n- States what happens to the original estimate if the customer declines the change order\n- Is written for a homeowner, not a lawyer\n\nAbsolute rules:\n- Do not attach any cost, percentage or contingency figure.\n- Do not state that any listed condition is a code violation, a hazard, or a safety issue — describe the physical condition only.\n- Do not imply we have already inspected what is concealed.\n- Do not state whether any listed condition would require a permit, an inspection, or bring the work into a different code scope. Concealed conditions are the most common trigger for exactly that, and it is a determination for [COMPANY] to make once the condition is actually visible — not for this clause to pre-empt. Write: \"Permit and inspection implications of any concealed condition to be confirmed by [COMPANY] before further work.\"",
+    "warning": "Contract clauses affecting a customer's payment obligations should be reviewed by your own legal adviser before you adopt them as standard. This drafts language; it does not make it enforceable."
+  },
+  {
+    "id": "ES-04",
+    "category": "estimates",
+    "title": "Change Order Notice",
+    "purpose": "Produces a clear written change order when a job turns out differently from the estimate.",
+    "when": "The moment scope changes on site, before further work.",
+    "inputs": [
+      "Original scope",
+      "What was found",
+      "What now needs to happen"
+    ],
+    "prompt": "Draft a change order notice for a [TRADE] customer.\n\nORIGINAL AGREED SCOPE: [PASTE]\nWHAT WAS FOUND: [DESCRIBE THE PHYSICAL CONDITION FACTUALLY]\nWHY THE ORIGINAL SCOPE CANNOT SIMPLY CONTINUE: [EXPLAIN]\nWHAT IS NOW PROPOSED: [DESCRIBE]\n\nStructure:\n1. What we agreed to do\n2. What we found, in plain factual terms\n3. Why this changes the work\n4. What we propose instead\n5. What happens if you decline — including the state we would leave the site in and what would remain unresolved\n6. Your options and how to tell us which you want\n\nAbsolute rules:\n- No prices; those are added by an authorised person.\n- Describe the found condition physically. Do not label it a violation, a hazard, or unsafe.\n- Do not pressure. The decline option must be presented as fully legitimate.\n- Do not state or imply that work already performed was inadequate.\n- Do not proceed language — this notice requests a decision, it does not assume one.\n- Do not state whether the newly found condition requires a permit, an inspection, or brings the work into a different code scope. Write: \"Permit and inspection implications to be confirmed by [COMPANY] before work resumes.\"\n- State whether the service is currently isolated or shut off, and whether it stays that way while the customer decides. That is the fact the customer most needs and the one most often left out.\n- A licensed person reviews this notice before it is sent.",
+    "warning": "A change order alters a contract. An authorised person must set pricing and confirm the terms before this is sent, and the customer's written agreement must be recorded before work resumes."
+  },
+  {
+    "id": "ES-05",
+    "category": "estimates",
+    "title": "Estimate Follow-Up Sequence",
+    "purpose": "Writes a short, non-pushy follow-up sequence for estimates that have gone quiet.",
+    "when": "Three days, ten days and thirty days after an unanswered estimate.",
+    "inputs": [
+      "Estimate summary",
+      "Date sent",
+      "Customer's stated priority"
+    ],
+    "prompt": "Write three short follow-up messages for an unanswered [TRADE] estimate.\n\nESTIMATE: [ONE-LINE SUMMARY]        SENT: [DATE]\nCUSTOMER'S STATED PRIORITY WHEN WE VISITED: [QUOTE THEM]\n\nMessage 1 (day 3) — confirm they received it, offer to walk through anything unclear. Under 80 words.\nMessage 2 (day 10) — add one genuinely useful piece of context about the work itself, not about urgency. Under 80 words.\nMessage 3 (day 30) — a clean close-out: we are keeping the file open, here is how to restart, no obligation. Under 60 words.\n\nAbsolute rules:\n- No artificial deadlines, no \"prices increase soon\", no scarcity of any kind.\n- Do not restate or change any price.\n- Do not imply risk, damage or danger from delay. If the technician documented a genuine safety concern, that is a phone call from a licensed person, not a follow-up email.\n- Every message must make it easy and unembarrassing to say no.\n- Do not restate, interpret or reassure the customer about permit requirements or code compliance. If they ask, the answer is a call from [LICENSED ROLE], not a follow-up email.",
+    "warning": "If there is a real safety concern, none of these messages are the right channel — a licensed person telephones the customer. Check nothing in the sequence has drifted into pressure."
+  },
+  {
+    "id": "ES-06",
+    "category": "estimates",
+    "title": "Estimate Plain-Language Summary Page",
+    "purpose": "Adds a one-page plain summary to the front of a technical estimate.",
+    "when": "Estimates going to residential customers or non-technical decision-makers.",
+    "inputs": [
+      "The full technical estimate"
+    ],
+    "prompt": "Write a one-page plain-language summary to sit at the front of this [TRADE] estimate.\n\nFULL ESTIMATE:\n\"\"\"\n[PASTE]\n\"\"\"\n\nCover, in this order, under 350 words total:\n- The problem in one sentence, in the customer's own terms\n- What we propose to do about it\n- What is included\n- What is specifically not included (the three exclusions most likely to surprise them)\n- What we need from you: access, decisions, timing\n- What happens next and how to proceed\n\nAbsolute rules:\n- Do not repeat the price. The summary points to the detailed estimate for figures.\n- Do not add anything not present in the full estimate.\n- No jargon. If a technical term is unavoidable, explain it in the same sentence.\n- Do not characterise the work as urgent, safe, unsafe, compliant or non-compliant.\n- Do not summarise, simplify or restate anything the estimate says about permits, inspections or code. Point the reader to the estimate itself — a simplified permit statement is a misstatement waiting to happen.",
+    "warning": "Check the summary against the full estimate line by line. A summary that promises something the estimate does not cover is the version the customer will hold you to."
+  },
+  {
+    "id": "ES-07",
+    "category": "estimates",
+    "title": "Commercial vs Residential Scope Adjustment",
+    "purpose": "Adapts a residential scope for a commercial property's additional operational requirements.",
+    "when": "Any commercial, multi-tenant or landlord job.",
+    "inputs": [
+      "The residential-form scope",
+      "Property type and occupancy"
+    ],
+    "prompt": "Adapt this [TRADE] scope of work for a commercial property.\n\nRESIDENTIAL-FORM SCOPE:\n\"\"\"\n[PASTE]\n\"\"\"\n\nPROPERTY TYPE: [e.g. multi-tenant retail, small office, restaurant, rental portfolio]\nOCCUPANCY DURING WORK: [occupied / vacant / after-hours only]\n\nAdd sections addressing:\n- ACCESS AND COORDINATION — who grants access, notice required, tenant notification, key or code handling\n- WORKING HOURS — restrictions, after-hours or weekend requirements\n- SERVICE INTERRUPTION — which systems go down, for how long, who must be notified in advance\n- SITE PROTECTION — public areas, customer-facing spaces, trip hazards, signage\n- DOCUMENTATION — sign-off required, who receives the completion record\n- BILLING CONTACT — where this differs from the site contact\n\nAbsolute rules:\n- Do not state which commercial codes, inspections or permits apply. Write: \"Applicable permit and inspection requirements to be confirmed by [COMPANY] prior to scheduling.\"\n- Do not state insurance or bonding requirements — those come from your own broker.\n- Do not assume the site contact can authorise payment.\n- Do not state, estimate or imply any price, rate or total. Commercial pricing structures differ from residential and are set by an authorised person.",
+    "warning": "Commercial work carries permit, inspection, insurance and licensing requirements that differ from residential and vary by jurisdiction. Every one of those must be confirmed by a qualified person, never inferred from this draft."
+  },
+  {
+    "id": "CC-01",
+    "category": "customer-comms",
+    "title": "Appointment Confirmation with Access Requirements",
+    "purpose": "Confirms the booking and states plainly what the customer must have ready, which is where most wasted trips begin.",
+    "when": "At booking, for every job.",
+    "inputs": [
+      "Date and arrival window",
+      "Work type",
+      "Access needed",
+      "Your arrival policy"
+    ],
+    "prompt": "Write an appointment confirmation for a [TRADE] customer.\n\nCUSTOMER: [NAME]     DATE: [DATE]     ARRIVAL WINDOW: [WINDOW]\nWORK: [ONE LINE]     TECHNICIAN CALLS AHEAD: [YES/NO — how long]\n\nACCESS REQUIRED FOR THIS JOB — state each plainly:\n- Clear access to: [EQUIPMENT LOCATION — e.g. attic hatch, crawlspace entry, basement panel, exterior unit]\n- Someone 18 or older on site: [YES/NO]\n- Pets secured: [YES/NO]\n- Parking: [ANY RESTRICTION]\n- Water, gas or power may be interrupted for: [APPROXIMATE DURATION OR \"a short period\"]\n- Customer must locate before we arrive: [e.g. main shut-off, panel access, unit keys]\n\nKeep it under 180 words. Warm, clear, no filler. End with how to reschedule and by when.\n\nAbsolute rules:\n- Do not quote or confirm any price. Direct pricing questions to [PHONE].\n- Do not promise an exact arrival time — use the window as given.\n- Do not promise the job will be completed in one visit.\n- Do not describe the work as simple, quick or routine.",
+    "warning": "Check the access list is the one for THIS job. A generic access list trains customers to ignore it, and the ignored line is the one that costs you the trip."
+  },
+  {
+    "id": "CC-02",
+    "category": "customer-comms",
+    "title": "Running-Late Notice",
+    "purpose": "A short, honest delay notice that protects the relationship instead of eroding it.",
+    "when": "The moment a technician will miss the window — not after.",
+    "inputs": [
+      "New realistic window",
+      "Whether the customer can reschedule"
+    ],
+    "prompt": "Write a running-late message for a [TRADE] customer.\n\nORIGINAL WINDOW: [WINDOW]     REVISED ARRIVAL: [NEW WINDOW]     DELAY CAUSE CATEGORY: [prior job overran / travel / parts / staffing]\n\nRequirements:\n- Under 70 words.\n- Lead with the new time, not the apology.\n- One honest sentence on the cause. Do not blame the previous customer or describe their job.\n- Offer rescheduling as a genuine option with no penalty.\n- Give a direct contact for a reply.\n\nAbsolute rules:\n- Do not over-promise the new window. If it is uncertain, say we will confirm again within [TIMEFRAME].\n- Do not disclose any detail about another customer, their address or their job.\n- Do not offer a discount, credit or compensation — that is an authorised decision, not an automatic one.\n- If a service at this property was left isolated, shut off or de-energised on a previous visit, do NOT send this message. Escalate to [ROLE] — a delay message is the wrong channel when the customer is without gas, water or power.\n- Do not tell the customer to operate, restore or check anything while they wait.",
+    "warning": "Any goodwill gesture is an authorised decision. Never let a delay message commit the business to compensation."
+  },
+  {
+    "id": "CC-03",
+    "category": "customer-comms",
+    "title": "Post-Job Summary for the Customer",
+    "purpose": "Sends the customer a clear record of what happened, which reduces disputes and callbacks.",
+    "when": "Within 24 hours of every completed job.",
+    "inputs": [
+      "The job record",
+      "Warranty terms",
+      "Any deferred work"
+    ],
+    "prompt": "Write a post-job summary for a [TRADE] customer.\n\nJOB RECORD:\n\"\"\"\n[PASTE]\n\"\"\"\nWARRANTY: [YOUR TERMS — parts and labour stated separately]\nDEFERRED OR DECLINED WORK: [LIST, OR \"none\"]\n\nStructure, under 250 words:\n1. What we came for\n2. What we found\n3. What we did\n4. What we left in place — system state on departure, anything the customer must operate or monitor\n5. What we recommend next, and that a written estimate follows separately if they want it\n6. Warranty, stated plainly with its start date\n7. Who to call and when, if something is not right\n\nAbsolute rules:\n- No prices anywhere in this message.\n- Do not state anything is code-compliant, permitted, safe or unsafe.\n- Do not promise the problem will not recur.\n- Do not extend, imply or reinterpret the warranty beyond the terms given above.\n- Include nothing that is not in the job record.",
+    "warning": "The warranty paragraph is the highest-risk sentence you send. Confirm it matches your actual written warranty exactly — AI paraphrase of warranty terms has a way of becoming more generous than intended."
+  },
+  {
+    "id": "CC-04",
+    "category": "customer-comms",
+    "title": "Review Request",
+    "purpose": "Asks for a review without incentives, pressure, or filtering by expected rating.",
+    "when": "Two to three days after a completed job with no open issues.",
+    "inputs": [
+      "Customer name",
+      "Technician name",
+      "Review link"
+    ],
+    "prompt": "Write a short review request from a [TRADE] company.\n\nCUSTOMER: [NAME]     TECHNICIAN: [NAME]     WORK: [ONE LINE]     LINK: [URL]\n\nRequirements:\n- Under 70 words.\n- Reference the specific work, not \"your recent service\".\n- Name the technician — reviews that name a person read as genuine.\n- One clear link. One ask.\n- Make it explicit that an honest review is what is wanted.\n\nAbsolute rules:\n- Offer no incentive, discount, entry, gift or reward of any kind. Incentivised reviews breach most platform policies and consumer-protection rules.\n- Do not ask how satisfied they are first and route by the answer. Ask everyone the same way.\n- Do not suggest a rating, a star count, or what to write.\n- Do not send this if there is any unresolved issue on the job.",
+    "warning": "Review solicitation is regulated. Never incentivise, never gate by predicted sentiment, and check the wording against the policies of the platform you are linking to."
+  },
+  {
+    "id": "CC-05",
+    "category": "customer-comms",
+    "title": "Maintenance Plan Renewal",
+    "purpose": "Renews a maintenance agreement on the strength of what was actually delivered.",
+    "when": "Thirty days before the agreement lapses.",
+    "inputs": [
+      "Service history under the plan",
+      "Plan terms",
+      "Renewal date"
+    ],
+    "prompt": "Write a maintenance plan renewal message for a [TRADE] customer.\n\nCUSTOMER: [NAME]     PLAN: [NAME]     RENEWAL DATE: [DATE]\nWHAT THEY RECEIVED THIS TERM: [LIST ACTUAL VISITS AND WORK PERFORMED]\nPLAN TERMS: [WHAT IS INCLUDED]\n\nStructure, under 200 words:\n- What we actually did for them this term, specifically\n- What the plan includes next term\n- What is not included in the plan\n- Renewal date and how to renew or decline\n- A clear statement that declining does not affect their ability to book work with us\n\nAbsolute rules:\n- Do not state a renewal price. Direct pricing to [PHONE] or the attached schedule.\n- Do not claim the plan prevents breakdowns, extends equipment life, or saves a specific amount.\n- Do not imply their warranty, coverage or service priority is at risk unless that is literally a written term of the plan — if it is, quote the term.\n- Do not auto-renew language unless auto-renewal is genuinely in their signed agreement.",
+    "warning": "Auto-renewal and cancellation terms are consumer-protection regulated in many jurisdictions. Confirm the renewal mechanics against the signed agreement and your legal adviser's guidance before sending at scale."
+  },
+  {
+    "id": "CC-06",
+    "category": "customer-comms",
+    "title": "Service Recovery After a Complaint",
+    "purpose": "Responds to a genuine complaint without admitting liability or escalating it.",
+    "when": "Any complaint, before it becomes a review or a claim.",
+    "inputs": [
+      "What the customer said, verbatim",
+      "What the records show",
+      "What is authorised to offer"
+    ],
+    "prompt": "Draft a service recovery response for a [TRADE] company.\n\nWHAT THE CUSTOMER SAID (verbatim):\n\"\"\"\n[PASTE]\n\"\"\"\nWHAT OUR RECORDS SHOW: [FACTUAL SUMMARY]\nWHAT I AM AUTHORISED TO OFFER: [SPECIFIC — or \"nothing yet, investigating\"]\n\nStructure, under 200 words:\n- Acknowledge specifically what they experienced, in their words\n- State what we are doing about it and by when\n- State what we are offering, if anything, using only the authorised item above\n- Give a named person and a direct contact\n- Ask what outcome would resolve it for them\n\nAbsolute rules:\n- Do not admit fault, negligence, liability, or that work was defective.\n- Do not blame the customer, the technician, the equipment, or a manufacturer.\n- Do not speculate on cause. If cause is unknown, say we are investigating.\n- Do not offer anything beyond the authorised item.\n- Do not mention insurance, claims, or legal process.\n- Do not use \"unfortunately\", \"as a courtesy\" or \"per our policy\".\n- Do not state, estimate or imply any price, refund amount, credit or discount. If a financial remedy is appropriate, it is authorised by [ROLE] and communicated separately.",
+    "warning": "Liability language is the risk here. If the complaint involves property damage, injury, or any suggestion of legal action, stop and route it to the owner and your insurer before sending anything at all."
+  },
+  {
+    "id": "CC-07",
+    "category": "customer-comms",
+    "title": "Payment Reminder",
+    "purpose": "Requests payment professionally without threatening language.",
+    "when": "At your defined reminder intervals on an overdue invoice.",
+    "inputs": [
+      "Invoice reference and date",
+      "Days overdue",
+      "Your payment terms"
+    ],
+    "prompt": "Write a payment reminder from a [TRADE] company.\n\nINVOICE: [NUMBER]   DATE: [DATE]   DAYS OVERDUE: [N]   TERMS: [YOUR TERMS]   WORK: [ONE LINE]\n\nRequirements:\n- Under 100 words.\n- Reference the specific invoice and the work it covers.\n- State the amount due exactly as it appears on the invoice — copy it, do not recalculate.\n- Give every payment method you accept.\n- Invite them to tell us if something about the invoice is wrong or disputed.\n- Tone matched to [N] days: neutral at 7, firmer and clearer at 30, formal at 60.\n\nAbsolute rules:\n- Do not calculate, add or mention interest, late fees or charges unless they are written in the terms above — then quote the term verbatim.\n- Do not threaten collections, legal action, credit reporting, lien rights or service refusal.\n- Do not imply the customer is dishonest.\n- Do not restate or renegotiate the price.\n- Reference the work and the equipment it was performed on, using the job record, so the customer can identify the invoice without calling.\n- Do not state or imply that warranty coverage, maintenance-plan service, or future bookings are affected by non-payment, even if that is your policy — that is an authorised decision communicated separately by [ROLE].",
+    "warning": "Late fees, lien rights and collections notices are legally regulated and vary by jurisdiction. Anything beyond a neutral reminder should be reviewed by your legal adviser and sent under an authorised signature."
+  },
+  {
+    "id": "CC-08",
+    "category": "customer-comms",
+    "title": "Seasonal Service Reminder",
+    "purpose": "Reminds customers of seasonal service without manufactured urgency.",
+    "when": "Ahead of your seasonal peak, to customers with relevant equipment on file.",
+    "inputs": [
+      "Equipment type on file",
+      "Last service date",
+      "The season"
+    ],
+    "prompt": "Write a seasonal service reminder for a [TRADE] customer.\n\nEQUIPMENT ON FILE: [TYPE AND APPROXIMATE AGE]     LAST SERVICED: [DATE]     SEASON: [WHICH]\n\nRequirements:\n- Under 120 words.\n- Reference their actual equipment and their actual last service date.\n- State plainly what a seasonal service visit covers.\n- Give one genuine practical reason to book before the season, framed around scheduling availability rather than fear.\n- Make booking one step.\n\nAbsolute rules:\n- Do not predict a breakdown, failure or emergency.\n- Do not claim a specific efficiency gain, energy saving or cost saving.\n- Do not state that skipping service voids a manufacturer warranty unless you have the manufacturer's written term in front of you — if you do, quote it and attribute it.\n- Do not create artificial deadlines or limited availability that is not real.\n- No price.",
+    "warning": "Warranty-voiding claims and energy-saving figures are the two places this message goes wrong. Neither may be asserted without a published source, attributed."
+  },
+  {
+    "id": "SOP-01",
+    "category": "sop",
+    "title": "Procedure Interview — Extraction by Questioning",
+    "purpose": "Pulls a procedure out of the owner's head by interview rather than asking them to write it.",
+    "when": "First step for any undocumented procedure.",
+    "inputs": [
+      "The procedure name",
+      "30-60 minutes of your attention"
+    ],
+    "prompt": "You are interviewing the owner of a [TRADE] company to document a procedure that currently exists only in their head.\n\nPROCEDURE TO DOCUMENT: [NAME IT]\n\nInterview me one question at a time. Wait for each answer before continuing. Work through:\n1. Trigger — what starts this procedure\n2. Who performs it and what qualification or licence they must hold\n3. Every step in order, including the ones I do without thinking\n4. Tools, parts, forms and system access needed at each step\n5. Decision points — where the person must choose, and what determines the choice\n6. What must be recorded, where, and by whom\n7. What goes wrong most often and how it is caught\n8. When the person must STOP and escalate, and to whom\n9. How we know the procedure was completed correctly\n\nRules for you:\n- One question at a time. Never batch them.\n- When I give a vague answer (\"you just know\", \"it depends\"), ask what specifically it depends on. Do not accept the vague version.\n- When I describe a decision, ask what the wrong choice would look like.\n- Do not suggest steps I have not described. Do not import industry best practice.\n- When I mention anything touching code, permits, safety or licensing, do not record a rule — record \"escalate to [ROLE]\" and move on.\n- After the interview, output the SOP using the SOP Builder Template structure.",
+    "warning": "The AI must never fill a gap in your procedure with something it assumes. If the output contains a step you did not describe, delete it. A licensed person reviews any procedure step touching technical work before it is issued."
+  },
+  {
+    "id": "SOP-02",
+    "category": "sop",
+    "title": "Draft SOP from an Existing Rough Description",
+    "purpose": "Converts a rough written description into the standard SOP format.",
+    "when": "When a procedure is already written down, badly.",
+    "inputs": [
+      "The rough description",
+      "Who performs the procedure"
+    ],
+    "prompt": "Convert this rough description into a formal SOP for a [TRADE] company.\n\nROUGH DESCRIPTION:\n\"\"\"\n[PASTE]\n\"\"\"\nPERFORMED BY: [ROLE]        REQUIRED QUALIFICATION: [LICENCE / CERTIFICATION / NONE]\n\nOutput using exactly these headings: Purpose | Scope | Who performs this | Prerequisites | Steps (numbered, one action each) | Decision points | Records required | Stop-and-escalate conditions | How completion is verified | Review date\n\nRules:\n- Every step must be a single action starting with a verb.\n- Where the description is ambiguous, insert \"[CLARIFY: <the specific question>]\" rather than choosing an interpretation.\n- Do not add steps that are not in the description, even if they seem obviously necessary — list those separately under \"POSSIBLE GAPS — confirm with owner\".\n- Any step involving isolation, energisation, gas, refrigerant handling, confined space or working at height must carry an explicit stop-and-escalate condition.\n- Do not write code, permit or safety rules. Write \"per [COMPANY] safety policy and applicable regulation — confirm with [ROLE]\".",
+    "warning": "Every [CLARIFY] marker must be resolved before the SOP is issued. A licensed person reviews any procedure touching gas, electrical, refrigerant or confined-space work — this prompt formats a procedure, it does not validate one."
+  },
+  {
+    "id": "SOP-03",
+    "category": "sop",
+    "title": "New Technician Onboarding Checklist",
+    "purpose": "Builds a first-two-weeks checklist from your actual procedures.",
+    "when": "Before a new technician's first day.",
+    "inputs": [
+      "Your existing SOP list",
+      "Systems they need access to",
+      "Your trade's licensing requirements"
+    ],
+    "prompt": "Build a two-week onboarding checklist for a new technician at a [TRADE] company.\n\nOUR DOCUMENTED PROCEDURES: [LIST SOP NAMES]\nSYSTEMS THEY NEED: [LIST]\nROLE: [DESCRIBE — what they will and will not do unsupervised]\n\nProduce a day-by-day checklist for ten working days covering: paperwork and system access; safety orientation; vehicle and tool issue; procedure walkthroughs in a sensible order; supervised field days; the point at which they may work unsupervised and who signs that off.\n\nFor each item give: what it is, who is responsible, and how it is verified as complete.\n\nAbsolute rules:\n- Do not specify what licences, certifications or training the role legally requires — write \"confirm licensing and certification requirements with [ROLE] per jurisdiction\".\n- Do not write safety training content. Reference the company safety policy and the qualified person who delivers it.\n- Do not set the unsupervised-work date yourself. Mark it \"[SIGN-OFF BY QUALIFIED SUPERVISOR]\".\n- Do not include HR content: contracts, pay, discipline, probation or termination.",
+    "warning": "Licensing, certification, safety training and employment terms are legal and regulatory matters. This checklist sequences your own procedures; it does not determine what the law requires of you as an employer."
+  },
+  {
+    "id": "SOP-04",
+    "category": "sop",
+    "title": "Procedure Gap Analysis",
+    "purpose": "Finds what is missing across your SOP set before it costs you.",
+    "when": "Once, after documenting your first several procedures.",
+    "inputs": [
+      "The list of SOPs you have",
+      "Your core workflow list"
+    ],
+    "prompt": "Compare our documented procedures against our actual workflows for a [TRADE] company.\n\nWORKFLOWS WE RUN: [LIST — from the Workflow Map]\nPROCEDURES WE HAVE DOCUMENTED: [LIST SOP NAMES AND ONE-LINE SUMMARIES]\n\nReport:\n1. WORKFLOWS WITH NO PROCEDURE — ranked by how much damage an inconsistent execution would cause\n2. PROCEDURES THAT OVERLAP — where two documents cover the same ground and may contradict\n3. HANDOFF GAPS — where one procedure ends and no procedure picks up\n4. SINGLE-PERSON DEPENDENCIES — workflows only one named person can perform\n5. THE THREE TO WRITE NEXT, with one sentence each on why\n\nRules:\n- Judge only from the lists supplied. Do not assume we have procedures we did not list.\n- Rank by operational consequence, not by how easy something is to write.\n- Do not propose procedures for anything requiring licensed judgement — flag those as \"licensed function, document the escalation path only\".",
+    "warning": "Single-person dependencies are the finding that matters most and the one most often ignored. Treat the ranking as a discussion input, not a work order."
+  },
+  {
+    "id": "SOP-05",
+    "category": "sop",
+    "title": "Procedure Test Read",
+    "purpose": "Tests whether a written SOP can actually be followed by someone who does not already know the answer.",
+    "when": "Before issuing any SOP.",
+    "inputs": [
+      "The draft SOP"
+    ],
+    "prompt": "Read this [TRADE] SOP as if you are a competent new employee who has never performed this task and cannot ask anyone.\n\nSOP:\n\"\"\"\n[PASTE]\n\"\"\"\n\nReport:\n- Every point where you would not know what to do next, and exactly what is ambiguous\n- Every term, tool, part or system named without explanation\n- Every step assuming knowledge not stated in the document\n- Every decision point where the criteria are not given\n- Anything that could reasonably be done in two different ways\n\nFor each, give the specific question you would have to ask.\n\nRules:\n- Do not fix the SOP. Report the gaps only.\n- Do not use outside knowledge to fill a gap — if the document does not say it, it is a gap.\n- Flag separately any step where guessing wrong could cause injury or property damage.\n- Flag separately any step involving isolation, energisation, gas, refrigerant handling, confined space or working at height where the document does not state who must be licensed to perform it.\n- Flag any step where the SOP assumes the reader can identify equipment (make, model, rating) that the document never explains how to identify.",
+    "warning": "Gaps flagged as injury or damage risks are resolved by a licensed person before the SOP is issued, not by whoever is editing the document."
+  },
+  {
+    "id": "SOP-06",
+    "category": "sop",
+    "title": "Escalation Matrix",
+    "purpose": "Defines who decides what, so field staff stop calling the owner about everything.",
+    "when": "Once your core procedures exist.",
+    "inputs": [
+      "Your roles",
+      "Decisions currently escalating to the owner"
+    ],
+    "prompt": "Build an escalation matrix for a [TRADE] company.\n\nROLES: [LIST — e.g. technician, lead technician, CSR, office manager, owner]\nDECISIONS THAT CURRENTLY REACH THE OWNER: [LIST]\n\nFor each decision produce a row: Decision | Who can decide it | Limit of their authority | Who they escalate to | How fast escalation must happen | What must be recorded\n\nThen list separately, under \"ALWAYS ESCALATE — NO EXCEPTIONS\": any decision involving suspected gas leak, electrical hazard, water damage in progress, injury, a customer alleging damage or injury, suspected code or permit issues, work outside our licence scope, or a customer requesting we deviate from the agreed scope.\n\nRules:\n- Do not set financial authority limits — the owner sets those and inserts them.\n- Do not assign a licensed technical decision to an unlicensed role.\n- Where a decision requires a licence to make, say so and leave the role as [LICENSED ROLE — CONFIRM].",
+    "warning": "The always-escalate list is the safety-critical part of this document. Review it with a licensed supervisor and add anything specific to your trade, jurisdiction or insurance requirements."
+  },
+  {
+    "id": "TR-01",
+    "category": "triage",
+    "title": "Morning Message Triage with Safety-First Sorting",
+    "purpose": "Turns an overnight pile of voicemails and emails into a ranked action list with genuine emergencies surfaced first.",
+    "when": "First thing each morning, before dispatch.",
+    "inputs": [
+      "Transcribed voicemails and emails",
+      "Today's available capacity"
+    ],
+    "prompt": "Sort these overnight messages for a [TRADE] company into a prioritised action list.\n\nMESSAGES:\n\"\"\"\n[PASTE EACH MESSAGE, SEPARATED BY ---]\n\"\"\"\nCAPACITY TODAY: [e.g. 3 technicians, 2 open slots]\n\nSort into exactly four groups, in this order:\n\nGROUP 1 — POSSIBLE SAFETY OR ACTIVE DAMAGE. Any mention of gas smell, burning smell, smoke, sparking, shock, water actively running or flooding, no heat in freezing conditions, no cooling for a vulnerable occupant, carbon monoxide alarm, or the caller sounding frightened.\nFor each: caller, callback number, quoted words, and the single line \"CALL BACK NOW — [QUALIFIED ROLE] TO ASSESS\".\n\nGROUP 2 — SERVICE OUT, NO SAFETY LANGUAGE\nGROUP 3 — ROUTINE BOOKINGS AND QUESTIONS\nGROUP 4 — ADMINISTRATIVE (billing, scheduling changes, suppliers, other)\n\nFor groups 2 to 4 give: caller, callback number, one-line summary, what they are asking for, suggested next step.\n\nAbsolute rules:\n- If a message contains ANY safety language, it goes in Group 1. When uncertain, put it in Group 1. Over-triage is acceptable; under-triage is not.\n- Never advise the caller what to do about a safety condition. Group 1 items are called back by a qualified person.\n- Quote the caller's own words for anything in Group 1 — do not paraphrase.\n- Do not quote prices or commit to appointment times.",
+    "warning": "This is a sorting aid and nothing more. It cannot judge whether a situation is genuinely dangerous. Every Group 1 item is telephoned back by a qualified person immediately, and a human reads the full list before dispatch — never dispatch from this output alone."
+  },
+  {
+    "id": "TR-02",
+    "category": "triage",
+    "title": "Voicemail Transcript Cleanup",
+    "purpose": "Makes a garbled transcript usable without inventing what was said.",
+    "when": "When automated transcription is unreliable.",
+    "inputs": [
+      "The raw transcript"
+    ],
+    "prompt": "Clean up this voicemail transcript for a [TRADE] company.\n\nRAW TRANSCRIPT:\n\"\"\"\n[PASTE]\n\"\"\"\n\nReturn:\n- CALLER NAME: as stated, or \"unclear\"\n- CALLBACK NUMBER: digits as transcribed, or \"unclear — replay recording\"\n- ADDRESS: as stated, or \"not given\"\n- REQUEST: one sentence\n- URGENCY LANGUAGE USED: quote it verbatim, or \"none\"\n- UNCLEAR SEGMENTS: quote each garbled passage exactly\n\nAbsolute rules:\n- Never guess at a phone number or address. A wrong digit is worse than \"unclear\".\n- Never complete a half-heard sentence. Mark it unclear.\n- Do not smooth the caller's words into a summary — the exact wording matters for urgency.\n- If any unclear segment sits next to urgency language, add: \"REPLAY THE RECORDING BEFORE ACTING.\"\n- If the caller mentions gas, a smell of gas, burning, smoke, sparking, shock, a carbon monoxide alarm, or water actively running, reproduce those words verbatim at the very top of your output under \"SAFETY LANGUAGE USED\" and add: \"QUALIFIED PERSON TO CALL BACK NOW.\"\n- Capture any equipment detail the caller gives — make, type, age, location — even if garbled, marking it unclear. Dispatch uses it to send the right technician.",
+    "warning": "Never dial a reconstructed phone number or dispatch to a reconstructed address. Anything marked unclear means someone replays the original recording."
+  },
+  {
+    "id": "TR-03",
+    "category": "triage",
+    "title": "Email Thread Summary for Handoff",
+    "purpose": "Compresses a long customer email thread into a handoff brief.",
+    "when": "When a job changes hands, or before a difficult call.",
+    "inputs": [
+      "The full email thread"
+    ],
+    "prompt": "Summarise this [TRADE] customer email thread for a colleague taking it over.\n\nTHREAD:\n\"\"\"\n[PASTE, OLDEST FIRST]\n\"\"\"\n\nProduce:\n1. WHO THE CUSTOMER IS and what they originally wanted\n2. WHAT WE HAVE COMMITTED TO — quote our exact words for every commitment, with the date\n3. WHAT THEY ARE WAITING ON, and how long they have waited\n4. UNRESOLVED DISAGREEMENTS — state both positions without taking a side\n5. TONE — factual reading of how the relationship is going\n6. THE NEXT ACTION and who owns it\n\nAbsolute rules:\n- Quote our commitments verbatim. A paraphrased commitment is how promises get broken.\n- Do not invent a commitment we did not make, and do not soften one we did.\n- Do not characterise the customer as difficult, unreasonable or demanding — describe behaviour factually.\n- Flag anything mentioning damage, injury, refund demands or legal action as \"OWNER REVIEW REQUIRED\".\n- Quote verbatim any commitment we made about warranty coverage, permit responsibility, code compliance, or a completion date. Those four are the commitments that turn into disputes, and a paraphrase of them is worse than useless.\n- Flag whether a licensed technician has actually attended, or whether everything so far has been office correspondence. A thread that has gone several rounds with no site visit needs one.",
+    "warning": "Anything flagged for owner review goes to the owner before the next contact with that customer, not after."
+  },
+  {
+    "id": "TR-04",
+    "category": "triage",
+    "title": "After-Hours Message Sorting",
+    "purpose": "Sorts overnight and weekend messages against your actual after-hours policy.",
+    "when": "Start of the next business day, or by whoever is on call.",
+    "inputs": [
+      "The after-hours messages",
+      "Your written after-hours policy"
+    ],
+    "prompt": "Sort these after-hours messages for a [TRADE] company.\n\nOUR AFTER-HOURS POLICY: [PASTE — what qualifies for callout, what waits, what the customer was told by the answering system]\nMESSAGES:\n\"\"\"\n[PASTE, WITH TIMESTAMPS]\n\"\"\"\n\nFor each: timestamp | caller | what they reported, quoted | does this meet our written callout criteria (yes / no / cannot tell from the message) | recommended action\n\nThen: everything meeting callout criteria, listed first with callback numbers.\n\nAbsolute rules:\n- Apply only the written policy above. Do not apply your own judgement about what counts as an emergency.\n- Where the message does not contain enough to decide, answer \"cannot tell\" and recommend a callback to assess. Never decide by assumption.\n- Any mention of gas, smoke, fire, shock, flooding or a carbon monoxide alarm is listed for immediate callback regardless of what the policy says.\n- Do not tell a caller how to make a situation safe.",
+    "warning": "The gas/smoke/fire/shock/flood/CO override exists because a written policy cannot anticipate everything. Never remove it, and never let this output replace a person's judgement on a callout decision."
+  },
+  {
+    "id": "TR-05",
+    "category": "triage",
+    "title": "Duplicate and Related Message Detection",
+    "purpose": "Finds the same customer contacting through several channels so they are not called three times or missed entirely.",
+    "when": "During busy periods and after any outage or storm event.",
+    "inputs": [
+      "All messages across channels"
+    ],
+    "prompt": "Identify duplicates and related contacts across these [TRADE] messages.\n\nMESSAGES (mixed channels — phone, email, web form, text):\n\"\"\"\n[PASTE, EACH LABELLED WITH CHANNEL AND TIMESTAMP]\n\"\"\"\n\nReport:\n1. CONFIRMED DUPLICATES — same person, same issue. Give the earliest timestamp and the most complete version.\n2. PROBABLE MATCHES — likely the same person, with what makes it uncertain. Do not merge these.\n3. SAME ADDRESS, DIFFERENT ISSUE — handle together on one visit\n4. ESCALATING CONTACTS — the same person contacting repeatedly, which usually means we have not responded. Flag with elapsed time since first contact.\n5. UNIQUE, NO MATCH\n\nAbsolute rules:\n- Merge only on an exact match of name plus phone or address. Everything else is \"probable\".\n- Never merge on name alone.\n- Escalating contacts are a service failure signal — surface them prominently regardless of the stated issue.",
+    "warning": "Never act on a probable match as if it were confirmed. Merging two different customers' jobs sends a technician to the wrong address."
+  },
+  {
+    "id": "TR-06",
+    "category": "triage",
+    "title": "Daily Action List from Mixed Inputs",
+    "purpose": "Produces one ordered list from messages, open jobs and outstanding follow-ups.",
+    "when": "End of day, for tomorrow.",
+    "inputs": [
+      "Unactioned messages",
+      "Open jobs awaiting something",
+      "Overdue follow-ups"
+    ],
+    "prompt": "Build tomorrow's action list for a [TRADE] office.\n\nUNACTIONED MESSAGES: [PASTE]\nOPEN JOBS AWAITING SOMETHING: [PASTE — parts, customer decision, scheduling, access]\nOVERDUE FOLLOW-UPS: [PASTE]\n\nProduce a single ordered list. For each: what it is | who owns it | what specifically must happen | how long it should take | what it is blocking\n\nOrder by: anything a customer is waiting on first, then anything blocking a technician tomorrow, then anything blocking revenue, then everything else.\n\nThen state: the three items that must happen even if the day goes badly.\n\nAbsolute rules:\n- Do not invent items not in the inputs.\n- Do not schedule technicians or commit to appointment times.\n- Anything with safety language goes to the top with \"[QUALIFIED ROLE] TO HANDLE\" regardless of the ordering rules.",
+    "warning": "This organises what you gave it. It has no view of your actual capacity, and a person confirms the list against real availability before the day starts."
+  },
+  {
+    "id": "CSR-01",
+    "category": "csr",
+    "title": "Diagnostic Fee Explanation",
+    "purpose": "Prepares an honest explanation of why a diagnostic visit is charged.",
+    "when": "Training, and as a reference card by the phone.",
+    "inputs": [
+      "Your diagnostic policy",
+      "Whether the fee is credited against work"
+    ],
+    "prompt": "Prepare a CSR response for a [TRADE] company when a caller objects to a diagnostic fee.\n\nOUR POLICY: [DESCRIBE — what the visit includes, how long, what the customer receives]\nCREDITED AGAINST WORK PERFORMED: [YES / NO / PARTIALLY — state exactly]\nOBJECTION: \"Why do I have to pay just for someone to look at it?\"\n\nProduce:\n- A response under 60 words explaining what the visit actually buys: a qualified person's time, diagnosis, and a written finding they own and can act on\n- Two follow-up variations for \"another company does it free\" and \"can you just tell me over the phone\"\n- The exact sentence for when the caller declines\n- A note on when to transfer to a supervisor\n\nAbsolute rules:\n- Do not state the fee amount. The CSR reads the current figure from [WHERE YOUR PRICING LIVES].\n- Do not disparage competitors or imply a free-diagnostic company is dishonest.\n- Do not diagnose over the phone or speculate about the cause. Say plainly that a responsible diagnosis needs eyes on the equipment.\n- Do not offer to waive or discount the fee unless the CSR is authorised — if not, the response is a transfer, not a decision.",
+    "warning": "Fee waivers and discounts are authorised decisions. A CSR who can waive a fee under pressure will be pressured every time — make the escalation path explicit instead."
+  },
+  {
+    "id": "CSR-02",
+    "category": "csr",
+    "title": "Price Comparison Objection",
+    "purpose": "Responds to \"another company quoted less\" without discounting or attacking a competitor.",
+    "when": "During estimate follow-up calls.",
+    "inputs": [
+      "Our scope",
+      "What is known about the comparison"
+    ],
+    "prompt": "Prepare a CSR response for a [TRADE] company when a customer says a competitor quoted less.\n\nOUR SCOPE: [ONE-LINE SUMMARY]\nWHAT WE KNOW ABOUT THE OTHER QUOTE: [OFTEN NOTHING — say so]\n\nProduce:\n- An opening under 40 words that treats the comparison as reasonable rather than as an attack\n- Four specific questions the customer can ask the other company to compare like with like: what is excluded; whether permit costs are included; what the warranty covers on parts and on labour separately; whether the work will be performed by a licensed technician of the same classification\n- One sentence on what our scope includes that estimates commonly leave out\n- The exact wording for when the customer chooses the other company\n\nAbsolute rules:\n- Never suggest the competitor is unlicensed, dishonest, cutting corners, or will do poor work.\n- Never match, undercut, or offer a discount. Price changes are an authorised decision.\n- Never claim we are the best, safest or highest quality.\n- The losing-the-job response must be genuinely gracious with a real open door.",
+    "warning": "Statements about a competitor's licensing, quality or practices carry defamation and unfair-competition risk. Ask questions that help the customer compare; assert nothing about the other company."
+  },
+  {
+    "id": "CSR-03",
+    "category": "csr",
+    "title": "Scheduling Delay Objection",
+    "purpose": "Handles \"why can't you come today\" honestly.",
+    "when": "Peak season and after weather events.",
+    "inputs": [
+      "Actual availability",
+      "Your emergency criteria"
+    ],
+    "prompt": "Prepare a CSR response for a [TRADE] company when a caller wants same-day service that is not available.\n\nACTUAL NEXT AVAILABILITY: [DATE/WINDOW]\nOUR EMERGENCY CRITERIA: [PASTE THE WRITTEN CRITERIA]\n\nProduce:\n- A response under 60 words: honest about availability, no false hope, offering the real next slot\n- The three questions the CSR asks to determine whether this actually meets the emergency criteria\n- What to say if it DOES meet them\n- What to say if the customer says they will call someone else\n- What to say if the customer becomes angry\n\nAbsolute rules:\n- Never promise a slot that does not exist, and never say \"we'll try to fit you in\" without a specific commitment behind it.\n- The emergency questions must be asked exactly as written — a CSR must not judge severity from tone.\n- Any mention of gas, smoke, sparking, shock, active flooding or a carbon monoxide alarm ends the script immediately: transfer to a qualified person now.\n- Never advise the caller to attempt anything themselves — no shutting off, resetting, bleeding, or bypassing anything.\n- The CSR does not quote a price, an emergency callout charge, or an after-hours rate. Those are read from [WHERE YOUR PRICING LIVES] or transferred to [ROLE].",
+    "warning": "The instruction never to talk a caller through a physical action is not negotiable. It protects the caller and it protects the business. If a caller is in danger, the answer is emergency services and a qualified person, not phone guidance."
+  },
+  {
+    "id": "CSR-04",
+    "category": "csr",
+    "title": "Warranty Coverage Question",
+    "purpose": "Answers \"is this covered?\" without guessing.",
+    "when": "Any inbound warranty question.",
+    "inputs": [
+      "Your warranty terms",
+      "The job history if available"
+    ],
+    "prompt": "Prepare a CSR response for a [TRADE] company when a customer asks whether a repair is covered by warranty.\n\nOUR WARRANTY TERMS: [PASTE VERBATIM — parts and labour separately, with durations and exclusions]\nWHAT WE KNOW ABOUT THIS JOB: [PASTE, OR \"nothing yet\"]\n\nProduce:\n- An opening that commits to checking rather than answering from memory\n- The four facts the CSR must gather: date of original work, what was done, what is happening now, whether anyone else has worked on the equipment since\n- The exact sentence for \"I need to check the file and call you back within [TIMEFRAME]\"\n- What to say when the answer is genuinely uncertain\n- What to say when it is clearly outside the terms — factual, quoting the term, with the next option offered\n\nAbsolute rules:\n- Never confirm or deny coverage on the call from memory. Always check the file.\n- Never interpret, extend or paraphrase a warranty term — quote it.\n- Never state whether a manufacturer's warranty applies. That is the manufacturer's determination; offer to help the customer contact them.\n- Never say \"that should be covered\".\n- Do not quote a price for the repair, whether or not it turns out to be covered. Coverage and price are two separate conversations and running them together is how a warranty call becomes a complaint.",
+    "warning": "A verbal warranty commitment is difficult to withdraw. \"I'll check and call you back\" is always the correct first answer, and the call-back must actually happen."
+  },
+  {
+    "id": "CSR-05",
+    "category": "csr",
+    "title": "Repair-or-Replace Question on the Phone",
+    "purpose": "Handles the question a CSR cannot answer without turning the caller away.",
+    "when": "Common on ageing equipment calls.",
+    "inputs": [
+      "Equipment age and symptom if given"
+    ],
+    "prompt": "Prepare a CSR response for a [TRADE] company when a caller asks \"should I just replace it?\" over the phone.\n\nWHAT THEY HAVE TOLD US: [EQUIPMENT TYPE, AGE, SYMPTOM]\n\nProduce:\n- A response under 70 words that takes the question seriously, explains honestly why it cannot be answered responsibly without an inspection, and describes what the visit will produce\n- The three things the CSR can legitimately say about how the decision is usually approached, in general terms\n- What to say when the caller pushes for a straight answer\n- What to say when the caller says they only want a price over the phone\n\nAbsolute rules:\n- Never estimate a repair cost, a replacement cost, or a remaining service life over the phone.\n- Never say equipment \"at that age\" should be replaced. Age alone is not a diagnosis.\n- Never suggest the equipment is unsafe or likely to fail — that is a licensed determination made on site.\n- Never push replacement. If anything, the response should be visibly neutral between the two.",
+    "warning": "This is the highest-pressure moment for a CSR to guess, and guessing here damages trust and can constitute a misrepresentation. Neutrality is the correct posture and should be reinforced in coaching."
+  },
+  {
+    "id": "CSR-06",
+    "category": "csr",
+    "title": "Booking Call Information Capture",
+    "purpose": "Ensures the CSR captures everything dispatch needs, first time.",
+    "when": "Every booking call.",
+    "inputs": [
+      "Your dispatch information requirements"
+    ],
+    "prompt": "Produce a booking call script and capture sheet for a [TRADE] company.\n\nWHAT DISPATCH NEEDS EVERY TIME: [LIST YOUR REQUIRED FIELDS]\n\nProduce:\n1. A natural-sounding call flow that captures every required field without sounding like a form\n2. The safety-screening questions asked on every call, near the start, exactly as worded\n3. The access questions: who will be home, pets, parking, where the equipment is, whether anything blocks it\n4. The equipment questions: type, approximate age, make if the customer can see it, what it is doing\n5. The exact confirmation read-back before ending the call\n6. A capture sheet listing every field with a blank\n\nAbsolute rules:\n- Safety-screening questions are asked on every call, without exception, and are never skipped for a routine-sounding booking.\n- The CSR does not quote prices beyond [WHAT THEY ARE AUTHORISED TO STATE].\n- The CSR does not diagnose, speculate about cause, or estimate duration.\n- The CSR does not tell the customer to touch, switch, reset or shut off anything before the visit.\n- The read-back must confirm address and callback number digit by digit.",
+    "warning": "The safety screening and the digit-by-digit read-back are the two steps most often dropped under pressure. Both belong in coaching, and both should be spot-checked on recorded calls."
+  }
+]

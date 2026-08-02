@@ -53,11 +53,16 @@ async function loadProduct() {
 
 function render(p) {
   document.title = p.title + " — Sentinel Fortune LLC Digital Shop";
+  setMeta(p);
+  injectProductSchema(p);
 
   var root = document.getElementById("productRoot");
 
   var thumbs = (p.previewImageUrls || [])
-    .map(function (url) { return '<img src="' + esc(url) + '" alt="Preview" loading="lazy">'; })
+    .map(function (url, i) {
+      return '<img src="' + esc(url) + '" alt="' + esc(p.title) + ' preview ' + (i + 1) +
+        '" loading="lazy" decoding="async" data-full="' + esc(url) + '">';
+    })
     .join("");
 
   var deliverables = (p.deliverables || [])
@@ -90,9 +95,17 @@ function render(p) {
   }
 
   root.innerHTML =
+    '<nav class="pd-crumbs" aria-label="Breadcrumb">' +
+      '<a href="../index.html">Home</a><span aria-hidden="true">/</span>' +
+      '<a href="index.html">Shop</a>' +
+      (p.category ? '<span aria-hidden="true">/</span><span>' + esc(p.category) + '</span>' : '') +
+    '</nav>' +
     '<div class="product-detail">' +
     '<div>' +
-    '<div class="gallery-cover" style="' + (p.coverImageUrl ? "background-image:url('" + esc(p.coverImageUrl) + "')" : "") + '"></div>' +
+    (p.coverImageUrl
+      ? '<img class="gallery-cover-img" src="' + esc(p.coverImageUrl) + '" alt="' + esc(p.title) +
+        ' cover" width="800" height="600" decoding="async">'
+      : '<div class="gallery-cover" role="img" aria-label="Cover image not yet available"></div>') +
     (thumbs ? '<div class="gallery-thumbs">' + thumbs + "</div>" : "") +
     "</div>" +
     "<div>" +
@@ -106,7 +119,11 @@ function render(p) {
     metaItem("Version", p.version) +
     metaItem("License", licenseLabel(p.licenseType)) +
     metaItem("Formats", p.supportedFormats) +
+    metaItem("Category", p.category) +
     "</div>" +
+    (p.updatedAt
+      ? '<p class="pd-updated">Last updated ' + esc(fmtDate(p.updatedAt)) + '</p>'
+      : "") +
     '<div class="pd-cta-box" id="buy">' + ctaBlock + "</div>" +
     "</div>" +
     "</div>" +
@@ -126,11 +143,161 @@ function render(p) {
     '<div class="pd-callout"><strong>Need something customized?</strong> If you need a tailored version of this product for your ' +
     'organization, <a href="contact.html?product=' + encodeURIComponent(p.slug) + '" style="color:var(--gold3)">reach out about a custom-service engagement →</a></div>' +
     "</div>" +
-    "</div>";
+    "</div>" +
+    '<section class="related-products" id="relatedWrap" hidden>' +
+      '<h2>More in ' + esc(p.category || "the catalogue") + '</h2>' +
+      '<div class="related-grid" id="relatedGrid"></div>' +
+    "</section>";
 
   if (p.buyable) {
     var btn = document.getElementById("buyBtn");
     if (btn) btn.addEventListener("click", function () { startCheckout(p.slug, btn); });
+  }
+
+  wireLightbox();
+  loadRelated(p);
+}
+
+function fmtDate(iso) {
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+}
+
+/* Title and description are set from the fetched product so a shared link
+   carries the real product name. Note this runs client-side: crawlers that do
+   not execute JavaScript see the static fallback in product.html. The
+   catalogue page, which IS static, is the crawlable entry point. */
+function setMeta(p) {
+  function set(sel, attr, val) {
+    var el = document.head.querySelector(sel);
+    if (el) el.setAttribute(attr, val);
+  }
+  var desc = p.shortDescription || "";
+  set('meta[name="description"]', "content", desc);
+  set('meta[property="og:title"]', "content", p.title);
+  set('meta[property="og:description"]', "content", desc);
+  var canon = document.head.querySelector('link[rel="canonical"]');
+  if (canon) canon.setAttribute("href", window.location.href.split("#")[0]);
+  if (p.coverImageUrl) set('meta[property="og:image"]', "content", p.coverImageUrl);
+}
+
+/* Product schema, built only from fields the page actually displays. `offers`
+   is emitted only when the product is genuinely buyable at a confirmed price —
+   advertising a price for something that cannot be bought would be false
+   markup. No aggregateRating or review: none exist. */
+function injectProductSchema(p) {
+  var node = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.title,
+    description: p.shortDescription || p.problemSolved || "",
+    sku: p.slug,
+    brand: { "@type": "Organization", name: "Sentinel Fortune LLC" },
+    url: window.location.href.split("#")[0]
+  };
+  if (p.category) node.category = p.category;
+  if (p.coverImageUrl) node.image = p.coverImageUrl;
+
+  if (p.buyable && p.priceCents !== null && p.priceCents !== undefined) {
+    node.offers = {
+      "@type": "Offer",
+      price: (p.priceCents / 100).toFixed(2),
+      priceCurrency: String(p.currency || "usd").toUpperCase(),
+      availability: "https://schema.org/InStock",
+      url: window.location.href.split("#")[0]
+    };
+  }
+
+  var s = document.createElement("script");
+  s.type = "application/ld+json";
+  s.textContent = JSON.stringify(node);
+  document.head.appendChild(s);
+}
+
+/* Preview lightbox. Keyboard-reachable and Escape-closable. */
+function wireLightbox() {
+  var thumbs = document.querySelectorAll(".gallery-thumbs img");
+  if (!thumbs.length) return;
+
+  var box = document.createElement("div");
+  box.className = "pv-lightbox";
+  box.setAttribute("role", "dialog");
+  box.setAttribute("aria-modal", "true");
+  box.setAttribute("aria-label", "Product preview");
+  box.innerHTML = '<button class="pv-close" type="button" aria-label="Close preview">\u2715</button><img alt="">';
+  document.body.appendChild(box);
+
+  var img = box.querySelector("img");
+  var last = null;
+
+  function open(src, alt, origin) {
+    img.src = src;
+    img.alt = alt;
+    last = origin;
+    box.classList.add("open");
+    box.querySelector(".pv-close").focus();
+  }
+  function close() {
+    box.classList.remove("open");
+    img.src = "";
+    if (last) last.focus();
+  }
+
+  thumbs.forEach(function (t) {
+    t.setAttribute("tabindex", "0");
+    t.setAttribute("role", "button");
+    t.addEventListener("click", function () { open(t.dataset.full || t.src, t.alt, t); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(t.dataset.full || t.src, t.alt, t); }
+    });
+  });
+  box.addEventListener("click", function (e) {
+    if (e.target === box || e.target.classList.contains("pv-close")) close();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && box.classList.contains("open")) close();
+  });
+}
+
+/* Related products: same category, excluding this one. Derived from the real
+   catalogue, so a relationship is only shown when one actually exists. */
+async function loadRelated(p) {
+  if (!p.category) return;
+  try {
+    var res = await fetch(apiBase() + "/shop/products");
+    if (!res.ok) return;
+    var data = await res.json();
+    var rel = ((data && data.products) || []).filter(function (x) {
+      return x.slug !== p.slug &&
+             String(x.category || "").toLowerCase() === String(p.category).toLowerCase();
+    }).slice(0, 3);
+    if (!rel.length) return;
+
+    var wrap = document.getElementById("relatedWrap");
+    var grid = document.getElementById("relatedGrid");
+    if (!wrap || !grid) return;
+
+    grid.innerHTML = rel.map(function (x) {
+      var slug = encodeURIComponent(x.slug);
+      return '<article class="product-card">' +
+        '<a class="product-card-cover" href="product.html?slug=' + slug + '" tabindex="-1" aria-hidden="true">' +
+          (x.coverImageUrl
+            ? '<img class="product-card-img" src="' + esc(x.coverImageUrl) + '" alt="" loading="lazy" width="600" height="450">'
+            : '<span class="product-card-nocover" aria-hidden="true">SF</span>') +
+        "</a>" +
+        '<div class="product-card-body">' +
+          '<div class="product-card-cat">' + esc(x.category) + "</div>" +
+          '<h3 class="product-card-title"><a href="product.html?slug=' + slug + '">' + esc(x.title) + "</a></h3>" +
+          '<p class="product-card-desc">' + esc(x.shortDescription) + "</p>" +
+          (x.priceDisplay ? '<div class="product-card-price">' + esc(x.priceDisplay) + "</div>" : "") +
+        "</div></article>";
+    }).join("");
+    wrap.hidden = false;
+  } catch (err) {
+    /* Related products are a bonus. If the catalogue call fails the product
+       page itself is unaffected, so this stays silent. */
+    console.warn("[shop] related products unavailable", err);
   }
 }
 

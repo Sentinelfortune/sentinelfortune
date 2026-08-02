@@ -37,16 +37,20 @@ first product, seeded as an unpublished `DRAFT` — see `PRODUCT_UPLOAD_AND_PUBL
 
 ```bash
 npx wrangler r2 bucket create sentinel-fortune-shop-downloads   # PRIVATE — purchasable files
-npx wrangler r2 bucket create sentinel-fortune-shop-assets      # PUBLIC — covers/previews only
+npx wrangler r2 bucket create sentinel-fortune-shop-assets      # PRIVATE — covers/previews only
 ```
 
-**`sentinel-fortune-shop-downloads` must never be given public bucket access.** All reads of this bucket
-go through the Worker's token-gated `/shop/download/:token` route, which streams bytes — it never returns
-a direct R2 URL. Do not enable the R2.dev public URL or a custom domain on this bucket.
+**Neither bucket needs public access. Do not enable the `r2.dev` public URL on either one.**
 
-**`sentinel-fortune-shop-assets` is intentionally public** (cover/preview images shown on public product
-pages). Enable either the bucket's `r2.dev` public URL or bind a custom domain to it, then set
-`SHOP_ASSETS_PUBLIC_BASE_URL` in `wrangler.toml` (`[vars]` and `[env.production.vars]`) to that base URL.
+`sentinel-fortune-shop-downloads` is read only through the Worker's token-gated `/shop/download/:token`
+route, which streams bytes — it never returns a direct R2 URL.
+
+`sentinel-fortune-shop-assets` holds cover/preview images shown on public product pages. Those are read
+through the Worker's `/shop/asset/:id` route, which is keyed on the `product_images` row id, so only
+images registered against a product are reachable and the bucket's key space is never addressable.
+
+`SHOP_ASSETS_PUBLIC_BASE_URL` is therefore **optional** and unset by default. Set it only if you later
+want a CDN or custom domain in front of a public assets bucket; leaving it unset keeps everything private.
 
 ## 3. Update `wrangler.toml`
 
@@ -55,10 +59,10 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 | Placeholder | Value |
 |---|---|
 | `database_id` (×2) | From step 1 |
-| `SHOP_ASSETS_PUBLIC_BASE_URL` (×2) | From step 2 |
 | `SHOP_WORKER_BASE_URL` (×2) | The Worker's `*.workers.dev` URL (known after first deploy — step 5 — or your custom route) |
-| `CF_ACCESS_TEAM_DOMAIN` (×2) | Your Cloudflare Zero Trust team domain, e.g. `sentinelfortune.cloudflareaccess.com` |
-| `CF_ACCESS_AUD` (×2) | The Access application's Audience tag — created in step 6 |
+| `CF_ACCESS_TEAM_DOMAIN` (×2) | Your Cloudflare Zero Trust team domain, e.g. `sentinelfortunellc.cloudflareaccess.com` |
+
+`CF_ACCESS_AUD` is **not** in this table — it is a secret, see step 4.
 
 ## 4. Set secrets (never written to `wrangler.toml`)
 
@@ -66,7 +70,16 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 npx wrangler secret put STRIPE_SECRET_KEY        # sk_test_... first — see STRIPE_SHOP_SETUP.md
 npx wrangler secret put STRIPE_WEBHOOK_SECRET     # whsec_... — from the Stripe webhook endpoint
 npx wrangler secret put RESEND_API_KEY            # re_...
+npx wrangler secret put CF_ACCESS_AUD             # Access application Audience tag — from step 6
 ```
+
+A binding name can be a plain var **or** a secret, never both. `CF_ACCESS_AUD` is therefore absent from
+every `vars` block in `wrangler.toml`; adding it back there makes this upload fail with Cloudflare error
+**10053 — binding name already in use**. `CF_ACCESS_TEAM_DOMAIN` stays a plain var: it is the public Zero
+Trust hostname serving the JWKS, not a credential.
+
+Until the `CF_ACCESS_AUD` secret exists, `requireOwnerAccess()` treats Access as unconfigured and every
+`/shop/admin/*` request is rejected with 401 — an unconfigured deployment fails closed, it does not open.
 
 Repeat with `--env production` for the production environment once you're ready for it (not before — see
 `SHOP_RELEASE_CHECKLIST.md`).
@@ -91,7 +104,8 @@ Note the resulting `*.workers.dev` URL and fill it into `SHOP_WORKER_BASE_URL` i
    - Domain: the admin Pages project's hostname from step 2
    - Policy: allow only the Owner's email address (or a short allowlist) — no public access, no
      self-signup
-4. Copy the application's **Audience (AUD) tag** into `CF_ACCESS_AUD` (step 3).
+4. Upload the application's **Audience (AUD) tag** as the `CF_ACCESS_AUD` secret (step 4) — do not put it
+   in `wrangler.toml`.
 
 ## 7. Deploy `/admin` to Cloudflare Pages (NOT GitHub Pages)
 
@@ -99,16 +113,50 @@ GitHub Pages cannot enforce Cloudflare Access — see `SHOP_ARCHITECTURE.md` for
 deployed to a Cloudflare-proxied hostname instead:
 
 ```bash
-# From the repo root:
-npx wrangler pages deploy admin --project-name sentinel-fortune-shop-admin
+npx wrangler pages deploy admin --project-name sentinel-fortune-shop-admin --branch main
 ```
 
-(Or connect the repo to a Cloudflare Pages project in the dashboard, with build output directory set to
-`admin/` and no build command — it's static HTML/CSS/JS, no build step.)
+`--branch main` is required for a Direct Upload project: wrangler otherwise defaults the branch to the
+current git branch, which produces a *preview* deployment on a different hostname and leaves the live
+admin URL untouched.
+
+**The Pages Function is prebuilt into `admin/_worker.js` — do not remove it.** `wrangler pages deploy`
+resolves the Functions source as `path.join(process.cwd(), "functions")`, i.e. relative to the shell's
+working directory, not to the asset directory argument and not to the repository root. Run from any
+directory other than the repository root it finds nothing, prints no warning, and uploads the static
+files alone — leaving `/api/*` dead, which Pages then answers by serving `index.html` (an unstyled admin
+page at `/api/shop/health` is the giveaway). Because wrangler prefers a `_worker.js` in the deploy
+directory over the `functions/` directory, committing the built bundle makes the deploy deterministic
+from any working directory.
+
+After changing anything under `functions/`, regenerate the bundle and commit it:
+
+```bash
+./scripts/build-admin-pages.sh
+```
+
+`shop-worker/tests/admin-worker-bundle.test.ts` exercises the committed bundle, so a missing or corrupt
+`admin/_worker.js` fails the test suite rather than the live site.
 
 After deploying, attach the Access application from step 6 to this Pages project's hostname (or a custom
-domain pointed at it), and update `admin/admin.js`'s `SHOP_API_BASE` constant to point at the deployed
-Shop Worker URL from step 5.
+domain pointed at it). **Do not** point the admin at the Worker hostname: `admin/admin-config.js` must
+stay `window.SHOP_API_BASE = "/api"`.
+
+### Why the admin calls `/api`, not the Worker directly
+
+Cloudflare Access authenticates the Owner **on the Pages hostname**. It sets `CF_Authorization` scoped to
+that hostname and injects `Cf-Access-Jwt-Assertion` only on requests it forwards to that origin. A browser
+`fetch()` from Pages to the Worker's separate `*.workers.dev` hostname is cross-site, so the cookie is not
+sent and page JavaScript cannot set the header — the Worker sees no token and correctly returns 401.
+
+`functions/api/[[path]].ts` removes the origin boundary. The browser calls only its own origin; the
+Function runs server-side inside the authenticated request, reads the token there, and forwards it to the
+Worker over a server-to-server call. The Worker still verifies signature, issuer, audience and expiry, so
+the proxy is a transport, not an authority. The JWT is never handed to browser JavaScript.
+
+Because admin traffic is now same-origin, `ADMIN_ALLOWED_ORIGIN` is no longer required for the admin to
+function. It is left in `wrangler.toml` only for direct browser calls to the Worker, which the admin no
+longer makes.
 
 ## 8. Update `/shop`'s config
 

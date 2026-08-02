@@ -24,11 +24,8 @@ import {
   isValidStringArray,
   PUBLICLY_PURCHASABLE_LICENSE_TYPES,
 } from "../../lib/validate";
+import { assetUrl } from "../../lib/assets";
 import { genericError, jsonResponse, safeServerError } from "../../lib/http";
-
-function assetUrl(env: Env, r2Key: string): string {
-  return `${env.SHOP_ASSETS_PUBLIC_BASE_URL.replace(/\/$/, "")}/${r2Key}`;
-}
 
 async function serializeProductAdmin(env: Env, product: ProductRow) {
   const images = await listProductImages(env.SHOP_DB, product.id);
@@ -67,7 +64,7 @@ async function serializeProductAdmin(env: Env, product: ProductRow) {
     createdAt: product.created_at,
     updatedAt: product.updated_at,
     publishedAt: product.published_at,
-    images: images.map((img) => ({ id: img.id, kind: img.kind, url: assetUrl(env, img.r2_key), position: img.position, altText: img.alt_text })),
+    images: images.map((img) => ({ id: img.id, kind: img.kind, url: assetUrl(env, img), position: img.position, altText: img.alt_text })),
     files: files.map((f) => ({ id: f.id, filename: f.sanitized_filename, contentType: f.content_type, sizeBytes: f.size_bytes, position: f.position })),
     readiness,
   };
@@ -130,8 +127,8 @@ export async function handleAdminPreviewProduct(_request: Request, env: Env, par
         faqs: safeParseArray(product.faqs_json),
         responsibleUseText: product.responsible_use_text,
         refundPolicySummary: product.refund_policy_summary,
-        coverImageUrl: cover ? assetUrl(env, cover.r2_key) : null,
-        previewImageUrls: previews.map((p) => assetUrl(env, p.r2_key)),
+        coverImageUrl: cover ? assetUrl(env, cover) : null,
+        previewImageUrls: previews.map((p) => assetUrl(env, p)),
         status: product.status,
         buyable: false,
       },

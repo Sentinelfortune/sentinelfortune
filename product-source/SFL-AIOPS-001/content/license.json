@@ -1,0 +1,104 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "This licence governs your use of the AI Operations Playbook & Toolkit, version 1.0, Standard Self-Customization Edition (\"the Package\"), published by Sentinel Fortune LLC (\"the Publisher\")."
+    },
+    {
+      "t": "h2",
+      "x": "1. Grant of licence"
+    },
+    {
+      "t": "p",
+      "x": "The Publisher grants the purchasing business (\"the Licensee\") a perpetual, non-exclusive, non-transferable licence to use the Package within one business entity."
+    },
+    {
+      "t": "h2",
+      "x": "2. Permitted use"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Use by the Licensee and its employees in the ordinary course of the Licensee's own business.",
+        "Editing, adapting and rebranding the editable templates for the Licensee's internal use and for the Licensee's own customer-facing communications.",
+        "Printing and storing copies for the Licensee's internal use.",
+        "Retaining and continuing to use adapted materials after this licence term, for the Licensee's own business only."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3. Prohibited use"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Reselling, sublicensing, renting, lending or otherwise distributing the Package or any substantial part of it.",
+        "Sharing the Package with any other business entity, including affiliates, franchisees and businesses under common ownership, each of which requires its own licence.",
+        "Publishing the Package or substantial extracts publicly, including on websites, file-sharing services, forums or social media.",
+        "Using the Package to deliver paid consulting, training or done-for-you services to third parties.",
+        "Incorporating the Package into another product offered for sale or distribution.",
+        "Removing or obscuring the Publisher's attribution or the footer disclaimers from unmodified documents."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4. Adapted materials"
+    },
+    {
+      "t": "p",
+      "x": "Customer-facing documents the Licensee creates by adapting these templates — estimates, letters, SOPs and similar — become the Licensee's own working documents and may be used freely within the Licensee's business. This does not extend to redistributing the templates themselves."
+    },
+    {
+      "t": "h2",
+      "x": "5. No professional advice"
+    },
+    {
+      "t": "p",
+      "x": "The Package provides operational templates and general guidance only. It does not constitute legal, financial, tax, insurance, human-resources, safety, code, permit, licensing or other professional advice, and must not be relied upon as a substitute for a qualified professional. The Licensee is solely responsible for compliance with all laws, codes, regulations and licensing requirements applicable to its business."
+    },
+    {
+      "t": "h2",
+      "x": "6. No warranty of outcome"
+    },
+    {
+      "t": "p",
+      "x": "The Package is provided \"as is\". The Publisher makes no representation or warranty that use of the Package will produce any particular operational, financial or commercial result. The Licensee is solely responsible for all work performed and all communications issued by its business, including any output produced with the assistance of AI tools."
+    },
+    {
+      "t": "h2",
+      "x": "7. Third-party AI tools"
+    },
+    {
+      "t": "p",
+      "x": "The Package requires the Licensee to use third-party AI tools of its own choosing. The Publisher is not affiliated with, endorsed by, or responsible for any such tool, its availability, its output, its pricing or its terms. The Licensee is responsible for complying with the terms of any AI tool it uses, and for the handling of any data it enters into one."
+    },
+    {
+      "t": "h2",
+      "x": "8. Updates"
+    },
+    {
+      "t": "p",
+      "x": "Updates within version 1.x are provided to licensed purchasers at no additional cost where the Publisher issues them. No obligation to issue updates is created by this licence."
+    },
+    {
+      "t": "h2",
+      "x": "9. Termination"
+    },
+    {
+      "t": "p",
+      "x": "This licence terminates automatically on a material breach of section 3. On termination the Licensee must cease use of the Package and destroy its copies, other than adapted customer-facing documents already in use under section 4."
+    },
+    {
+      "t": "h2",
+      "x": "10. Refunds"
+    },
+    {
+      "t": "p",
+      "x": "Refund terms are those published at the point of sale and are not varied by this licence. Where a refund is issued, this licence terminates and download access is withdrawn."
+    },
+    {
+      "t": "note",
+      "x": "This licence is a commercial document. Sentinel Fortune LLC should have it reviewed by its own legal adviser, and the Licensee should not treat it as legal advice to the Licensee."
+    }
+  ]
+}

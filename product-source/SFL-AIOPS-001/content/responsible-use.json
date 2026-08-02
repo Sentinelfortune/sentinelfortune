@@ -1,0 +1,157 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "This policy sets the standard for the use of artificial intelligence tools within [COMPANY NAME]. It applies to every employee, contractor and temporary worker, without exception."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Company",
+        "Policy owner",
+        "Effective date",
+        "Review date"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "1. Purpose"
+    },
+    {
+      "t": "p",
+      "x": "We use AI tools to assist with drafting written work. This policy defines what they may be used for, what they must never be used for, what information must never be entered into them, and who is accountable for the output. Its purpose is to let us use these tools productively without exposing our customers, our staff or our business to avoidable risk."
+    },
+    {
+      "t": "h2",
+      "x": "2. Scope"
+    },
+    {
+      "t": "p",
+      "x": "This policy covers all general-purpose AI assistants and any tool that generates text, images or recommendations, whether accessed on a company account, a personal account, or through another application. It applies whenever the work being done is company work."
+    },
+    {
+      "t": "h2",
+      "x": "3. The governing principle"
+    },
+    {
+      "t": "warn",
+      "x": "AI drafts. Qualified people decide. No AI output is a decision, an approval, a diagnosis, a determination or an authorisation. A named person is accountable for every output that leaves this business."
+    },
+    {
+      "t": "h2",
+      "x": "4. Permitted uses"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Restructuring technician field notes into a consistent job record.",
+        "Drafting scopes of work, inclusions and exclusions for review by an authorised person.",
+        "Drafting customer correspondence for review before sending.",
+        "Extracting and formatting internal procedures.",
+        "Summarising and prioritising inbound messages.",
+        "Preparing internal training material and reference scripts.",
+        "Proofreading and improving the clarity of documents already drafted by a person."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "5. Prohibited uses"
+    },
+    {
+      "t": "p",
+      "x": "AI tools must not be used to:"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Set, estimate, calculate or suggest any price, rate, labour hour, discount or total.",
+        "Determine or state whether work complies with any building, electrical, plumbing, mechanical, gas or fire code.",
+        "Determine or state whether a permit, inspection or approval is required.",
+        "Make or contribute to any safety determination, including whether a condition is hazardous.",
+        "Instruct a customer to operate, shut off, reset, bleed, bypass or otherwise interact with any equipment or utility.",
+        "Diagnose a fault as a substitute for inspection by a qualified technician.",
+        "Produce legal, tax, insurance, human-resources or regulatory advice for the company or for a customer.",
+        "Make or inform any employment decision, including hiring, discipline, performance rating, pay or termination.",
+        "Generate a warranty term, contract clause or liability statement that is then used without review by a qualified adviser.",
+        "Communicate directly with a customer without a person reviewing and sending the message."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "6. Information that must never be entered"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Payment card numbers, bank details, or any financial account information.",
+        "Government identification numbers, driver licence numbers, dates of birth.",
+        "Medical or health information about any person.",
+        "Employee records, disciplinary records, pay information, or references.",
+        "Confidential business information, supplier pricing agreements, or anything under a non-disclosure agreement.",
+        "Photographs or video showing a customer's home interior, personal documents or belongings.",
+        "Passwords, access codes, alarm codes, key box combinations, or system credentials."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Where a customer's name or address is genuinely needed to produce useful output, use the minimum necessary. Most tasks do not need it at all."
+    },
+    {
+      "t": "h2",
+      "x": "7. Mandatory human review"
+    },
+    {
+      "t": "p",
+      "x": "Before any AI-assisted output is sent to a customer, filed as a record, or acted upon, the person responsible must:"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Read the entire output. Not skim it.",
+        "Verify every factual statement against the source document.",
+        "Complete the AI Output Quality-Control Checklist.",
+        "Remove or correct anything that cannot be verified.",
+        "Escalate rather than guess where anything is unclear."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "8. Escalation — no exceptions"
+    },
+    {
+      "t": "warn",
+      "x": "Stop and escalate to [ROLE] immediately, before sending anything, whenever the matter involves: a suspected gas leak; an electrical hazard; smoke, fire or a carbon monoxide alarm; water damage in progress; any injury; a customer alleging property damage or injury; a suspected code or permit issue; work outside our licence scope; a threat of legal action; or a request to deviate from an agreed scope."
+    },
+    {
+      "t": "h2",
+      "x": "9. Accountability"
+    },
+    {
+      "t": "p",
+      "x": "The person who sends, files or acts on an AI-assisted output is accountable for it. \"The AI produced it\" is not an explanation for an error, and will not be treated as one. This is the same standard that applies to any other draft prepared by any other means."
+    },
+    {
+      "t": "h2",
+      "x": "10. Compliance and breaches"
+    },
+    {
+      "t": "p",
+      "x": "Failure to follow this policy — particularly sections 5, 6 and 8 — will be handled under [COMPANY NAME]'s normal disciplinary process. Staff who identify a breach, including their own, are expected to report it promptly; prompt reporting will be treated as a mitigating factor."
+    },
+    {
+      "t": "h2",
+      "x": "11. Review"
+    },
+    {
+      "t": "p",
+      "x": "This policy is reviewed at least annually, and whenever we adopt a new AI tool, change AI providers, or experience an incident involving AI-assisted output."
+    },
+    {
+      "t": "hr"
+    },
+    {
+      "t": "note",
+      "x": "This policy is a template. [COMPANY NAME] should have it reviewed by its own legal adviser before adoption, particularly sections 9 and 10, which interact with employment law, and section 6, which interacts with data protection obligations that vary by jurisdiction."
+    }
+  ]
+}

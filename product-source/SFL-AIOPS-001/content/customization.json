@@ -1,0 +1,189 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Complete this once. Every template and prompt in this package draws on it, so 45 minutes here saves you re-entering the same information nine times — and it is what turns generic templates into your business's documents."
+    },
+    {
+      "t": "note",
+      "x": "Keep the completed version somewhere your staff can reach. When someone asks \"what is our standard exclusion for drywall?\", this is the answer, and it should not live only in your head."
+    },
+    {
+      "t": "h2",
+      "x": "1. Business identity"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Legal business name",
+        "Trading name if different",
+        "Trade(s)",
+        "Licence numbers to appear on documents",
+        "Main phone",
+        "Email for customer correspondence",
+        "Website"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "2. Service area"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Areas served",
+        "Areas explicitly not served",
+        "Travel charge applies beyond",
+        "After-hours coverage area"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3. Customer types"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Residential / commercial / both",
+        "Typical residential customer",
+        "Typical commercial customer",
+        "Any customer type you do not serve"
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h2",
+      "x": "4. Warranty terms — quote these exactly"
+    },
+    {
+      "t": "warn",
+      "x": "This is the section most likely to cause a dispute. Write the terms exactly as they appear in your written warranty. Every template quotes this verbatim and none of them may paraphrase it."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Parts warranty — duration and what it covers",
+        "Labour warranty — duration and what it covers",
+        "When the warranty period starts",
+        "What voids it",
+        "What is explicitly excluded",
+        "How a claim is made"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "5. Standard exclusions"
+    },
+    {
+      "t": "p",
+      "x": "These appear on every estimate. Add anything specific to your trade and delete anything that does not apply to you — an exclusion that obviously does not apply makes the whole list read as boilerplate."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Permit fees and applications",
+        "Correction of pre-existing non-compliant work",
+        "Concealed conditions not visible at estimate",
+        "Asbestos, lead or mould",
+        "Drywall repair, patching and painting",
+        "Structural modification",
+        "Landscaping restoration",
+        "Equipment not named in the scope",
+        "Your additional exclusion 1",
+        "Your additional exclusion 2",
+        "Your additional exclusion 3"
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h2",
+      "x": "6. Payment terms"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Terms (e.g. due on completion, net 15, net 30)",
+        "Deposit required, and when",
+        "Payment methods accepted",
+        "Late payment terms as written in your agreement",
+        "Who to contact about billing"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "7. Scheduling and access"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Standard arrival windows",
+        "Call-ahead lead time",
+        "Cancellation notice required",
+        "Cancellation charge if any",
+        "Standard access requirements",
+        "After-hours callout criteria — written"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "8. Roles and escalation"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Who reviews customer-facing documents before sending",
+        "Who authorises pricing",
+        "Who authorises discounts or goodwill",
+        "Who handles complaints",
+        "Who is the licensed technical authority",
+        "Who is contacted for safety escalation, and how"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "9. Brand voice"
+    },
+    {
+      "t": "p",
+      "x": "Three sentences on how your business sounds to customers. Not marketing language — how you actually want a written message to read. Include one thing you never say."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "We sound like",
+        "We never say",
+        "Formal or first-name basis with customers",
+        "Sign-off used on written correspondence"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "10. AI tool decisions"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Tool(s) we use",
+        "Training-on-our-data setting turned off (date checked)",
+        "Shared account or individual accounts",
+        "Who administers access",
+        "Date staff acknowledgements collected"
+      ]
+    },
+    {
+      "t": "hr"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Completed by",
+        "Date",
+        "Next review date"
+      ]
+    }
+  ]
+}

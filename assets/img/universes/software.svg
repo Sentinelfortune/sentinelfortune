@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1530"/><stop offset="1" stop-color="#060a18"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5d980"/><stop offset="0.5" stop-color="#c8a84b"/><stop offset="1" stop-color="#9a7f2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <title>Software and Digital Tools — connected nodes held inside code brackets</title>
+  <g fill="none" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M104 92 74 150l30 58"/><path d="M296 92l30 58-30 58"/>
+  </g>
+  <g stroke="#c8a84b" stroke-opacity=".45" stroke-width="1.4">
+    <path d="M150 118l50 32 50-32M150 118v64l50 32 50-32v-64M150 182l50-32 50 32M200 86v64"/>
+  </g>
+  <g fill="url(#gold)">
+    <circle cx="200" cy="86" r="7"/><circle cx="150" cy="118" r="6"/><circle cx="250" cy="118" r="6"/>
+    <circle cx="200" cy="150" r="7"/><circle cx="150" cy="182" r="6"/><circle cx="250" cy="182" r="6"/>
+    <circle cx="200" cy="214" r="7"/>
+  </g>
+  <rect x="0.5" y="0.5" width="399" height="299" fill="none" stroke="#c8a84b" stroke-opacity=".22"/>
+</svg>

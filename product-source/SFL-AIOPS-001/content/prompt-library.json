@@ -1,0 +1,101 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "Forty prompts, organised into six operational categories. Each one is written for HVAC, plumbing, electrical and related home-service work, and each one carries an explicit boundary on what the AI must not do."
+    },
+    {
+      "t": "h2",
+      "x": "How to use this library"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Complete the Business Customization Worksheet (folder 09) first. Many prompts reference your warranty terms, standard exclusions and escalation roles.",
+        "Copy the prompt text into your AI assistant exactly as written, including the rules at the bottom. The rules are what make the output usable — deleting them is what produces generic results.",
+        "Replace every [BRACKETED FIELD] with your own information. Anything left in brackets will produce a placeholder in the output.",
+        "Read the REVIEW REQUIRED note under each prompt before you use the output for anything.",
+        "Run the output through the Quality-Control Checklist (folder 06) before it reaches a customer."
+      ]
+    },
+    {
+      "t": "note",
+      "x": "Every prompt contains a [TRADE] marker. Replace it with your trade — HVAC, plumbing, electrical, or the specific description you use. Prompts produce noticeably better output when the trade is named."
+    },
+    {
+      "t": "h2",
+      "x": "What every prompt in this library refuses to do"
+    },
+    {
+      "t": "p",
+      "x": "Every prompt here carries an explicit boundary on what the AI must not do, stated inside the prompt itself rather than left to the reader. Where a task could touch pricing, code compliance, permit requirements or a safety determination, the prompt forbids it in those words — that is every estimate prompt, every customer-facing prompt, and every prompt that reads a technician's account of a job. Prompts for purely internal tasks, such as reading a draft procedure back or cleaning up a voicemail transcript, carry the boundary relevant to that task instead of all four. The boundaries are not decoration. They are the difference between a useful drafting tool and a liability."
+    },
+    {
+      "t": "warn",
+      "x": "If you edit a prompt, keep its rules block. It is the part doing the safety work."
+    },
+    {
+      "t": "h2",
+      "x": "Categories at a glance"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Section",
+        "Category",
+        "Prompts",
+        "Primary user"
+      ],
+      "rows": [
+        [
+          "1",
+          "Field-note cleanup",
+          "7",
+          "Office / dispatch"
+        ],
+        [
+          "2",
+          "Estimate and scope drafting",
+          "7",
+          "Owner / estimator"
+        ],
+        [
+          "3",
+          "Customer communication",
+          "8",
+          "Office / CSR"
+        ],
+        [
+          "4",
+          "SOP extraction",
+          "6",
+          "Owner / operations lead"
+        ],
+        [
+          "5",
+          "Voicemail and email triage",
+          "6",
+          "Office / dispatch"
+        ],
+        [
+          "6",
+          "CSR objection handling",
+          "6",
+          "Phone staff"
+        ]
+      ],
+      "widths": [
+        0.12,
+        0.44,
+        0.14,
+        0.3
+      ]
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "inject"
+    }
+  ]
+}

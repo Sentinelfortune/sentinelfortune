@@ -1,0 +1,297 @@
+{
+  "blocks": [
+    {
+      "t": "p",
+      "x": "The most valuable procedures in most home-service businesses are undocumented. They live in the owner's head, and the business cannot grow past the owner's availability because of it. This folder turns that knowledge into procedures other people can follow."
+    },
+    {
+      "t": "h2",
+      "x": "Why interviewing beats writing"
+    },
+    {
+      "t": "p",
+      "x": "Asking an owner to write down a procedure produces one of two results: nothing, because it never reaches the top of the list, or a thin outline missing everything the owner does without thinking. The steps you perform automatically are exactly the steps that are invisible to you and essential to someone else."
+    },
+    {
+      "t": "p",
+      "x": "Interviewing solves this. Prompt SOP-01 in the Prompt Library makes the AI ask you one question at a time and refuses to accept \"you just know\" as an answer. Speaking a procedure aloud in response to questions surfaces the automatic steps. Expect 30 to 60 minutes per procedure."
+    },
+    {
+      "t": "h2",
+      "x": "Which procedures to document first"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Anything only one person can do. This is your operational risk, and it is usually not the most complicated procedure — it is the one nobody else was ever shown.",
+        "Anything a new hire needs in their first two weeks.",
+        "Anything that goes wrong repeatedly. Recurring failure usually means an undocumented decision point.",
+        "Anything a customer sees. Inconsistency is most expensive where it is visible."
+      ]
+    },
+    {
+      "t": "warn",
+      "x": "Do not document licensed technical procedures as if they were company procedure. Where a step requires licensed judgement, the SOP records the escalation path — who is called, when, and what must not proceed without them — not the technical decision itself."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "SOP Template"
+    },
+    {
+      "t": "p",
+      "x": "Copy this structure for every procedure. Consistency matters more than elegance: staff should be able to find the escalation section in the same place in every document."
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Procedure name",
+        "SOP reference number",
+        "Version",
+        "Effective date",
+        "Owner",
+        "Review date"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Purpose"
+    },
+    {
+      "t": "p",
+      "x": "One sentence: what this procedure achieves and why it exists. If you cannot write it in one sentence, the procedure is probably two procedures."
+    },
+    {
+      "t": "h2",
+      "x": "Scope"
+    },
+    {
+      "t": "p",
+      "x": "When this procedure applies, and — just as important — when it does not."
+    },
+    {
+      "t": "h2",
+      "x": "Who performs this"
+    },
+    {
+      "t": "fields",
+      "x": [
+        "Role",
+        "Required licence or certification",
+        "Supervision required",
+        "Who signs off competence"
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Prerequisites"
+    },
+    {
+      "t": "p",
+      "x": "What must be true, available or completed before starting: tools, parts, system access, forms, information, permissions."
+    },
+    {
+      "t": "h2",
+      "x": "Steps"
+    },
+    {
+      "t": "p",
+      "x": "Numbered. One action per step. Each starts with a verb. Written so that someone who has never done this can follow it without asking a question."
+    },
+    {
+      "t": "table",
+      "head": [
+        "#",
+        "Action",
+        "Who",
+        "Record what, where"
+      ],
+      "rows": [
+        [
+          "1",
+          "",
+          "",
+          ""
+        ],
+        [
+          "2",
+          "",
+          "",
+          ""
+        ],
+        [
+          "3",
+          "",
+          "",
+          ""
+        ],
+        [
+          "4",
+          "",
+          "",
+          ""
+        ],
+        [
+          "5",
+          "",
+          "",
+          ""
+        ],
+        [
+          "6",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.07,
+        0.53,
+        0.14,
+        0.26
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Decision points"
+    },
+    {
+      "t": "table",
+      "head": [
+        "At this step",
+        "The decision",
+        "What determines it",
+        "What the wrong choice looks like"
+      ],
+      "rows": [
+        [
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.16,
+        0.26,
+        0.3,
+        0.28
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Stop and escalate"
+    },
+    {
+      "t": "warn",
+      "x": "Every SOP must have this section, and it must be specific. List the conditions under which the person stops, who they contact, how quickly, and what must not proceed in the meantime. For any procedure touching gas, electrical isolation, refrigerant, confined space or working at height, this section is reviewed by a licensed supervisor before the SOP is issued."
+    },
+    {
+      "t": "table",
+      "head": [
+        "If this happens",
+        "Stop and contact",
+        "How fast",
+        "Do not proceed with"
+      ],
+      "rows": [
+        [
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          "",
+          ""
+        ]
+      ],
+      "widths": [
+        0.3,
+        0.24,
+        0.16,
+        0.3
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "How completion is verified"
+    },
+    {
+      "t": "p",
+      "x": "What evidence shows this was done correctly, who checks it, and where the record lives."
+    },
+    {
+      "t": "pb"
+    },
+    {
+      "t": "h1",
+      "x": "Working through the interview"
+    },
+    {
+      "t": "h2",
+      "x": "Before you start"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "Pick one procedure. Not a category — one specific procedure with a clear start and end.",
+        "Set aside 45 minutes without interruption.",
+        "Have the SOP-01 prompt open in your AI assistant.",
+        "Type your answers in plain speech. Do not try to write formally — that slows you down and produces worse detail."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "During"
+    },
+    {
+      "t": "ul",
+      "x": [
+        "When you catch yourself saying \"it depends\", the AI is instructed to ask what it depends on. Answer that properly — it is the most valuable part of the interview.",
+        "When you mention anything touching code, permits, safety or licensing, the AI is instructed to record an escalation rather than a rule. Let it.",
+        "If the AI suggests a step you did not describe, say so and tell it to remove the step. It should not be adding steps, and a suggested step that sounds reasonable is exactly the kind that gets missed in review."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "After"
+    },
+    {
+      "t": "ol",
+      "x": [
+        "Run prompt SOP-05 (Procedure Test Read) on the draft. It reads the SOP as someone who has never done the task and reports every point where they would be stuck.",
+        "Resolve every [CLARIFY] marker. An SOP issued with unresolved markers teaches staff that the documents are unreliable.",
+        "Have a licensed person review anything touching technical work.",
+        "Have the person who actually performs the task read it and mark what is wrong. They will find things you did not.",
+        "Issue it, set a review date, and put it where people will actually look."
+      ]
+    },
+    {
+      "t": "note",
+      "x": "A procedure nobody can find is a procedure nobody follows. Decide where SOPs live before you write the second one."
+    }
+  ]
+}
