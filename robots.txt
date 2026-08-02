@@ -1,0 +1,14 @@
+---
+layout: null
+---
+# Sentinel Fortune LLC
+# Public content is open to crawlers and answer engines. The private Owner
+# admin is not served from this host at all — it lives behind Cloudflare
+# Access on a separate domain — so there is nothing here to disallow beyond
+# orphaned legacy assets.
+
+User-agent: *
+Allow: /
+Disallow: /data/
+
+Sitemap: {{ '/sitemap.xml' | absolute_url }}

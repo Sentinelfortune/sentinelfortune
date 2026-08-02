@@ -1,0 +1,46 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="sf-head">
+  <div class="sf-head-in">
+    <a class="sf-brand" href="{{ '/' | relative_url }}">
+      <img src="{{ '/assets/img/sf-logo-128.webp' | relative_url }}" width="34" height="34"
+           alt="" loading="eager" decoding="async" class="sf-brand-mark">
+      <span class="sf-brand-txt">Sentinel Fortune <span>LLC</span></span>
+    </a>
+
+    <button class="sf-burger" id="sfBurger" aria-expanded="false" aria-controls="sfNav"
+            aria-label="Open navigation menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="sf-nav" id="sfNav" aria-label="Primary">
+      <a href="{{ '/products/' | relative_url }}"{% if page.url == '/products/' %} aria-current="page"{% endif %}>Products</a>
+      <a href="{{ '/shop/' | relative_url }}">Shop</a>
+      <a href="{{ '/articles/' | relative_url }}"{% if page.collection == 'articles' %} aria-current="page"{% endif %}>Articles</a>
+      <a href="{{ '/guides/' | relative_url }}"{% if page.collection == 'guides' %} aria-current="page"{% endif %}>Guides</a>
+      <a href="{{ '/updates/' | relative_url }}"{% if page.collection == 'signals' %} aria-current="page"{% endif %}>Updates</a>
+      <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a>
+      <a href="{{ '/contact/' | relative_url }}"{% if page.url == '/contact/' %} aria-current="page"{% endif %}>Contact</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+/* Mobile navigation. Progressive enhancement: the `sf-js` class is what
+   collapses the nav, so with scripting off it stays a plain visible list and
+   nothing becomes unreachable. */
+(function () {
+  var b = document.getElementById("sfBurger"), n = document.getElementById("sfNav");
+  if (!b || !n) return;
+  document.documentElement.classList.add("sf-js");
+  function set(open) {
+    n.classList.toggle("open", open);
+    b.setAttribute("aria-expanded", String(open));
+    b.setAttribute("aria-label", (open ? "Close" : "Open") + " navigation menu");
+  }
+  b.addEventListener("click", function () { set(!n.classList.contains("open")); });
+  n.addEventListener("click", function (e) { if (e.target.tagName === "A") set(false); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && n.classList.contains("open")) { set(false); b.focus(); }
+  });
+})();
+</script>

@@ -1,0 +1,62 @@
+---
+layout: base
+---
+{%- comment -%}
+Standalone pages (About, Contact, FAQ, Products). Same GEO discipline as the
+content layout: an optional `answer` block renders before the narrative so the
+direct answer is the first thing both a reader and an answer engine meet.
+
+`faqs` in front matter renders visibly here AND drives FAQPage schema in
+schema.html. The two are wired to the same source on purpose — schema for
+questions a visitor cannot see on the page would be fake markup.
+{%- endcomment -%}
+<div class="sf-page{% if page.wide %} sf-page-wide{% endif %}">
+
+  {%- unless page.hide_breadcrumb %}
+  <nav class="sf-crumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}">Home</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{{ page.title }}</span>
+  </nav>
+  {%- endunless %}
+
+  <header class="sf-page-head">
+    {%- if page.kicker %}<p class="sf-kicker">{{ page.kicker }}</p>{% endif %}
+    <h1>{{ page.title }}</h1>
+    {%- if page.summary %}<p class="sf-standfirst">{{ page.summary }}</p>{% endif %}
+    {%- if page.updated %}
+    <p class="sf-meta">Last updated
+      <time datetime="{{ page.updated | date_to_xmlschema }}">{{ page.updated | date: "%-d %B %Y" }}</time>
+    </p>
+    {%- endif %}
+  </header>
+
+  {%- if page.answer %}
+  <div class="sf-answer">
+    <p class="sf-answer-label">In short</p>
+    <p>{{ page.answer }}</p>
+  </div>
+  {%- endif %}
+
+  <div class="sf-prose">
+    {{ content }}
+  </div>
+
+  {%- if page.faqs %}
+  <section class="sf-faq" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">{{ page.faq_heading | default: "Common questions" }}</h2>
+    <dl>
+      {%- for f in page.faqs %}
+      <dt>{{ f.q }}</dt>
+      <dd>{{ f.a }}</dd>
+      {%- endfor %}
+    </dl>
+  </section>
+  {%- endif %}
+
+  {%- if page.legal_review %}
+  <p class="sf-legal-flag" role="note">
+    <strong>Owner / legal review required.</strong> {{ page.legal_review }}
+  </p>
+  {%- endif %}
+</div>

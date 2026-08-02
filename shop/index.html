@@ -7,7 +7,18 @@
 <meta name="description" content="Digital products, toolkits, and playbooks from Sentinel Fortune LLC. Secure Stripe checkout, instant licensed delivery."/>
 <meta name="robots" content="index,follow"/>
 <meta name="theme-color" content="#04060f"/>
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/img/favicon-180.png"/>
+
 <link rel="canonical" href="https://sentinelfortune.github.io/sentinelfortune/shop/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Sentinel Fortune LLC"/>
+<meta property="og:title" content="Digital Shop — Sentinel Fortune LLC"/>
+<meta property="og:description" content="Digital products, toolkits and playbooks from Sentinel Fortune LLC. Secure Stripe checkout, licensed download delivery."/>
+<meta property="og:url" content="https://sentinelfortune.github.io/sentinelfortune/shop/"/>
+<meta property="og:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
@@ -20,6 +31,7 @@
     <a class="shop-logo" href="../index.html">SENTINEL FORTUNE LLC<small>Digital Shop</small></a>
     <nav class="shop-hdr-nav">
       <a href="index.html" aria-current="page">Catalog</a>
+      <a href="../products/">Products</a>
       <a href="licenses.html">Licenses</a>
       <a href="refund-policy.html">Refund Policy</a>
       <a href="terms-of-sale.html">Terms</a>
@@ -37,14 +49,42 @@
     <p class="page-sub">Every product is delivered as a secure, licensed download after Stripe checkout. No subscriptions, no bundled upsells — one purchase, one license, one download link.</p>
   </div>
 
+  <!-- Hidden until the catalogue actually loads. Filter controls above an
+       error state or an empty shelf are worse than no controls. -->
+  <div class="catalog-tools" id="catalogTools" hidden>
+    <div class="catalog-filters" id="catalogFilters" role="group" aria-label="Filter by universe"></div>
+    <div class="catalog-search">
+      <label class="sr-only" for="catalogSearch">Search products</label>
+      <input type="search" id="catalogSearch" placeholder="Search products…"
+             autocomplete="off" spellcheck="false">
+      <p class="catalog-count" id="catalogCount" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
   <div class="catalog-grid" id="catalogGrid">
     <div class="spinner" role="status" aria-label="Loading products"></div>
   </div>
+
+  <section class="catalog-universes" aria-labelledby="cu-h">
+    <h2 id="cu-h">What we publish</h2>
+    <p>
+      The catalogue is organised into five universes. Read what each one covers on the
+      <a href="../products/">Products</a> page.
+    </p>
+    <ul class="catalog-universe-list">
+      <li><a href="?category=business">Business &amp; Professional</a></li>
+      <li><a href="?category=education">Education &amp; Learning</a></li>
+      <li><a href="?category=books">Books &amp; Publishing</a></li>
+      <li><a href="?category=spirituality">Spirituality &amp; Reflection</a></li>
+      <li><a href="?category=software">Software &amp; Digital Tools</a></li>
+    </ul>
+  </section>
 </main>
 
 <footer class="shop-ftr">
   <nav class="shop-ftr-links">
     <a href="index.html">Catalog</a>
+    <a href="../products/">Products</a>
     <a href="licenses.html">Licenses</a>
     <a href="refund-policy.html">Refund Policy</a>
     <a href="terms-of-sale.html">Terms of Sale</a>

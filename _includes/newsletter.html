@@ -1,0 +1,103 @@
+{%- comment -%}
+Newsletter signup.
+
+There is no email backend yet. Rather than shipping a form that says
+"Thanks, you're subscribed!" into a void, this include has two states and
+picks between them from one config value:
+
+  site.newsletter_endpoint == ""  -> the honest state. No form. The visitor is
+                                     told plainly that signup is not open yet
+                                     and given the address that does reach a
+                                     human.
+  site.newsletter_endpoint set    -> a real form that POSTs there.
+
+Turning the feature on is one line in _config.yml. Nothing here ever confirms
+a subscription that did not happen: the success message is only reachable
+through an actual HTTP 2xx from the configured endpoint.
+{%- endcomment -%}
+<section class="sf-news" aria-labelledby="news-h">
+  <div class="sf-news-in">
+    <p class="sf-kicker">Stay current</p>
+    <h2 id="news-h">New products, guides and updates</h2>
+    <p class="sf-news-sub">
+      Occasional email when something is actually published — a new product, a new guide,
+      or a meaningful update to one you already own. No schedule to fill, so no filler.
+    </p>
+
+    {%- if site.newsletter_endpoint and site.newsletter_endpoint != "" %}
+    <form class="sf-news-form" id="sfNewsForm" method="post"
+          action="{{ site.newsletter_endpoint }}" novalidate>
+      <label class="sf-sr" for="sfNewsEmail">Email address</label>
+      <input class="sf-news-input" id="sfNewsEmail" name="email" type="email"
+             autocomplete="email" required placeholder="you@company.com"
+             aria-describedby="sfNewsMsg">
+      <button class="sf-btn sf-btn-gold" type="submit" id="sfNewsBtn">Subscribe</button>
+      <p class="sf-news-msg" id="sfNewsMsg" role="status" aria-live="polite"></p>
+      <p class="sf-news-fine">
+        We use your address only to send these updates. Unsubscribe any time.
+        See the <a href="{{ '/shop/privacy.html' | relative_url }}">Privacy Policy</a>.
+      </p>
+    </form>
+
+    <script>
+    (function () {
+      var f = document.getElementById("sfNewsForm");
+      if (!f) return;
+      var msg = document.getElementById("sfNewsMsg"),
+          btn = document.getElementById("sfNewsBtn"),
+          input = document.getElementById("sfNewsEmail");
+
+      f.addEventListener("submit", function (e) {
+        e.preventDefault();
+        msg.className = "sf-news-msg";
+        if (!input.value || input.validity.typeMismatch || !input.validity.valid) {
+          msg.classList.add("is-err");
+          msg.textContent = "Please enter a valid email address.";
+          input.focus();
+          return;
+        }
+        btn.disabled = true;
+        var was = btn.textContent;
+        btn.textContent = "Subscribing…";
+
+        fetch(f.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ email: input.value })
+        }).then(function (r) {
+          /* Only an actual 2xx is reported as success. A network error or any
+             error status says so plainly — it never claims a subscription. */
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          msg.classList.add("is-ok");
+          msg.textContent = "Thanks — check your inbox to confirm.";
+          f.reset();
+        }).catch(function () {
+          msg.classList.add("is-err");
+          msg.innerHTML = 'That did not go through. Please email ' +
+            '<a href="mailto:{{ site.org_email }}">{{ site.org_email }}</a> and we will add you.';
+        }).then(function () {
+          btn.disabled = false;
+          btn.textContent = was;
+        });
+      });
+    })();
+    </script>
+
+    {%- else %}
+    <div class="sf-news-pending">
+      <p>
+        <strong>Email signup is not live yet.</strong>
+        The list is not open for subscriptions while the delivery system is being set up,
+        and we would rather say so than collect addresses we cannot yet mail.
+      </p>
+      <p>
+        To be added by hand in the meantime, email
+        <a href="mailto:{{ site.org_email }}?subject=Newsletter">{{ site.org_email }}</a>
+        with the subject “Newsletter”. You can also subscribe to the
+        <a href="{{ '/feed.xml' | relative_url }}">Atom feed</a>, which is live now and
+        carries every article, guide and update.
+      </p>
+    </div>
+    {%- endif %}
+  </div>
+</section>
