@@ -26,7 +26,7 @@ related_reading:
   - title: "Using AI safely in a licensed trade"
     url: "/articles/using-ai-safely-in-a-licensed-trade/"
   - title: "AI drafts. Licensed people decide."
-    url: "/signals/ai-drafts-licensed-people-decide/"
+    url: "/updates/ai-drafts-licensed-people-decide/"
 ---
 
 There is a lot being sold in this category, and much of it is the same fifty prompts with a

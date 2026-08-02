@@ -20,6 +20,11 @@ function toCatalogEntry(env: Env, product: ProductRow, cover: ProductImageRow | 
     shortDescription: product.short_description,
     category: product.category,
     audience: product.audience,
+    // Carried on the catalogue entry so a card can show format and version
+    // without the storefront fetching every product's detail endpoint just to
+    // render a grid.
+    supportedFormats: product.supported_formats,
+    version: product.version,
     priceCents: product.price_cents,
     priceDisplay: product.price_cents !== null ? formatUsdFromCents(product.price_cents) : null,
     currency: product.currency,
@@ -52,6 +57,10 @@ function toDetailEntry(env: Env, product: ProductRow, images: ProductImageRow[])
     responsibleUseText: product.responsible_use_text,
     refundEligible: product.refund_eligible === 1,
     refundPolicySummary: product.refund_policy_summary,
+    // Publication dates only. created_at is internal production history and is
+    // not a fact a customer needs, so it is not exposed.
+    publishedAt: product.published_at,
+    updatedAt: product.updated_at,
     coverImageUrl: cover ? assetUrl(env, cover) : null,
     previewImageUrls: previews.map((p) => assetUrl(env, p)),
     buyable: product.publicly_purchasable === 1 && product.price_confirmed === 1 && product.price_cents !== null,

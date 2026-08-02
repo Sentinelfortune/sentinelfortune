@@ -16,12 +16,29 @@ lang: en_US
 author: "Sentinel Fortune LLC"
 publisher: "Sentinel Fortune LLC"
 org_email: "contact@sentinelfortune.com"
-default_og_image: "/sentinelfortune/IMG_7098.jpeg"
+telegram_url: "https://t.me/sentinelfortune_bot"
+institutional_url: "https://sentinelfortune.com"
+# 1200x630 social card generated from the real brand mark by
+# scripts/build_brand_assets.py. Replaces the 307 KB unresized IMG_7098.jpeg.
+default_og_image: "/assets/img/sf-og.jpg"
+
+# Newsletter delivery endpoint.
+#
+# Deliberately empty. There is no email backend yet, so the signup form has
+# nowhere real to POST. While this is blank the form renders in its honest
+# "not live yet" state and tells the visitor to email instead — it never
+# reports a subscription that did not happen. Setting this to a real form
+# endpoint is the single change that turns the feature on.
+newsletter_endpoint: ""
 
 collections:
+  # The folder stays `_signals` — renaming it would rewrite every file's path
+  # for no visitor-facing gain. What changed is the public vocabulary: the
+  # permalink, the label and the item noun are all "Updates" now, because
+  # "Signals" meant nothing to a first-time visitor.
   signals:
     output: true
-    permalink: /signals/:name/
+    permalink: /updates/:name/
   articles:
     output: true
     permalink: /articles/:name/
@@ -31,11 +48,11 @@ collections:
 
 defaults:
   - scope: { path: "", type: "signals" }
-    values: { layout: "content", kind: "Signal", collection_label: "Signals", schema_type: "BlogPosting" }
+    values: { layout: "content", collection_url: "/updates/", kind: "Update", collection_label: "Updates", schema_type: "BlogPosting" }
   - scope: { path: "", type: "articles" }
-    values: { layout: "content", kind: "Article", collection_label: "Articles", schema_type: "Article" }
+    values: { layout: "content", collection_url: "/articles/", kind: "Article", collection_label: "Articles", schema_type: "Article" }
   - scope: { path: "", type: "guides" }
-    values: { layout: "content", kind: "Guide", collection_label: "Guides", schema_type: "Article" }
+    values: { layout: "content", collection_url: "/guides/", kind: "Guide", collection_label: "Guides", schema_type: "Article" }
 
 # Content that has not passed the editorial gate never renders.
 # scripts/validate_content.py enforces status: ready before publication.
@@ -150,3 +167,5 @@ exclude:
   - SHOP_MAIN_MERGE_READINESS.md
   - PRODUCT_MANIFEST_SCHEMA.md
   - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md
+  # How to run the public site: publishing flow, universes, audio, validators.
+  - PUBLIC_SITE_GUIDE.md

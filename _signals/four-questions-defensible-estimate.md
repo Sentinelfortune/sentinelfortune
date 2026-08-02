@@ -17,7 +17,7 @@ related_product:
   url: "/shop/"
 related_reading:
   - title: "AI drafts. Licensed people decide."
-    url: "/signals/ai-drafts-licensed-people-decide/"
+    url: "/updates/ai-drafts-licensed-people-decide/"
 ---
 
 The argument over "that wasn't in the quote" happens at collection time, which is the worst

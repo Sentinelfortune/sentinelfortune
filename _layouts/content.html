@@ -11,7 +11,7 @@ answer engine can quote and a reader can act on without scrolling.
   <nav class="sf-crumbs" aria-label="Breadcrumb">
     <a href="{{ '/' | relative_url }}">Home</a>
     <span aria-hidden="true">/</span>
-    <a href="{{ '/' | append: page.collection | append: '/' | relative_url }}">{{ page.collection_label }}</a>
+    <a href="{{ page.collection_url | default: '/' | relative_url }}">{{ page.collection_label }}</a>
   </nav>
 
   <header class="sf-article-head">

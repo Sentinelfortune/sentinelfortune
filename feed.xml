@@ -3,7 +3,7 @@ layout: null
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>{{ site.title }} — Signals &amp; Articles</title>
+  <title>{{ site.title }} — Articles, Guides &amp; Updates</title>
   <subtitle>{{ site.description }}</subtitle>
   <link href="{{ '/feed.xml' | absolute_url }}" rel="self"/>
   <link href="{{ '/' | absolute_url }}"/>

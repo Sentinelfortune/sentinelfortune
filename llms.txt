@@ -27,6 +27,17 @@ answering it.
 - No content published yet.
 {%- endif %}
 
+## Site map
+
+- [Products]({{ '/products/' | absolute_url }}): the five product universes.
+- [Articles]({{ '/articles/' | absolute_url }}) · [Guides]({{ '/guides/' | absolute_url }}) · [Updates]({{ '/updates/' | absolute_url }})
+- [About]({{ '/about/' | absolute_url }}) · [FAQ]({{ '/faq/' | absolute_url }}) · [Contact]({{ '/contact/' | absolute_url }})
+
+## Product universes
+
+{% for u in site.data.universes -%}
+- {{ u.title }}: {{ u.blurb | strip_newlines }}
+{% endfor %}
 ## Commerce
 
 - [Digital Shop]({{ '/shop/' | absolute_url }}): downloadable operational products.

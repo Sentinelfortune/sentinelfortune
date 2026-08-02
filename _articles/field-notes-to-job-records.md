@@ -22,7 +22,7 @@ related_product:
   url: "/shop/"
 related_reading:
   - title: "What belongs in a field note"
-    url: "/signals/what-belongs-in-a-field-note/"
+    url: "/updates/what-belongs-in-a-field-note/"
   - title: "Using AI safely in a licensed trade"
     url: "/articles/using-ai-safely-in-a-licensed-trade/"
 ---

@@ -181,3 +181,138 @@ main{flex:1}
 /* ══ TIER / LOADING SPINNER ══ */
 .spinner{width:22px;height:22px;border-radius:50%;border:2px solid var(--gold-line);border-top-color:var(--gold);animation:spin .8s linear infinite;margin:24px auto}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* =====================================================================
+   Catalogue tools, richer product cards, and product-page additions.
+   ===================================================================== */
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* ── filter + search bar ─────────────────────────────────────────────── */
+/* Same trap as everywhere else: an author `display:flex` beats the `hidden`
+   attribute, so without this the filter bar stayed on screen above an error
+   state it was explicitly hidden for. */
+.catalog-tools[hidden],.related-products[hidden],.feat-actions[hidden]{display:none}
+.catalog-tools{
+  max-width:1180px;margin:0 auto 26px;padding:0 24px;
+  display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;
+}
+.catalog-filters{display:flex;flex-wrap:wrap;gap:8px}
+.cat-chip{
+  font:inherit;font-size:.8rem;letter-spacing:.02em;cursor:pointer;
+  padding:8px 15px;border-radius:99px;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--gold-line);
+  transition:color .16s ease,border-color .16s ease,background .16s ease;
+}
+.cat-chip:hover{color:var(--white);border-color:var(--gold)}
+.cat-chip.is-on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold3)}
+.cat-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.catalog-search{display:flex;flex-direction:column;gap:6px;min-width:220px}
+.catalog-search input{
+  font:inherit;font-size:.9rem;padding:10px 14px;min-width:220px;
+  background:var(--card);color:var(--white);
+  border:1px solid var(--gold-line);border-radius:7px;
+}
+.catalog-search input::placeholder{color:var(--muted2)}
+.catalog-search input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.catalog-count{font-size:.74rem;color:var(--muted2);letter-spacing:.04em;margin:0}
+
+/* ── product card ────────────────────────────────────────────────────── */
+.product-card{position:relative;display:flex;flex-direction:column}
+.product-card-flag{
+  position:absolute;top:12px;left:12px;z-index:2;
+  font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
+  background:var(--gold);color:#0a0f1e;padding:4px 10px;border-radius:99px;font-weight:600;
+}
+.product-card-cover{
+  display:block;position:relative;overflow:hidden;background:var(--layer);
+  aspect-ratio:4/3;line-height:0;
+}
+/* width/height + aspect-ratio reserve the box before the cover arrives, so a
+   loading grid does not shove the cards below it down the page. */
+.product-card-img{width:100%;height:100%;object-fit:cover;display:block}
+.product-card-nocover{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',Georgia,serif;font-size:2.1rem;letter-spacing:.16em;
+  color:rgba(200,168,75,.26);
+  background:linear-gradient(135deg,#0d1530,#060a18);
+}
+.product-card-body{display:flex;flex-direction:column;flex:1}
+.product-card-title{margin:0 0 8px}
+.product-card-title a{color:inherit;text-decoration:none}
+.product-card-title a:hover{color:var(--gold3)}
+.product-card-meta{font-size:.72rem;color:var(--muted2);letter-spacing:.05em;margin-bottom:10px}
+.product-card-price-tbc{color:var(--muted)}
+.product-card-actions{margin-top:auto}
+.is-featured{border-color:var(--gold-line);box-shadow:0 0 0 1px rgba(200,168,75,.18)}
+
+.state-msg span{display:block;margin-top:8px;color:var(--muted);font-size:.9rem;line-height:1.6}
+
+/* ── universes block under the grid ──────────────────────────────────── */
+.catalog-universes{
+  max-width:1180px;margin:64px auto 0;padding:34px 24px 0;
+  border-top:1px solid var(--gold-line);
+}
+.catalog-universes h2{
+  font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;
+  font-size:1.5rem;color:var(--white);margin-bottom:10px;
+}
+.catalog-universes p{color:var(--muted);font-size:.9rem;line-height:1.7;max-width:62ch}
+.catalog-universe-list{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:9px}
+.catalog-universe-list a{
+  display:inline-block;font-size:.8rem;color:var(--muted);text-decoration:none;
+  border:1px solid var(--gold-line);border-radius:99px;padding:7px 15px;
+}
+.catalog-universe-list a:hover{color:var(--gold3);border-color:var(--gold)}
+
+/* ── product detail additions ────────────────────────────────────────── */
+.pd-crumbs{
+  max-width:1180px;margin:0 auto;padding:0 24px 20px;
+  font-size:.76rem;color:var(--muted2);letter-spacing:.04em;
+}
+.pd-crumbs a{color:var(--muted);text-decoration:none}
+.pd-crumbs a:hover{color:var(--gold3);text-decoration:underline}
+.pd-crumbs span{margin:0 8px;color:var(--muted2)}
+
+.gallery-cover{aspect-ratio:4/3;background-size:cover;background-position:center}
+.gallery-cover-img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:10px}
+.gallery-thumbs img{cursor:zoom-in}
+
+.pd-updated{font-size:.74rem;color:var(--muted2);letter-spacing:.04em;margin-top:14px}
+
+.related-products{max-width:1180px;margin:70px auto 0;padding:34px 24px 0;border-top:1px solid var(--gold-line)}
+.related-products h2{
+  font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;
+  font-size:1.5rem;color:var(--white);margin-bottom:20px;
+}
+.related-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+
+/* Lightbox for product previews. Plain <dialog>-free implementation so it
+   works the same in every browser the storefront targets. */
+.pv-lightbox{
+  position:fixed;inset:0;z-index:200;display:none;
+  align-items:center;justify-content:center;padding:24px;
+  background:rgba(2,4,10,.93);
+}
+.pv-lightbox.open{display:flex}
+.pv-lightbox img{max-width:100%;max-height:88vh;border-radius:8px;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.pv-close{
+  position:absolute;top:18px;right:18px;width:44px;height:44px;cursor:pointer;
+  background:transparent;border:1px solid var(--gold-line);border-radius:50%;
+  color:var(--gold3);font-size:1.1rem;line-height:1;
+}
+.pv-close:hover{border-color:var(--gold);color:#fff}
+
+@media (max-width:720px){
+  .catalog-tools{flex-direction:column;gap:14px}
+  .catalog-search,.catalog-search input{width:100%;min-width:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cat-chip{transition:none}
+}

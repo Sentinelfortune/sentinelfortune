@@ -24,7 +24,7 @@ related_product:
   url: "/shop/"
 related_reading:
   - title: "AI drafts. Licensed people decide."
-    url: "/signals/ai-drafts-licensed-people-decide/"
+    url: "/updates/ai-drafts-licensed-people-decide/"
   - title: "Turning field notes into invoice-ready job records"
     url: "/articles/field-notes-to-job-records/"
   - title: "Choosing an AI operations system for a home-service business"

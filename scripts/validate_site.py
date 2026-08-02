@@ -31,12 +31,16 @@ def main():
                 "_layouts/base.html", "_layouts/content.html", "_layouts/collection.html",
                 "_includes/seo.html", "_includes/schema.html",
                 "assets/css/content.css", "index.html",
-                "signals/index.html", "articles/index.html", "guides/index.html"]:
+                "updates/index.html", "articles/index.html", "guides/index.html",
+                "products/index.html", "about/index.html", "faq/index.html",
+                "contact/index.html", "_layouts/page.html", "_includes/newsletter.html",
+                "_data/universes.yml"]:
         check((REPO / rel).exists(), f"present: {rel}", f"MISSING: {rel}")
 
     # --- config ------------------------------------------------------------
     cfg = (REPO / "_config.yml").read_text(encoding="utf-8")
-    for key in ["url:", "baseurl:", "collections:", "signals:", "articles:", "guides:"]:
+    for key in ["url:", "baseurl:", "collections:", "signals:", "articles:", "guides:",
+                "collection_url:", "newsletter_endpoint:"]:
         check(key in cfg, f"_config.yml declares {key}", f"_config.yml missing {key}")
 
     # --- publication boundary ---------------------------------------------
@@ -75,8 +79,14 @@ def main():
             check("WebSite" in types, "schema: WebSite present", "schema: WebSite missing")
             ok.append(f"schema: JSON-LD parses cleanly ({len(types)} node types)")
         except json.JSONDecodeError as e:
-            warn.append(f"schema: naive strip did not parse ({e}); branch-by-branch render is "
-                        f"verified separately and passes — see the commit message")
+            # Expected. This inspects the TEMPLATE, and stripping Liquid with a
+            # regex cannot reproduce what the branches actually emit. The real
+            # check now lives in scripts/validate_build.py, which parses the
+            # JSON-LD of every page of a genuine Jekyll build — so this is a
+            # note about this script's reach, not a defect in the schema.
+            warn.append(f"schema: template-level strip cannot parse the branches ({e}); "
+                        f"the rendered JSON-LD of every page is parsed by "
+                        f"scripts/validate_build.py, which is the authoritative check")
     else:
         fail.append("schema: no ld+json block found")
 
@@ -92,14 +102,19 @@ def main():
     check(items > 0, f"content: {items} items ({ready} ready)", "content: no items found")
 
     # --- internal links resolve -------------------------------------------
-    known = {"/", "/shop/", "/signals/", "/articles/", "/guides/", "/feed.xml", "/sitemap.xml"}
+    known = {"/", "/shop/", "/products/", "/updates/", "/articles/", "/guides/",
+             "/about/", "/faq/", "/contact/", "/feed.xml", "/sitemap.xml", "/llms.txt"}
+    # Public route -> source folder. The signals collection is published at
+    # /updates/, so the folder name cannot be inferred from the URL segment.
+    route_dir = {"updates": "_signals", "articles": "_articles", "guides": "_guides"}
     for coll in ["_signals", "_articles", "_guides"]:
         for path in (REPO / coll).glob("*.md"):
             for target in re.findall(r'url:\s*"(/[^"]*)"', path.read_text(encoding="utf-8")):
                 if target in known or target.startswith("/shop/"):
                     continue
                 seg = target.strip("/").split("/")
-                if len(seg) == 2 and (REPO / f"_{seg[0]}" / f"{seg[1]}.md").exists():
+                if len(seg) == 2 and seg[0] in route_dir and \
+                   (REPO / route_dir[seg[0]] / f"{seg[1]}.md").exists():
                     continue
                 fail.append(f"broken internal link in {path.name}: {target}")
     ok.append("internal links: all related_product / related_reading targets resolve")
@@ -110,7 +125,12 @@ def main():
           "index.html has no front matter — the library section will not render")
     check("frontend/games/s5-ascent-lite" in home, "index.html: S.5 game link intact",
           "index.html: S.5 game link LOST")
-    check("shop/index.html" in home, "index.html: shop link intact", "index.html: shop link LOST")
+    check("'/shop/' | relative_url" in home or "shop/index.html" in home,
+          "index.html: shop link intact", "index.html: shop link LOST")
+    check("'/products/' | relative_url" in home, "index.html: products link intact",
+          "index.html: products link LOST")
+    check("REPLACE_WITH" not in home, "index.html: no unresolved placeholders",
+          "index.html: contains an unresolved placeholder")
     o = len(re.findall(r"{%-?\s*(if|for)\b", home))
     c = len(re.findall(r"{%-?\s*end(if|for)\b", home))
     check(o == c, f"index.html Liquid balanced ({o} blocks)", f"index.html Liquid UNBALANCED: {o}/{c}")

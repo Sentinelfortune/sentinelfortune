@@ -1,19 +1,57 @@
+{% include newsletter.html %}
 <footer class="sf-foot">
   <div class="sf-foot-in">
-    <p class="sf-foot-brand">Sentinel Fortune LLC</p>
-    <nav class="sf-foot-nav" aria-label="Footer">
-      <a href="{{ '/signals/' | relative_url }}">Signals</a>
-      <a href="{{ '/articles/' | relative_url }}">Articles</a>
-      <a href="{{ '/guides/' | relative_url }}">Guides</a>
-      <a href="{{ '/shop/' | relative_url }}">Shop</a>
-      <a href="{{ '/shop/terms-of-sale.html' | relative_url }}">Terms of Sale</a>
-      <a href="{{ '/shop/refund-policy.html' | relative_url }}">Refund Policy</a>
-      <a href="{{ '/shop/privacy.html' | relative_url }}">Privacy</a>
-      <a href="{{ '/feed.xml' | relative_url }}">Feed</a>
-    </nav>
-    <p class="sf-foot-note">
-      Operational templates and general guidance. Not legal, financial, HR, safety, code,
-      permit, or regulatory advice.
-    </p>
+
+    <div class="sf-foot-grid">
+      <div class="sf-foot-brand-col">
+        <img src="{{ '/assets/img/sf-logo-128.webp' | relative_url }}" width="48" height="48"
+             alt="Sentinel Fortune LLC" loading="lazy" decoding="async">
+        <p class="sf-foot-brand">Sentinel Fortune LLC</p>
+        <p class="sf-foot-tag">{{ site.description }}</p>
+        <a class="sf-foot-mail" href="mailto:{{ site.org_email }}">{{ site.org_email }}</a>
+      </div>
+
+      <nav class="sf-foot-col" aria-labelledby="ft-shop">
+        <p class="sf-foot-h" id="ft-shop">Products</p>
+        <a href="{{ '/products/' | relative_url }}">All universes</a>
+        <a href="{{ '/shop/' | relative_url }}">Browse the shop</a>
+        {%- for u in site.data.universes %}
+        <a href="{{ '/shop/?category=' | append: u.slug | relative_url }}">{{ u.title }}</a>
+        {%- endfor %}
+      </nav>
+
+      <nav class="sf-foot-col" aria-labelledby="ft-learn">
+        <p class="sf-foot-h" id="ft-learn">Learn</p>
+        <a href="{{ '/articles/' | relative_url }}">Articles</a>
+        <a href="{{ '/guides/' | relative_url }}">Guides</a>
+        <a href="{{ '/updates/' | relative_url }}">Updates</a>
+        <a href="{{ '/feed.xml' | relative_url }}">Feed</a>
+      </nav>
+
+      <nav class="sf-foot-col" aria-labelledby="ft-company">
+        <p class="sf-foot-h" id="ft-company">Company</p>
+        <a href="{{ '/about/' | relative_url }}">About</a>
+        <a href="{{ '/contact/' | relative_url }}">Contact</a>
+        <a href="{{ '/faq/' | relative_url }}">FAQ</a>
+        <a href="{{ site.institutional_url }}" rel="noopener noreferrer" target="_blank">Institutional hub</a>
+      </nav>
+
+      <nav class="sf-foot-col" aria-labelledby="ft-legal">
+        <p class="sf-foot-h" id="ft-legal">Legal</p>
+        <a href="{{ '/shop/terms-of-sale.html' | relative_url }}">Terms of Sale</a>
+        <a href="{{ '/shop/refund-policy.html' | relative_url }}">Refund Policy</a>
+        <a href="{{ '/shop/privacy.html' | relative_url }}">Privacy Policy</a>
+        <a href="{{ '/shop/licenses.html' | relative_url }}">Licensing</a>
+      </nav>
+    </div>
+
+    <div class="sf-foot-bot">
+      <p>© {{ site.time | date: "%Y" }} Sentinel Fortune LLC. All rights reserved.</p>
+      <p class="sf-foot-note">
+        Operational templates and general guidance. Not legal, financial, HR, safety, code,
+        permit, or regulatory advice. This site is informational and is not an offer to sell
+        securities, investments or financial products.
+      </p>
+    </div>
   </div>
 </footer>

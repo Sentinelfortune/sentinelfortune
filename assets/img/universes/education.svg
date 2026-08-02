@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" width="400" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1530"/><stop offset="1" stop-color="#060a18"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f5d980"/><stop offset="0.5" stop-color="#c8a84b"/><stop offset="1" stop-color="#9a7f2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <title>Education and Learning — an open book beneath an arc of marked progress</title>
+  <path d="M60 60 Q200 14 340 60" fill="none" stroke="url(#gold)" stroke-width="1.4" stroke-opacity=".45" stroke-dasharray="3 7"/>
+  <g fill="url(#gold)"><circle cx="60" cy="60" r="4"/><circle cx="200" cy="31" r="4"/><circle cx="340" cy="60" r="4"/></g>
+  <g fill="none" stroke="url(#gold)" stroke-width="1.8" stroke-linejoin="round">
+    <path d="M200 128v112"/>
+    <path d="M200 128q-52-26-104-14v112q52-12 104 14z"/>
+    <path d="M200 128q52-26 104-14v112q-52-12-104 14z"/>
+  </g>
+  <g stroke="#c8a84b" stroke-width="1.2" stroke-opacity=".4" stroke-linecap="round">
+    <path d="M118 152h58M118 172h58M118 192h44M224 152h58M224 172h58M224 192h44"/>
+  </g>
+  <rect x="0.5" y="0.5" width="399" height="299" fill="none" stroke="#c8a84b" stroke-opacity=".22"/>
+</svg>

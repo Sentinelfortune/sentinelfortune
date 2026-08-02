@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
   <meta name="theme-color" content="#03060e"/>
   <title>S.5 JUMP: ASCENT</title>
+  <meta name="description" content="S.5 JUMP: ASCENT — a free browser game from Sentinel Fortune LLC. Climb five levels to reach The Threshold. No download and no account needed.">
+  <link rel="canonical" href="https://sentinelfortune.github.io/sentinelfortune/frontend/games/s5-ascent-lite/"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Sentinel Fortune LLC"/>
+  <meta property="og:title" content="S.5 JUMP: ASCENT — free browser game"/>
+  <meta property="og:description" content="A free browser game from Sentinel Fortune LLC. Climb five levels to reach The Threshold. No download and no account needed."/>
+  <meta property="og:url" content="https://sentinelfortune.github.io/sentinelfortune/frontend/games/s5-ascent-lite/"/>
+  <meta property="og:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://sentinelfortune.github.io/sentinelfortune/assets/img/favicon-32.png"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -96,14 +107,19 @@
       Unlock Full ASCENT to continue the climb.<br>
       Levels 6–20 await beyond the gate.
     </p>
-    <!-- IMPORTANT: Replace the href below with a real Stripe payment link before going live -->
-    <a href="https://buy.stripe.com/REPLACE_WITH_REAL_LINK"
-       id="btn-unlock"
-       class="btn-unlock"
-       target="_blank"
-       rel="noopener noreferrer">
-      Unlock Full ASCENT
-    </a>
+    <!-- The unlock is not on sale yet. This previously pointed at
+         a Stripe URL whose path was never filled in, which is a guaranteed
+         Stripe 404 — the player was sent to a broken checkout at the exact
+         moment they wanted to pay. No real payment link exists for this
+         product, and the homepage donation link is for something else and must
+         not be reused here. When a Stripe link exists, restore the <a> and
+         drop the notice below. -->
+    <p class="threshold-pending">
+      Levels 6&ndash;20 are still in production and are not on sale yet.
+      To hear when the full climb opens, follow the
+      <a href="/sentinelfortune/updates/">Updates</a>.
+    </p>
+    <a href="/sentinelfortune/shop/" class="btn-unlock">See what is available now</a>
     <button id="btn-restart-all" class="btn-secondary">Play Again</button>
   </div>
 

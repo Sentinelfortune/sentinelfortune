@@ -1,0 +1,98 @@
+---
+layout: page
+permalink: /products/
+wide: true
+kicker: "Product universes"
+title: "Digital products from Sentinel Fortune"
+summary: "Five universes cover everything Sentinel Fortune publishes. Each is a downloadable digital product — bought once, licensed to your business, delivered as a file."
+answer: "Sentinel Fortune LLC sells downloadable digital products across five categories: Business & Professional, Education & Learning, Books & Publishing, Spirituality & Reflection, and Software & Digital Tools. Every product is a one-time purchase with a licence attached, paid through Stripe and delivered as a private download link — no subscription, and no account to create."
+meta_title: "Digital products — toolkits, guides, books and tools"
+meta_description: "Browse Sentinel Fortune's five product universes: business toolkits, learning material, books, reflective writing, and downloadable digital tools. One-time purchase, licensed download."
+faq_heading: "Before you buy"
+faqs:
+  - q: "What do I actually receive?"
+    a: "A download link, sent to the email address used at checkout and also shown on the confirmation page. Every product lists its exact file formats and contents on its own product page before you pay."
+  - q: "Is this a subscription?"
+    a: "No. Every product is a single purchase. There is no recurring charge and no account to maintain."
+  - q: "How is payment handled?"
+    a: "Through Stripe. Card details are entered on Stripe's own checkout page and are never seen by, or stored on, this website."
+  - q: "Can I use a product across more than one business?"
+    a: "That depends on the licence attached to the product, which is stated on its product page. The default is a single-business licence. Multi-location, consultant and white-label licences exist for some products."
+  - q: "What if a product is not right for me?"
+    a: "Refunds on digital products are reviewed case by case. The Refund Policy sets out the terms, and each product page carries a summary of how it applies to that product."
+---
+
+<p>
+  Everything published here is a finished digital file — not a course platform, not a
+  membership, not software you have to keep paying for. You buy it, you download it, and
+  it is yours to use under the licence attached to it.
+</p>
+
+<p>
+  The five universes below are how the catalogue is organised. Pick one to see only its
+  products, or <a href="{{ '/shop/' | relative_url }}">browse everything at once</a>.
+</p>
+
+<div class="sf-universe-grid">
+  {%- for u in site.data.universes %}
+  <article class="sf-universe" id="{{ u.slug }}">
+    <a class="sf-universe-img" href="{{ '/shop/?category=' | append: u.slug | relative_url }}"
+       aria-label="Browse {{ u.title }} products">
+      <img src="{{ u.image | relative_url }}" alt="{{ u.image_alt }}"
+           width="400" height="300" loading="lazy" decoding="async">
+    </a>
+    <div class="sf-universe-body">
+      <h2><a href="{{ '/shop/?category=' | append: u.slug | relative_url }}">{{ u.title }}</a></h2>
+      <p class="sf-universe-blurb">{{ u.blurb }}</p>
+      <p class="sf-universe-kinds-label">Typically holds</p>
+      <ul class="sf-universe-kinds">
+        {%- for ex in u.examples %}
+        <li>{{ ex }}</li>
+        {%- endfor %}
+      </ul>
+      <a class="sf-btn sf-btn-line" href="{{ '/shop/?category=' | append: u.slug | relative_url }}">
+        Browse {{ u.title }}
+      </a>
+    </div>
+  </article>
+  {%- endfor %}
+</div>
+
+<h2>What every purchase includes</h2>
+
+<table class="sf-table">
+  <caption class="sf-sr">What is included with every Sentinel Fortune digital product</caption>
+  <thead>
+    <tr><th scope="col">Included</th><th scope="col">Detail</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">The files</th><td>Every deliverable listed on the product page, in the formats it states.</td></tr>
+    <tr><th scope="row">A licence</th><td>Named on the product page. Single-business by default.</td></tr>
+    <tr><th scope="row">A private download link</th><td>Time-limited and download-limited. Emailed and shown on screen after payment.</td></tr>
+    <tr><th scope="row">Free updates to that version</th><td>Corrections to the version you bought, at the same link while it is valid.</td></tr>
+  </tbody>
+</table>
+
+<h2>What is not included</h2>
+
+<ul>
+  <li>Professional advice of any kind — legal, financial, tax, HR, insurance, safety, regulatory, code, permit or licensing.</li>
+  <li>Software as a service, hosting, or anything requiring an ongoing subscription.</li>
+  <li>Done-for-you implementation. These are materials you apply to your own business.</li>
+</ul>
+
+<p>
+  If you need something adapted to your organisation rather than bought off the shelf,
+  <a href="{{ '/contact/' | relative_url }}">get in touch</a> and describe what you need.
+</p>
+
+<h2>Where to start</h2>
+
+<p>
+  If you are not sure a product is for you, read first. The
+  <a href="{{ '/guides/' | relative_url }}">Guides</a> cover how to choose and apply this
+  kind of material, the <a href="{{ '/articles/' | relative_url }}">Articles</a> go deeper
+  into the operational thinking behind it, and the
+  <a href="{{ '/updates/' | relative_url }}">Updates</a> are short notes on single ideas.
+  All of it is free and none of it requires an email address.
+</p>

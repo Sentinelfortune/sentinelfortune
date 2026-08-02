@@ -1,0 +1,30 @@
+{
+  "_comment": [
+    "The SF Broadcast episode list.",
+    "",
+    "This file is the single source of truth for the Broadcast player on the",
+    "homepage. It is EMPTY because no episode has been recorded and published",
+    "yet — there is not one audio file anywhere in this repository. The player",
+    "reads that empty list and renders an honest 'nothing published yet' state.",
+    "",
+    "To publish an episode:",
+    "  1. Put the audio file in  assets/audio/  (mp3 or m4a).",
+    "  2. Add an entry to `episodes` below.",
+    "  3. That is the whole process. Nothing else needs editing.",
+    "",
+    "Entry shape:",
+    "  id       stable identifier, e.g. \"e01\"",
+    "  title    episode title",
+    "  summary  one sentence",
+    "  src      path relative to the site root, e.g. \"/assets/audio/e01.mp3\"",
+    "  type     MIME type, e.g. \"audio/mpeg\" for mp3, \"audio/mp4\" for m4a",
+    "  date     ISO date, e.g. \"2026-08-02\"",
+    "",
+    "Duration is deliberately NOT a field: the browser reads the real duration",
+    "from the file itself. A hand-written duration is a number that can be",
+    "wrong, and the previous version of this player displayed exactly that —",
+    "three episode titles with invented run times and a progress bar counting",
+    "against a hardcoded number, while a synthesiser played tones underneath."
+  ],
+  "episodes": []
+}

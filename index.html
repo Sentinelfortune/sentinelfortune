@@ -9,8 +9,8 @@ title: "Sentinel Fortune LLC"
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="google-site-verification" content="2b6XG7v8mztLeJ62Xv_UtKaGCXLQfW5s9SRvuOR-Ufk" />
-<title>Sentinel Fortune LLC — Public Interface</title>
-<meta name="description" content="Sentinel Fortune LLC is a creative and systems-based ecosystem offering music, media, digital experiences, private learning, business masterclasses, intellectual property structures, licensing frameworks, and long-term creative systems.">
+<title>Sentinel Fortune LLC — Digital Products, Guides &amp; Tools</title>
+<meta name="description" content="Sentinel Fortune LLC publishes downloadable digital products — business toolkits, learning material, books, reflective writing and digital tools — plus free guides and articles on operational practice.">
 <meta name="robots" content="index,follow"/>
 <meta name="author" content="Sentinel Fortune LLC"/>
 <meta name="publisher" content="Sentinel Fortune LLC"/>
@@ -22,14 +22,20 @@ title: "Sentinel Fortune LLC"
 
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Sentinel Fortune LLC"/>
-<meta property="og:title" content="Sentinel Fortune LLC — Public Interface"/>
-<meta property="og:description" content="Public experience layer of Sentinel Fortune LLC: music, media, learning, business masterclasses, digital experiences, IP structures, licensing frameworks, and guided private access."/>
+<meta property="og:title" content="Sentinel Fortune LLC — Digital Products, Guides &amp; Tools"/>
+<meta property="og:description" content="Downloadable digital products across five universes, plus free guides and articles. One-time purchase, licensed download, secure Stripe checkout."/>
 <meta property="og:url" content="https://sentinelfortune.github.io/sentinelfortune/"/>
-<meta property="og:image" content="https://sentinelfortune.github.io/sentinelfortune/IMG_7098.jpeg"/>
+<meta property="og:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="The Sentinel Fortune LLC monogram, gold on navy"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Sentinel Fortune LLC — Public Interface"/>
-<meta name="twitter:description" content="Creative systems, private learning, business masterclasses, digital experiences, IP structures and licensing frameworks."/>
-<meta name="twitter:image" content="https://sentinelfortune.github.io/sentinelfortune/IMG_7098.jpeg"/>
+<meta name="twitter:title" content="Sentinel Fortune LLC — Digital Products, Guides &amp; Tools"/>
+<meta name="twitter:description" content="Downloadable digital products across five universes, plus free guides and articles."/>
+<meta name="twitter:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg"/>
+<link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/img/favicon-32.png' | relative_url }}"/>
+<link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/img/favicon-180.png' | relative_url }}"/>
+<link rel="alternate" type="application/atom+xml" title="Sentinel Fortune LLC" href="{{ '/feed.xml' | relative_url }}"/>
 
 <script type="application/ld+json">
 {
@@ -590,6 +596,161 @@ body > div[style*="position:fixed"] a:hover{
 .sig-empty{font-size:.82rem;color:var(--muted);margin-top:32px;font-style:italic}
 </style>
 
+
+<style>
+/* ═══ Commerce + content MVP sections ═══════════════════════════════════
+   Scoped to the new sections. Nothing above is restyled — the existing
+   institutional design is intact. */
+
+.univ-shop{padding:96px 0;background:#060a18;border-top:1px solid rgba(200,168,75,.14)}
+.us-grid{display:grid;gap:18px;margin-top:38px;
+  grid-template-columns:repeat(auto-fit,minmax(258px,1fr))}
+.us-card{display:flex;flex-direction:column;text-decoration:none;overflow:hidden;
+  background:#0d1530;border:1px solid rgba(200,168,75,.18);border-radius:12px;
+  transition:border-color .18s ease,transform .18s ease}
+.us-card:hover{border-color:rgba(200,168,75,.5);transform:translateY(-3px)}
+.us-img{display:block;line-height:0;background:#0a1128}
+/* width/height + aspect-ratio hold the box before the SVG paints, so the grid
+   never reflows under the reader. */
+.us-img img{width:100%;height:auto;aspect-ratio:4/3;display:block}
+.us-body{display:flex;flex-direction:column;flex:1;padding:20px 22px 24px}
+.us-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.24rem;color:#ede8e0;
+  line-height:1.25;margin-bottom:9px;display:block}
+.us-blurb{color:#8a8578;font-size:.85rem;line-height:1.62;display:block;margin-bottom:16px}
+.us-go{margin-top:auto;color:#c8a84b;font-size:.76rem;letter-spacing:.12em;
+  text-transform:uppercase;display:block}
+.us-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+
+.feat{padding:92px 0;background:#04060f;border-top:1px solid rgba(200,168,75,.14)}
+.feat-grid{display:grid;gap:18px;margin-top:34px;
+  grid-template-columns:repeat(auto-fit,minmax(272px,1fr))}
+.feat-state{grid-column:1/-1;color:#8a8578;font-size:.9rem;line-height:1.7;
+  border:1px solid rgba(200,168,75,.18);border-radius:10px;padding:26px 28px;background:#0a1128}
+.feat-state strong{display:block;color:#ede8e0;font-size:1rem;margin-bottom:7px;font-weight:400}
+.feat-state a{color:#c8a84b}
+.fp-card{display:flex;flex-direction:column;overflow:hidden;background:#0d1530;
+  border:1px solid rgba(200,168,75,.18);border-radius:12px}
+.fp-cover{display:block;line-height:0;background:#0a1128;aspect-ratio:4/3;position:relative}
+.fp-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.fp-nocover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',Georgia,serif;font-size:1.9rem;letter-spacing:.16em;color:rgba(200,168,75,.26)}
+.fp-body{display:flex;flex-direction:column;flex:1;padding:20px 22px 24px}
+.fp-cat{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:#c8a84b;margin-bottom:9px}
+.fp-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.2rem;color:#ede8e0;
+  line-height:1.28;margin-bottom:8px}
+.fp-title a{color:inherit;text-decoration:none}
+.fp-title a:hover{color:#f5d980}
+.fp-desc{color:#8a8578;font-size:.84rem;line-height:1.6;margin-bottom:14px}
+.fp-price{color:#f5d980;font-size:1rem;margin-bottom:16px;font-family:'Cormorant Garamond',Georgia,serif}
+.fp-btn{margin-top:auto;align-self:flex-start}
+.feat-actions{margin-top:32px}
+
+.trust{padding:92px 0;background:#060a18;border-top:1px solid rgba(200,168,75,.14)}
+.trust-grid{display:grid;gap:1px;margin-top:38px;background:rgba(200,168,75,.14);
+  border:1px solid rgba(200,168,75,.14);border-radius:12px;overflow:hidden;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.trust-item{background:#0a1128;padding:28px 26px}
+.trust-icon{color:#c8a84b;font-size:1.15rem;margin-bottom:12px}
+.trust-item h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:1.12rem;
+  color:#ede8e0;margin-bottom:9px;line-height:1.3}
+.trust-item p{color:#8a8578;font-size:.85rem;line-height:1.66}
+.trust-item a{color:#c8a84b}
+
+.hfaq{padding:92px 0;background:#04060f;border-top:1px solid rgba(200,168,75,.14)}
+.hfaq-list{margin-top:34px;max-width:78ch}
+.hfaq-list dt{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.14rem;color:#ede8e0;
+  line-height:1.35;margin-top:26px;padding-top:22px;border-top:1px solid rgba(200,168,75,.13)}
+.hfaq-list dt:first-child{margin-top:0;padding-top:0;border-top:0}
+.hfaq-list dd{color:#8a8578;font-size:.89rem;line-height:1.72;margin-top:9px}
+.hfaq-more{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}
+
+.hnews{padding:92px 0;background:#060a18;border-top:1px solid rgba(200,168,75,.14)}
+.hnews-card{max-width:660px;margin:0 auto;text-align:center;padding:44px 34px;
+  background:#0a1128;border:1px solid rgba(200,168,75,.22);border-radius:14px}
+.hnews-h{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;
+  font-size:clamp(1.5rem,3.2vw,2.1rem);color:#ede8e0;line-height:1.2;margin:12px 0 14px}
+.hnews-p{color:#8a8578;font-size:.92rem;line-height:1.72;max-width:52ch;margin:0 auto 24px}
+.hnews-btns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.hnews-note{color:#565248;font-size:.76rem;margin-top:18px}
+
+/* Broadcast player — real <audio>, or an honest empty state. */
+.bc-loading,.bc-note{color:#8a8578;font-size:.82rem;line-height:1.66}
+.bc-note strong{display:block;color:#ede8e0;font-size:.92rem;margin-bottom:6px;font-weight:400}
+.bc-note a{color:#c8a84b}
+.bc-row{margin-top:12px}
+.bc-audio{width:100%;margin:8px 0 4px;height:36px}
+.bc-err{color:#e0736a;font-size:.76rem;line-height:1.5;margin-bottom:10px}
+
+/* Footer columns */
+.footer-cols{display:grid;gap:26px;grid-template-columns:repeat(auto-fit,minmax(136px,1fr));
+  align-items:start}
+.fcol{display:flex;flex-direction:column;gap:8px}
+.fcol-h{font-family:'Cinzel',Georgia,serif;font-size:.6rem;letter-spacing:.22em;
+  text-transform:uppercase;color:#c8a84b;margin-bottom:3px}
+.fcol a{font-size:.78rem;line-height:1.4}
+
+@media (max-width:640px){
+  .univ-shop,.feat,.trust,.hfaq,.hnews{padding:64px 0}
+  .trust-item{padding:22px 20px}
+  .hnews-card{padding:32px 22px}
+  .us-actions .btn,.hfaq-more .btn,.hnews-btns .btn{flex:1 1 100%;text-align:center}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .us-card{transition:none}
+  .us-card:hover{transform:none}
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "{{ '/#organization' | absolute_url }}",
+      "name": "Sentinel Fortune LLC",
+      "url": "{{ '/' | absolute_url }}",
+      "email": "{{ site.org_email }}",
+      "logo": "{{ '/assets/img/sf-logo-256.png' | absolute_url }}",
+      "image": "{{ '/assets/img/sf-og.jpg' | absolute_url }}",
+      "description": {{ site.description | jsonify }},
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "{{ site.org_email }}",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ '/#website' | absolute_url }}",
+      "url": "{{ '/' | absolute_url }}",
+      "name": "Sentinel Fortune LLC",
+      "publisher": { "@id": "{{ '/#organization' | absolute_url }}" },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "{{ '/#faq' | absolute_url }}",
+      "mainEntity": [
+        { "@type": "Question", "name": "Do I need an account to buy?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Checkout runs through Stripe and delivery goes to the email address you enter there. Nothing to create, nothing to log into afterwards." } },
+        { "@type": "Question", "name": "How do I receive what I bought?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A private download link appears on the confirmation page immediately after payment and is emailed to the address used at checkout." } },
+        { "@type": "Question", "name": "What happens if the download link expires?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Email us and it is reissued. Links are time-limited and download-limited for security, not to cut a purchase short." } },
+        { "@type": "Question", "name": "Is this a subscription?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Every product is a single purchase with no recurring charge and nothing to renew." } },
+        { "@type": "Question", "name": "Can I use a product across several businesses?",
+          "acceptedAnswer": { "@type": "Answer", "text": "That depends on the licence named on the product page. Single-business is the default; multi-location, consultant and white-label licences exist for some products." } },
+        { "@type": "Question", "name": "Is any of this professional advice?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Everything published is operational and general. It is not legal, financial, tax, HR, insurance, safety, regulatory, code, permit or licensing advice, and it does not replace a professional licensed in your jurisdiction." } }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -619,15 +780,14 @@ body > div[style*="position:fixed"] a:hover{
       <span style="font-family:var(--ff2);font-size:13px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;background:linear-gradient(135deg,#f5d980,#c8a84b 50%,#e8c86a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">SENTINEL FORTUNE LLC</span>
     </div>
     <nav class="hdr-nav">
-      <a href="#about"   class="hdr-a">About</a>
+      <a href="{{ '/products/' | relative_url }}" class="hdr-a">Products</a>
+      <a href="{{ '/shop/' | relative_url }}" class="hdr-a">Shop</a>
+      <a href="{{ '/guides/' | relative_url }}" class="hdr-a">Guides</a>
+      <a href="{{ '/articles/' | relative_url }}" class="hdr-a">Articles</a>
+      <a href="{{ '/updates/' | relative_url }}" class="hdr-a">Updates</a>
       <a href="#xp"      class="hdr-a">Experience</a>
-      <a href="#universe" class="hdr-a">Universe</a>
-      <a href="#signals" class="hdr-a">Signals</a>
-      <a href="articles/" class="hdr-a">Articles</a>
-      <a href="guides/" class="hdr-a">Guides</a>
-      <a href="shop/index.html" class="hdr-a">Shop</a>
-      <a href="#gate"    class="hdr-a">Access</a>
-      <a href="#contact" class="hdr-a">Contact</a>
+      <a href="{{ '/about/' | relative_url }}" class="hdr-a">About</a>
+      <a href="{{ '/contact/' | relative_url }}" class="hdr-a">Contact</a>
     </nav>
     <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="hdr-cta">Enter Private Access</a>
     <button class="burger" id="burger" aria-label="Menu">
@@ -635,15 +795,16 @@ body > div[style*="position:fixed"] a:hover{
     </button>
   </div>
   <div class="mob-nav" id="mobNav">
-    <a href="#about"    class="mob-a">About</a>
+    <a href="{{ '/products/' | relative_url }}" class="mob-a">Products</a>
+    <a href="{{ '/shop/' | relative_url }}" class="mob-a">Shop</a>
+    <a href="{{ '/guides/' | relative_url }}" class="mob-a">Guides</a>
+    <a href="{{ '/articles/' | relative_url }}" class="mob-a">Articles</a>
+    <a href="{{ '/updates/' | relative_url }}" class="mob-a">Updates</a>
     <a href="#xp"       class="mob-a">Experience</a>
     <a href="#universe" class="mob-a">Universe</a>
-    <a href="#signals"  class="mob-a">Signals</a>
-    <a href="articles/" class="mob-a">Articles</a>
-    <a href="guides/" class="mob-a">Guides</a>
-    <a href="shop/index.html" class="mob-a">Shop</a>
-    <a href="#gate"     class="mob-a">Access</a>
-    <a href="#contact"  class="mob-a">Contact</a>
+    <a href="{{ '/about/' | relative_url }}" class="mob-a">About</a>
+    <a href="{{ '/faq/' | relative_url }}" class="mob-a">FAQ</a>
+    <a href="{{ '/contact/' | relative_url }}" class="mob-a">Contact</a>
     <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="mob-cta">Enter Private Access</a>
   </div>
 </header>
@@ -658,19 +819,25 @@ body > div[style*="position:fixed"] a:hover{
   <div class="orb orb2"></div>
   <div class="hero-content">
 
-<div class="hero-logo" style="margin-bottom:40px; text-align:center;">
-  <img src="./IMG_7098.jpeg" alt="Sentinel Fortune Logo" style="width:150px; border-radius:12px;">
+<div class="hero-logo" style="margin-bottom:36px; text-align:center;">
+  <picture>
+    <source srcset="{{ '/assets/img/sf-logo-256.webp' | relative_url }} 1x, {{ '/assets/img/sf-logo-512.webp' | relative_url }} 2x" type="image/webp">
+    <img src="{{ '/assets/img/sf-logo-256.png' | relative_url }}"
+         alt="Sentinel Fortune LLC" width="150" height="150"
+         fetchpriority="high" decoding="async"
+         style="width:150px;height:150px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.45)">
+  </picture>
 </div>
 
 
 <span class="hero-pre" id="heroPre">Sentinel Fortune LLC</span>
 <h1 class="hero-h">We don't chase.<br/><em class="hero-em">We are.</em></h1>
-<p class="hero-sub">A connected house of music, media, systems, learning, lifestyle and digital experiences.</p>
+<p class="hero-sub">Downloadable digital products — business toolkits, learning material, books, reflective writing and digital tools. Bought once, licensed to you, delivered as a file.</p>
 <p class="hero-w">Publicly visible in selected form · Privately experienced in deeper corridors.</p>
 
 <div class="hero-btns">
-  <a href="#xp" class="btn btn-line">Experience the House</a>
-  <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="btn btn-gold">Enter Private Access</a>
+  <a href="{{ '/products/' | relative_url }}" class="btn btn-gold">Explore Products</a>
+  <a href="{{ '/guides/' | relative_url }}" class="btn btn-line">Read the Guides</a>
 </div>
 <p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);margin-top:20px;text-transform:uppercase">
   Access begins through the verified Sentinel Fortune Telegram gateway. Stripe payment verification is required before secured platform access is granted.
@@ -739,6 +906,111 @@ body > div[style*="position:fixed"] a:hover{
   </div>
 </section>
 
+<!-- ═══ PRODUCT UNIVERSES ═══════════════════════════════════════════════
+     Commerce, placed directly after "who we are" so a first-time visitor
+     meets what is for sale before the atmospheric sections. Content comes
+     from _data/universes.yml — the same file the /products/ page and the
+     shop footer read, so the five categories cannot drift apart. -->
+
+<section class="univ-shop reveal" id="shop-universes">
+  <div class="wrap">
+    <div class="stag">What we publish</div>
+    <h2 class="sh">Five universes.<br/>One way to buy.</h2>
+    <p class="sp">Every product is a finished file. Bought once, licensed to your business,
+      delivered as a private download. No subscription, no account, nothing to renew.</p>
+
+    <div class="us-grid">
+      {%- for u in site.data.universes %}
+      <a class="us-card" href="{{ '/shop/?category=' | append: u.slug | relative_url }}">
+        <span class="us-img">
+          <img src="{{ u.image | relative_url }}" alt="{{ u.image_alt }}"
+               width="400" height="300" loading="lazy" decoding="async">
+        </span>
+        <span class="us-body">
+          <span class="us-title">{{ u.title }}</span>
+          <span class="us-blurb">{{ u.blurb }}</span>
+          <span class="us-go">Browse →</span>
+        </span>
+      </a>
+      {%- endfor %}
+    </div>
+
+    <div class="us-actions">
+      <a href="{{ '/products/' | relative_url }}" class="btn btn-line">What each universe covers</a>
+      <a href="{{ '/shop/' | relative_url }}" class="btn btn-gold">Browse the full catalogue</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURED PRODUCTS ════════════════════════════════════════════════
+     Filled at runtime from the Shop Worker's public catalogue. There is no
+     hardcoded product anywhere in this section: if nothing is published, it
+     says so. Inventory is never invented to fill a grid. -->
+
+<section class="feat reveal" id="featured">
+  <div class="wrap">
+    <div class="stag">From the shop</div>
+    <h2 class="sh">Available now</h2>
+    <div class="feat-grid" id="featGrid">
+      <p class="feat-state" id="featState">Loading the catalogue…</p>
+    </div>
+    <div class="feat-actions" id="featActions" hidden>
+      <a href="{{ '/shop/' | relative_url }}" class="btn btn-line">See everything in the shop</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY BUY HERE ═════════════════════════════════════════════════════
+     Trust signals only. Every row is a verifiable fact about how the shop
+     actually works — not a testimonial, a rating, a customer count or a
+     savings figure. None of those exist, so none appear. -->
+
+<section class="trust reveal" id="trust">
+  <div class="wrap">
+    <div class="stag">How this works</div>
+    <h2 class="sh">What you get, stated plainly</h2>
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">◈</div>
+        <h3>One purchase, one licence</h3>
+        <p>No subscription and no account. The licence is named on the product page
+          before you pay — single-business by default.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">⬡</div>
+        <h3>Stripe handles payment</h3>
+        <p>Card details are entered on Stripe's own checkout and are never seen by,
+          transmitted through, or stored on this website.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">⊕</div>
+        <h3>Private, time-limited delivery</h3>
+        <p>A download link is emailed and shown on screen straight after payment.
+          Expired links are reissued — a purchase does not stop being yours.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">▣</div>
+        <h3>Contents listed before you pay</h3>
+        <p>Every product page states its formats, its full contents and what is
+          explicitly not included.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">◎</div>
+        <h3>The thinking is free</h3>
+        <p>The <a href="{{ '/guides/' | relative_url }}">guides</a> and
+          <a href="{{ '/articles/' | relative_url }}">articles</a> are open, ungated,
+          and need no email address.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">⟁</div>
+        <h3>No invented results</h3>
+        <p>You will not find testimonials, ratings or savings figures here. None have
+          been substantiated, so none are published.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ③ LIVE EXPERIENCES -->
 
 <section class="xp" id="xp">
@@ -770,17 +1042,17 @@ body > div[style*="position:fixed"] a:hover{
   <div class="xp-card reveal" style="transition-delay:.08s">
     <div class="xp-tag">🎵 Audio · Origin Echo</div>
     <div class="xp-title">Sound Experience</div>
-    <div class="xp-desc">An ambient sonic world generated live in your browser.</div>
+    <div class="xp-desc">Tones generated live in your browser by the Web Audio API — not a recording, nothing to download.</div>
     <div class="audio-scene">
       <canvas id="audioViz" width="380" height="80"></canvas>
       <div class="audio-ctrl">
-        <button class="a-btn" id="aPlay">▶</button>
+        <button class="a-btn" id="aPlay" type="button" aria-label="Play the generated ambient sound">▶</button>
         <div class="a-bars" id="aBars">
           <div class="ab"></div><div class="ab"></div><div class="ab"></div>
           <div class="ab"></div><div class="ab"></div><div class="ab"></div>
           <div class="ab"></div><div class="ab"></div>
         </div>
-        <button class="a-btn" id="aStop">■</button>
+        <button class="a-btn" id="aStop" type="button" aria-label="Stop the ambient sound">■</button>
       </div>
       <div class="a-label">Origin Echo — Sentinel Fortune</div>
     </div>
@@ -804,31 +1076,22 @@ body > div[style*="position:fixed"] a:hover{
     </div>
   </div>
 
-  <!-- PODCAST -->
+  <!-- BROADCAST
+       Was: three episode titles with invented run times ("Preview · 2:30") and
+       a progress bar counting to a hardcoded number, over a Web Audio drone.
+       No audio file existed then and none exists now. That is fabricated
+       content, so it is gone.
+
+       What replaces it is a real <audio> player driven by data/broadcast.json.
+       While that list is empty it says so plainly. Drop an mp3 in
+       assets/audio/, add one JSON entry, and this becomes a working player
+       with no further code changes. -->
   <div class="xp-card reveal" style="transition-delay:.24s">
-    <div class="xp-tag">🎙 Podcast · The SF Broadcast</div>
-    <div class="xp-title">Listen Now</div>
-    <div class="xp-desc">Conversations on creative systems, culture, and building in silence.</div>
-    <div class="pod-list">
-      <div class="pod-row" data-ep="0">
-        <div class="pod-ep">E01</div>
-        <div class="pod-meta"><div class="pod-name">Building the Invisible House</div><div class="pod-dur">Preview · 2:30</div></div>
-        <button class="pod-btn" data-ep="0">▶</button>
-      </div>
-      <div class="pod-row" data-ep="1">
-        <div class="pod-ep">E02</div>
-        <div class="pod-meta"><div class="pod-name">Sound as Architecture</div><div class="pod-dur">Preview · 1:45</div></div>
-        <button class="pod-btn" data-ep="1">▶</button>
-      </div>
-      <div class="pod-row" data-ep="2">
-        <div class="pod-ep">E03</div>
-        <div class="pod-meta"><div class="pod-name">Access Is a Doorway</div><div class="pod-dur">Preview · 3:10</div></div>
-        <button class="pod-btn" data-ep="2">▶</button>
-      </div>
-      <div class="pod-prog">
-        <div class="pod-bar"><div class="pod-fill" id="podFill"></div></div>
-        <span class="pod-t" id="podTime">0:00</span>
-      </div>
+    <div class="xp-tag">🎙 Audio · The SF Broadcast</div>
+    <div class="xp-title">Recorded Episodes</div>
+    <div class="xp-desc">Conversations on operational systems and building carefully.</div>
+    <div class="pod-list" id="bcList">
+      <p class="bc-loading" id="bcLoading">Checking for published episodes…</p>
     </div>
   </div>
 
@@ -922,18 +1185,18 @@ Entry is aligned with the corresponding experience level.
 <section class="sig" id="signals">
   <div class="wrap">
 
-    <div class="stag reveal">Public Signals</div>
+    <div class="stag reveal">Live dispatches</div>
 
     <h2 class="sh reveal">Latest Dispatches</h2>
 
     <p class="sp reveal" style="max-width:60ch">
-      Selected insights and dispatches from the Sentinel Fortune system.
-      Published after editorial review. Updated periodically.
+      Live dispatches from the Sentinel Fortune system, published after editorial review.
+      For the written Updates, Articles and Guides, see the library below.
     </p>
 
     <div class="sig-grid" id="sfSignalsGrid" style="display:none"></div>
     <p class="sig-empty" id="sfSignalsEmpty" style="display:none">
-      No signals published yet — check back shortly.
+      No live dispatches right now — see the library below.
     </p>
 
   </div>
@@ -999,6 +1262,72 @@ Entry is aligned with the corresponding experience level.
 
 
 <!-- ⑧ INSTITUTIONAL -->
+
+<!-- ═══ FAQ ══════════════════════════════════════════════════════════════
+     These same six questions drive the FAQPage schema in the head. The
+     schema is generated from the visible list, so it can never describe
+     questions a visitor cannot read on the page. -->
+
+<section class="hfaq reveal" id="faq">
+  <div class="wrap">
+    <div class="stag">Before you buy</div>
+    <h2 class="sh">Questions people actually ask</h2>
+    <dl class="hfaq-list">
+      <dt>Do I need an account to buy?</dt>
+      <dd>No. Checkout runs through Stripe and delivery goes to the email address you enter
+        there. Nothing to create, nothing to log into afterwards.</dd>
+
+      <dt>How do I receive what I bought?</dt>
+      <dd>A private download link appears on the confirmation page immediately after payment
+        and is emailed to the address used at checkout.</dd>
+
+      <dt>What happens if the download link expires?</dt>
+      <dd>Email us and it is reissued. Links are time-limited and download-limited for
+        security, not to cut a purchase short.</dd>
+
+      <dt>Is this a subscription?</dt>
+      <dd>No. Every product is a single purchase with no recurring charge and nothing to renew.</dd>
+
+      <dt>Can I use a product across several businesses?</dt>
+      <dd>That depends on the licence named on the product page. Single-business is the
+        default; multi-location, consultant and white-label licences exist for some products.</dd>
+
+      <dt>Is any of this professional advice?</dt>
+      <dd>No. Everything published is operational and general. It is not legal, financial, tax,
+        HR, insurance, safety, regulatory, code, permit or licensing advice, and it does not
+        replace a professional licensed in your jurisdiction.</dd>
+    </dl>
+    <div class="hfaq-more">
+      <a href="{{ '/faq/' | relative_url }}" class="btn btn-line">Full FAQ</a>
+      <a href="{{ '/contact/' | relative_url }}" class="btn btn-line">Ask us directly</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEWSLETTER ═══════════════════════════════════════════════════════
+     No email backend exists yet, so there is no form here to fill in. This
+     states that plainly and points at the Atom feed, which IS live. It never
+     collects an address it cannot mail, and never confirms a subscription
+     that did not happen. See _includes/newsletter.html — setting
+     `newsletter_endpoint` in _config.yml is what turns a real form on. -->
+
+<section class="hnews reveal" id="newsletter">
+  <div class="wrap">
+    <div class="hnews-card">
+      <div class="stag" style="justify-content:center">Stay current</div>
+      <h2 class="hnews-h">New products, guides and updates</h2>
+      <p class="hnews-p">
+        Email signup is not open yet — the delivery system is still being set up, and we
+        would rather say so than collect addresses we cannot mail.
+      </p>
+      <div class="hnews-btns">
+        <a href="{{ '/feed.xml' | relative_url }}" class="btn btn-gold">Subscribe via feed</a>
+        <a href="mailto:contact@sentinelfortune.com?subject=Newsletter" class="btn btn-line">Ask to be added by hand</a>
+      </div>
+      <p class="hnews-note">The Atom feed is live now and carries every article, guide and update.</p>
+    </div>
+  </div>
+</section>
 
 <section class="inst" id="contact">
   <div class="wrap">
@@ -1203,13 +1532,43 @@ designed through systems, knowledge frameworks, and long-term creative structure
         </div>
         <a href="mailto:contact@sentinelfortune.com" class="footer-mail">contact@sentinelfortune.com</a>
       </div>
-      <nav class="footer-nav">
-        <a href="#about">About</a>
-        <a href="#xp">Experiences</a>
-        <a href="#universe">Universe</a>
-        <a href="#gate">Access</a>
-        <a href="https://sentinelfortune.com" target="_blank" rel="noopener noreferrer">Institutional Hub</a>
-        <a href="mailto:contact@sentinelfortune.com">Contact</a>
+      <nav class="footer-nav footer-cols" aria-label="Footer">
+        <div class="fcol">
+          <p class="fcol-h">Products</p>
+          <a href="{{ '/products/' | relative_url }}">All universes</a>
+          <a href="{{ '/shop/' | relative_url }}">Browse the shop</a>
+          {%- for u in site.data.universes %}
+          <a href="{{ '/shop/?category=' | append: u.slug | relative_url }}">{{ u.title }}</a>
+          {%- endfor %}
+        </div>
+        <div class="fcol">
+          <p class="fcol-h">Learn</p>
+          <a href="{{ '/guides/' | relative_url }}">Guides</a>
+          <a href="{{ '/articles/' | relative_url }}">Articles</a>
+          <a href="{{ '/updates/' | relative_url }}">Updates</a>
+          <a href="{{ '/feed.xml' | relative_url }}">Feed</a>
+        </div>
+        <div class="fcol">
+          <p class="fcol-h">Company</p>
+          <a href="{{ '/about/' | relative_url }}">About</a>
+          <a href="{{ '/contact/' | relative_url }}">Contact</a>
+          <a href="{{ '/faq/' | relative_url }}">FAQ</a>
+          <a href="https://sentinelfortune.com" target="_blank" rel="noopener noreferrer">Institutional Hub</a>
+        </div>
+        <div class="fcol">
+          <p class="fcol-h">Legal</p>
+          <a href="{{ '/shop/terms-of-sale.html' | relative_url }}">Terms of Sale</a>
+          <a href="{{ '/shop/refund-policy.html' | relative_url }}">Refund Policy</a>
+          <a href="{{ '/shop/privacy.html' | relative_url }}">Privacy Policy</a>
+          <a href="{{ '/shop/licenses.html' | relative_url }}">Licensing</a>
+        </div>
+        <div class="fcol">
+          <p class="fcol-h">Experience</p>
+          <a href="#xp">Live experiences</a>
+          <a href="#universe">Public universe</a>
+          <a href="#gate">Private access</a>
+          <a href="{{ '/frontend/games/s5-ascent-lite/' | relative_url }}">S.5 Ascent</a>
+        </div>
       </nav>
     </div>
     <div class="footer-bot">
@@ -1219,8 +1578,24 @@ designed through systems, knowledge frameworks, and long-term creative structure
   </div>
 </footer>
 
+<script src="{{ '/shop/shop-config.js' | relative_url }}"></script>
 <script>
 "use strict";
+
+/* Site root. The homepage is served from /sentinelfortune/ on GitHub Pages but
+   from / on a local `jekyll serve --baseurl ""`, so any path this script builds
+   at runtime has to be prefixed with whatever Jekyll knows the baseurl to be.
+   Hardcoding "/sentinelfortune" is what previously made the S.5 game link work
+   in production and 404 everywhere else. */
+var BASEURL = "{{ site.baseurl }}";
+
+/* HTML-escape for any value interpolated into innerHTML. */
+function esc(v) {
+  var d = document.createElement("div");
+  d.textContent = String(v == null ? "" : v);
+  return d.innerHTML;
+}
+
 // ─── Cursor ───────────────────────────────────────────
 var cur=document.getElementById("cur"),cur2=document.getElementById("cur2"),cx=0,cy=0,c2x=0,c2y=0;
 if(cur&&cur2){
@@ -1341,14 +1716,154 @@ if(vp&&vm){
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&vm.style.display==="flex"){vm.style.display="none";document.body.style.overflow="";}});
 }
 
-// ─── PODCAST ─────────────────────────────────────────
-var pCtx=null,pOscs2=[],pPlaying=false,pEp=-1,pTimer2=null,pElapsed=0;
-var pDurs=[150,105,190];
-var pFill=document.getElementById("podFill"),pTime=document.getElementById("podTime");
-function pStop(){pOscs2.forEach(function(o){try{o.stop();}catch(e){}});pOscs2=[];pPlaying=false;if(pCtx){pCtx.close();pCtx=null;}clearInterval(pTimer2);document.querySelectorAll(".pod-row").forEach(function(r){r.classList.remove("active");});document.querySelectorAll(".pod-btn").forEach(function(b){b.textContent="▶";});}
-function pStart(idx){pStop();pEp=idx;pElapsed=0;pPlaying=true;var rows=document.querySelectorAll(".pod-row");var btns=document.querySelectorAll(".pod-btn");if(rows[idx])rows[idx].classList.add("active");if(btns[idx])btns[idx].textContent="■";try{pCtx=new(window.AudioContext||window.webkitAudioContext)();var g=pCtx.createGain();g.gain.value=.055;g.connect(pCtx.destination);[[55,110,220],[82.5,165,330],[65,130,195,260]][idx].forEach(function(f,i){var o=pCtx.createOscillator();o.type=i===0?"sine":"triangle";o.frequency.value=f;var og=pCtx.createGain();og.gain.value=i===0?.38:.13;o.connect(og);og.connect(g);o.start();pOscs2.push(o);});}catch(e){}var dur=pDurs[idx]||120;pTimer2=setInterval(function(){pElapsed++;var pct=Math.min((pElapsed/dur)*100,100);if(pFill)pFill.style.width=pct+"%";var m=Math.floor(pElapsed/60),s=pElapsed%60;if(pTime)pTime.textContent=m+":"+(s<10?"0":"")+s;if(pElapsed>=dur){pStop();if(pFill)pFill.style.width="0%";if(pTime)pTime.textContent="0:00";}},1000);}
-document.querySelectorAll(".pod-row").forEach(function(row){row.addEventListener("click",function(){var idx=parseInt(row.getAttribute("data-ep"));if(pPlaying&&pEp===idx)pStop();else pStart(idx);});});
-document.querySelectorAll(".pod-btn").forEach(function(btn){btn.addEventListener("click",function(e){e.stopPropagation();var idx=parseInt(btn.getAttribute("data-ep"));if(pPlaying&&pEp===idx)pStop();else pStart(idx);});});
+// ─── FEATURED PRODUCTS ───────────────────────────────
+/* Pulls the real published catalogue from the Shop Worker. There is no
+   hardcoded product here and no fallback list: if the shop has nothing
+   published, this section says so. Inventory is never invented to fill a
+   grid.
+
+   SHOP_API_BASE comes from shop/shop-config.js, loaded just above. If that
+   file is missing the section degrades to the honest empty state rather than
+   throwing. */
+(function () {
+  var grid = document.getElementById("featGrid");
+  var state = document.getElementById("featState");
+  var actions = document.getElementById("featActions");
+  if (!grid || !state) return;
+
+  var base = (window.SHOP_API_BASE || "").replace(/\/$/, "");
+  var shopUrl = BASEURL + "/shop/";
+
+  function say(html) { grid.innerHTML = '<p class="feat-state">' + html + "</p>"; }
+
+  if (!base) {
+    say("<strong>The catalogue is not connected yet.</strong>" +
+        'Browse the <a href="' + shopUrl + '">shop</a> directly.');
+    return;
+  }
+
+  fetch(base + "/shop/products")
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (d) {
+      var products = (d && d.products) || [];
+
+      if (!products.length) {
+        say("<strong>No products are published yet.</strong>" +
+            "The catalogue opens as products are finished. Meanwhile the " +
+            '<a href="' + BASEURL + '/guides/">guides</a> and ' +
+            '<a href="' + BASEURL + '/articles/">articles</a> are free and need no account.');
+        return;
+      }
+
+      /* Three at most. A homepage strip is a taste of the catalogue, not a
+         second copy of it. */
+      grid.innerHTML = products.slice(0, 3).map(function (x) {
+        var href = shopUrl + "product.html?slug=" + encodeURIComponent(x.slug);
+        return (
+          '<article class="fp-card">' +
+            '<a class="fp-cover" href="' + href + '" tabindex="-1" aria-hidden="true">' +
+              (x.coverImageUrl
+                ? '<img src="' + esc(x.coverImageUrl) + '" alt="" loading="lazy" decoding="async" width="600" height="450">'
+                : '<span class="fp-nocover">SF</span>') +
+            "</a>" +
+            '<div class="fp-body">' +
+              '<div class="fp-cat">' + esc(x.category || "Digital product") + "</div>" +
+              '<h3 class="fp-title"><a href="' + href + '">' + esc(x.title) + "</a></h3>" +
+              '<p class="fp-desc">' + esc(x.shortDescription) + "</p>" +
+              (x.priceDisplay ? '<div class="fp-price">' + esc(x.priceDisplay) + "</div>" : "") +
+              '<a class="btn btn-line fp-btn" href="' + href + '">View product</a>' +
+            "</div>" +
+          "</article>"
+        );
+      }).join("");
+
+      if (actions && products.length > 3) actions.hidden = false;
+    })
+    .catch(function (err) {
+      console.warn("[featured] catalogue unavailable", err);
+      say("<strong>The catalogue is temporarily unavailable.</strong>" +
+          'Please try the <a href="' + shopUrl + '">shop</a> directly, or check back shortly.');
+    });
+})();
+
+// ─── BROADCAST ───────────────────────────────────────
+/* Real audio, or an honest empty state. Never a synthesiser pretending to be
+   an episode.
+
+   Every failure mode is surfaced rather than swallowed:
+     - manifest missing or unreadable -> says the list could not be loaded
+     - zero episodes                  -> says none are published yet
+     - a file that will not play      -> the <audio> element's own error
+                                         handler reports it on that row
+
+   Native <audio controls> is used on purpose. It is keyboard accessible,
+   screen-reader labelled and works on mobile without a custom control surface
+   that would have to reimplement all three. */
+(function () {
+  var list = document.getElementById("bcList");
+  if (!list) return;
+
+  function note(html) { list.innerHTML = '<p class="bc-note">' + html + "</p>"; }
+
+  fetch(BASEURL + "/data/broadcast.json", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (d) {
+      var eps = (d && d.episodes) || [];
+
+      if (!eps.length) {
+        note(
+          "<strong>No episodes are published yet.</strong>" +
+          "The Broadcast is still being recorded. Rather than show placeholder " +
+          'episodes, this stays empty until there is something real to play. ' +
+          '<a href="' + BASEURL + '/updates/">Updates</a> and the ' +
+          '<a href="' + BASEURL + '/feed.xml">feed</a> carry announcements.'
+        );
+        return;
+      }
+
+      list.innerHTML = eps.map(function (e, i) {
+        var id = "bc-" + (e.id || i);
+        return (
+          '<div class="pod-row bc-row">' +
+            '<div class="pod-ep">' + esc(e.id ? e.id.toUpperCase() : "E" + (i + 1)) + "</div>" +
+            '<div class="pod-meta">' +
+              '<div class="pod-name" id="' + id + '-t">' + esc(e.title) + "</div>" +
+              (e.summary ? '<div class="pod-dur">' + esc(e.summary) + "</div>" : "") +
+            "</div>" +
+          "</div>" +
+          '<audio class="bc-audio" controls preload="none" aria-labelledby="' + id + '-t">' +
+            '<source src="' + esc(e.src.indexOf("http") === 0 ? e.src : BASEURL + e.src) +
+              '" type="' + esc(e.type || "audio/mpeg") + '">' +
+            "Your browser cannot play audio. " +
+            '<a href="' + esc(e.src.indexOf("http") === 0 ? e.src : BASEURL + e.src) + '">Download the episode</a> instead.' +
+          "</audio>" +
+          '<p class="bc-err" id="' + id + '-e" hidden role="status"></p>'
+        );
+      }).join("");
+
+      /* A source that 404s or is the wrong codec fires `error` on the element.
+         Saying so beats a silent dead control. */
+      list.querySelectorAll(".bc-audio").forEach(function (a) {
+        a.addEventListener("error", function () {
+          var e = a.nextElementSibling;
+          if (e && e.classList.contains("bc-err")) {
+            e.hidden = false;
+            e.textContent = "This episode could not be loaded. Please report it to contact@sentinelfortune.com.";
+          }
+        }, true);
+      });
+    })
+    .catch(function (err) {
+      console.warn("[broadcast] manifest unavailable", err);
+      note("<strong>The episode list could not be loaded.</strong>Please try again shortly.");
+    });
+})();
 
 // ─── UNIVERSE CARDS ───────────────────────────────────
 var TG="https://t.me/sentinelfortune_bot";
@@ -1429,14 +1944,76 @@ if(logoInput){
 </script>
 
 
-<div style="position:fixed;left:20px;right:20px;bottom:24px;z-index:9999;text-align:center;">
-  <a href="/sentinelfortune/frontend/games/s5-ascent-lite/" 
-     style="display:inline-block;padding:14px 28px;border:1px solid #c8a84b;
-     color:#c8a84b;background:rgba(4,6,15,.92);text-decoration:none;
-     font-weight:700;letter-spacing:.12em;border-radius:10px;">
-    ENTER ASCENT
+<!-- S.5 ASCENT promo.
+     Was a position:fixed bar spanning left:20px to right:20px at the bottom of
+     every viewport, at z-index 9999, with no way to dismiss it. It sat on top
+     of the hero call-to-action buttons on desktop and covered page content all
+     the way down on mobile, and there was no close control.
+
+     Now: a corner chip that does not span the viewport, carries a close
+     button, and stays dismissed for the rest of the session. -->
+<div class="s5-chip" id="s5Chip" hidden>
+  <a class="s5-chip-link" href="{{ '/frontend/games/s5-ascent-lite/' | relative_url }}">
+    <span class="s5-chip-kicker">Free browser game</span>
+    <span class="s5-chip-title">Enter ASCENT</span>
   </a>
+  <button class="s5-chip-x" id="s5ChipX" type="button" aria-label="Dismiss the ASCENT promotion">&#10005;</button>
 </div>
+
+<style>
+/* `display:flex` below would otherwise override the `hidden` attribute's
+   user-agent `display:none`, so the chip would never actually dismiss. */
+.s5-chip[hidden]{display:none}
+.s5-chip{
+  position:fixed;right:18px;bottom:18px;z-index:900;
+  display:flex;align-items:stretch;gap:0;
+  background:rgba(4,6,15,.95);border:1px solid rgba(200,168,75,.55);
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 14px 40px rgba(0,0,0,.5);
+  max-width:calc(100vw - 36px);
+}
+.s5-chip-link{
+  display:flex;flex-direction:column;gap:2px;padding:11px 16px;
+  text-decoration:none;min-width:0;
+}
+.s5-chip-kicker{
+  font-family:'Cinzel',Georgia,serif;font-size:.54rem;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(200,168,75,.7);
+}
+.s5-chip-title{
+  font-size:.82rem;letter-spacing:.1em;color:#f5d980;font-weight:600;white-space:nowrap;
+}
+.s5-chip-link:hover .s5-chip-title{color:#fff}
+.s5-chip-x{
+  flex:none;width:38px;cursor:pointer;font-size:.72rem;line-height:1;
+  background:transparent;color:rgba(200,168,75,.65);
+  border:0;border-left:1px solid rgba(200,168,75,.28);
+}
+.s5-chip-x:hover{color:#f5d980;background:rgba(200,168,75,.1)}
+.s5-chip-x:focus-visible,.s5-chip-link:focus-visible{outline:2px solid #c8a84b;outline-offset:-2px}
+@media (max-width:520px){
+  .s5-chip{right:12px;left:12px;bottom:12px;max-width:none}
+  .s5-chip-link{flex:1}
+}
+@media print{.s5-chip{display:none}}
+</style>
+
+<script>
+(function () {
+  var chip = document.getElementById("s5Chip"), x = document.getElementById("s5ChipX");
+  if (!chip || !x) return;
+  var KEY = "sf-s5-chip-dismissed";
+  /* sessionStorage throws in some privacy modes; a promo chip is not worth an
+     exception, so every access is guarded. */
+  function stored() { try { return sessionStorage.getItem(KEY); } catch (e) { return null; } }
+  if (stored()) return;
+  chip.hidden = false;
+  x.addEventListener("click", function () {
+    chip.hidden = true;
+    try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+  });
+})();
+</script>
 
 
 <script>

@@ -18,13 +18,19 @@ advertised to a crawler.
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-{%- for c in site.collections %}{% if c.label != 'posts' %}
+{%- comment -%}
+  Explicit, not derived from site.collections: the signals collection is
+  published at /updates/, so a label-derived loop would advertise a URL that
+  does not exist.
+{%- endcomment -%}
+{%- assign hubs = "/products/,/articles/,/guides/,/updates/,/about/,/faq/,/contact/" | split: "," %}
+{%- for h in hubs %}
   <url>
-    <loc>{{ '/' | append: c.label | append: '/' | absolute_url }}</loc>
+    <loc>{{ h | absolute_url }}</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-{%- endif %}{% endfor %}
+{%- endfor %}
 {%- assign ready = site.signals | concat: site.articles | concat: site.guides | where: "status", "ready" -%}
 {%- for item in ready %}
   <url>
@@ -34,10 +40,21 @@ advertised to a crawler.
     <priority>0.7</priority>
   </url>
 {%- endfor %}
-{%- for p in site.pages %}{% if p.sitemap != false and p.url contains '/shop/' and p.url contains '.html' %}
+{%- comment -%}
+  The storefront's legal and support pages carry no front matter, so Jekyll
+  treats them as static files and they never appear in site.pages — a loop
+  over site.pages silently emitted nothing for them. Listed explicitly.
+
+  product.html, success.html and cancelled.html are omitted on purpose: they
+  render nothing without a query string, so indexing them would put three
+  empty pages in the index.
+{%- endcomment -%}
+{%- assign shop_pages = "licenses.html,refund-policy.html,terms-of-sale.html,privacy.html,contact.html" | split: "," %}
+{%- for sp in shop_pages %}
   <url>
-    <loc>{{ p.url | absolute_url }}</loc>
-    <priority>0.5</priority>
+    <loc>{{ '/shop/' | append: sp | absolute_url }}</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
   </url>
-{%- endif %}{% endfor %}
+{%- endfor %}
 </urlset>

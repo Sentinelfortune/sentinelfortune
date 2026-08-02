@@ -13,7 +13,7 @@ It is safe in a public repository, which is the point — the private publishing
 system, if one is ever built, consumes this same contract.
 
 Usage:
-  python3 scripts/new_content.py signal  "Title of the piece"
+  python3 scripts/new_content.py update  "Title of the piece"
   python3 scripts/new_content.py article "Title of the piece"
   python3 scripts/new_content.py guide   "Title of the piece"
 """
@@ -25,8 +25,12 @@ import sys
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
 
+# The folder is still `_signals` — only the public vocabulary changed. `update`
+# is the command to use; `signal` is kept as an undocumented alias so anything
+# already scripted against the old name keeps working.
 KINDS = {
-    "signal":  ("_signals",  "Signal", 3, "informational"),
+    "update":  ("_signals",  "Update", 3, "informational"),
+    "signal":  ("_signals",  "Update", 3, "informational"),
     "article": ("_articles", "Article", 8, "informational"),
     "guide":   ("_guides",   "Guide", 7, "commercial"),
 }
