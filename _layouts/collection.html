@@ -1,0 +1,27 @@
+---
+layout: base
+---
+<div class="sf-index">
+  <header class="sf-index-head">
+    <h1>{{ page.title }}</h1>
+    {%- if page.summary %}<p class="sf-standfirst">{{ page.summary }}</p>{% endif %}
+  </header>
+
+  {%- assign items = site[page.collection_name] | where: "status", "ready" | sort: "date" | reverse -%}
+
+  {%- if items.size > 0 %}
+  <ul class="sf-card-list">
+    {%- for item in items %}
+    <li class="sf-card">
+      <p class="sf-kicker">{{ item.kind }}{% if item.category %} · {{ item.category }}{% endif %}</p>
+      <h2><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h2>
+      <p class="sf-card-summary">{{ item.summary }}</p>
+      <p class="sf-meta"><time datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%-d %B %Y" }}</time>
+      {%- if item.reading_time %} · {{ item.reading_time }} min read{% endif %}</p>
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- else %}
+  <p class="sf-empty">Nothing published here yet. New work appears as it is finished.</p>
+  {%- endif %}
+</div>

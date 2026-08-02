@@ -1,3 +1,63 @@
+# ---------------------------------------------------------------------------
+# Site identity and content system
+# ---------------------------------------------------------------------------
+# Added for the public Content & Commerce Hub. `url` + `baseurl` are what let
+# Jekyll build correct absolute URLs for canonical tags, the sitemap and the
+# feed — without them every generated URL is relative and useless to a crawler.
+#
+# No plugins are used. GitHub Pages whitelists jekyll-seo-tag/-sitemap/-feed,
+# but hand-rolled templates give exact control over the markup and remove a
+# dependency whose output would have to be audited anyway.
+title: "Sentinel Fortune LLC"
+description: "Operational systems, field-tested tools, and practical intelligence for small businesses that run on execution."
+url: "https://sentinelfortune.github.io"
+baseurl: "/sentinelfortune"
+lang: en_US
+author: "Sentinel Fortune LLC"
+publisher: "Sentinel Fortune LLC"
+org_email: "contact@sentinelfortune.com"
+telegram_url: "https://t.me/sentinelfortune_bot"
+institutional_url: "https://sentinelfortune.com"
+# 1200x630 social card generated from the real brand mark by
+# scripts/build_brand_assets.py. Replaces the 307 KB unresized IMG_7098.jpeg.
+default_og_image: "/assets/img/sf-og.jpg"
+
+# Newsletter delivery endpoint.
+#
+# Deliberately empty. There is no email backend yet, so the signup form has
+# nowhere real to POST. While this is blank the form renders in its honest
+# "not live yet" state and tells the visitor to email instead — it never
+# reports a subscription that did not happen. Setting this to a real form
+# endpoint is the single change that turns the feature on.
+newsletter_endpoint: ""
+
+collections:
+  # The folder stays `_signals` — renaming it would rewrite every file's path
+  # for no visitor-facing gain. What changed is the public vocabulary: the
+  # permalink, the label and the item noun are all "Updates" now, because
+  # "Signals" meant nothing to a first-time visitor.
+  signals:
+    output: true
+    permalink: /updates/:name/
+  articles:
+    output: true
+    permalink: /articles/:name/
+  guides:
+    output: true
+    permalink: /guides/:name/
+
+defaults:
+  - scope: { path: "", type: "signals" }
+    values: { layout: "content", collection_url: "/updates/", kind: "Update", collection_label: "Updates", schema_type: "BlogPosting" }
+  - scope: { path: "", type: "articles" }
+    values: { layout: "content", collection_url: "/articles/", kind: "Article", collection_label: "Articles", schema_type: "Article" }
+  - scope: { path: "", type: "guides" }
+    values: { layout: "content", collection_url: "/guides/", kind: "Guide", collection_label: "Guides", schema_type: "Article" }
+
+# Content that has not passed the editorial gate never renders.
+# scripts/validate_content.py enforces status: ready before publication.
+exclude_from_feed_unless_ready: true
+
 # GitHub Pages (Jekyll) publication boundary — Sentinel Fortune LLC
 #
 # This repository's Pages site is served with "Deploy from a branch" (evidence:
@@ -48,6 +108,19 @@ exclude:
   # Cloudflare Worker source (TypeScript, tests, migrations, wrangler config).
   # Deployed via `wrangler deploy`; not a web asset.
   - shop-worker
+  # Cloudflare Pages Functions for the Owner Admin project — the server-side
+  # /api/* proxy that carries the Access token to the Worker. Belongs to the
+  # Access-protected Pages deployment, never to the public GitHub Pages site.
+  - functions
+  # Build tooling for the above (admin/_worker.js). Operational, not a web asset.
+  - scripts
+  # Built deployment packages and product ZIPs. Artifacts, not web assets.
+  - dist
+  # Commercial product source (SFL-AIOPS-001). Paid content — never published.
+  - product-source
+  # Internal infrastructure audits: Worker inventory, resource IDs, architecture
+  # maps. Operational intelligence — must never reach the public site.
+  - audit
 
   # --- Verified sensitive content ----------------------------------------
   # Telegram bot source. Contains private channel invite links and internal
@@ -90,4 +163,9 @@ exclude:
   - STRIPE_SHOP_SETUP.md
   - RESEND_SETUP.md
   - OWNER_SHOP_GUIDE.md
+  - SHOP_MVP_RUNBOOK.md
+  - SHOP_MAIN_MERGE_READINESS.md
+  - PRODUCT_MANIFEST_SCHEMA.md
   - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md
+  # How to run the public site: publishing flow, universes, audio, validators.
+  - PUBLIC_SITE_GUIDE.md

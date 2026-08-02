@@ -1,484 +1,267 @@
-/* ═══════════════════════════════════════════════════════
-   S.5 JUMP: ASCENT — Style
-   Dark Navy · Gold · Premium Sentinel Fortune
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   S.5 ASCENT — page chrome around the canvas.
+
+   The canvas draws the world; this file draws everything a player touches:
+   HUD, touch pad, menus. Brighter than the previous build, which was near-black
+   panels over a near-black canvas.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --ink:    #03060e;
-  --deep:   #050a14;
-  --navy:   #091222;
-  --panel:  #0d1a2e;
-  --gold:   #c8a84b;
-  --gold2:  #e8c86a;
-  --gold3:  #f5d980;
-  --white:  #e8e4dc;
-  --muted:  #7a8099;
-  --danger: #c83a2a;
-  --teal:   #2a9ab0;
-  --border: rgba(200,168,75,.18);
-  --dim:    rgba(232,228,220,.05);
-  --ff:     "Georgia", "Times New Roman", serif;
-  --ffs:    system-ui, -apple-system, sans-serif;
+  --navy-900:#0c1c34;
+  --navy-800:#12294a;
+  --navy-700:#1b3a6b;
+  --blue-400:#5fa8e0;
+  --blue-300:#8fd0ff;
+  --gold:#f5c542;
+  --gold-hi:#fff0a8;
+  --teal:#3fd0c8;
+  --amber:#f0a848;
+  --violet:#c88cf5;
+  --ink:#eaf2fb;
+  --ink-dim:#9dbbd9;
+  --line:rgba(143,208,255,0.22);
+  --panel:rgba(12,28,52,0.94);
+  --ff:"Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ff-d:"Cinzel", Georgia, serif;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: var(--ink);
-  color: var(--white);
-  font-family: var(--ffs);
-  font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
+html,body{height:100%;overflow:hidden}
+
+body{
+  background:var(--navy-900);
+  color:var(--ink);
+  font-family:var(--ff);
+  /* Stops the whole page rubber-banding when a thumb drags on the touch pad.
+     The previous build let the page scroll underneath the controls. */
+  overscroll-behavior:none;
+  touch-action:none;
+  -webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
 
-/* ── CANVAS ── */
-#gameCanvas {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--ink);
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
 }
 
-/* ── HUD ── */
-#hud {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 14px 18px 10px;
-  background: linear-gradient(to bottom, rgba(3,6,14,.85) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 20;
-  gap: 8px;
+#stage{position:fixed;inset:0;overflow:hidden}
+
+#gameCanvas{
+  display:block;width:100%;height:100%;
+  background:var(--navy-800);
 }
 
-.hud-block {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 64px;
+/* Focus is always visible — the game is fully keyboard playable. */
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+
+/* ── HUD ─────────────────────────────────────────────────────────────── */
+#hud{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,18,34,.72),rgba(8,18,34,0));
+}
+#hud[hidden]{display:none}
+
+.hud-l{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hud-k{font-family:var(--ff-d);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.hud-v{font-size:.92rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.hud-c{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.hud-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.8rem;color:var(--ink);
+  background:rgba(12,28,52,.72);border:1px solid var(--line);
+  border-radius:99px;padding:5px 12px;white-space:nowrap;
+}
+.dot-gold{
+  width:10px;height:10px;border-radius:50%;display:inline-block;
+  background:var(--gold);box-shadow:0 0 8px rgba(245,197,66,.8);
+}
+.lives{color:var(--gold);letter-spacing:.14em}
+
+.hud-r{pointer-events:auto}
+.icon-btn{
+  width:40px;height:40px;font-size:1rem;cursor:pointer;
+  background:rgba(12,28,52,.72);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;
+}
+.icon-btn:hover{border-color:var(--gold);background:rgba(27,58,107,.9)}
+
+/* ── TOUCH CONTROLS ──────────────────────────────────────────────────── */
+#touch-controls{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding:16px calc(16px + env(safe-area-inset-right))
+          calc(18px + env(safe-area-inset-bottom))
+          calc(16px + env(safe-area-inset-left));
+  pointer-events:none;
+}
+#touch-controls[hidden]{display:none}
+.pad-l,.pad-r{display:flex;gap:12px;pointer-events:auto}
+
+.pad{
+  width:74px;height:74px;font-size:1.4rem;line-height:1;cursor:pointer;
+  color:var(--blue-300);
+  background:rgba(12,28,52,.60);
+  border:2px solid rgba(143,208,255,.34);
+  border-radius:18px;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  transition:transform .07s ease, background .12s ease, border-color .12s ease;
+}
+.pad:active{transform:scale(.93);background:rgba(45,90,148,.85);border-color:var(--blue-300)}
+.pad.jump{
+  width:92px;height:92px;font-size:1.7rem;
+  color:var(--gold-hi);border-color:rgba(245,197,66,.45);
+  background:rgba(58,44,12,.55);
+}
+.pad.jump:active{background:rgba(122,90,26,.9);border-color:var(--gold)}
+
+/* A pointer device does not need a thumb pad taking up a corner of the
+   screen; touch devices keep it at full strength. */
+@media (hover:hover) and (pointer:fine){
+  #touch-controls{opacity:.30}
+  #touch-controls:hover,#touch-controls:focus-within{opacity:1}
 }
 
-.hud-block.center {
-  text-align: center;
-  align-items: center;
-  flex: 1;
+/* ── SCREENS ─────────────────────────────────────────────────────────── */
+.screen{
+  position:absolute;inset:0;z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;overflow-y:auto;
+  background:radial-gradient(circle at 50% 34%, rgba(27,58,107,.86), rgba(6,12,24,.96) 68%);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+}
+/* The author `display:flex` above beats the `hidden` attribute's user-agent
+   `display:none` unless this is stated explicitly. */
+.screen[hidden]{display:none}
+
+.panel{
+  width:min(560px,100%);
+  max-height:100%;
+  text-align:center;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:30px 28px;
+  box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(245,197,66,.10);
 }
 
-.hud-label {
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 600;
-  opacity: 0.75;
+.eyebrow{font-family:var(--ff-d);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.logo{
+  font-family:var(--ff-d);font-size:clamp(2.4rem,9vw,3.6rem);line-height:1;
+  letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--gold-hi),var(--gold) 55%,var(--amber));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.title{
+  font-family:var(--ff-d);font-weight:500;
+  font-size:clamp(1.5rem,5.4vw,2.2rem);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink);margin-top:4px;
+}
+.title.sm{font-size:clamp(1.2rem,4.2vw,1.6rem);letter-spacing:.12em}
+
+.rule{width:74px;height:2px;margin:16px auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+.lede{color:var(--ink-dim);font-size:.94rem;line-height:1.66;max-width:44ch;margin:0 auto 20px}
+.lede.sm{font-size:.86rem;margin-bottom:14px}
+
+.err{
+  color:#ffb4a4;background:rgba(200,58,42,.16);border:1px solid rgba(224,90,72,.5);
+  border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.86rem;
+}
+.err[hidden]{display:none}
+
+.btn{
+  display:block;width:100%;max-width:300px;
+  font:inherit;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:15px 26px;margin:6px auto;cursor:pointer;
+  border-radius:11px;border:1px solid transparent;
+}
+.btn.primary{
+  background:linear-gradient(135deg,var(--gold-hi),var(--gold) 55%,var(--amber));
+  color:#1a1405;font-weight:600;
+}
+.btn.primary:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--ink-dim);border-color:var(--line)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--blue-400)}
+
+/* ── STAGE SELECT ────────────────────────────────────────────────────── */
+.select-h{
+  font-family:var(--ff-d);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold);margin:22px 0 10px;
+}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px}
+
+.lvl{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font:inherit;cursor:pointer;padding:11px 8px;
+  background:rgba(27,58,107,.55);color:var(--ink);
+  border:1px solid var(--line);border-radius:11px;
+  transition:border-color .14s ease, transform .14s ease, background .14s ease;
+}
+.lvl:hover:not(.locked){border-color:var(--gold);transform:translateY(-2px);background:rgba(45,90,148,.7)}
+.lvl.locked{opacity:.42;cursor:not-allowed}
+.lvl-n{font-family:var(--ff-d);font-size:1.15rem;color:var(--gold)}
+.lvl-name{font-size:.68rem;line-height:1.2}
+.lvl-best{font-size:.58rem;color:var(--ink-dim);letter-spacing:.04em}
+
+/* ── STATS ───────────────────────────────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 22px}
+.stats > div{
+  background:rgba(27,58,107,.5);border:1px solid var(--line);
+  border-radius:10px;padding:11px 8px;
+}
+.stats > div.big{grid-column:1/-1;background:rgba(245,197,66,.12);border-color:rgba(245,197,66,.4)}
+.stats dt{font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:5px}
+.stats dd{font-family:var(--ff-d);font-size:1.02rem;color:var(--gold-hi)}
+.stats > div.big dd{font-size:1.5rem}
+
+/* ── FOOT ────────────────────────────────────────────────────────────── */
+.controls-note{
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:.72rem;line-height:1.7;color:var(--ink-dim);
+}
+.controls-note b{color:var(--blue-300);font-weight:500}
+
+.foot{margin-top:16px;font-size:.72rem;color:var(--ink-dim)}
+.foot b{color:var(--gold)}
+.foot a{color:var(--blue-300)}
+.linkish{
+  font:inherit;font-size:inherit;cursor:pointer;
+  background:none;border:0;padding:0;
+  color:var(--blue-300);text-decoration:underline;
+}
+.linkish:hover{color:var(--gold)}
+
+/* ── SMALL SCREENS ───────────────────────────────────────────────────── */
+@media (max-width:520px){
+  .panel{padding:22px 18px;border-radius:14px}
+  .levels{grid-template-columns:repeat(3,1fr)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hud-v{font-size:.8rem;max-width:34vw}
+  .hud-chip{font-size:.72rem;padding:4px 9px}
+  .pad{width:66px;height:66px}
+  .pad.jump{width:82px;height:82px}
 }
 
-.hud-value {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--white);
-  letter-spacing: 0.04em;
-  line-height: 1;
+/* Landscape phones are short: shrink the chrome so the playfield keeps room. */
+@media (max-height:430px){
+  .panel{padding:16px;max-height:96%}
+  .logo{font-size:2rem}
+  .rule{margin:10px auto}
+  .lede{margin-bottom:12px;font-size:.82rem}
+  .btn{padding:11px 20px;margin:4px auto}
+  .controls-note{display:none}
+  .pad{width:58px;height:58px}
+  .pad.jump{width:70px;height:70px}
 }
 
-#hud-level-name {
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.6;
-  margin-top: 2px;
-}
-
-/* ── MOBILE CONTROLS ── */
-#mobile-controls {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0 20px 28px;
-  pointer-events: none;
-  z-index: 20;
-  gap: 12px;
-}
-
-.ctrl-group {
-  display: flex;
-  gap: 10px;
-  pointer-events: auto;
-}
-
-.ctrl-btn {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(200,168,75,.35);
-  background: rgba(9,18,34,.72);
-  color: var(--gold);
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: none;
-  transition: background 0.1s, border-color 0.1s;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-.ctrl-btn:active,
-.ctrl-btn.pressed {
-  background: rgba(200,168,75,.18);
-  border-color: var(--gold);
-}
-
-.ctrl-btn.jump-btn {
-  width: 70px;
-  height: 70px;
-  font-size: 1.5rem;
-  border-color: rgba(200,168,75,.55);
-  background: rgba(200,168,75,.1);
-}
-
-.ctrl-btn.jump-btn:active,
-.ctrl-btn.jump-btn.pressed {
-  background: rgba(200,168,75,.3);
-  border-color: var(--gold2);
-}
-
-/* ── SCREENS ── */
-.screen {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 32px 28px;
-  background: rgba(3, 6, 14, 0.96);
-  z-index: 40;
-  gap: 0;
-}
-
-.screen.hidden {
-  display: none;
-}
-
-/* ── MENU SCREEN ── */
-.menu-eyebrow {
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.65;
-  margin-bottom: 20px;
-}
-
-.menu-logo {
-  font-family: var(--ff);
-  font-size: clamp(2.8rem, 10vw, 4.5rem);
-  font-weight: 700;
-  color: var(--gold);
-  letter-spacing: 0.06em;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.menu-title {
-  font-family: var(--ff);
-  font-size: clamp(1rem, 4vw, 1.6rem);
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
-  color: var(--white);
-  opacity: 0.8;
-  margin-bottom: 12px;
-}
-
-.menu-rule {
-  width: 60px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  margin: 16px auto;
-}
-
-.menu-tagline {
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.5;
-  margin-bottom: 40px;
-}
-
-.menu-desc {
-  font-size: 0.82rem;
-  color: var(--muted);
-  line-height: 1.7;
-  max-width: 280px;
-  margin-bottom: 40px;
-}
-
-/* ── BUTTONS ── */
-.btn-gold {
-  display: inline-block;
-  padding: 14px 36px;
-  border: 1.5px solid var(--gold);
-  background: transparent;
-  color: var(--gold);
-  font-family: var(--ffs);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  border-radius: 2px;
-  text-decoration: none;
-}
-
-.btn-gold:hover,
-.btn-gold:active {
-  background: rgba(200,168,75,.14);
-  color: var(--gold2);
-  border-color: var(--gold2);
-}
-
-.btn-secondary {
-  display: inline-block;
-  padding: 10px 28px;
-  border: 1px solid rgba(200,168,75,.3);
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--ffs);
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-  border-radius: 2px;
-  margin-top: 14px;
-  text-decoration: none;
-}
-
-.btn-secondary:hover,
-.btn-secondary:active {
-  border-color: rgba(200,168,75,.6);
-  color: var(--white);
-}
-
-/* ── LEVEL COMPLETE ── */
-.lc-badge {
-  font-size: 2.5rem;
-  color: var(--gold);
-  margin-bottom: 18px;
-  animation: glow-pulse 2s ease-in-out infinite;
-}
-
-.lc-title {
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.65;
-  margin-bottom: 10px;
-}
-
-.lc-name {
-  font-family: var(--ff);
-  font-size: clamp(1.6rem, 6vw, 2.4rem);
-  color: var(--white);
-  margin-bottom: 8px;
-  letter-spacing: 0.04em;
-}
-
-.lc-subtitle {
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.5;
-  margin-bottom: 28px;
-}
-
-.lc-stats {
-  display: flex;
-  gap: 24px;
-  justify-content: center;
-  margin-bottom: 36px;
-}
-
-.lc-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.lc-stat-value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--gold);
-}
-
-.lc-stat-label {
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* ── GAME OVER ── */
-.go-icon {
-  font-size: 2.2rem;
-  color: var(--danger);
-  margin-bottom: 18px;
-  opacity: 0.7;
-}
-
-.go-title {
-  font-family: var(--ff);
-  font-size: clamp(1.4rem, 5vw, 2rem);
-  color: var(--white);
-  margin-bottom: 8px;
-}
-
-.go-sub {
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 36px;
-}
-
-/* ── THRESHOLD SCREEN ── */
-.threshold-glow {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,168,75,.4) 0%, rgba(200,168,75,0) 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px;
-  animation: glow-pulse 2.5s ease-in-out infinite;
-}
-
-.threshold-icon {
-  font-size: 2.4rem;
-  color: var(--gold);
-}
-
-.threshold-eyebrow {
-  font-size: 0.58rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.6;
-  margin-bottom: 12px;
-}
-
-.threshold-title {
-  font-family: var(--ff);
-  font-size: clamp(2rem, 8vw, 3rem);
-  color: var(--gold);
-  letter-spacing: 0.12em;
-  margin-bottom: 6px;
-  animation: glow-pulse 2.5s ease-in-out infinite;
-}
-
-.threshold-rule {
-  width: 80px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  margin: 18px auto;
-}
-
-.threshold-text {
-  font-family: var(--ff);
-  font-size: clamp(1rem, 3.5vw, 1.35rem);
-  color: var(--white);
-  line-height: 1.5;
-  margin-bottom: 8px;
-}
-
-.threshold-sub {
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.7;
-  max-width: 280px;
-  margin-bottom: 36px;
-  letter-spacing: 0.04em;
-}
-
-.btn-unlock {
-  display: inline-block;
-  padding: 16px 40px;
-  background: var(--gold);
-  color: var(--ink);
-  font-family: var(--ffs);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  border-radius: 2px;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
-  margin-bottom: 4px;
-}
-
-.btn-unlock:hover,
-.btn-unlock:active {
-  background: var(--gold2);
-  transform: translateY(-1px);
-}
-
-/* ── ANIMATIONS ── */
-@keyframes glow-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.65; }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.screen:not(.hidden) {
-  animation: fade-in 0.35s ease-out forwards;
-}
-
-/* ── UTILITY ── */
-.hidden { display: none !important; }
-
-/* ── RESPONSIVE: larger touch targets on small screens ── */
-@media (max-height: 600px) {
-  #mobile-controls { padding-bottom: 14px; }
-  .ctrl-btn        { width: 50px; height: 50px; font-size: 1.1rem; }
-  .ctrl-btn.jump-btn { width: 60px; height: 60px; }
-  #hud             { padding: 8px 14px 6px; }
-}
-
-@media (min-width: 600px) {
-  #mobile-controls { justify-content: center; gap: 60px; }
+@media (prefers-reduced-motion:reduce){
+  .lvl,.pad{transition:none}
+  .lvl:hover:not(.locked){transform:none}
+  .pad:active{transform:none}
 }
