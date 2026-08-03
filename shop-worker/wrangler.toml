@@ -28,14 +28,15 @@ database_name = "sentinel-fortune-shop"
 database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"
 
 # ---------------------------------------------------------------------------
-# R2 buckets — private downloads, public cover/preview assets.
-# Create with:
+# R2 buckets — downloads and cover/preview assets. NEITHER needs public
+# bucket access. Create with:
 #   wrangler r2 bucket create sentinel-fortune-shop-downloads
 #   wrangler r2 bucket create sentinel-fortune-shop-assets
 # The downloads bucket must NEVER be given public bucket access in the
 # Cloudflare dashboard — all reads go through this Worker's token-gated
-# /shop/download/:token route. The assets bucket is intentionally public
-# (covers/previews only — never purchasable files).
+# /shop/download/:token route. The assets bucket holds covers/previews only
+# (never purchasable files) and is read by the Worker's /shop/asset/:id route,
+# so it does not need public access either.
 # ---------------------------------------------------------------------------
 [[r2_buckets]]
 binding = "SHOP_DOWNLOADS_BUCKET"
@@ -54,15 +55,80 @@ bucket_name = "sentinel-fortune-shop-assets"
 ENVIRONMENT = "development"
 RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
 SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
-SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_ASSETS_BUCKET_PUBLIC_URL"
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
 CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
-CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# CF_ACCESS_AUD is NOT declared as a var in any environment — it is uploaded with
+# `wrangler secret put CF_ACCESS_AUD [--env <env>]`. A binding name cannot be both
+# a var and a secret; declaring it here makes that upload fail with Cloudflare
+# error 10053. src/lib/auth.ts fails closed (401 on every /shop/admin/* request)
+# for as long as the secret is missing.
 # Browser origin of the Owner Admin Cloudflare Pages deployment. Required for
 # the admin UI to call this Worker cross-origin with its Access cookie. While
 # left as the placeholder it is ignored (storefront unaffected, admin calls
 # simply not CORS-permitted) — set it after deploying /admin to Pages.
 ADMIN_ALLOWED_ORIGIN = "REPLACE_WITH_ADMIN_PAGES_ORIGIN"
+# SHOP_ASSETS_PUBLIC_BASE_URL is deliberately not set. It is an OPTIONAL
+# CDN/custom-domain override for cover/preview images. Unset, the Worker serves
+# them itself at /shop/asset/:id and the assets bucket stays private.
+
+# ---------------------------------------------------------------------------
+# TEST environment — created 2026-07-30 against the Owner's Cloudflare account.
+# Deploy with: wrangler deploy --env test
+#
+# These are REAL, already-created resources (not placeholders):
+#   D1  sentinel-fortune-shop-test          (migrations 0001+0002 applied and verified)
+#   R2  sentinel-fortune-shop-downloads-test (PRIVATE — never enable public access)
+#   R2  sentinel-fortune-shop-assets-test    (PRIVATE — covers/previews are served by
+#                                             this Worker at /shop/asset/:id)
+#
+# A database_id is an account-scoped identifier, not a credential — using it still
+# requires Cloudflare authentication. Secrets are NOT here; set them with:
+#   wrangler secret put STRIPE_SECRET_KEY --env test        (sk_test_... ONLY)
+#   wrangler secret put STRIPE_WEBHOOK_SECRET --env test    (whsec_...)
+#   wrangler secret put RESEND_API_KEY --env test
+#   wrangler secret put CF_ACCESS_AUD --env test            (Access application AUD tag)
+#
+# CF_ACCESS_AUD is deliberately ABSENT from [env.test.vars] below. A binding name
+# can be either a plain var or a secret, never both — declaring it here makes
+# `wrangler secret put CF_ACCESS_AUD --env test` fail with Cloudflare error 10053
+# ("binding name already in use"). The AUD tag identifies a specific Access
+# application, so it is kept out of Git and uploaded as a secret instead.
+# Until that secret is set, src/lib/auth.ts sees it undefined and every
+# /shop/admin/* request is rejected with 401 (fail-closed).
+#
+# SHOP_WORKER_BASE_URL is the hostname printed by the first successful deploy
+# (verified 2026-07-31: GET /shop/health -> {"ok":true,...}). Emailed download
+# links and image URLs are built from it.
+#
+# SHOP_ASSETS_PUBLIC_BASE_URL is intentionally ABSENT: it is only an optional
+# CDN/custom-domain override. Leaving it unset keeps the assets bucket private.
+# ---------------------------------------------------------------------------
+[env.test]
+name = "sentinel-fortune-digital-shop-test"
+
+[env.test.vars]
+ENVIRONMENT = "test"
+RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
+SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
+SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop-test.sentinelfortunellc.workers.dev"
+# Team domain is not a credential — it is the public Zero Trust hostname whose
+# /cdn-cgi/access/certs endpoint serves the JWKS. Safe as a plain var.
+CF_ACCESS_TEAM_DOMAIN = "sentinelfortunellc.cloudflareaccess.com"
+# CF_ACCESS_AUD is a secret — see the note above. Do not add it here.
+ADMIN_ALLOWED_ORIGIN = "https://sentinel-fortune-shop-admin.pages.dev"
+
+[[env.test.d1_databases]]
+binding = "SHOP_DB"
+database_name = "sentinel-fortune-shop-test"
+database_id = "54dbbd38-85b6-40e9-a879-55f717c7404b"
+
+[[env.test.r2_buckets]]
+binding = "SHOP_DOWNLOADS_BUCKET"
+bucket_name = "sentinel-fortune-shop-downloads-test"
+
+[[env.test.r2_buckets]]
+binding = "SHOP_ASSETS_BUCKET"
+bucket_name = "sentinel-fortune-shop-assets-test"
 
 # ---------------------------------------------------------------------------
 # Production environment overrides.
@@ -76,10 +142,11 @@ name = "sentinel-fortune-digital-shop"
 ENVIRONMENT = "production"
 RESEND_FROM_EMAIL = "shop@sentinelfortune.com"
 SHOP_PUBLIC_BASE_URL = "https://sentinelfortune.github.io/sentinelfortune/shop"
-SHOP_ASSETS_PUBLIC_BASE_URL = "https://REPLACE_WITH_ASSETS_BUCKET_PUBLIC_URL"
+# SHOP_ASSETS_PUBLIC_BASE_URL intentionally unset — see [vars] above.
 SHOP_WORKER_BASE_URL = "https://sentinel-fortune-digital-shop.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev"
 CF_ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_TEAM.cloudflareaccess.com"
-CF_ACCESS_AUD = "REPLACE_WITH_ACCESS_APPLICATION_AUD_TAG"
+# CF_ACCESS_AUD: secret only — `wrangler secret put CF_ACCESS_AUD --env production`.
+# See the note in [vars] above. Never declare it as a var here.
 # Browser origin of the Owner Admin Cloudflare Pages deployment. Required for
 # the admin UI to call this Worker cross-origin with its Access cookie. While
 # left as the placeholder it is ignored (storefront unaffected, admin calls

@@ -37,6 +37,10 @@ export async function getProductBySlug(db: D1Like, slug: string): Promise<Produc
   return db.prepare(`SELECT * FROM products WHERE slug = ?`).bind(slug).first<ProductRow>();
 }
 
+export async function getProductBySku(db: D1Like, sku: string): Promise<ProductRow | null> {
+  return db.prepare(`SELECT * FROM products WHERE sku = ?`).bind(sku).first<ProductRow>();
+}
+
 export async function getProductById(db: D1Like, id: string): Promise<ProductRow | null> {
   return db.prepare(`SELECT * FROM products WHERE id = ?`).bind(id).first<ProductRow>();
 }
@@ -97,6 +101,10 @@ export async function listProductImages(db: D1Like, productId: string): Promise<
     .bind(productId)
     .all<ProductImageRow>();
   return result.results;
+}
+
+export async function getProductImageById(db: D1Like, id: string): Promise<ProductImageRow | null> {
+  return db.prepare(`SELECT * FROM product_images WHERE id = ?`).bind(id).first<ProductImageRow>();
 }
 
 export async function insertProductImage(db: D1Like, row: ProductImageRow): Promise<void> {

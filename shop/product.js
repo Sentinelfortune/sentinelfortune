@@ -18,18 +18,6 @@ function apiBase() {
   return (window.SHOP_API_BASE || "").replace(/\/$/, "");
 }
 
-/* Is the storefront actually wired to a Worker?
-   shop-config.js ships with an unresolved placeholder until the Owner points
-   it at a deployed Worker. Fetching that hostname fails with a network error,
-   which the catch below would otherwise report as "temporarily unavailable" —
-   language that implies a working shop having a bad moment. It is not
-   temporary and it is not a fault: it is simply not connected yet, and the
-   visitor deserves to be told which of the two it is. */
-function isConfigured() {
-  var b = apiBase();
-  return !!b && b.indexOf("REPLACE_WITH") === -1;
-}
-
 function getSlug() {
   var params = new URLSearchParams(window.location.search);
   return params.get("slug") || "";
@@ -42,13 +30,6 @@ async function loadProduct() {
   if (!slug) {
     root.innerHTML = '<div class="state-msg"><strong>No product specified.</strong>' +
       '<a class="btn btn-line" href="index.html" style="margin-top:16px">← Back to Catalog</a></div>';
-    return;
-  }
-
-  if (!isConfigured()) {
-    root.innerHTML = '<div class="state-msg"><strong>The catalogue is not connected yet.</strong>' +
-      "<span>Product pages become available once the storefront goes live.</span>" +
-      '<a class="btn btn-line" href="index.html" style="margin-top:16px">\u2190 Back to Catalog</a></div>';
     return;
   }
 
