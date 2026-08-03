@@ -110,6 +110,9 @@ async function renderDashboard() {
   var licensesEl = document.getElementById("licensesStat");
   var auditEl = document.getElementById("auditLog");
 
+  var who = await api("/shop/admin/whoami");
+  if (who.ok && who.data.publicShopBaseUrl) PUBLIC_SHOP_BASE = who.data.publicShopBaseUrl;
+
   var health = await api("/shop/health");
   if (healthEl) healthEl.textContent = health.ok ? "Live" : "Unreachable";
   if (healthEl) healthEl.className = "stat-value " + (health.ok ? "ok" : "err");
@@ -145,6 +148,11 @@ async function renderDashboard() {
 async function renderProductsList() {
   var tbody = document.getElementById("productsTableBody");
   if (!tbody) return;
+
+  if (!PUBLIC_SHOP_BASE) {
+    var w = await api("/shop/admin/whoami");
+    if (w.ok && w.data.publicShopBaseUrl) PUBLIC_SHOP_BASE = w.data.publicShopBaseUrl;
+  }
 
   var result = await api("/shop/admin/products");
   if (!result.ok) {
@@ -190,8 +198,24 @@ async function renderProductsList() {
   });
 }
 
+/* Public shop origin, learned at runtime from /shop/admin/whoami. Never
+   hardcoded: the Admin is a separate application and the storefront's address
+   is the Worker's to state, not the bundle's to assume. */
+var PUBLIC_SHOP_BASE = "";
+
+function publicProductUrl(slug) {
+  if (!PUBLIC_SHOP_BASE || !slug) return "";
+  return PUBLIC_SHOP_BASE.replace(/\/$/, "") + "/product.html?slug=" + encodeURIComponent(slug);
+}
+
 function productActionButtons(p) {
   var buttons = "";
+  /* Only a PUBLISHED product has a public page. Offering the link for a draft
+     would send the Owner to a 404 and imply the product is live when it is not. */
+  if (p.status === "PUBLISHED" && publicProductUrl(p.slug)) {
+    buttons += '<a class="btn btn-sm" target="_blank" rel="noopener noreferrer" href="' +
+      esc(publicProductUrl(p.slug)) + '">View live</a>';
+  }
   if (p.status === "DRAFT" || p.status === "UNPUBLISHED") {
     buttons += '<button class="btn btn-sm btn-primary" data-action="publish" data-id="' + esc(p.id) + '">Publish</button>';
   }
