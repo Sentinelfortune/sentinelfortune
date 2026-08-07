@@ -55,4 +55,14 @@ export class FakeR2Bucket implements R2Like {
   has(key: string): boolean {
     return this.store.has(key);
   }
+
+  /** Test helper — every key currently stored, so a test can assert on what is NOT here. */
+  keys(): string[] {
+    return [...this.store.keys()];
+  }
+
+  /** Test helper — the raw bytes at a key, for byte-level assertions. */
+  bytes(key: string): Uint8Array | null {
+    return this.store.get(key)?.data ?? null;
+  }
 }

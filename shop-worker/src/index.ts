@@ -10,6 +10,7 @@ import { handleStripeWebhook } from "./routes/webhook";
 import { handleDownload } from "./routes/download";
 import { handleGetAsset } from "./routes/asset";
 import { handleOrderStatus } from "./routes/order-status";
+import { handleHoaPublication } from "./routes/bridge/publications";
 
 import {
   handleAdminArchiveProduct,
@@ -52,6 +53,21 @@ router.get("/shop/download/:token", async (request, env, _ctx, params) => handle
 // Product cover/preview images, served from the (private) assets bucket so no
 // R2 bucket in this system needs public access. See src/lib/assets.ts.
 router.get("/shop/asset/:id", async (request, env, _ctx, params) => handleGetAsset(request, env, params));
+
+// ---------------------------------------------------------------------------
+// Machine-to-machine bridge — House of Assets only.
+//
+// NOT under /shop/admin/, so it does not go through the Cloudflare Access
+// gate below: Access authenticates a person in a browser and there is no
+// browser here. The handler authenticates the caller itself, against the
+// HOA_PUBLICATION_BRIDGE_TOKEN secret, and refuses every request when that
+// secret is unset. Holding the bridge token grants exactly this route and no
+// Admin capability whatsoever.
+//
+// The CORS allow-list never permits an Authorization header, so no web page
+// can present this credential from a browser either.
+// ---------------------------------------------------------------------------
+router.post("/shop/bridge/publications", async (request, env) => handleHoaPublication(request, env));
 
 // ---------------------------------------------------------------------------
 // Admin routes — every one of these is wrapped by the auth gate in fetch()

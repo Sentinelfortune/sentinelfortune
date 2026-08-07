@@ -5,6 +5,7 @@ import { FakeR2Bucket } from "./fakeR2";
 export const TEST_STRIPE_WEBHOOK_SECRET = "whsec_test_shop_secret_for_unit_tests_only";
 export const TEST_STRIPE_SECRET_KEY = "sk_test_fake_key_for_unit_tests_only";
 export const TEST_RESEND_API_KEY = "re_test_fake_key_for_unit_tests_only";
+export const TEST_HOA_BRIDGE_TOKEN = "hoa_bridge_test_token_for_unit_tests_only";
 
 export async function buildTestEnv(overrides: Partial<Env> = {}): Promise<Env> {
   return {
@@ -17,6 +18,7 @@ export async function buildTestEnv(overrides: Partial<Env> = {}): Promise<Env> {
     RESEND_FROM_EMAIL: "shop@sentinelfortune.com",
     CF_ACCESS_TEAM_DOMAIN: "sentinelfortune-test.cloudflareaccess.com",
     CF_ACCESS_AUD: "test-aud-tag",
+    HOA_PUBLICATION_BRIDGE_TOKEN: TEST_HOA_BRIDGE_TOKEN,
     SHOP_PUBLIC_BASE_URL: "https://sentinelfortune.github.io/sentinelfortune/shop",
     // SHOP_ASSETS_PUBLIC_BASE_URL deliberately unset — the default (and the
     // deployed configuration) serves images through the Worker itself.

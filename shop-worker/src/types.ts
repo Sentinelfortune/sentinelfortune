@@ -87,6 +87,21 @@ export interface Env {
    */
   ADMIN_ALLOWED_ORIGIN?: string;
 
+  /**
+   * Shared secret presented by House of Assets as `Authorization: Bearer …`
+   * on the machine-to-machine bridge routes.
+   *
+   * Supplied as a Wrangler SECRET, never as a var — same reason as
+   * CF_ACCESS_AUD, and for the stronger reason that this one is a bearer
+   * credential: anything holding it can publish.
+   *
+   * Optional here because it is genuinely absent until that secret is
+   * uploaded. requireBridgeToken() treats absent/empty as "not configured"
+   * and rejects every bridge request, so an unconfigured deployment exposes
+   * no open door — it fails closed rather than accepting an empty token.
+   */
+  HOA_PUBLICATION_BRIDGE_TOKEN?: string;
+
   SHOP_PUBLIC_BASE_URL: string;    // e.g. "https://sentinelfortune.github.io/sentinelfortune/shop"
   /**
    * OPTIONAL CDN/custom-domain override for product cover/preview images.
@@ -219,6 +234,34 @@ export interface DownloadAuthorizationRow {
   expires_at: string;
   revoked: 0 | 1;
   created_at: string;
+}
+
+/** One accepted House of Assets publication. See migrations/0003. */
+export interface HoaPublicationRow {
+  id: string;
+  fingerprint: string;
+  product_id: string;
+  commercial_product_id: string;
+  commercial_product_version: string;
+  package_id: string;
+  package_sha256: string;
+  package_byte_size: number;
+  customer_download_sha256: string;
+  customer_download_path: string;
+  schema_id: string;
+  destination: string;
+  intent: string;
+  decision: string;
+  authority: string;
+  terms_acknowledged_at: string;
+  price_approved_at: string;
+  price_cents: number;
+  currency: string;
+  license_type: LicenseType;
+  source_license_type: string;
+  receipt_json: string;
+  received_at: string;
+  published_at: string;
 }
 
 export interface StripeEventRow {

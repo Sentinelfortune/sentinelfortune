@@ -58,7 +58,9 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 | `SHOP_ASSETS_PUBLIC_BASE_URL` (×2) | From step 2 |
 | `SHOP_WORKER_BASE_URL` (×2) | The Worker's `*.workers.dev` URL (known after first deploy — step 5 — or your custom route) |
 | `CF_ACCESS_TEAM_DOMAIN` (×2) | Your Cloudflare Zero Trust team domain, e.g. `sentinelfortune.cloudflareaccess.com` |
-| `CF_ACCESS_AUD` (×2) | The Access application's Audience tag — created in step 6 |
+
+`CF_ACCESS_AUD` is **not** in this table and must not be added to `wrangler.toml` — it is a secret, set in
+step 4.
 
 ## 4. Set secrets (never written to `wrangler.toml`)
 
@@ -66,7 +68,20 @@ Replace every `REPLACE_WITH_...` placeholder in `shop-worker/wrangler.toml`:
 npx wrangler secret put STRIPE_SECRET_KEY        # sk_test_... first — see STRIPE_SHOP_SETUP.md
 npx wrangler secret put STRIPE_WEBHOOK_SECRET     # whsec_... — from the Stripe webhook endpoint
 npx wrangler secret put RESEND_API_KEY            # re_...
+npx wrangler secret put CF_ACCESS_AUD             # the Access application's Audience tag — step 6
+npx wrangler secret put HOA_PUBLICATION_BRIDGE_TOKEN   # only if House of Assets will publish directly
 ```
+
+`CF_ACCESS_AUD` and `HOA_PUBLICATION_BRIDGE_TOKEN` are secrets, not vars. A binding name cannot be both,
+so neither may appear in `wrangler.toml` — declaring one as a var makes `wrangler secret put` fail with
+Cloudflare error 10053.
+
+`HOA_PUBLICATION_BRIDGE_TOKEN` is the bearer credential House of Assets presents on
+`POST /shop/bridge/publications`. Generate a long random value (`openssl rand -hex 32`) and give it to no
+one else — anything holding it can publish a product. Leaving it unset is safe: the bridge refuses every
+request with 503 rather than accepting an empty token, so an unconfigured deployment has no open door.
+It grants no Admin capability either; the bridge route is deliberately outside `/shop/admin/`, and the
+Access gate still stands in front of everything there.
 
 Repeat with `--env production` for the production environment once you're ready for it (not before — see
 `SHOP_RELEASE_CHECKLIST.md`).

@@ -8,6 +8,7 @@ import type {
   D1Like,
   DownloadAuthorizationRow,
   DownloadEventResult,
+  HoaPublicationRow,
   LicenseRow,
   OrderRow,
   ProductFileRow,
@@ -429,6 +430,59 @@ export async function markStripeEventProcessed(db: D1Like, stripeEventId: string
 
 export async function getStripeEventByStripeId(db: D1Like, stripeEventId: string): Promise<StripeEventRow | null> {
   return db.prepare(`SELECT * FROM stripe_events WHERE stripe_event_id = ?`).bind(stripeEventId).first<StripeEventRow>();
+}
+
+// ---------------------------------------------------------------------------
+// House of Assets publications
+// ---------------------------------------------------------------------------
+
+export async function getHoaPublicationByFingerprint(
+  db: D1Like,
+  fingerprint: string,
+): Promise<HoaPublicationRow | null> {
+  return db
+    .prepare(`SELECT * FROM hoa_publications WHERE fingerprint = ?`)
+    .bind(fingerprint)
+    .first<HoaPublicationRow>();
+}
+
+/** Most recent publication for a House of Assets commercial product, if any. */
+export async function getLatestHoaPublicationForSource(
+  db: D1Like,
+  commercialProductId: string,
+): Promise<HoaPublicationRow | null> {
+  return db
+    .prepare(
+      `SELECT * FROM hoa_publications WHERE commercial_product_id = ?
+       ORDER BY received_at DESC LIMIT 1`,
+    )
+    .bind(commercialProductId)
+    .first<HoaPublicationRow>();
+}
+
+export async function insertHoaPublication(db: D1Like, row: HoaPublicationRow): Promise<void> {
+  await db
+    .prepare(
+      `INSERT INTO hoa_publications (
+        id, fingerprint, product_id, commercial_product_id, commercial_product_version,
+        package_id, package_sha256, package_byte_size, customer_download_sha256,
+        customer_download_path, schema_id, destination, intent, decision, authority,
+        terms_acknowledged_at, price_approved_at, price_cents, currency, license_type,
+        source_license_type, receipt_json, received_at, published_at
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    )
+    .bind(
+      row.id, row.fingerprint, row.product_id, row.commercial_product_id, row.commercial_product_version,
+      row.package_id, row.package_sha256, row.package_byte_size, row.customer_download_sha256,
+      row.customer_download_path, row.schema_id, row.destination, row.intent, row.decision, row.authority,
+      row.terms_acknowledged_at, row.price_approved_at, row.price_cents, row.currency, row.license_type,
+      row.source_license_type, row.receipt_json, row.received_at, row.published_at,
+    )
+    .run();
+}
+
+export async function deleteHoaPublication(db: D1Like, id: string): Promise<void> {
+  await db.prepare(`DELETE FROM hoa_publications WHERE id = ?`).bind(id).run();
 }
 
 // ---------------------------------------------------------------------------
