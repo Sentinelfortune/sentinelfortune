@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "types": ["@cloudflare/workers-types"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  // ../functions is the Owner Admin's Cloudflare Pages Functions source. It is
+  // deployed by Pages, not by wrangler, but it is TypeScript with no toolchain
+  // of its own and it is exercised by this package's tests — so it is
+  // typechecked here rather than left unchecked.
+  "include": ["src/**/*.ts", "../functions/**/*.ts"]
+}

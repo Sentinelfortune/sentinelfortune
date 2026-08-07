@@ -1,0 +1,174 @@
+# ---------------------------------------------------------------------------
+# Site identity and content system
+# ---------------------------------------------------------------------------
+# Added for the public Content & Commerce Hub. `url` + `baseurl` are what let
+# Jekyll build correct absolute URLs for canonical tags, the sitemap and the
+# feed — without them every generated URL is relative and useless to a crawler.
+#
+# No plugins are used. GitHub Pages whitelists jekyll-seo-tag/-sitemap/-feed,
+# but hand-rolled templates give exact control over the markup and remove a
+# dependency whose output would have to be audited anyway.
+title: "Sentinel Fortune LLC"
+description: "Operational systems, field-tested tools, and practical intelligence for small businesses that run on execution."
+url: "https://sentinelfortune.github.io"
+baseurl: "/sentinelfortune"
+lang: en_US
+author: "Sentinel Fortune LLC"
+publisher: "Sentinel Fortune LLC"
+org_email: "contact@sentinelfortune.com"
+telegram_url: "https://t.me/sentinelfortune_bot"
+institutional_url: "https://sentinelfortune.com"
+# 1200x630 social card generated from the real brand mark by
+# scripts/build_brand_assets.py. Replaces the 307 KB unresized IMG_7098.jpeg.
+default_og_image: "/assets/img/sf-og.jpg"
+
+# Newsletter delivery endpoint.
+#
+# Deliberately empty. There is no email backend yet, so the signup form has
+# nowhere real to POST. While this is blank the form renders in its honest
+# "not live yet" state and tells the visitor to email instead — it never
+# reports a subscription that did not happen. Setting this to a real form
+# endpoint is the single change that turns the feature on.
+newsletter_endpoint: ""
+
+collections:
+  # The folder stays `_signals` — renaming it would rewrite every file's path
+  # for no visitor-facing gain. What changed is the public vocabulary: the
+  # permalink, the label and the item noun are all "Updates" now, because
+  # "Signals" meant nothing to a first-time visitor.
+  signals:
+    output: true
+    permalink: /updates/:name/
+  articles:
+    output: true
+    permalink: /articles/:name/
+  guides:
+    output: true
+    permalink: /guides/:name/
+
+defaults:
+  - scope: { path: "", type: "signals" }
+    values: { layout: "content", collection_url: "/updates/", kind: "Update", collection_label: "Updates", schema_type: "BlogPosting" }
+  - scope: { path: "", type: "articles" }
+    values: { layout: "content", collection_url: "/articles/", kind: "Article", collection_label: "Articles", schema_type: "Article" }
+  - scope: { path: "", type: "guides" }
+    values: { layout: "content", collection_url: "/guides/", kind: "Guide", collection_label: "Guides", schema_type: "Article" }
+
+# Content that has not passed the editorial gate never renders.
+# scripts/validate_content.py enforces status: ready before publication.
+exclude_from_feed_unless_ready: true
+
+# GitHub Pages (Jekyll) publication boundary — Sentinel Fortune LLC
+#
+# This repository's Pages site is served with "Deploy from a branch" (evidence:
+# an active, system-generated `pages-build-deployment` Actions workflow that
+# fires on pushes to `main`; no custom Pages workflow exists in the repo).
+# In that mode, with no `.nojekyll` present, Jekyll publishes the repository
+# root, minus whatever is listed under `exclude:` below.
+#
+# The repository intentionally holds public web content, private operational
+# source, and internal governance material side by side. Only the first of
+# those belongs on the public web, so the exclusion list below is the boundary
+# between them.
+#
+# ---------------------------------------------------------------------------
+# WHAT REMAINS PUBLIC (verified as actually required by the live site)
+# ---------------------------------------------------------------------------
+#   index.html                      institutional homepage (self-contained:
+#                                   inline CSS + inline JS, no external local
+#                                   dependencies)
+#   IMG_7098.jpeg                   referenced by index.html and its OG tags
+#   shop/                           public storefront (self-contained; its only
+#                                   outbound local link is ../index.html)
+#   frontend/games/                 S.5 ASCENT game — linked from index.html at
+#                                   /sentinelfortune/frontend/games/s5-ascent-lite/
+#                                   and verified self-contained. This is why
+#                                   `frontend` is excluded per-subdirectory
+#                                   below rather than wholesale: excluding the
+#                                   whole tree would break that live link.
+#   sitemap.xml, README.md          harmless, conventional
+#   app.js, styles.css, data/       orphaned legacy files. index.html does NOT
+#                                   load them, and they contain no secrets.
+#                                   Left published deliberately: excluding them
+#                                   buys no security and could only break
+#                                   something not visible from this repo.
+#
+# ---------------------------------------------------------------------------
+# WHY EACH EXCLUSION EXISTS
+# ---------------------------------------------------------------------------
+# Nothing below is deleted, moved, or modified — this only stops Jekyll from
+# copying it into the published site. Every path stays in version control and
+# stays available to its real deployment target (Cloudflare, the bot host, etc).
+exclude:
+  # --- Digital Shop private surfaces -------------------------------------
+  # Owner Admin UI. Belongs on a separate Cloudflare Pages project behind
+  # Cloudflare Access; Access cannot protect a github.io URL, so this must
+  # never be served from here.
+  - admin
+  # Cloudflare Worker source (TypeScript, tests, migrations, wrangler config).
+  # Deployed via `wrangler deploy`; not a web asset.
+  - shop-worker
+  # Cloudflare Pages Functions for the Owner Admin project — the server-side
+  # /api/* proxy that carries the Access token to the Worker. Belongs to the
+  # Access-protected Pages deployment, never to the public GitHub Pages site.
+  - functions
+  # Build tooling for the above (admin/_worker.js). Operational, not a web asset.
+  - scripts
+  # Built deployment packages and product ZIPs. Artifacts, not web assets.
+  - dist
+  # Commercial product source (SFL-AIOPS-001). Paid content — never published.
+  - product-source
+  # Internal infrastructure audits: Worker inventory, resource IDs, architecture
+  # maps. Operational intelligence — must never reach the public site.
+  - audit
+
+  # --- Verified sensitive content ----------------------------------------
+  # Telegram bot source. Contains private channel invite links and internal
+  # Worker hostnames in plain source. Highest-priority exclusion.
+  - bot
+  # React app source. Its /ops pages embed private channel invite codes and an
+  # internal Worker hostname client-side. NOTE: this is a per-subdirectory
+  # exclusion — frontend/games/ above stays public.
+  - frontend/src
+  - frontend/modules
+  - frontend/package.json
+
+  # --- Internal infrastructure and governance ----------------------------
+  # Express API source: internal domain/tier maps, R2 key layout.
+  - backend
+  # Worker source, secrets manifest template, deploy sequences, health/migration
+  # plans. Operational, not public.
+  - cloudflare
+  # Build/start scripts and the ecosystem Worker.
+  - config
+  # ORIGINUS governance manifests and canon.
+  - originus
+  # ORIGINUS vault manifests.
+  - vault
+  # Stale build mirrors of the frontend/backend source.
+  - artifacts
+
+  # --- Internal operational documentation ---------------------------------
+  # These describe deployment procedure, required configuration keys, and known
+  # security gaps. SHOP_SECURITY_CHECKLIST.md in particular documents an
+  # unresolved pre-existing issue, which should not be published while it is
+  # still open. (README.md stays public — it is the repository's front door and
+  # contains nothing operational.)
+  - SHOP_MVP_README.md
+  - SHOP_ARCHITECTURE.md
+  - SHOP_SECURITY_CHECKLIST.md
+  - SHOP_RELEASE_CHECKLIST.md
+  - SHOP_KNOWN_LIMITATIONS.md
+  - CLOUDFLARE_SHOP_SETUP.md
+  - STRIPE_SHOP_SETUP.md
+  - RESEND_SETUP.md
+  - OWNER_SHOP_GUIDE.md
+  - SHOP_MVP_RUNBOOK.md
+  - SHOP_MAIN_MERGE_READINESS.md
+  - PRODUCT_MANIFEST_SCHEMA.md
+  # The House of Assets bridge contract. Names the bridge endpoint and the
+  # secret that guards it — operational, never public.
+  - HOA_SHOP_PUBLICATION_CONTRACT.md
+  - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md
+  # How to run the public site: publishing flow, universes, audio, validators.
+  - PUBLIC_SITE_GUIDE.md

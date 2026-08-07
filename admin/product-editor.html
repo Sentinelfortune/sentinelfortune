@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Edit Product — Sentinel Fortune LLC Shop Admin</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#04060f"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body data-page="product-editor">
+<div class="admin-app" style="display:flex;width:100%">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">SENTINEL FORTUNE LLC<small>Shop Owner Admin</small></div>
+    <nav class="admin-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="products.html" aria-current="page">Products</a>
+      <a href="orders.html">Orders</a>
+      <a href="licenses.html">Licenses</a>
+      <a href="files.html">Files</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <div class="admin-sidebar-foot">
+      <div class="admin-whoami" id="whoami">—</div>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-head">
+      <div>
+        <div class="admin-title" id="editorTitle">Product</div>
+        <div class="admin-sub"><a href="products.html" style="color:var(--gold3)">← Back to Products</a></div>
+      </div>
+      <button class="btn" id="previewBtn" type="button">Preview Public Page</button>
+    </div>
+
+    <div id="editorMessages"></div>
+
+    <div class="panel" id="readinessPanel"></div>
+
+    <div class="panel" id="lifecyclePanel"></div>
+
+    <div class="panel">
+      <h2>Product Details</h2>
+      <form id="productForm">
+        <div class="form-grid">
+          <div class="field"><label>Title</label><input type="text" name="title" required></div>
+          <div class="field"><label>Slug (URL-safe)</label><input type="text" name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*"></div>
+          <div class="field"><label>SKU</label><input type="text" name="sku" required></div>
+          <div class="field"><label>Category</label><input type="text" name="category" placeholder="e.g. Business Operations"></div>
+          <div class="field"><label>Audience</label><input type="text" name="audience" placeholder="e.g. HVAC, plumbing, electrical, home-service businesses"></div>
+          <div class="field"><label>Edition</label><input type="text" name="edition" placeholder="e.g. Standard Self-Customization Edition"></div>
+          <div class="field"><label>Version</label><input type="text" name="version" value="1.0"></div>
+          <div class="field">
+            <label>License Type</label>
+            <select name="licenseType">
+              <option value="SINGLE_BUSINESS">Single Business (publicly purchasable)</option>
+              <option value="MULTI_LOCATION">Multi-Location (inquire only)</option>
+              <option value="CONSULTANT">Consultant (inquire only)</option>
+              <option value="WHITE_LABEL">White Label (inquire only)</option>
+            </select>
+          </div>
+          <div class="field"><label>Supported Formats</label><input type="text" name="supportedFormats" placeholder="e.g. PDF, DOCX, XLSX"></div>
+          <div class="field"><label>Download Link Expiry (hours)</label><input type="number" name="downloadLinkExpiryHours" min="1" max="720" value="72"></div>
+          <div class="field"><label>Max Downloads Per Link</label><input type="number" name="maxDownloads" min="1" max="100" value="5"></div>
+        </div>
+
+        <div class="field"><label>Short Description (catalog card)</label><textarea name="shortDescription" maxlength="400"></textarea></div>
+        <div class="field"><label>Problem Solved</label><textarea name="problemSolved"></textarea></div>
+        <div class="field"><label>Full Description</label><textarea name="description"></textarea></div>
+
+        <div class="field">
+          <label>What's Included (one per line)</label>
+          <div class="list-editor" id="deliverablesEditor"></div>
+          <button type="button" class="btn btn-sm" id="addDeliverableBtn">+ Add item</button>
+        </div>
+
+        <div class="field">
+          <label>Not Included</label>
+          <div class="list-editor" id="notIncludedEditor"></div>
+          <button type="button" class="btn btn-sm" id="addNotIncludedBtn">+ Add item</button>
+        </div>
+
+        <div class="field">
+          <label>FAQs</label>
+          <div class="list-editor" id="faqsEditor"></div>
+          <button type="button" class="btn btn-sm" id="addFaqBtn">+ Add FAQ</button>
+        </div>
+
+        <div class="field"><label>Responsible-Use Statement</label><textarea name="responsibleUseText"></textarea></div>
+
+        <div class="field checkbox-field"><input type="checkbox" name="refundEligible" id="refundEligible"><label for="refundEligible">This product is refund-eligible</label></div>
+        <div class="field"><label>Refund Policy Summary (required to publish)</label><textarea name="refundPolicySummary"></textarea></div>
+        <div class="field checkbox-field"><input type="checkbox" name="termsAcknowledged" id="termsAcknowledged"><label for="termsAcknowledged">I confirm this product's listing complies with our Terms of Sale and is ready for Owner sign-off (required to publish)</label></div>
+
+        <button type="submit" class="btn btn-primary">Save Product</button>
+      </form>
+    </div>
+
+    <div class="panel" id="priceFormWrap">
+      <h2>Price</h2>
+      <form id="priceForm" style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap">
+        <div class="field" style="margin-bottom:0"><label>Price (USD)</label><input type="text" id="priceInput" placeholder="49.00"></div>
+        <div class="field checkbox-field" style="margin-bottom:0"><input type="checkbox" id="priceConfirmCheck"><label for="priceConfirmCheck">Confirm this price for sale</label></div>
+        <button type="submit" class="btn btn-primary">Update Price</button>
+      </form>
+      <p class="hint" style="margin-top:10px">The price is not invented by this system — it is not confirmed for sale until you check the box above. An unconfirmed price blocks publication.</p>
+    </div>
+
+    <div class="panel" id="assetsPanel">
+      <h2>Cover &amp; Preview Images</h2>
+      <div class="image-grid" id="imageGrid"></div>
+      <form id="coverUploadForm" style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+        <input type="file" accept="image/png,image/jpeg,image/webp" required>
+        <button type="submit" class="btn btn-sm">Upload / Replace Cover</button>
+      </form>
+      <form id="previewUploadForm" style="display:flex;gap:10px;align-items:center">
+        <input type="file" accept="image/png,image/jpeg,image/webp" required>
+        <button type="submit" class="btn btn-sm">Add Preview Image (max 6)</button>
+      </form>
+
+      <h2 style="margin-top:24px">Downloadable Files</h2>
+      <div class="file-list" id="fileList"></div>
+      <form id="fileUploadForm" style="display:flex;gap:10px;align-items:center">
+        <input type="file" accept=".pdf,.docx,.xlsx,.pptx,.zip,.png,.jpg,.jpeg,.webp,.csv,.txt" required>
+        <button type="submit" class="btn btn-sm">Upload File</button>
+      </form>
+      <p class="hint" style="margin-top:10px">Allowed: PDF, DOCX, XLSX, PPTX, ZIP, PNG, JPG, WEBP, CSV, TXT. Executable and script file types are rejected automatically.</p>
+    </div>
+
+    <div class="panel" id="previewPanel" style="display:none"></div>
+  </main>
+</div>
+
+<script src="admin-config.js"></script>
+<script src="admin.js"></script>
+<script>
+document.getElementById("addDeliverableBtn").addEventListener("click", function () { addListRow(document.getElementById("deliverablesEditor"), ""); });
+document.getElementById("addNotIncludedBtn").addEventListener("click", function () { addListRow(document.getElementById("notIncludedEditor"), ""); });
+document.getElementById("addFaqBtn").addEventListener("click", function () { addFaqRow({ q: "", a: "" }); });
+</script>
+</body>
+</html>

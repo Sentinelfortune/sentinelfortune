@@ -7,3 +7,28 @@ dist/
 .replit
 replit.nix
 *.tsbuildinfo
+
+# Cloudflare local dev state and secrets, never committed.
+#
+# The shop-worker/ rules below were written when wrangler was only ever run
+# from inside that directory. Running it from the repository root — which is
+# what a `wrangler deploy --config shop-worker/wrangler.toml` invocation does —
+# creates a SECOND cache at the root that no rule covered, so it showed up as
+# untracked on a clean tree. Both locations are now ignored.
+.wrangler/
+shop-worker/.wrangler/
+.dev.vars
+shop-worker/.dev.vars
+
+# Owner Admin deployment packages.
+#
+# dist/ above already covers the packages this repo builds itself. This covers
+# the ones a person ends up with beside the admin source: a bundle downloaded
+# from Cloudflare and re-zipped by the browser lands here as `*.zip.zip`. A
+# built admin package carries whatever configuration it was built with, and
+# this repository is public, so it must never be committed by accident.
+#
+# Scoped to admin/ deliberately. A blanket `*.zip` would also mask the
+# deployment package the Shop Admin branch commits under dist/, and that is a
+# separate piece of work whose choices this rule has no business overriding.
+admin/*.zip

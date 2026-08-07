@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Products — Sentinel Fortune LLC Shop Admin</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#04060f"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body data-page="products">
+<div class="admin-app" style="display:flex;width:100%">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">SENTINEL FORTUNE LLC<small>Shop Owner Admin</small></div>
+    <nav class="admin-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="products.html" aria-current="page">Products</a>
+      <a href="orders.html">Orders</a>
+      <a href="licenses.html">Licenses</a>
+      <a href="files.html">Files</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <div class="admin-sidebar-foot">
+      <div class="admin-whoami" id="whoami">—</div>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-head">
+      <div>
+        <div class="admin-title">Products</div>
+        <div class="admin-sub">Create, edit, and publish digital products.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="importBtn" type="button">Import Product Package</button>
+        <a class="btn btn-primary" href="product-editor.html?id=new">+ New Product</a>
+      </div>
+    </div>
+
+    <!-- Governed import. Hidden until the Owner opens it; the manual editor above
+         is unchanged and remains the way to create a product by hand. -->
+    <section class="panel import-panel" id="importPanel" hidden>
+      <h2>Import Product Package</h2>
+      <p class="hint" id="importIntro">
+        Select a governed product package (.zip). The package is validated before anything is written —
+        nothing is imported and no file is stored unless every check passes. The result is always a
+        <strong>draft</strong>: price, Owner terms and publishing stay with you.
+      </p>
+
+      <div class="import-step" id="importStepPick">
+        <div class="upload-zone">
+          <input type="file" id="importFile" accept=".zip,application/zip">
+          <button class="btn btn-primary" id="importValidateBtn" type="button">Validate package</button>
+          <button class="btn" id="importCancelBtn" type="button">Cancel</button>
+        </div>
+      </div>
+
+      <div id="importResult"></div>
+    </section>
+
+    <div class="panel">
+      <table class="data-table">
+        <thead><tr><th>Product</th><th>Status</th><th>Price</th><th>License</th><th>Readiness</th><th>Actions</th></tr></thead>
+        <tbody id="productsTableBody"><tr class="empty-row"><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="admin-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
