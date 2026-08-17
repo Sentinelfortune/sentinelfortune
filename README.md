@@ -65,3 +65,4 @@ Sentinel Fortune LLC develops and commercializes selected assets across:
 /docs       — Documentation
 /shop       — Digital product storefront components
 /admin      — Authorized administrative interface
+```
