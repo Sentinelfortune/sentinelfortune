@@ -1,39 +1,67 @@
-# Sentinel Fortune LLC — Production System v2.0
+# Sentinel Fortune LLC
 
-**Multi-domain monetization platform** operating across 8 domains.
+**Connected Product & Intellectual Property Ecosystem**
 
-## Structure
-```
-/bot        — Telegram bot (aiogram 3, 6-tier money engine)
-/backend    — Express API (6 routes, Stripe, R2)
-/frontend   — SFL Network Hub (React+Vite, 21 routes)
-/config     — Cloudflare Workers + deployment scripts
-/docs       — System documentation
-```
+Sentinel Fortune LLC is a U.S.-registered product and intellectual property company creating software, digital products, commercial publishing assets, reusable business systems, and connected product experiences.
 
-## Bot Commands
-| Command | Action |
-|---------|--------|
-| `/start` | Onboarding + deep-link entry |
-| `/enter` | Register user → POST /api/enter-system |
-| `/buy [tier]` | Stripe checkout link |
-| `/status` | GET /api/status/:id |
+This repository supports the public-facing Sentinel Fortune ecosystem and selected production components.
 
-## 6 Tiers
-`lite $2` · `monthly $25/mo` · `starter $290` · `pro $1,900` · `oem $7,500` · `licensing $15,000`
+## Public Architecture
 
-## 8 Domains
-`sentinelfortune.com` · `sentinelfortunerecords.one` · `codexworldtv.homes` · `lumengame.vip`
-`lumenschoolacademy.online` · `vibraflowmedia.casa` · `lightnodesystems.my` · `oglegacystore.homes`
+Sentinel Fortune LLC operates under one institutional authority:
 
-## Hard Rules
-- Never modify `originus/_canon/` in R2
-- Never touch `delivery_service.py`
-- All bot→API calls via HTTP (no direct R2 access)
+- **sentinelfortune.com** — Institutional hub
+- **sentinelfortune.github.io/sentinelfortune/** — Public interface
 
-## Digital Shop (new, isolated)
+The ecosystem is organized as one company, one core, and seven specialized identities:
 
-A separate, isolated Digital Shop MVP for one-time digital-product sales lives in `/shop-worker`
-(Cloudflare Worker backend), `/shop` (public storefront pages), and `/admin` (Owner Admin UI). It does not
-modify, extend, or depend on anything above — no live product is published yet. Start at
-`SHOP_MVP_README.md`.
+- Sentinel Fortune Records  
+  `sentinelfortunerecords.sentinelfortune.com`
+
+- LumenGame  
+  `lumengame.sentinelfortune.com`
+
+- VibraFlow Media  
+  `vibraflowmedia.sentinelfortune.com`
+
+- CodexWorld TV  
+  `codexworldtv.sentinelfortune.com`
+
+- Lumen School Academy  
+  `lumenschoolacademy.sentinelfortune.com`
+
+- LightNode Systems  
+  `lightnodesystems.sentinelfortune.com`
+
+- OG Legacy Store  
+  `oglegacystore.sentinelfortune.com`
+
+These identities are not separate companies or independent ecosystems. They operate under Sentinel Fortune LLC and its unified domain architecture.
+
+## Product Areas
+
+Sentinel Fortune LLC develops and commercializes selected assets across:
+
+- Software and digital tools
+- Digital products
+- Commercial publishing
+- Books and eBooks
+- Business resources
+- Education and learning
+- Music and audio
+- Media and storytelling
+- Games and interactive experiences
+- Publishing assets
+- Brands and digital commerce
+- Reusable intellectual property
+
+## Repository Structure
+
+```text
+/bot        — Automation and messaging components
+/backend    — Application and API services
+/frontend   — Public web interface
+/config     — Deployment and infrastructure configuration
+/docs       — Documentation
+/shop       — Digital product storefront components
+/admin      — Authorized administrative interface
