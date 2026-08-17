@@ -50,3 +50,12 @@ export async function sha256Hex(input: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", data);
   return bytesToHex(new Uint8Array(digest));
 }
+
+/** Digest of raw bytes — used to verify a delivered package against its manifest. */
+export async function sha256HexBytes(input: ArrayBuffer | Uint8Array): Promise<string> {
+  const data = input instanceof Uint8Array
+    ? (input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength) as ArrayBuffer)
+    : input;
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return bytesToHex(new Uint8Array(digest));
+}

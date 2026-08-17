@@ -13,7 +13,7 @@
 // under vitest). Loading it through Node's own `createRequire` bypasses
 // Vite/vite-node entirely and hands the bare specifier straight to Node's
 // real, native `require`, where it resolves normally.
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -86,17 +86,30 @@ class SqliteD1Adapter implements D1Like {
 }
 
 /**
- * Creates a fresh in-memory SQLite database with the real Shop migrations
- * applied (schema only — 0001; pass includeSeed=true to also apply the
- * 0002 first-product seed).
+ * Every schema migration, in order, discovered rather than listed — a new
+ * migrations/NNNN_*.sql file is picked up automatically, so tests cannot
+ * silently run against a stale schema because someone forgot to add it here.
+ * Seed migrations are excluded; they are applied only on request.
+ */
+function schemaMigrations(): string[] {
+  return readdirSync(MIGRATIONS_DIR)
+    .filter((name) => name.endsWith(".sql") && !name.includes("_seed_"))
+    .sort();
+}
+
+/**
+ * Creates a fresh in-memory SQLite database with the real Shop schema
+ * migrations applied. Pass includeSeed=true to also apply the 0002
+ * first-product seed.
  */
 export async function createTestD1(includeSeed = false): Promise<D1Like> {
   const DatabaseSync = await loadDatabaseSync();
   const db = new DatabaseSync(":memory:");
   db.exec("PRAGMA foreign_keys = ON;");
 
-  const schemaSql = readFileSync(path.join(MIGRATIONS_DIR, "0001_init.sql"), "utf-8");
-  db.exec(schemaSql);
+  for (const migration of schemaMigrations()) {
+    db.exec(readFileSync(path.join(MIGRATIONS_DIR, migration), "utf-8"));
+  }
 
   if (includeSeed) {
     const seedSql = readFileSync(path.join(MIGRATIONS_DIR, "0002_seed_first_product.sql"), "utf-8");

@@ -44,6 +44,7 @@ function base64UrlDecodeJson<T>(segment: string): T {
 
 interface AccessJwtPayload {
   aud: string | string[];
+  iss?: string;
   email?: string;
   sub?: string;
   exp: number;
@@ -53,14 +54,26 @@ interface AccessJwtPayload {
 
 const CLOCK_SKEW_SECONDS = 60;
 
+/** The issuer Cloudflare Access stamps on tokens for a given team domain. */
+export function expectedIssuerFor(teamDomain: string): string {
+  return `https://${teamDomain.replace(/\/$/, "")}`;
+}
+
 /**
  * Pure verification against an already-fetched JWKS key set. Kept separate
  * from JWKS fetching so it can be unit tested without any network access.
+ *
+ * Checks, in order: structure, alg, known kid, signature, expiry/nbf,
+ * issuer, audience, and the presence of an identity. All four of signature,
+ * issuer, audience and expiry must pass — a token that is validly signed by
+ * Cloudflare but issued for a different team or a different Access
+ * application is rejected.
  */
 export async function verifyAccessJwtWithJwks(
   token: string,
   jwks: Jwk[],
   expectedAud: string,
+  expectedIssuer: string,
   now: Date,
 ): Promise<AccessIdentity | null> {
   const parts = token.split(".");
@@ -104,6 +117,8 @@ export async function verifyAccessJwtWithJwks(
   if (payload.exp + CLOCK_SKEW_SECONDS < nowSec) return null;
   if (payload.nbf && payload.nbf - CLOCK_SKEW_SECONDS > nowSec) return null;
 
+  if (!payload.iss || payload.iss !== expectedIssuer) return null;
+
   const audList = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
   if (!audList.includes(expectedAud)) return null;
 
@@ -144,11 +159,19 @@ export async function requireOwnerAccess(request: Request, env: Env): Promise<Ac
   const token = extractAccessJwt(request);
   if (!token) return null;
 
-  if (!env.CF_ACCESS_TEAM_DOMAIN || !env.CF_ACCESS_AUD) return null;
+  // CF_ACCESS_TEAM_DOMAIN is a plain var; CF_ACCESS_AUD arrives as a Wrangler
+  // secret and is undefined until it has been uploaded. Either one missing (or
+  // empty, or still a REPLACE_WITH_* placeholder) means Access is not configured
+  // for this deployment — reject rather than verify against a value that could
+  // never have come from a real Access application.
+  const teamDomain = env.CF_ACCESS_TEAM_DOMAIN;
+  const expectedAud = env.CF_ACCESS_AUD;
+  if (!teamDomain || teamDomain.includes("REPLACE_WITH")) return null;
+  if (!expectedAud || expectedAud.includes("REPLACE_WITH")) return null;
 
   try {
-    const jwks = await fetchJwks(env.CF_ACCESS_TEAM_DOMAIN);
-    return await verifyAccessJwtWithJwks(token, jwks, env.CF_ACCESS_AUD, new Date());
+    const jwks = await fetchJwks(teamDomain);
+    return await verifyAccessJwtWithJwks(token, jwks, expectedAud, expectedIssuerFor(teamDomain), new Date());
   } catch {
     return null;
   }

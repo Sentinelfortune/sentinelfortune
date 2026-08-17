@@ -18,7 +18,8 @@ export async function buildTestEnv(overrides: Partial<Env> = {}): Promise<Env> {
     CF_ACCESS_TEAM_DOMAIN: "sentinelfortune-test.cloudflareaccess.com",
     CF_ACCESS_AUD: "test-aud-tag",
     SHOP_PUBLIC_BASE_URL: "https://sentinelfortune.github.io/sentinelfortune/shop",
-    SHOP_ASSETS_PUBLIC_BASE_URL: "https://assets.example.com",
+    // SHOP_ASSETS_PUBLIC_BASE_URL deliberately unset — the default (and the
+    // deployed configuration) serves images through the Worker itself.
     SHOP_WORKER_BASE_URL: "https://shop-worker.example.workers.dev",
     ENVIRONMENT: "test",
     ...overrides,

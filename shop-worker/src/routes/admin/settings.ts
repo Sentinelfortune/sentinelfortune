@@ -66,8 +66,18 @@ export async function handleAdminUpdateSettings(request: Request, env: Env, iden
   }
 }
 
-export async function handleAdminWhoami(_request: Request, _env: Env, identity: AccessIdentity): Promise<Response> {
-  return jsonResponse({ ok: true, email: identity.email });
+export async function handleAdminWhoami(_request: Request, env: Env, identity: AccessIdentity): Promise<Response> {
+  // publicShopBaseUrl lets the Admin build a "View live" link without the
+  // storefront's address being compiled into the Admin bundle. The direction of
+  // knowledge matters: the Admin may know where the public shop is, but the
+  // public shop must never learn where the Admin is. This route is behind
+  // Cloudflare Access, and the value is a public URL, not a secret.
+  return jsonResponse({
+    ok: true,
+    email: identity.email,
+    environment: env.ENVIRONMENT,
+    publicShopBaseUrl: env.SHOP_PUBLIC_BASE_URL,
+  });
 }
 
 export async function handleAdminAuditLog(_request: Request, env: Env): Promise<Response> {
