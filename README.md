@@ -1,39 +1,75 @@
-# Sentinel Fortune LLC — Production System v2.0
+# Sentinel Fortune LLC — Public Interface
 
-**Multi-domain monetization platform** operating across 8 domains.
+Sentinel Fortune LLC is one company.
 
-## Structure
-```
-/bot        — Telegram bot (aiogram 3, 6-tier money engine)
-/backend    — Express API (6 routes, Stripe, R2)
-/frontend   — SFL Network Hub (React+Vite, 21 routes)
-/config     — Cloudflare Workers + deployment scripts
-/docs       — System documentation
-```
+- **Institutional hub:** [sentinelfortune.com](https://sentinelfortune.com) — the authoritative source for
+  anything institutional about Sentinel Fortune LLC.
+- **This repository:** the public interface, published at
+  [sentinelfortune.github.io/sentinelfortune](https://sentinelfortune.github.io/sentinelfortune/).
 
-## Bot Commands
-| Command | Action |
-|---------|--------|
-| `/start` | Onboarding + deep-link entry |
-| `/enter` | Register user → POST /api/enter-system |
-| `/buy [tier]` | Stripe checkout link |
-| `/status` | GET /api/status/:id |
+## Specialized identities
 
-## 6 Tiers
-`lite $2` · `monthly $25/mo` · `starter $290` · `pro $1,900` · `oem $7,500` · `licensing $15,000`
+Sentinel Fortune LLC operates seven specialized identities under its master domain. They are
+specialized identities of one company — not separate companies, not independent ecosystems, and not
+independent institutional authorities.
 
-## 8 Domains
-`sentinelfortune.com` · `sentinelfortunerecords.one` · `codexworldtv.homes` · `lumengame.vip`
-`lumenschoolacademy.online` · `vibraflowmedia.casa` · `lightnodesystems.my` · `oglegacystore.homes`
+| Identity | Address |
+|---|---|
+| Sentinel Fortune Records | `sentinelfortunerecords.sentinelfortune.com` |
+| Codex World TV | `codexworldtv.sentinelfortune.com` |
+| Lumen Game | `lumengame.sentinelfortune.com` |
+| Lumen School Academy | `lumenschoolacademy.sentinelfortune.com` |
+| VibraFlow Media | `vibraflowmedia.sentinelfortune.com` |
+| LightNode Systems | `lightnodesystems.sentinelfortune.com` |
+| OG Legacy Store | `oglegacystore.sentinelfortune.com` |
 
-## Hard Rules
-- Never modify `originus/_canon/` in R2
-- Never touch `delivery_service.py`
-- All bot→API calls via HTTP (no direct R2 access)
+## The five product universes
 
-## Digital Shop (new, isolated)
+The public catalogue is organised into five universes. These are a **product taxonomy** — how the
+catalogue is sorted — and nothing more. They are not the corporate structure, and they do not
+correspond to the seven identities above.
 
-A separate, isolated Digital Shop MVP for one-time digital-product sales lives in `/shop-worker`
-(Cloudflare Worker backend), `/shop` (public storefront pages), and `/admin` (Owner Admin UI). It does not
-modify, extend, or depend on anything above — no live product is published yet. Start at
-`SHOP_MVP_README.md`.
+- Business & Professional
+- Education & Learning
+- Books & Publishing
+- Spirituality & Reflection
+- Software & Digital Tools
+
+The canonical definition lives in [`_data/universes.yml`](_data/universes.yml), which the homepage,
+the products page and the shop catalogue all read from.
+
+## The Digital Shop
+
+Sentinel Fortune LLC publishes downloadable digital products. Each one is a single purchase with a
+licence attached — paid through Stripe, delivered as a private download link. There is no
+subscription, no account to create, and nothing to renew.
+
+Start at [`/shop/`](shop/). The [Terms of Sale](shop/terms-of-sale.html),
+[Refund Policy](shop/refund-policy.html), [Licensing](shop/licenses.html) and
+[Privacy Policy](shop/privacy.html) pages set out the terms that actually apply.
+
+## Public content
+
+[Guides](guides/), [Articles](articles/) and [Updates](updates/) are open and require no account.
+All published guidance is operational and general. It is not legal, financial, HR, safety, code,
+permit or regulatory advice.
+
+## What this repository is, and is not
+
+This repository contains the source of the public interface. **Source code in this repository does
+not imply that a product is publicly available.** The shop catalogue is the only authority on what is
+actually for sale: if a product is not listed there, it is not available for purchase, regardless of
+what any file here contains.
+
+Directories that are not part of the public interface are excluded from the published site by
+[`_config.yml`](_config.yml). Internal architecture, private systems and operational configuration
+are deliberately not documented here.
+
+## Business enquiries
+
+Licensing, OEM, distribution and partnership arrangements are handled individually rather than
+through self-service checkout. Contact `contact@sentinelfortune.com`.
+
+---
+
+© Sentinel Fortune LLC. Public interface connected to the institutional hub at sentinelfortune.com.

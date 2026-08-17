@@ -169,6 +169,13 @@ exclude:
   # The House of Assets bridge contract. Names the bridge endpoint and the
   # secret that guards it — operational, never public.
   - HOA_SHOP_PUBLICATION_CONTRACT.md
+  # Internal planning and audit documents. These were reaching the published
+  # site: between them they named ORIGINUS internals, the `originus/_canon/`
+  # R2 prefix, R2 bucket names, `delivery_service.py`, bot service modules and
+  # backend source paths. None of that belongs on a public interface.
+  - SHOP_REUSE_MAP.md
+  - SHOP_MVP_IMPLEMENTATION_PLAN.md
+  - SHOP_REPOSITORY_AUDIT.md
   - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md
   # How to run the public site: publishing flow, universes, audio, validators.
   - PUBLIC_SITE_GUIDE.md

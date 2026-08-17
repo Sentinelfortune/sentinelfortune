@@ -302,7 +302,7 @@ LIVE EXPERIENCES
 .vm-x:hover{background:var(--gold);color:#050810;border-color:var(--gold)}
 
 /* ══════════════════════════════════════
-UNIVERSE — 8 spaces
+UNIVERSE — the specialized identities
 ══════════════════════════════════════ */
 .univ{padding:120px 0;background:var(--ink)}
 .univ-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dim)}
@@ -789,7 +789,7 @@ body > div[style*="position:fixed"] a:hover{
       <a href="{{ '/about/' | relative_url }}" class="hdr-a">About</a>
       <a href="{{ '/contact/' | relative_url }}" class="hdr-a">Contact</a>
     </nav>
-    <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="hdr-cta">Enter Private Access</a>
+    <a href="{{ '/shop/' | relative_url }}" class="hdr-cta">Visit the Shop</a>
     <button class="burger" id="burger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -805,7 +805,7 @@ body > div[style*="position:fixed"] a:hover{
     <a href="{{ '/about/' | relative_url }}" class="mob-a">About</a>
     <a href="{{ '/faq/' | relative_url }}" class="mob-a">FAQ</a>
     <a href="{{ '/contact/' | relative_url }}" class="mob-a">Contact</a>
-    <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="mob-cta">Enter Private Access</a>
+    <a href="{{ '/shop/' | relative_url }}" class="mob-cta">Visit the Shop</a>
   </div>
 </header>
 
@@ -840,7 +840,7 @@ body > div[style*="position:fixed"] a:hover{
   <a href="{{ '/guides/' | relative_url }}" class="btn btn-line">Read the Guides</a>
 </div>
 <p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);margin-top:20px;text-transform:uppercase">
-  Access begins through the verified Sentinel Fortune Telegram gateway. Stripe payment verification is required before secured platform access is granted.
+  Every product is a single purchase. Checkout runs through Stripe — no account, no subscription.
 </p>
 
 <!-- Live waveform -->
@@ -1107,7 +1107,8 @@ body > div[style*="position:fixed"] a:hover{
   <div class="wrap">
     <div class="stag reveal">The House</div>
     <h2 class="sh reveal">Public Universe</h2>
-    <p class="sp reveal">Eight spaces. Each alive. Each a world of its own.</p>
+    <p class="sp reveal">Seven specialized identities, each a world of its own — and all of them
+      one company, under one roof at sentinelfortune.com.</p>
     <div class="univ-grid" id="univGrid">
       <!-- Rendered by JS -->
     </div>
@@ -1123,8 +1124,8 @@ body > div[style*="position:fixed"] a:hover{
     <p class="sp reveal">The house is always in motion.</p>
     <div class="drops-row" id="dropsRow"></div>
     <div style="text-align:center;margin-top:48px">
-      <p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);text-transform:uppercase;margin-bottom:20px">Some experiences are not displayed publicly. Access is guided through private corridors and verified by tier.</p>
-      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="btn btn-line">Access All Drops</a>
+      <p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);text-transform:uppercase;margin-bottom:20px">Some experiences are not displayed publicly. They live in the deeper corridors of the house.</p>
+      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="btn btn-line">Follow on Telegram</a>
     </div>
   </div>
 </section>
@@ -1138,12 +1139,14 @@ body > div[style*="position:fixed"] a:hover{
       <div class="stag" style="justify-content:center">Deeper Corridors</div>
       <h2 class="gate-h">The public layer is<br/>only the entrance.</h2>
       <p class="gate-p">
-        Deeper experiences, libraries, games, premium audio, systems and selected pathways are accessed privately through the verified Sentinel Fortune Telegram gateway.Access is guided through secure pathways and may require verification depending on the selected experience tier.
+        Deeper experiences, libraries, games, premium audio and systems live further inside the
+        house. The shop and the written work are open to everyone; for the rest, Telegram is one
+        way to keep in touch, and email is another.
       </p>
-      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-xl">Request Access</a>
+      <a href="https://t.me/sentinelfortune_bot" target="_blank" rel="noopener noreferrer" class="btn btn-gold btn-xl">Follow on Telegram</a>
       <p class="gate-note">
-        Access is assigned by tier after verification.<br/>
-Entry is aligned with the corresponding experience level.
+        Or write to <a href="mailto:contact@sentinelfortune.com" style="color:inherit">contact@sentinelfortune.com</a>.<br/>
+Neither is required to buy anything — the shop needs no account and no introduction.
       </p>
     </div>
   </div>
@@ -1346,7 +1349,7 @@ Entry is aligned with the corresponding experience level.
     <div class="inst-row reveal">
       <span class="inst-lbl">Ecosystem</span>
       <p class="inst-txt">
-        This public interface is part of the Sentinel Fortune LLC ecosystem. The official institutional hub is sentinelfortune.com. Private access is guided through secure pathways and may require verification depending on the selected experience tier before secured platform entry.
+        This public interface is part of the Sentinel Fortune LLC ecosystem. The official institutional hub is sentinelfortune.com, and the seven specialized identities are houses within that one company rather than separate businesses.
       </p>
       <a href="https://sentinelfortune.com" target="_blank" rel="noopener noreferrer" class="btn btn-line" style="font-size:8.5px;padding:12px 24px">
         Institutional Hub
@@ -1873,15 +1876,19 @@ if(vp&&vm){
 
 // ─── UNIVERSE CARDS ───────────────────────────────────
 var TG="https://t.me/sentinelfortune_bot";
+
+/* The seven specialized identities of Sentinel Fortune LLC. One company, one
+   ecosystem, one master domain — each identity is a house within it, not a
+   separate business. Distinct from the five product universes on /products/,
+   which are the catalogue taxonomy and nothing to do with this. */
 var UNIVERSE=[
-  {icon:"♪",tag:"Sound",       title:"Music & Sound",          desc:"Releases, sound worlds, artists, sonic identity, and immersive audio.",  cta:"Listen",           href:TG},
-  {icon:"◈",tag:"Cinema",      title:"Visual Stories",         desc:"Films, animations, trailers, characters, and cinematic universes.",       cta:"Explore",          href:TG},
-  {icon:"⬡",tag:"Interactive", title:"Games & Interactive",    desc:"Mini-games, interactive worlds, challenges, and playable concepts.",      cta:"Play Beta",        href:TG},
-  {icon:"◎",tag:"Knowledge",   title:"Learning & Masterclasses",desc:"Structured knowledge, personal growth, business themes, guided lessons.",cta:"Unlock Preview",   href:TG},
-  {icon:"▣",tag:"Narrative",   title:"Books & Storytelling",   desc:"Narratives, story worlds, written works, audio stories, universe lore.",  cta:"Enter",            href:TG},
-  {icon:"◇",tag:"Culture",     title:"Product Culture",        desc:"Lifestyle, design language, digital products, curated collections.",       cta:"Access Collection",href:TG},
-  {icon:"⊕",tag:"Digital",     title:"Digital Experiences",    desc:"Web modules, portals, tools, lightweight systems, guided journeys.",       cta:"Enter",            href:TG},
-  {icon:"⟁",tag:"Private",     title:"Private Corridors",      desc:"Deeper libraries, premium experiences, structured access, advanced pathways verified by tier.",cta:"Request Access", href:TG}
+  {icon:"♪",tag:"Sound",       title:"Sentinel Fortune Records",desc:"Releases, sound worlds, artists, sonic identity, and immersive audio.",  cta:"Listen",  href:"https://sentinelfortunerecords.sentinelfortune.com"},
+  {icon:"◈",tag:"Cinema",      title:"Codex World TV",          desc:"Films, animations, trailers, characters, and cinematic universes.",       cta:"Explore", href:"https://codexworldtv.sentinelfortune.com"},
+  {icon:"⬡",tag:"Interactive", title:"Lumen Game",              desc:"Mini-games, interactive worlds, challenges, and playable concepts.",      cta:"Play",    href:"https://lumengame.sentinelfortune.com"},
+  {icon:"◎",tag:"Knowledge",   title:"Lumen School Academy",    desc:"Structured knowledge, personal growth, business themes, guided lessons.", cta:"Learn",   href:"https://lumenschoolacademy.sentinelfortune.com"},
+  {icon:"▣",tag:"Reflection",  title:"VibraFlow Media",         desc:"Reflective writing, rhapsodies, teachings, and contemplative audio.",     cta:"Enter",   href:"https://vibraflowmedia.sentinelfortune.com"},
+  {icon:"⊕",tag:"Systems",     title:"LightNode Systems",       desc:"Web modules, portals, tools, lightweight systems, guided journeys.",      cta:"Enter",   href:"https://lightnodesystems.sentinelfortune.com"},
+  {icon:"◇",tag:"Culture",     title:"OG Legacy Store",         desc:"Lifestyle, design language, digital products, curated collections.",      cta:"Browse",  href:"https://oglegacystore.sentinelfortune.com"}
 ];
 var ug=document.getElementById("univGrid");
 if(ug){UNIVERSE.forEach(function(item,i){
@@ -2029,10 +2036,22 @@ if(logoInput){
    CTA URLs gated to approved prefixes only.
 ──────────────────────────────────────────────────────────────────────────── */
 (function loadPublicSignals(){
+  /* Explicit prefixes only — never a wildcard on *.sentinelfortune.com, so a
+     compromised or mistaken API response cannot introduce an arbitrary host.
+     The seven specialized identities are listed individually for the same
+     reason: they are part of this ecosystem, but each one is named here on
+     purpose rather than matched by pattern. */
   var ALLOWED=[
     "https://t.me/",
     "https://sentinelfortune.com",
     "http://sentinelfortune.com",
+    "https://sentinelfortunerecords.sentinelfortune.com",
+    "https://codexworldtv.sentinelfortune.com",
+    "https://lumengame.sentinelfortune.com",
+    "https://lumenschoolacademy.sentinelfortune.com",
+    "https://vibraflowmedia.sentinelfortune.com",
+    "https://lightnodesystems.sentinelfortune.com",
+    "https://oglegacystore.sentinelfortune.com",
     "mailto:"
   ];
   function safeCta(u){
