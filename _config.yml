@@ -166,6 +166,13 @@ exclude:
   - SHOP_MVP_RUNBOOK.md
   - SHOP_MAIN_MERGE_READINESS.md
   - PRODUCT_MANIFEST_SCHEMA.md
+  # Internal planning and audit documents. They name ORIGINUS internals, the
+  # `originus/_canon/` R2 prefix, R2 bucket names, `delivery_service.py`, bot
+  # service modules and backend source paths. None of that belongs on a public
+  # interface, so they are excluded here whether or not they are present.
+  - SHOP_REUSE_MAP.md
+  - SHOP_MVP_IMPLEMENTATION_PLAN.md
+  - SHOP_REPOSITORY_AUDIT.md
   - PRODUCT_UPLOAD_AND_PUBLISHING_GUIDE.md
   # How to run the public site: publishing flow, universes, audio, validators.
   - PUBLIC_SITE_GUIDE.md
