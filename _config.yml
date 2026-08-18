@@ -9,7 +9,7 @@
 # but hand-rolled templates give exact control over the markup and remove a
 # dependency whose output would have to be audited anyway.
 title: "Sentinel Fortune LLC"
-description: "Operational systems, field-tested tools, and practical intelligence for small businesses that run on execution."
+description: "Sentinel Fortune LLC creates and publishes digital products — business toolkits, learning material, books, reflective writing and digital tools — alongside free operational writing. Downloadable products are sold through the Digital Shop; other product classes are presented on their own surfaces."
 url: "https://sentinelfortune.github.io"
 baseurl: "/sentinelfortune"
 lang: en_US

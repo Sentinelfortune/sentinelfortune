@@ -740,8 +740,8 @@ body > div[style*="position:fixed"] a:hover{
           "acceptedAnswer": { "@type": "Answer", "text": "A private download link appears on the confirmation page immediately after payment and is emailed to the address used at checkout." } },
         { "@type": "Question", "name": "What happens if the download link expires?",
           "acceptedAnswer": { "@type": "Answer", "text": "Email us and it is reissued. Links are time-limited and download-limited for security, not to cut a purchase short." } },
-        { "@type": "Question", "name": "Is this a subscription?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. Every product is a single purchase with no recurring charge and nothing to renew." } },
+        { "@type": "Question", "name": "Are the downloadable products a subscription?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Every product in the downloadable catalogue is a single purchase with no recurring charge and nothing to renew. Hosted software, when Sentinel Fortune offers it, is presented separately and carries its own terms." } },
         { "@type": "Question", "name": "Can I use a product across several businesses?",
           "acceptedAnswer": { "@type": "Answer", "text": "That depends on the licence named on the product page. Single-business is the default; multi-location, consultant and white-label licences exist for some products." } },
         { "@type": "Question", "name": "Is any of this professional advice?",
@@ -840,7 +840,7 @@ body > div[style*="position:fixed"] a:hover{
   <a href="{{ '/guides/' | relative_url }}" class="btn btn-line">Read the Guides</a>
 </div>
 <p style="font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.25em;color:rgba(200,168,75,.4);margin-top:20px;text-transform:uppercase">
-  Every product is a single purchase. Checkout runs through Stripe — no account, no subscription.
+  Downloadable products are a single purchase through Stripe — no account, nothing to renew.
 </p>
 
 <!-- Live waveform -->
@@ -917,7 +917,9 @@ body > div[style*="position:fixed"] a:hover{
     <div class="stag">What we publish</div>
     <h2 class="sh">Five universes.<br/>One way to buy.</h2>
     <p class="sp">Every product is a finished file. Bought once, licensed to your business,
-      delivered as a private download. No subscription, no account, nothing to renew.</p>
+      delivered as a private download. No subscription, no account, nothing to renew.
+      This is how the downloadable catalogue works; hosted software, when we offer it, is
+      presented separately with its own terms.</p>
 
     <div class="us-grid">
       {%- for u in site.data.universes %}
@@ -973,8 +975,8 @@ body > div[style*="position:fixed"] a:hover{
       <div class="trust-item">
         <div class="trust-icon" aria-hidden="true">◈</div>
         <h3>One purchase, one licence</h3>
-        <p>No subscription and no account. The licence is named on the product page
-          before you pay — single-business by default.</p>
+        <p>No subscription and no account on a downloadable product. The licence is
+          named on the product page before you pay — single-business by default.</p>
       </div>
       <div class="trust-item">
         <div class="trust-icon" aria-hidden="true">⬡</div>
@@ -1108,7 +1110,8 @@ body > div[style*="position:fixed"] a:hover{
     <div class="stag reveal">The House</div>
     <h2 class="sh reveal">Public Universe</h2>
     <p class="sp reveal">Seven specialized identities, each a world of its own — and all of them
-      one company, under one roof at sentinelfortune.com.</p>
+      one company, under one roof at sentinelfortune.com. Each identity opens on its own
+      address as it launches.</p>
     <div class="univ-grid" id="univGrid">
       <!-- Rendered by JS -->
     </div>
@@ -1288,8 +1291,10 @@ Neither is required to buy anything — the shop needs no account and no introdu
       <dd>Email us and it is reissued. Links are time-limited and download-limited for
         security, not to cut a purchase short.</dd>
 
-      <dt>Is this a subscription?</dt>
-      <dd>No. Every product is a single purchase with no recurring charge and nothing to renew.</dd>
+      <dt>Are the downloadable products a subscription?</dt>
+      <dd>No. Every product in the downloadable catalogue is a single purchase with no recurring
+        charge and nothing to renew. Hosted software, when we offer it, is presented separately
+        and carries its own terms.</dd>
 
       <dt>Can I use a product across several businesses?</dt>
       <dd>That depends on the licence named on the product page. Single-business is the
