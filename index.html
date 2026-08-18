@@ -1109,9 +1109,10 @@ body > div[style*="position:fixed"] a:hover{
   <div class="wrap">
     <div class="stag reveal">The House</div>
     <h2 class="sh reveal">Public Universe</h2>
-    <p class="sp reveal">Seven specialized identities, each a world of its own — and all of them
-      one company, under one roof at sentinelfortune.com. Each identity opens on its own
-      address as it launches.</p>
+    <p class="sp reveal">Sentinel Fortune operates under one master domain, sentinelfortune.com.
+      Seven specialized identities will progressively open as subdomains as their products and
+      experiences become launch-ready. None is open yet — the addresses below are where each
+      one will live.</p>
     <div class="univ-grid" id="univGrid">
       <!-- Rendered by JS -->
     </div>
@@ -1885,15 +1886,21 @@ var TG="https://t.me/sentinelfortune_bot";
 /* The seven specialized identities of Sentinel Fortune LLC. One company, one
    ecosystem, one master domain — each identity is a house within it, not a
    separate business. Distinct from the five product universes on /products/,
-   which are the catalogue taxonomy and nothing to do with this. */
+   which are the catalogue taxonomy and nothing to do with this.
+
+   `addr` is the subdomain each identity WILL open on. None of the seven is
+   live yet, so none of them is rendered as a link: a card that looks
+   clickable and lands on nothing is worse than a card that says plainly it
+   is not open. When one launches, give that entry `live:true` and the
+   renderer below turns its address into a real link. */
 var UNIVERSE=[
-  {icon:"♪",tag:"Sound",       title:"Sentinel Fortune Records",desc:"Releases, sound worlds, artists, sonic identity, and immersive audio.",  cta:"Listen",  href:"https://sentinelfortunerecords.sentinelfortune.com"},
-  {icon:"◈",tag:"Cinema",      title:"Codex World TV",          desc:"Films, animations, trailers, characters, and cinematic universes.",       cta:"Explore", href:"https://codexworldtv.sentinelfortune.com"},
-  {icon:"⬡",tag:"Interactive", title:"Lumen Game",              desc:"Mini-games, interactive worlds, challenges, and playable concepts.",      cta:"Play",    href:"https://lumengame.sentinelfortune.com"},
-  {icon:"◎",tag:"Knowledge",   title:"Lumen School Academy",    desc:"Structured knowledge, personal growth, business themes, guided lessons.", cta:"Learn",   href:"https://lumenschoolacademy.sentinelfortune.com"},
-  {icon:"▣",tag:"Reflection",  title:"VibraFlow Media",         desc:"Reflective writing, rhapsodies, teachings, and contemplative audio.",     cta:"Enter",   href:"https://vibraflowmedia.sentinelfortune.com"},
-  {icon:"⊕",tag:"Systems",     title:"LightNode Systems",       desc:"Web modules, portals, tools, lightweight systems, guided journeys.",      cta:"Enter",   href:"https://lightnodesystems.sentinelfortune.com"},
-  {icon:"◇",tag:"Culture",     title:"OG Legacy Store",         desc:"Lifestyle, design language, digital products, curated collections.",      cta:"Browse",  href:"https://oglegacystore.sentinelfortune.com"}
+  {icon:"♪",tag:"Sound",       title:"Sentinel Fortune Records",desc:"Releases, sound worlds, artists, sonic identity, and immersive audio.",  addr:"sentinelfortunerecords.sentinelfortune.com"},
+  {icon:"◈",tag:"Cinema",      title:"Codex World TV",          desc:"Films, animations, trailers, characters, and cinematic universes.",       addr:"codexworldtv.sentinelfortune.com"},
+  {icon:"⬡",tag:"Interactive", title:"Lumen Game",              desc:"Mini-games, interactive worlds, challenges, and playable concepts.",      addr:"lumengame.sentinelfortune.com"},
+  {icon:"◎",tag:"Knowledge",   title:"Lumen School Academy",    desc:"Structured knowledge, personal growth, business themes, guided lessons.", addr:"lumenschoolacademy.sentinelfortune.com"},
+  {icon:"▣",tag:"Reflection",  title:"VibraFlow Media",         desc:"Reflective writing, rhapsodies, teachings, and contemplative audio.",     addr:"vibraflowmedia.sentinelfortune.com"},
+  {icon:"⊕",tag:"Systems",     title:"LightNode Systems",       desc:"Web modules, portals, tools, lightweight systems, guided journeys.",      addr:"lightnodesystems.sentinelfortune.com"},
+  {icon:"◇",tag:"Culture",     title:"OG Legacy Store",         desc:"Lifestyle, design language, digital products, curated collections.",      addr:"oglegacystore.sentinelfortune.com"}
 ];
 var ug=document.getElementById("univGrid");
 if(ug){UNIVERSE.forEach(function(item,i){
@@ -1903,7 +1910,9 @@ if(ug){UNIVERSE.forEach(function(item,i){
     "<div class=\"u-tag\">"+item.tag+"</div>"+
     "<div class=\"u-name\">"+item.title+"</div>"+
     "<div class=\"u-desc\">"+item.desc+"</div>"+
-    "<a href=\""+item.href+"\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.2em;color:#c8a84b;text-transform:uppercase;text-decoration:none\">"+item.cta+" →</a>";
+    (item.live
+      ? "<a href=\"https://"+item.addr+"\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.2em;color:#c8a84b;text-transform:uppercase;text-decoration:none\">Visit →</a>"
+      : "<div style=\"margin-top:14px;font-family:'Cinzel',Georgia,serif;font-size:7.5px;letter-spacing:.2em;color:rgba(200,168,75,.45);text-transform:uppercase\">Opening at "+item.addr+"</div>");
   ug.appendChild(d);if(window.IntersectionObserver)io.observe(d);
 });}
 
