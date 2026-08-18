@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prism — turn one goal into one plan | Sentinel Fortune LLC</title>
+<meta name="description" content="Describe what you are trying to accomplish. Prism routes it through seven working dimensions — release planning, challenges, reflection, story structure, learning, workflows and offers — and returns one plan you can export and act on.">
+<link rel="canonical" href="https://sentinelfortune.github.io/sentinelfortune/apps/prism/">
+<meta name="robots" content="index,follow">
+<meta name="color-scheme" content="dark light">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sentinel Fortune LLC">
+<meta property="og:title" content="Prism — turn one goal into one plan">
+<meta property="og:description" content="One goal in, seven working dimensions, one plan out. A hosted Sentinel Fortune application. Nothing you write leaves your device.">
+<meta property="og:url" content="https://sentinelfortune.github.io/sentinelfortune/apps/prism/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Prism — turn one goal into one plan">
+<meta name="twitter:description" content="One goal in, seven working dimensions, one plan out. A hosted Sentinel Fortune application.">
+
+<!-- Inline so the browser's implicit /favicon.ico request never happens: one
+     less round trip, and no 404 in the console of a commercial product. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23c8a84b'/%3E%3Cstop offset='.5' stop-color='%236fa8d9'/%3E%3Cstop offset='1' stop-color='%239b8ec4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='7' fill='%230b0d14'/%3E%3Cpath d='M16 6 27 25H5z' fill='url(%23g)'/%3E%3C/svg%3E">
+
+<link rel="stylesheet" href="./app.css">
+
+<!-- SoftwareApplication is emitted because the application on this page is
+     real and works. No aggregateRating, no reviewCount, no download counts —
+     there are no reviews and no usage figures, so none are claimed. `price: 0`
+     states the present truth: this MVP is free to use. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Prism",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "Planning",
+  "operatingSystem": "Any modern web browser",
+  "url": "https://sentinelfortune.github.io/sentinelfortune/apps/prism/",
+  "description": "Describe a goal and Prism routes it through seven working dimensions — release planning, challenge design, reflection, story structure, learning plans, workflows and offers — returning one exportable plan. Runs entirely in the browser; nothing entered is transmitted or stored on a server.",
+  "browserRequirements": "Requires JavaScript and localStorage.",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Deterministic goal router",
+    "Seven coordinated planning dimensions in one project",
+    "Local-only persistence with no account",
+    "Printable plan and JSON export"
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "Sentinel Fortune LLC",
+    "url": "https://sentinelfortune.com"
+  }
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="./" aria-label="Prism home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-txt">Prism<span class="brand-sub">Sentinel Fortune</span></span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      <button type="button" class="lnk" data-nav="projects">My projects</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ── Landing ─────────────────────────────────────────────────────── -->
+  <section class="view" id="view-landing" aria-labelledby="landing-h">
+    <div class="wrap hero">
+      <p class="kicker">Hosted application · Sentinel Fortune LLC</p>
+      <h1 id="landing-h">One goal in.<br>One plan out.</h1>
+      <p class="lede">
+        Describe what you are trying to accomplish. Prism works out which of seven
+        dimensions your goal actually needs, gives you a focused workspace for each,
+        and hands back a single plan you can export.
+      </p>
+      <button type="button" class="btn btn-primary btn-lg" data-nav="new">Start a project</button>
+      <p class="micro">
+        Nothing you write leaves your device. Projects are saved in this browser only —
+        no account, no sign-up, nothing sent to a server.
+      </p>
+    </div>
+
+    <div class="wrap">
+      <h2 class="sec-h">The seven dimensions</h2>
+      <p class="sec-p">You will not need all of them. That is the point — Prism picks.</p>
+      <ul class="dim-list" id="landingDims"></ul>
+    </div>
+  </section>
+
+  <!-- ── New project ─────────────────────────────────────────────────── -->
+  <section class="view" id="view-new" aria-labelledby="new-h" hidden>
+    <div class="wrap narrow">
+      <p class="kicker">Step 1 of 2</p>
+      <h1 id="new-h">What are you trying to accomplish?</h1>
+
+      <form id="newForm" novalidate>
+        <div class="field">
+          <label for="pName">Project name</label>
+          <input id="pName" name="pName" type="text" maxlength="120" autocomplete="off"
+                 aria-describedby="pNameErr" placeholder="Give it a name you will recognise">
+          <p class="err" id="pNameErr" role="alert" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="pGoal">The goal, in your own words</label>
+          <textarea id="pGoal" name="pGoal" rows="5" maxlength="2000"
+                    aria-describedby="pGoalHint pGoalErr"
+                    placeholder="For example: I want to turn ten years of plumbing experience into something I can sell to other trades businesses."></textarea>
+          <p class="hint" id="pGoalHint">A sentence or two. The more specific you are, the better the routing.</p>
+          <p class="err" id="pGoalErr" role="alert" hidden></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg">Route my goal</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── Router result ───────────────────────────────────────────────── -->
+  <section class="view" id="view-route" aria-labelledby="route-h" hidden>
+    <div class="wrap narrow">
+      <p class="kicker">Step 2 of 2</p>
+      <h1 id="route-h">Here is what your goal needs</h1>
+      <p class="lede sm" id="routeIntro"></p>
+
+      <div id="routeList" class="pick-list"></div>
+
+      <details class="more">
+        <summary>Add another dimension</summary>
+        <p class="hint">Prism suggests; you decide. Anything here can be added or removed later too.</p>
+        <div id="routeRest" class="pick-list"></div>
+      </details>
+
+      <p class="err" id="routeErr" role="alert" hidden></p>
+      <div class="row">
+        <button type="button" class="btn btn-primary btn-lg" id="routeGo">Open workspace</button>
+        <button type="button" class="btn btn-ghost" data-nav="new">Back</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Workspace ───────────────────────────────────────────────────── -->
+  <section class="view" id="view-workspace" aria-labelledby="ws-h" hidden>
+    <div class="wrap">
+      <div class="ws-head">
+        <div>
+          <p class="kicker">Project</p>
+          <h1 id="ws-h" class="ws-title"></h1>
+          <p class="ws-goal" id="wsGoal"></p>
+        </div>
+        <div class="ws-progress">
+          <div class="bar" role="img" aria-labelledby="wsProgTxt"><span id="wsBar"></span></div>
+          <p class="micro" id="wsProgTxt"></p>
+        </div>
+      </div>
+
+      <div class="ws-grid" id="wsGrid"></div>
+
+      <div class="ws-actions">
+        <button type="button" class="btn btn-primary" id="wsResult">Generate the plan</button>
+        <button type="button" class="btn btn-ghost" id="wsAdd">Add or remove dimensions</button>
+        <button type="button" class="btn btn-ghost" data-nav="projects">All projects</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Dimension editor ────────────────────────────────────────────── -->
+  <section class="view" id="view-dimension" aria-labelledby="dim-h" hidden>
+    <div class="wrap narrow">
+      <button type="button" class="back" id="dimBack">← Back to workspace</button>
+      <p class="kicker" id="dimJob"></p>
+      <h1 id="dim-h"></h1>
+      <p class="lede sm" id="dimBlurb"></p>
+      <p class="privacy" id="dimPrivacy" hidden></p>
+
+      <form id="dimForm" novalidate></form>
+
+      <div class="row sticky-save">
+        <button type="button" class="btn btn-primary" id="dimSave">Save</button>
+        <span class="saved" id="dimSaved" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Result ──────────────────────────────────────────────────────── -->
+  <section class="view" id="view-result" aria-labelledby="res-h" hidden>
+    <div class="wrap narrow">
+      <button type="button" class="back" id="resBack">← Back to workspace</button>
+      <p class="kicker">Your plan</p>
+      <h1 id="res-h"></h1>
+
+      <div class="row">
+        <button type="button" class="btn btn-primary" id="resHTML">Download printable plan</button>
+        <button type="button" class="btn btn-ghost" id="resJSON">Download JSON</button>
+      </div>
+      <p class="micro" id="resNote"></p>
+
+      <div id="resBody" class="result"></div>
+    </div>
+  </section>
+
+  <!-- ── Projects ────────────────────────────────────────────────────── -->
+  <section class="view" id="view-projects" aria-labelledby="pr-h" hidden>
+    <div class="wrap narrow">
+      <h1 id="pr-h">My projects</h1>
+      <div id="projList"></div>
+      <button type="button" class="btn btn-primary" data-nav="new">Start a project</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>
+      Prism is a hosted application by <strong>Sentinel Fortune LLC</strong>. It is separate from
+      the Digital Shop, which sells downloadable products.
+    </p>
+    <p class="micro">
+      Everything you enter is stored in this browser and nowhere else. Clearing site data will
+      remove it — export anything you want to keep. Plans produced here are operational and
+      general: not legal, financial, tax, investment, medical or mental-health advice.
+    </p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="./js/ui.js"></script>
+<noscript>
+  <div class="wrap"><p class="err-block">Prism needs JavaScript. It runs entirely in your
+  browser — there is no server doing the work, which is also why nothing you write is sent
+  anywhere.</p></div>
+</noscript>
+</body>
+</html>
