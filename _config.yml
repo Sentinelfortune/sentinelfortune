@@ -141,6 +141,14 @@ exclude:
   - cloudflare
   # Build/start scripts and the ecosystem Worker.
   - config
+  # Prism's test suite, end-to-end harness and deploy config. The application
+  # itself (apps/prism/index.html, app.css, js/) is a public web asset and
+  # stays published; its scaffolding is not.
+  - apps/prism/tests
+  - apps/prism/e2e
+  - apps/prism/package.json
+  - apps/prism/vercel.json
+  - apps/prism/RELEASE.md
   # ORIGINUS governance manifests and canon.
   - originus
   # ORIGINUS vault manifests.

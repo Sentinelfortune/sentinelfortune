@@ -14,6 +14,8 @@
 <meta property="og:title" content="Prism — turn one goal into one plan">
 <meta property="og:description" content="One goal in, seven working dimensions, one plan out. A hosted Sentinel Fortune application. Nothing you write leaves your device.">
 <meta property="og:url" content="https://sentinelfortune.github.io/sentinelfortune/apps/prism/">
+<meta property="og:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg">
+<meta name="twitter:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Prism — turn one goal into one plan">
 <meta name="twitter:description" content="One goal in, seven working dimensions, one plan out. A hosted Sentinel Fortune application.">
@@ -100,7 +102,7 @@
   <section class="view" id="view-new" aria-labelledby="new-h" hidden>
     <div class="wrap narrow">
       <p class="kicker">Step 1 of 2</p>
-      <h1 id="new-h">What are you trying to accomplish?</h1>
+      <h2 class="view-h" id="new-h">What are you trying to accomplish?</h2>
 
       <form id="newForm" novalidate>
         <div class="field">
@@ -128,7 +130,7 @@
   <section class="view" id="view-route" aria-labelledby="route-h" hidden>
     <div class="wrap narrow">
       <p class="kicker">Step 2 of 2</p>
-      <h1 id="route-h">Here is what your goal needs</h1>
+      <h2 class="view-h" id="route-h">Here is what your goal needs</h2>
       <p class="lede sm" id="routeIntro"></p>
 
       <div id="routeList" class="pick-list"></div>
@@ -153,7 +155,7 @@
       <div class="ws-head">
         <div>
           <p class="kicker">Project</p>
-          <h1 id="ws-h" class="ws-title"></h1>
+          <h2 class="view-h" id="ws-h" class="ws-title"></h2>
           <p class="ws-goal" id="wsGoal"></p>
         </div>
         <div class="ws-progress">
@@ -177,7 +179,7 @@
     <div class="wrap narrow">
       <button type="button" class="back" id="dimBack">← Back to workspace</button>
       <p class="kicker" id="dimJob"></p>
-      <h1 id="dim-h"></h1>
+      <h2 class="view-h" id="dim-h"></h2>
       <p class="lede sm" id="dimBlurb"></p>
       <p class="privacy" id="dimPrivacy" hidden></p>
 
@@ -195,7 +197,7 @@
     <div class="wrap narrow">
       <button type="button" class="back" id="resBack">← Back to workspace</button>
       <p class="kicker">Your plan</p>
-      <h1 id="res-h"></h1>
+      <h2 class="view-h" id="res-h"></h2>
 
       <div class="row">
         <button type="button" class="btn btn-primary" id="resHTML">Download printable plan</button>
@@ -210,7 +212,7 @@
   <!-- ── Projects ────────────────────────────────────────────────────── -->
   <section class="view" id="view-projects" aria-labelledby="pr-h" hidden>
     <div class="wrap narrow">
-      <h1 id="pr-h">My projects</h1>
+      <h2 class="view-h" id="pr-h">My projects</h2>
       <div id="projList"></div>
       <button type="button" class="btn btn-primary" data-nav="new">Start a project</button>
     </div>

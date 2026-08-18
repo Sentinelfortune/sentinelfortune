@@ -28,7 +28,8 @@ function show(view) {
   state.view = view;
   for (const v of VIEWS) $(`view-${v}`).hidden = v !== view;
   window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
-  const h = $(`view-${view}`).querySelector("h1");
+  // Landing owns the document's only <h1>; other views head with .view-h.
+  const h = $(`view-${view}`).querySelector("h1, .view-h");
   if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
 }
 

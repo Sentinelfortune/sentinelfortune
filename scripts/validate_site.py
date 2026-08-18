@@ -33,6 +33,7 @@ def main():
                 "assets/css/content.css", "index.html",
                 "updates/index.html", "articles/index.html", "guides/index.html",
                 "products/index.html", "about/index.html", "faq/index.html",
+                "software/index.html",
                 "contact/index.html", "_layouts/page.html", "_includes/newsletter.html",
                 "_data/universes.yml"]:
         check((REPO / rel).exists(), f"present: {rel}", f"MISSING: {rel}")
@@ -103,7 +104,8 @@ def main():
 
     # --- internal links resolve -------------------------------------------
     known = {"/", "/shop/", "/products/", "/updates/", "/articles/", "/guides/",
-             "/about/", "/faq/", "/contact/", "/feed.xml", "/sitemap.xml", "/llms.txt"}
+             "/about/", "/faq/", "/contact/", "/software/",
+             "/feed.xml", "/sitemap.xml", "/llms.txt"}
     # Public route -> source folder. The signals collection is published at
     # /updates/, so the folder name cannot be inferred from the URL segment.
     route_dir = {"updates": "_signals", "articles": "_articles", "guides": "_guides"}

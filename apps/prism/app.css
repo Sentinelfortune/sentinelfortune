@@ -72,7 +72,7 @@ body {
 .view[hidden] { display: none; }
 
 .kicker { font-size: 11px; letter-spacing: .17em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
-h1 { font-size: clamp(1.7rem, 5.5vw, 2.9rem); line-height: 1.12; letter-spacing: -.02em; margin: 0 0 16px; font-weight: 600; }
+h1, .view-h { font-size: clamp(1.7rem, 5.5vw, 2.9rem); line-height: 1.12; letter-spacing: -.02em; margin: 0 0 16px; font-weight: 600; }
 .lede { font-size: 1.05rem; color: var(--muted); max-width: 56ch; margin: 0 0 26px; }
 .lede.sm { font-size: .96rem; }
 .micro { font-size: .8rem; color: var(--muted); margin: 14px 0 0; max-width: 56ch; }

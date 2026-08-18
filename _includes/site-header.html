@@ -15,6 +15,7 @@
     <nav class="sf-nav" id="sfNav" aria-label="Primary">
       <a href="{{ '/products/' | relative_url }}"{% if page.url == '/products/' %} aria-current="page"{% endif %}>Products</a>
       <a href="{{ '/shop/' | relative_url }}">Shop</a>
+      <a href="{{ '/software/' | relative_url }}"{% if page.url == '/software/' %} aria-current="page"{% endif %}>Software</a>
       <a href="{{ '/articles/' | relative_url }}"{% if page.collection == 'articles' %} aria-current="page"{% endif %}>Articles</a>
       <a href="{{ '/guides/' | relative_url }}"{% if page.collection == 'guides' %} aria-current="page"{% endif %}>Guides</a>
       <a href="{{ '/updates/' | relative_url }}"{% if page.collection == 'signals' %} aria-current="page"{% endif %}>Updates</a>
