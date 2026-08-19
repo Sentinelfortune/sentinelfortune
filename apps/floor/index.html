@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Floor — know the price below which a job loses you money</title>
+<meta name="description" content="A margin checker for small trades and home-service businesses. Enter your overhead and a few jobs; Floor allocates overhead per billable hour and gives you the break-even price floor for each one, plus which cost ate the margin.">
+<link rel="canonical" href="https://sentinelfortune.github.io/sentinelfortune/apps/floor/">
+<meta name="robots" content="index,follow">
+<meta name="color-scheme" content="light dark">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sentinel Fortune LLC">
+<meta property="og:title" content="Floor — know the price below which a job loses you money">
+<meta property="og:description" content="Allocates your overhead per billable hour and gives every job a break-even price floor. For small trades and home-service businesses. Runs in your browser; nothing is uploaded.">
+<meta property="og:url" content="https://sentinelfortune.github.io/sentinelfortune/apps/floor/">
+<meta property="og:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Floor — know the price below which a job loses you money">
+<meta name="twitter:description" content="Break-even price floor for every job, with overhead properly allocated. Runs in your browser.">
+<meta name="twitter:image" content="https://sentinelfortune.github.io/sentinelfortune/assets/img/sf-og.jpg">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d14'/%3E%3Cpath d='M6 22h20' stroke='%23c8a84b' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M10 17l5-7 4 5 3-4' stroke='%236fbf8e' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="./app.css">
+
+<!-- Emitted because the application is real and the numbers are verified. No
+     aggregateRating and no reviewCount: there are no reviews, so none are
+     claimed. price 0 is the present truth for this MVP. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Floor",
+  "applicationCategory": "BusinessApplication",
+  "applicationSubCategory": "Pricing and job costing",
+  "operatingSystem": "Any modern web browser",
+  "url": "https://sentinelfortune.github.io/sentinelfortune/apps/floor/",
+  "description": "A job margin checker for small trades and home-service businesses. Allocates annual overhead across billable hours, computes the true cost of each job including that overhead, and returns the break-even price floor plus the cost component that ate the margin.",
+  "browserRequirements": "Requires JavaScript and localStorage.",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Overhead recovery rate per billable hour",
+    "True job cost including allocated overhead",
+    "Break-even price floor and target price per job",
+    "Cost-component diagnosis against your own portfolio",
+    "CSV and printable report export",
+    "Runs entirely in the browser with no account"
+  ],
+  "publisher": { "@type": "Organization", "name": "Sentinel Fortune LLC", "url": "https://sentinelfortune.com" }
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="top-in">
+    <span class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-txt">Floor<span class="brand-sub">Sentinel Fortune</span></span>
+    </span>
+    <button type="button" class="lnk" id="resetAll">Clear everything</button>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="intro" id="intro">
+      <h1>Know the price below which a job loses you money.</h1>
+      <p class="lede">
+        Your rent, insurance, admin and van are paid whether or not you win the job. Floor
+        spreads those costs across your billable hours, adds them to each job's real cost, and
+        tells you the price you had to charge just to break even.
+      </p>
+      <div class="row">
+        <button type="button" class="btn btn-primary btn-lg" id="startBtn">Check a job</button>
+        <button type="button" class="btn btn-ghost" id="sampleBtn">See it with example figures</button>
+      </div>
+      <p class="micro">
+        For small trades and home-service businesses. Everything stays in your browser — no
+        account, nothing uploaded.
+      </p>
+    </section>
+
+    <!-- ── Step 1: the business figures ──────────────────────────────── -->
+    <section class="panel" id="setupPanel" aria-labelledby="setup-h">
+      <div class="panel-head">
+        <div>
+          <p class="step">Step 1</p>
+          <h2 id="setup-h">Your business figures</h2>
+          <p class="panel-sub">Entered once. These are what make the answer yours rather than a rule of thumb.</p>
+        </div>
+        <button type="button" class="lnk" id="setupToggle" aria-expanded="true" aria-controls="setupForm">Hide</button>
+      </div>
+
+      <form id="setupForm" novalidate class="panel-body">
+        <div class="grid-2">
+          <div class="field">
+            <label for="annualOverhead">Annual overhead</label>
+            <input id="annualOverhead" inputmode="decimal" autocomplete="off" aria-describedby="annualOverheadHint annualOverheadErr">
+            <p class="hint" id="annualOverheadHint">Rent, insurance, admin, software, accountant, van fixed costs — everything you pay whether or not you work.</p>
+            <p class="err" id="annualOverheadErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="billableHours">Billable hours per year</label>
+            <input id="billableHours" inputmode="decimal" autocomplete="off" aria-describedby="billableHoursHint billableHoursErr">
+            <p class="hint" id="billableHoursHint">Hours you actually charge for, not hours worked. Most one-person trades land between 1,200 and 1,700.</p>
+            <p class="err" id="billableHoursErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="labourCostPerHour">Labour cost per hour</label>
+            <input id="labourCostPerHour" inputmode="decimal" autocomplete="off" aria-describedby="labourCostPerHourHint labourCostPerHourErr">
+            <p class="hint" id="labourCostPerHourHint">What an hour costs you — wage or drawings plus tax, pension and cover. Not what you charge.</p>
+            <p class="err" id="labourCostPerHourErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="targetMarginPct">Target margin %</label>
+            <input id="targetMarginPct" inputmode="decimal" autocomplete="off" aria-describedby="targetMarginPctHint targetMarginPctErr">
+            <p class="hint" id="targetMarginPctHint">The margin you want on top of full cost. 20–30% is a common starting point.</p>
+            <p class="err" id="targetMarginPctErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="currency">Currency</label>
+            <select id="currency">
+              <option value="USD">USD — US dollar</option>
+              <option value="GBP">GBP — pound sterling</option>
+              <option value="EUR">EUR — euro</option>
+              <option value="CAD">CAD — Canadian dollar</option>
+              <option value="AUD">AUD — Australian dollar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="recovery" id="recoveryBox" hidden>
+          <p class="recovery-l">Every billable hour must recover</p>
+          <p class="recovery-v" id="recoveryVal"></p>
+          <p class="recovery-x">before a single job makes you anything. This is the number most quotes miss.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save figures</button>
+      </form>
+    </section>
+
+    <!-- ── Step 2: jobs ──────────────────────────────────────────────── -->
+    <section class="panel" id="jobsPanel" aria-labelledby="jobs-h" hidden>
+      <div class="panel-head">
+        <div>
+          <p class="step">Step 2</p>
+          <h2 id="jobs-h">Add jobs</h2>
+          <p class="panel-sub">Finished or quoted — both work. Three or more lets Floor compare cost patterns.</p>
+        </div>
+      </div>
+
+      <form id="jobForm" novalidate class="panel-body">
+        <div class="field">
+          <label for="jName">Job name</label>
+          <input id="jName" maxlength="120" autocomplete="off" aria-describedby="jNameErr" placeholder="Boiler swap — Elm Road">
+          <p class="err" id="jNameErr" role="alert" hidden></p>
+        </div>
+        <div class="grid-3">
+          <div class="field">
+            <label for="jPrice">Price charged</label>
+            <input id="jPrice" inputmode="decimal" autocomplete="off" aria-describedby="jPriceErr">
+            <p class="err" id="jPriceErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="jHours">Labour hours</label>
+            <input id="jHours" inputmode="decimal" autocomplete="off" aria-describedby="jHoursErr">
+            <p class="err" id="jHoursErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="jMaterials">Materials</label>
+            <input id="jMaterials" inputmode="decimal" autocomplete="off" aria-describedby="jMaterialsErr" placeholder="0">
+            <p class="err" id="jMaterialsErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="jTravel">Travel</label>
+            <input id="jTravel" inputmode="decimal" autocomplete="off" aria-describedby="jTravelErr" placeholder="0">
+            <p class="err" id="jTravelErr" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="jSub">Subcontractor</label>
+            <input id="jSub" inputmode="decimal" autocomplete="off" aria-describedby="jSubErr" placeholder="0">
+            <p class="err" id="jSubErr" role="alert" hidden></p>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="addJobBtn">Add job and recalculate</button>
+      </form>
+    </section>
+
+    <!-- ── Result ────────────────────────────────────────────────────── -->
+    <section class="panel" id="reportPanel" aria-labelledby="report-h" hidden>
+      <div class="panel-head">
+        <div>
+          <p class="step">Result</p>
+          <h2 id="report-h">What these jobs actually made</h2>
+        </div>
+        <div class="export-row">
+          <button type="button" class="btn btn-ghost" id="csvBtn">Export CSV</button>
+          <button type="button" class="btn btn-ghost" id="pdfBtn">Printable report</button>
+        </div>
+      </div>
+
+      <p class="headline" id="headline" role="status"></p>
+      <div class="kpis" id="kpis"></div>
+      <div class="table-scroll"><table class="jobs" id="jobTable"></table></div>
+      <ul class="findings" id="findings"></ul>
+
+      <p class="disclaimer">
+        This is a costing calculation from figures you entered — not accounting, tax or
+        financial advice. Check your overhead and capacity against your own records before
+        pricing work from it.
+      </p>
+    </section>
+
+    <section class="panel empty" id="emptyPanel" hidden>
+      <p><strong>No jobs yet.</strong> Add one above and the numbers appear here.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><strong>Floor</strong> is a hosted application by Sentinel Fortune LLC. It is separate
+      from the Digital Shop, which sells downloadable products.</p>
+    <p class="micro">Your figures are stored in this browser and nowhere else. Clearing site
+      data removes them — export anything you need to keep.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script type="module" src="./js/ui.js"></script>
+<noscript><div class="wrap"><p class="err-block">Floor needs JavaScript. It runs entirely in
+your browser, which is also why nothing you enter is sent anywhere.</p></div></noscript>
+</body>
+</html>

@@ -4,22 +4,22 @@ permalink: /software/
 kicker: "Hosted software"
 title: "Software from Sentinel Fortune"
 summary: "Applications you use in the browser, as opposed to files you download. Hosted software is a separate offering from the Digital Shop, with its own terms."
-answer: "Sentinel Fortune LLC publishes hosted software as well as downloadable digital products. Hosted software runs in your browser rather than being downloaded, and is not sold through the Digital Shop. The first hosted application is Prism, a planning tool that routes a stated goal through seven working dimensions — release planning, challenge design, reflection, story structure, learning plans, workflows and offers — and returns a single exportable plan. Prism runs entirely in the browser: nothing entered into it is transmitted to a server, and it requires no account."
+answer: "Sentinel Fortune LLC publishes hosted software as well as downloadable digital products. Hosted software runs in your browser rather than being downloaded, and is not sold through the Digital Shop. The first hosted application is Floor, a job margin checker for small trades and home-service businesses: it allocates annual overhead across billable hours, computes the true cost of each job including that overhead, and returns the break-even price floor below which the job loses money. Floor runs entirely in the browser, requires no account, and transmits nothing."
 meta_title: "Hosted software — applications, not downloads"
-meta_description: "Sentinel Fortune's hosted applications run in your browser. Prism turns one stated goal into one exportable plan across seven working dimensions. No account, nothing uploaded."
-updated: 2026-08-18
+meta_description: "Sentinel Fortune's hosted applications run in your browser. Floor tells small trades businesses the price below which a job loses money, by allocating overhead properly. No account, nothing uploaded."
+updated: 2026-08-19
 faq_heading: "About hosted software"
 faqs:
   - q: "How is this different from the Digital Shop?"
-    a: "The Shop sells downloadable digital products: you buy once, you get a licensed file, it is yours. Hosted software is an application you use in the browser — there is nothing to download and nothing to keep on disk. The two are separate offerings with separate terms."
-  - q: "Does Prism cost anything?"
-    a: "Not today. The current version is free to use and requires no account. If that changes it will be stated on this page before it changes, not after."
+    a: "The Shop sells downloadable digital products: you buy once, you get a licensed file, it is yours. Hosted software is an application you use in the browser — nothing to download and nothing to keep on disk. The two are separate offerings with separate terms."
+  - q: "What does Floor actually calculate?"
+    a: "It divides your annual overhead by your billable hours to get an overhead recovery rate, then adds that rate multiplied by each job's labour hours to the job's direct costs. That total is the true cost, and the break-even price. It also gives you the price that would have hit your target margin, and the margin each job actually returned per labour hour."
+  - q: "Does Floor cost anything?"
+    a: "Not today. The current version is free and requires no account. If that changes it will be stated here before it changes, not after."
   - q: "Where is my data stored?"
-    a: "In your own browser, and nowhere else. Prism has no server component and no database — everything you type stays on the device you typed it on. That also means clearing your browser data removes it, which is why every project can be exported."
-  - q: "Is this a subscription?"
-    a: "No. There is nothing to subscribe to and no recurring charge. Hosted software could carry a different commercial model in future, but any such model would be stated on the product itself."
-  - q: "Does Prism give professional advice?"
-    a: "No. The plans it produces are operational and general. It is not legal, financial, tax, investment, medical or mental-health advice, and the reflection dimension is a structured journal rather than any form of therapy or care."
+    a: "In your own browser, and nowhere else. Floor has no server component and no database, and makes no network requests. Clearing your browser data removes your figures, which is why CSV and printable exports exist."
+  - q: "Is this accounting or financial advice?"
+    a: "No. It is a costing calculation from figures you enter. Check your overhead and capacity figures against your own records, and speak to your accountant about how they should be derived."
 ---
 
 <p>
@@ -31,86 +31,85 @@ faqs:
   commercial terms.
 </p>
 
-<h2>Prism</h2>
+<h2>Floor</h2>
 
-<p class="sf-lead">
-  One goal in. One plan out.
+<p class="sf-lead">Know the price below which a job loses you money.</p>
+
+<p>
+  Your rent, insurance, admin, software and van are paid whether or not you win the
+  job. A quote that covers labour and materials can still lose money, because none of
+  those fixed costs got recovered. That gap is invisible until the year ends.
 </p>
 
 <p>
-  You start by describing what you are trying to accomplish, in your own words.
-  Prism works out which of seven dimensions your goal actually needs, opens a
-  focused workspace for each of them, and hands back a single plan you can print
-  or export.
+  Floor closes it. You enter four figures once — annual overhead, billable hours per
+  year, what an hour of labour costs you, and the margin you want. It works out what
+  every billable hour has to contribute before anything is profit, then applies that to
+  each job you add.
 </p>
 
+<h3>Who it is for</h3>
+
 <p>
-  The seven dimensions are drawn from how Sentinel Fortune itself works, and each
-  does one job:
+  Owner-operators of small trades and home-service businesses — plumbing, electrical,
+  HVAC, and the trades that quote job by job. It is most useful if you price from
+  experience rather than from a costing model, and have never been certain the
+  experience is right.
 </p>
+
+<h3>What it gives you</h3>
 
 <table class="sf-table">
-  <caption class="sf-sr">The seven dimensions inside Prism and the job each one does</caption>
+  <caption class="sf-sr">What Floor calculates for each job</caption>
   <thead>
-    <tr><th scope="col">Dimension</th><th scope="col">What it does</th></tr>
+    <tr><th scope="col">Output</th><th scope="col">What it means</th></tr>
   </thead>
   <tbody>
-    <tr><th scope="row">Sentinel Fortune Records</th><td>Turns a finished or planned work into a dated release sequence.</td></tr>
-    <tr><th scope="row">LumenGame</th><td>Designs a challenge, so engagement is built rather than improvised.</td></tr>
-    <tr><th scope="row">VibraFlow Media</th><td>A structured reflection on the questions underneath the work. General and educational.</td></tr>
-    <tr><th scope="row">CodexWorld TV</th><td>Gives a message a shape someone can follow — setup, turn, landing.</td></tr>
-    <tr><th scope="row">Lumen School Academy</th><td>Turns an intention into a learning sequence with a first action. Educational only.</td></tr>
-    <tr><th scope="row">LightNode Systems</th><td>Turns something done from memory into a written, repeatable workflow.</td></tr>
-    <tr><th scope="row">OG Legacy Store</th><td>Shapes work into an offer someone could actually buy.</td></tr>
+    <tr><th scope="row">Overhead recovery rate</th><td>What every billable hour must contribute toward fixed costs. Computed once, applied to every job.</td></tr>
+    <tr><th scope="row">True cost</th><td>Labour, materials, travel and subcontractor cost, plus the overhead those hours are responsible for carrying.</td></tr>
+    <tr><th scope="row">Price floor</th><td>Break-even. Below this the job consumes the business rather than funding it.</td></tr>
+    <tr><th scope="row">Target price</th><td>What the job needed to be priced at to hit your margin — solved properly, not cost plus a percentage.</td></tr>
+    <tr><th scope="row">Yield per hour</th><td>What an hour of that job actually returned after every cost.</td></tr>
+    <tr><th scope="row">Diagnosis</th><td>With three or more jobs, which cost component was out of line with your own typical job.</td></tr>
   </tbody>
 </table>
 
-<p>
-  Most goals need two or three of them, not seven. Deciding which is the part
-  Prism does for you — and you can override it.
-</p>
-
-<h2>Who it is for</h2>
+<h3>How it works</h3>
 
 <p>
-  People who know what they want to build and lose time deciding where to start:
-  operators turning experience into something sellable, creators with a body of
-  work and no release plan, anyone holding a goal that spans making something,
-  explaining it, delivering it and pricing it.
+  Enter your figures, add jobs, read the result. The report recalculates as you go, and
+  exports to CSV for your spreadsheet or to a printable sheet you can take to a pricing
+  conversation. A worked example loads with one click, so you can see the output before
+  entering anything of your own.
 </p>
 
-<h2>What it does not do</h2>
+<h3>What it does not do</h3>
 
 <ul>
-  <li>It does not do the work. It produces a plan; you execute it.</li>
-  <li>It does not give professional advice of any kind — legal, financial, tax,
-      investment, medical or mental-health.</li>
-  <li>It does not sync between devices. Projects live in the browser you created
-      them in, which is the same reason nothing you write is ever uploaded.</li>
+  <li>It is not accounting, tax or financial advice — it is arithmetic on your figures.</li>
+  <li>It does not connect to accounting software, a bank, or an invoicing system.</li>
+  <li>It does not sync between devices, which is the same reason nothing is uploaded.</li>
   <li>It does not require, or offer, an account.</li>
 </ul>
 
-<h2>Privacy</h2>
+<h3>Privacy</h3>
 
 <p>
-  Prism has no server component. There is no database, no account system and no
-  analytics — everything you enter is held in your own browser's local storage and
-  never leaves the device. The reflection dimension in particular is treated as
-  personal content: it is stored the same way as everything else, which is to say
-  locally, and it appears in an export only if you generate one.
+  Floor has no server component. There is no database, no account system, no analytics,
+  and the application makes no network requests at all — your pricing is commercially
+  sensitive and there is no reason for it to leave your device. The trade-off is stated
+  plainly in the app: clearing your browser data removes your figures, and export is a
+  first-class action rather than an afterthought.
+</p>
+
+<h3>Status and price</h3>
+
+<p>
+  Floor is version 1.0 and free to use. It has no server, so it has no running cost per
+  user, and charging before there is evidence people return to it would add billing
+  machinery ahead of demand. If a price is introduced it will be stated here first.
 </p>
 
 <p>
-  The trade-off is worth stating plainly: clearing your browser data will remove
-  your projects, and they will not follow you to another device. Export is the
-  answer to both, and it is a first-class action rather than an afterthought.
-</p>
-
-<h2>Status</h2>
-
-<p>
-  Prism is an early version. It is free, it is complete enough to produce a real
-  plan end to end, and it is published here rather than in the Shop because it is
-  software you use, not a file you buy. It is not yet available at a public
-  address — this page will carry the link when it is.
+  It is not yet available at a public address. This page will carry the link when it is.
 </p>

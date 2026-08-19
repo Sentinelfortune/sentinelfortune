@@ -141,14 +141,15 @@ exclude:
   - cloudflare
   # Build/start scripts and the ecosystem Worker.
   - config
-  # Prism's test suite, end-to-end harness and deploy config. The application
-  # itself (apps/prism/index.html, app.css, js/) is a public web asset and
-  # stays published; its scaffolding is not.
-  - apps/prism/tests
-  - apps/prism/e2e
-  - apps/prism/package.json
-  - apps/prism/vercel.json
-  - apps/prism/RELEASE.md
+  # Floor's test suite, end-to-end harness, deploy config and release record.
+  # The application itself (apps/floor/index.html, app.css, js/) is a public
+  # web asset and stays published; its scaffolding is not.
+  - apps/floor/tests
+  - apps/floor/e2e
+  - apps/floor/package.json
+  - apps/floor/vercel.json
+  - apps/floor/RELEASE.md
+  - apps/floor/README.md
   # ORIGINUS governance manifests and canon.
   - originus
   # ORIGINUS vault manifests.
