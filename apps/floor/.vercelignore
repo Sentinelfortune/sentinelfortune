@@ -1,0 +1,16 @@
+# What must not reach a deployment.
+#
+# Without this, `vercel deploy` from this directory uploads the whole folder and
+# serves it — which would have put the internal release record at
+# /RELEASE.md on a public Preview URL, alongside the test suite and the
+# end-to-end harness. None of it is a web asset.
+#
+# Only index.html, app.css and js/ are the application.
+
+RELEASE.md
+README.md
+tests/
+e2e/
+node_modules/
+package.json
+package-lock.json
