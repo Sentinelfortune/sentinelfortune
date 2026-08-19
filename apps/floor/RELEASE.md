@@ -6,8 +6,13 @@ Assets system was called or modified to produce it.
 
 | Field | Value |
 |---|---|
+| Product ID | *unassigned — House of Assets assigns this at registration* |
 | Product | **Floor** |
 | Version | 1.0.0 |
+| Approved version | 1.0.0 (approved locally; awaiting Preview evidence) |
+| Canonical package | `apps/floor/` — application, tests, e2e, deploy config, README, this record |
+| Commercial state | COMMERCIAL_MVP_READY · free at 1.0 · not listed, not sold |
+| Deployment state | NOT_DEPLOYED — no Preview, no Production |
 | Class | Hosted mini-SaaS (browser application) — **not** a Digital Shop downloadable |
 | Source | `apps/floor/` on branch `flagship-7d-mvp` |
 | Deployment URL | **none** — not deployed (see Blockers) |
