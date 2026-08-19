@@ -3,9 +3,14 @@
 // The sequence the gate demands: start → real input → primary action → real
 // result → save → export → reload → verify. Nothing stubbed.
 //
-// Usage: node e2e/flow.mjs <base-url>
+// Usage:
+//   npm run e2e                          against the local server on :8098
+//   npm run e2e:remote -- <base-url>     against a deployed Preview
+//
+// Requires `npm install` and, once per machine, `npm run e2e:install` to fetch
+// the Chromium build Playwright drives.
 
-import { chromium } from "/opt/node22/lib/node_modules/playwright/index.mjs";
+import { chromium } from "playwright";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,7 +28,12 @@ const check = (name, pass, detail = "") => {
 // labour, true cost is 6*32 + 6*30 + 240 + 60 = 672. Margin 228 → 25.33%.
 const JOB = { name: "Immersion heater — Vale Rd", price: "900", hours: "6", materials: "240", travel: "60" };
 
-const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+// Let Playwright resolve its own bundled browser — that is what makes this
+// runnable from a clean checkout on any OS. PLAYWRIGHT_CHROMIUM_PATH is an
+// escape hatch for environments that pre-install Chromium somewhere else;
+// unset (the normal case) it is simply absent from the launch options.
+const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
+const browser = await chromium.launch(executablePath ? { executablePath } : {});
 const dir = mkdtempSync(join(tmpdir(), "floor-"));
 const ctx = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 } });
 const page = await ctx.newPage();

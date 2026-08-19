@@ -150,6 +150,11 @@ exclude:
   - apps/floor/vercel.json
   - apps/floor/RELEASE.md
   - apps/floor/README.md
+  # Test dependencies installed by `npm install` in apps/floor. Adding
+  # Playwright as a devDependency put 808 files in the build until this
+  # exclusion existed — none of them are web assets.
+  - apps/floor/node_modules
+  - apps/floor/package-lock.json
   # ORIGINUS governance manifests and canon.
   - originus
   # ORIGINUS vault manifests.

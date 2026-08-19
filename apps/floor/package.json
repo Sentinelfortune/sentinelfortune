@@ -2,13 +2,18 @@
   "name": "sentinel-floor",
   "version": "1.0.0",
   "private": true,
-  "description": "Floor — job margin checker for small trades. Allocates overhead per billable hour and returns a break-even price floor per job. Static, zero-dependency.",
+  "description": "Floor \u2014 job margin checker for small trades. Allocates overhead per billable hour and returns a break-even price floor per job. Static, zero runtime dependencies.",
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
     "test": "node --test tests/model.test.mjs",
     "serve": "http-server . -p 8098 -s",
     "e2e": "node e2e/flow.mjs http://127.0.0.1:8098",
-    "e2e:remote": "node e2e/flow.mjs"
+    "e2e:remote": "node e2e/flow.mjs",
+    "e2e:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "playwright": "^1.62.1"
   }
 }

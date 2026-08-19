@@ -50,10 +50,29 @@ keep.
 ## Running it locally
 
 ```
-npm run serve     # http://127.0.0.1:8098
-npm test          # 39 unit tests over the calculation engine
-npm run e2e       # 15 browser checks against the served app
+npm install            # once — pulls the test dependencies
+npm run e2e:install    # once per machine — fetches the Chromium build Playwright drives
+
+npm run serve          # http://127.0.0.1:8098
+npm test               # 39 unit tests over the calculation engine
+npm run e2e            # 15 browser checks against the local server
 ```
+
+To run the same 15 checks against a deployed URL:
+
+```
+npm run e2e:remote -- https://your-deployment-url
+```
+
+If Chromium is already installed somewhere else on the machine, point the
+harness at it instead of running `e2e:install`:
+
+```
+PLAYWRIGHT_CHROMIUM_PATH=/path/to/chromium npm run e2e
+```
+
+Note that `npm install` here is for the **tests only**. The application itself
+has zero runtime dependencies and ships as the files you see.
 
 ## Licence
 
