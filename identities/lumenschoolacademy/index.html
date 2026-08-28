@@ -1,0 +1,180 @@
+---
+layout: identity
+identity: lumenschoolacademy
+permalink: /identities/lumenschoolacademy/
+title: "Lumen School Academy"
+meta_title: "Lumen School Academy — structured paths and business tools"
+meta_description: "The knowledge house of Sentinel Fortune LLC. Ordered learning paths and practical business tools for owner-operators of small trades and home-service businesses."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-path.css
+---
+
+{%- comment -%}
+EXPERIENCE: sequenced path. Primitive — the step. Verb — work through.
+
+A numbered spine, not a grid. The order carries information that a grid would
+throw away: step six tells you to choose a system, and it is deliberately last
+because choosing one first is the mistake the whole path exists to prevent.
+
+Steps are resolved from _data/academy_paths.yml against the live collections,
+so every title and summary on this page is the real published one. A step
+whose target is missing renders as a visible gap — a path with a hole in it
+should look wrong, because it is.
+
+Progress is marked on the reader's own device. There is no account, no
+enrolment and no completion record anywhere else, which is stated plainly
+below rather than left to be discovered.
+
+THE TOOLS SECTION IS A DECLARED SLOT, NOT AN OMISSION. Under the problem-domain
+ownership rule, a business tool belongs to the identity that owns the customer's
+problem. Floor's problem is job costing and pricing, which is this house's, not
+LightNode's. The slot is built and labelled; wiring the tool into it is a
+separate, deliberate step and has not been taken here.
+{%- endcomment -%}
+
+{%- assign path = site.data.academy_paths | first -%}
+
+<section class="pa" aria-labelledby="pa-h">
+
+  <header class="pa-head">
+    <p class="pa-kicker">Path · {{ path.steps | size }} steps · free</p>
+    <h2 id="pa-h" class="id-h">{{ path.title }}</h2>
+    <p class="id-sub">{{ path.summary }}</p>
+    <p class="pa-aud"><span>For</span> {{ path.audience }}</p>
+  </header>
+
+  <div class="pa-bar">
+    <p class="pa-prog" id="paProg" role="status">Not started</p>
+    <button type="button" class="id-btn pa-reset" id="paReset" hidden>Clear my progress</button>
+  </div>
+
+  <ol class="pa-spine">
+    {%- for step in path.steps %}
+    {%- assign items = site[step.collection] | where: "slug", step.slug -%}
+    {%- assign item = items | first -%}
+    <li class="pa-step{% unless item %} pa-step--missing{% endunless %}" data-step="{{ step.collection }}/{{ step.slug }}">
+
+      <div class="pa-num" aria-hidden="true">{{ forloop.index }}</div>
+
+      <div class="pa-body">
+        {%- if item %}
+        <p class="pa-kind">{{ item.kind }}{% if item.reading_time %} · {{ item.reading_time }} min{% endif %}</p>
+        <h3 class="pa-title">
+          <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+        </h3>
+        <p class="pa-sum">{{ item.summary }}</p>
+        <p class="pa-why"><span>Why here:</span> {{ step.why }}</p>
+
+        <label class="pa-mark">
+          <input type="checkbox" class="pa-check" data-step="{{ step.collection }}/{{ step.slug }}">
+          <span>Mark this step done</span>
+        </label>
+        {%- else %}
+        <p class="pa-kind">Step unavailable</p>
+        <h3 class="pa-title">This step points at content that is not published</h3>
+        <p class="pa-sum">
+          The path references <code>{{ step.collection }}/{{ step.slug }}</code>,
+          which is not currently published. The gap is shown rather than hidden.
+        </p>
+        {%- endif %}
+      </div>
+
+    </li>
+    {%- endfor %}
+  </ol>
+
+  <p class="pa-fine">
+    Your progress is a tick list stored in this browser. Lumen School Academy has
+    no enrolment, no cohorts, no instructors and no certificates — nothing here
+    is recorded anywhere but on your own device, and nothing is issued at the end.
+  </p>
+</section>
+
+<section class="pa-tools" aria-labelledby="pa-tools-h">
+  <h2 id="pa-tools-h" class="id-h">Business tools</h2>
+  <p class="id-sub">
+    Working tools, not lessons about tools. A tool belongs to this house when
+    the customer's problem is a business problem — costing, pricing, margin,
+    or a decision an owner has to make — regardless of whether it happens to be
+    software.
+  </p>
+
+  <div class="id-empty">
+    <p class="id-empty-h">Slot declared, not yet filled</p>
+    <p class="id-empty-p">
+      This section is built and reserved for the Academy's business tools. No
+      tool has been wired into it yet, so none is listed and none is claimed.
+    </p>
+  </div>
+</section>
+
+<script>
+/* Path progress.
+ *
+ * localStorage only, one key, holding the set of completed step ids. There is
+ * no server, so there is nothing to sync and nothing that can leak; the
+ * trade-off is stated on the page rather than buried.
+ *
+ * Every storage access is wrapped: private windows and blocked site data throw
+ * on access rather than returning null, and a thrown error here must not take
+ * the rest of the page down with it. */
+(function () {
+  var KEY = "sf.academy.ai-in-a-licensed-trade";
+  var checks = Array.prototype.slice.call(document.querySelectorAll(".pa-check"));
+  var progEl = document.getElementById("paProg");
+  var reset  = document.getElementById("paReset");
+  if (!checks.length || !progEl) return;
+
+  function read() {
+    try {
+      var raw = window.localStorage.getItem(KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+
+  function write(done) {
+    try { window.localStorage.setItem(KEY, JSON.stringify(done)); }
+    catch (e) { /* nothing to do — the tick still works for this visit */ }
+  }
+
+  function paint() {
+    var done = read();
+    checks.forEach(function (cb) {
+      var on = done.indexOf(cb.dataset.step) !== -1;
+      cb.checked = on;
+      var step = cb.closest(".pa-step");
+      if (step) step.classList.toggle("is-done", on);
+    });
+    var n = checks.filter(function (c) { return c.checked; }).length;
+    progEl.textContent = n === 0
+      ? "Not started"
+      : n === checks.length
+        ? "All " + checks.length + " steps done"
+        : n + " of " + checks.length + " steps done";
+    if (reset) reset.hidden = n === 0;
+  }
+
+  checks.forEach(function (cb) {
+    cb.addEventListener("change", function () {
+      var done = read();
+      var i = done.indexOf(cb.dataset.step);
+      if (cb.checked && i === -1) done.push(cb.dataset.step);
+      if (!cb.checked && i !== -1) done.splice(i, 1);
+      write(done);
+      paint();
+    });
+  });
+
+  if (reset) {
+    reset.addEventListener("click", function () {
+      write([]);
+      paint();
+    });
+  }
+
+  paint();
+})();
+</script>

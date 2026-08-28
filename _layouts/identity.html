@@ -1,0 +1,127 @@
+---
+layout: base
+---
+{%- comment -%}
+The shared shell for the seven identity experiences.
+
+WHAT THIS LAYOUT OWNS, AND WHAT IT DELIBERATELY DOES NOT
+--------------------------------------------------------
+It owns the frame: breadcrumb, masthead, honest readiness statement, problem
+domain, growth surface, address line. Everything that must be identical across
+the seven so they read as one company.
+
+It does NOT own the experience. `{{ content }}` is a hole in the middle of the
+page, and each identity fills it with its own structure — a transport and a
+waveform, a two-pane codex, a launch tile, a numbered spine, a single reading
+column, system cards, a lookbook rail. That is the whole point: seven pages
+sharing a frame are one house with seven rooms, seven pages sharing an
+information architecture are one website printed seven times.
+
+Front matter each identity page must set:
+  identity     the slug, matched against _data/identities.yml
+  stylesheets  identity.css plus that identity's own experience stylesheet
+{%- endcomment -%}
+
+{%- assign identity = site.data.identities | where: "slug", page.identity | first -%}
+{%- include identity-state.html identity=identity -%}
+{%- comment -%}
+Copied out under distinct names immediately. The siblings navigation at the
+bottom calls identity-state.html again, once per sibling, and each call
+overwrites identity_state / identity_ready / identity_linked / identity_remote
+in this shared scope. Anything about THIS identity must therefore be read from
+the `this_*` copies, which nothing else touches.
+{%- endcomment -%}
+{%- assign this_state = identity_state -%}
+{%- assign this_ready = identity_ready -%}
+{%- assign this_remote = identity_remote -%}
+
+<article class="id-shell id-shell--{{ identity.experience.model }}" data-identity="{{ identity.slug }}">
+
+  <nav class="sf-crumbs id-crumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}">Home</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{{ identity.title }}</span>
+  </nav>
+
+  <header class="id-head">
+    <p class="id-mark" aria-hidden="true">{{ identity.icon }}</p>
+    <p class="id-tag">{{ identity.tag }}</p>
+    <h1 class="id-title">{{ identity.title }}</h1>
+    <p class="id-blurb">{{ identity.blurb }}</p>
+  </header>
+
+  {%- comment -%}
+  The readiness statement. It is a plain paragraph rather than a badge because
+  a visitor should be able to read what state this house is in without decoding
+  a colour. Only the "live" case is silent — an identity that is genuinely
+  serving from its own address has nothing to explain.
+  {%- endcomment -%}
+  {%- unless this_remote %}
+  <p class="id-state id-state--{{ this_state }}" role="note">
+    {%- if this_ready -%}
+      This experience is built and validated. Its own address,
+      <span class="id-addr">{{ identity.addr }}</span>, is not active yet, so it
+      lives here on the main site for now.
+    {%- else -%}
+      This house is being built. What follows is its real structure with real
+      contents — where there is nothing yet, it says so rather than showing
+      something invented. It will open at
+      <span class="id-addr">{{ identity.addr }}</span>.
+    {%- endif -%}
+  </p>
+  {%- endunless %}
+
+  <div class="id-experience">
+    {{ content }}
+  </div>
+
+  {%- comment -%}
+  The problem domain. This is the identity's actual boundary — the set of
+  customer problems it owns — and it is rendered because it is the honest
+  answer to "what is this house for?" when the house is still mostly empty.
+
+  `capabilities` from the data file is intentionally NOT rendered. It is the
+  approved surface this identity MAY grow into, which makes it a planning
+  input, not a public statement. Printing it would read as a roadmap, and a
+  roadmap is a promise.
+  {%- endcomment -%}
+  <section class="id-domain" aria-labelledby="id-domain-h">
+    <h2 id="id-domain-h">What this house covers</h2>
+    <ul class="id-domain-list">
+      {%- for problem in identity.domain.owns %}
+      <li>{{ problem }}</li>
+      {%- endfor %}
+    </ul>
+    <p class="id-domain-note">
+      Sentinel Fortune assigns work by the customer's problem, not by the format
+      it ships in. A tool, a book, a lesson and a recording can all belong to the
+      same house if they answer the same question.
+    </p>
+  </section>
+
+  <nav class="id-siblings" aria-labelledby="id-siblings-h">
+    <h2 id="id-siblings-h">The other houses</h2>
+    <ul class="id-siblings-list">
+      {%- for other in site.data.identities %}
+      {%- unless other.slug == identity.slug %}
+      {%- include identity-state.html identity=other %}
+      <li>
+        {%- if identity_linked %}
+        <a href="{{ '/identities/' | append: other.slug | append: '/' | relative_url }}">
+          <span class="id-sib-mark" aria-hidden="true">{{ other.icon }}</span>
+          <span class="id-sib-name">{{ other.title }}</span>
+        </a>
+        {%- else %}
+        <span class="id-sib-inert">
+          <span class="id-sib-mark" aria-hidden="true">{{ other.icon }}</span>
+          <span class="id-sib-name">{{ other.title }}</span>
+          <span class="id-sib-note">in build</span>
+        </span>
+        {%- endif %}
+      </li>
+      {%- endunless %}
+      {%- endfor %}
+    </ul>
+  </nav>
+
+</article>

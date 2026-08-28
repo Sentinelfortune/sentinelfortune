@@ -1,0 +1,125 @@
+---
+layout: identity
+identity: lumengame
+permalink: /identities/lumengame/
+title: "Lumen Game"
+meta_title: "Lumen Game — playable experiences"
+meta_description: "The interactive house of Sentinel Fortune LLC. S.5 ASCENT Lite is playable now, free, in the browser. No account, no leaderboard, no purchases."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-arcade.css
+---
+
+{%- comment -%}
+EXPERIENCE: arcade. Primitive — the level. Verb — play.
+
+One large launch target and almost no chrome. Where the codex is two panes of
+dense reference and the path is a numbered spine, this is a single object at
+scale that you press. The identity should feel like a cabinet, not a page.
+
+This is one of only two identities with real content today. S.5 ASCENT Lite is
+a genuine game — a 42 KB engine reading 16 KB of hand-authored level data —
+already published at /frontend/games/s5-ascent-lite/ and reachable from the
+site footer. It is linked, not embedded: it wants the whole viewport, and an
+iframe would take its keyboard focus fights with the parent page for no gain.
+
+Best score is read from the player's own browser and never leaves it. That is
+also why there is no leaderboard: there is no server, so a leaderboard could
+only be fabricated.
+{%- endcomment -%}
+
+<section class="ar" aria-labelledby="ar-h">
+  <h2 id="ar-h" class="id-sr-only">Playable now</h2>
+
+  <div class="ar-cab">
+    <p class="ar-kicker">Playable now · free · no account</p>
+    <p class="ar-title">S.5 ASCENT</p>
+    <p class="ar-line">Lite edition</p>
+
+    <p class="ar-desc">
+      A side-on precision platformer. Move, jump, collect, climb. Hand-built
+      levels, keyboard or touch, and nothing to install.
+    </p>
+
+    <a class="ar-go" href="{{ '/frontend/games/s5-ascent-lite/' | relative_url }}">
+      <span class="ar-go-tri" aria-hidden="true">▶</span>
+      <span>Play</span>
+    </a>
+
+    <dl class="ar-stats">
+      <div>
+        <dt>Levels</dt>
+        <dd id="arLevels">—</dd>
+      </div>
+      <div>
+        <dt>Your best</dt>
+        <dd id="arBest">not played yet</dd>
+      </div>
+      <div>
+        <dt>Controls</dt>
+        <dd>Arrows / A · D · Space</dd>
+      </div>
+    </dl>
+  </div>
+
+  <p class="ar-fine">
+    Your best score is kept in this browser and nowhere else. Lumen Game has no
+    account system, no leaderboard and no purchases — clearing your browser data
+    clears the score.
+  </p>
+</section>
+
+<section class="ar-more" aria-labelledby="ar-more-h">
+  <h2 id="ar-more-h" class="id-h">More in the arcade</h2>
+  <p class="id-sub">
+    Other playable work, when there is other playable work.
+  </p>
+
+  <div class="id-empty">
+    <p class="id-empty-h">One game so far</p>
+    <p class="id-empty-p">
+      S.5 ASCENT Lite is the only finished playable experience. Challenges and
+      simulations are inside what this house covers, but none has been built,
+      so none is listed.
+    </p>
+  </div>
+</section>
+
+<script>
+/* Two small honesty jobs, both of which fail quietly rather than lying.
+ *
+ * 1. Level count is read from the game's own levels.json rather than typed
+ *    here, so it cannot drift away from the game. If the fetch fails the
+ *    figure stays "—" instead of showing a number nobody verified.
+ *
+ * 2. Best score is read from the same localStorage key the game writes, so
+ *    this page reports what the player actually did. If they have not played,
+ *    it says so.
+ */
+(function () {
+  var levelsEl = document.getElementById("arLevels");
+  var bestEl   = document.getElementById("arBest");
+
+  fetch("{{ '/frontend/games/s5-ascent-lite/levels.json' | relative_url }}", { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      var n = data && data.levels && data.levels.length;
+      if (n) levelsEl.textContent = n;
+    })
+    .catch(function () { /* leave the dash — an unverified number is worse */ });
+
+  try {
+    /* The game stores its best under a handful of historical keys; take the
+       highest real number found rather than guessing which one is current. */
+    var best = 0;
+    ["s5AscentBest", "s5_best", "gBest"].forEach(function (k) {
+      var v = parseInt(window.localStorage.getItem(k) || "", 10);
+      if (!isNaN(v) && v > best) best = v;
+    });
+    if (best > 0) bestEl.textContent = best.toLocaleString();
+  } catch (e) {
+    /* Private mode, or storage blocked. The default text is already correct. */
+  }
+})();
+</script>

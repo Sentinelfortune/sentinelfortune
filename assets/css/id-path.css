@@ -1,0 +1,166 @@
+/* Lumen School Academy — sequenced path.
+   Structure: a numbered vertical spine. The connecting rule between steps is
+   load-bearing, not decoration — it is what says "this comes after that". */
+
+.pa { margin-bottom: 56px; }
+
+.pa-head { margin-bottom: 22px; }
+.pa-kicker {
+  font-family: var(--ff-brand);
+  font-size: .66rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.pa-aud { font-size: .88rem; color: var(--ink-mute); line-height: 1.66; max-width: 60ch; }
+.pa-aud span {
+  font-family: var(--ff-brand);
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-right: 6px;
+}
+
+.pa-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 0 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 6px;
+}
+.pa-prog {
+  font-family: var(--ff-brand);
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.pa-reset { min-height: 40px; padding: 9px 18px; font-size: .62rem; }
+
+/* ── the spine ───────────────────────────────────────────────────────── */
+.pa-spine { list-style: none; padding: 0; margin: 0; counter-reset: none; }
+
+.pa-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 18px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+/* The connector. Drawn from the number downward, stopping at the last step so
+   the sequence has a visible end. */
+.pa-step::before {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 62px;
+  bottom: -1px;
+  width: 1px;
+  background: var(--line-strong);
+}
+.pa-step:last-child::before { display: none; }
+.pa-step:last-child { border-bottom: none; }
+
+.pa-num {
+  position: relative;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-family: var(--ff-display);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pa-step.is-done .pa-num {
+  border-color: var(--gold);
+  color: #0a1020;
+  background: var(--gold);
+}
+.pa-step.is-done .pa-title a { color: var(--ink-mute); }
+
+.pa-kind {
+  font-family: var(--ff-brand);
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+.pa-title {
+  font-family: var(--ff-display);
+  font-size: 1.42rem;
+  font-weight: 600;
+  line-height: 1.24;
+  margin-bottom: 8px;
+}
+.pa-title a { text-decoration: none; }
+.pa-title a:hover { text-decoration: underline; }
+.pa-sum { color: var(--ink-soft); line-height: 1.66; margin-bottom: 12px; }
+
+.pa-why {
+  border-left: 2px solid var(--line-strong);
+  padding-left: 13px;
+  font-size: .89rem;
+  line-height: 1.68;
+  color: var(--ink-mute);
+  margin-bottom: 14px;
+}
+.pa-why span {
+  font-family: var(--ff-brand);
+  font-size: .58rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-right: 5px;
+}
+
+.pa-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: .86rem;
+  color: var(--ink-mute);
+}
+.pa-mark input { width: 17px; height: 17px; accent-color: #c8a84b; cursor: pointer; }
+.pa-mark:hover { color: var(--ink-soft); }
+
+/* A step whose target is not published. Shown, never hidden. */
+.pa-step--missing .pa-num { border-style: dashed; color: var(--ink-mute); }
+.pa-step--missing .pa-title { color: var(--ink-mute); font-size: 1.15rem; }
+.pa-step--missing code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .86em;
+  color: var(--gold-deep);
+}
+
+.pa-fine {
+  margin-top: 22px;
+  font-size: .84rem;
+  line-height: 1.7;
+  color: var(--ink-mute);
+  max-width: 66ch;
+}
+
+.pa-tools { margin-bottom: 8px; }
+
+@media (max-width: 560px) {
+  .pa-step { grid-template-columns: 36px minmax(0, 1fr); gap: 14px; }
+  .pa-num { width: 36px; height: 36px; font-size: 1rem; }
+  .pa-step::before { left: 17px; top: 50px; }
+}

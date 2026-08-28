@@ -1,0 +1,106 @@
+/* Lumen Game — arcade.
+   Structure: one oversized cabinet with a single dominant action. Where the
+   codex is dense and the path is sequential, this is deliberately sparse:
+   one thing to press, and it is very large. */
+
+.ar { margin-bottom: 52px; }
+
+.ar-cab {
+  position: relative;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(200,168,75,.10) 0%, transparent 62%),
+    var(--surface);
+  padding: clamp(32px, 6vw, 64px) clamp(22px, 5vw, 56px);
+  text-align: center;
+  overflow: hidden;
+}
+
+.ar-kicker {
+  font-family: var(--ff-brand);
+  font-size: .66rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+
+.ar-title {
+  font-family: var(--ff-display);
+  font-size: clamp(2.6rem, 11vw, 5.4rem);
+  line-height: .95;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: .02em;
+}
+.ar-line {
+  font-family: var(--ff-brand);
+  font-size: .72rem;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin: 10px 0 26px;
+}
+
+.ar-desc {
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.68;
+  max-width: 46ch;
+  margin: 0 auto 32px;
+}
+
+/* The single dominant action. Sized well past the 44px minimum on purpose —
+   in an arcade the button is the interface. */
+.ar-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 18px 52px;
+  background: var(--gold);
+  color: #0a1020;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: var(--ff-brand);
+  font-size: .9rem;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+}
+.ar-go:hover { background: #d8b95e; color: #0a1020; }
+.ar-go-tri { font-size: 1.05rem; line-height: 1; }
+
+.ar-stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px 40px;
+  margin-top: 38px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.ar-stats div { text-align: center; }
+.ar-stats dt {
+  font-family: var(--ff-brand);
+  font-size: .58rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 6px;
+}
+.ar-stats dd { color: var(--ink); font-size: 1rem; }
+
+.ar-fine {
+  margin-top: 16px;
+  font-size: .84rem;
+  line-height: 1.7;
+  color: var(--ink-mute);
+  text-align: center;
+  max-width: 62ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ar-more { margin-bottom: 8px; }

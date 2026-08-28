@@ -9,6 +9,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Cinzel:wght@400;500&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="{{ '/assets/css/content.css' | relative_url }}">
+{%- comment -%}
+Additional stylesheets, declared per page as a `stylesheets:` list in front
+matter. content.css above always loads first and keeps the shell — header,
+footer, newsletter — identical everywhere. The identity experiences use this
+to layer their dark palette over that shell rather than forking the layout.
+{%- endcomment -%}
+{%- for sheet in page.stylesheets %}
+<link rel="stylesheet" href="{{ sheet | relative_url }}">
+{%- endfor %}
 </head>
 <body class="sf-body">
 {% include site-header.html %}

@@ -1,0 +1,19 @@
+# Codex World TV — storyworld entries.
+#
+# Deliberately empty. This file is the seam between the codex mechanism at
+# /identities/codexworldtv/ and its contents, and it exists in its empty state
+# so the page's zero-entry path is the one that actually ships and is actually
+# tested. An empty list here is a true statement: no character, place or era
+# has been written.
+#
+# Adding the first entry is one block, no code change:
+#
+#   - slug: some-name
+#     name: Some Name
+#     kind: Character | Place | Era | Object
+#     canon: canon | draft | proposed
+#     summary: One sentence.
+#
+# `canon` is required on every entry. It is what stops anything here being
+# read as a finished production.
+[]

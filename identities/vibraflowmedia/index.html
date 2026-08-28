@@ -1,0 +1,61 @@
+---
+layout: identity
+identity: vibraflowmedia
+permalink: /identities/vibraflowmedia/
+title: "VibraFlow Media"
+meta_title: "VibraFlow Media — the reading room"
+meta_description: "The reflective house of Sentinel Fortune LLC. One passage at a time, no feed and no onward pressure. Nothing is published yet."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-reading-room.css
+---
+
+{%- comment -%}
+EXPERIENCE: reading room. Primitive — the passage. Verb — sit with.
+
+The constraint IS the design. One narrow column, one passage, no grid, no
+related items, no next-item call to action, no progress bar and no counter.
+Every other identity here is built to move you onward; this one is built to
+let you stop. An engagement loop in a contemplative room works against the
+only thing the reader came for.
+
+That is also why there is no share row and no reading-time estimate. Both turn
+a passage into a unit of consumption.
+
+Empty today, and honestly so: no reflective writing has been published and no
+contemplative audio has been recorded.
+{%- endcomment -%}
+
+{%- assign passages = site.data.passages -%}
+
+<div class="rr">
+
+  {%- if passages.size > 0 %}
+  {%- assign p = passages | first %}
+  <article class="rr-piece">
+    <p class="rr-kicker">{{ p.kind | default: "Passage" }}</p>
+    <h2 class="rr-title">{{ p.title }}</h2>
+    <div class="rr-text">{{ p.body | markdownify }}</div>
+  </article>
+  {%- else %}
+
+  <div class="rr-quiet">
+    <p class="rr-quiet-h">Nothing is published here yet</p>
+    <p class="rr-quiet-p">
+      VibraFlow Media has not published a passage, and no contemplative audio
+      has been recorded. This room is finished and empty.
+    </p>
+    <p class="rr-quiet-p">
+      There is no list to join and no notification to enable. When something is
+      written, it will simply be here.
+    </p>
+  </div>
+
+  {%- endif %}
+
+  <p class="rr-fine">
+    Reflective writing. Not therapy, not medical or psychological advice, and
+    not a substitute for either.
+  </p>
+</div>

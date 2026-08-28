@@ -1,0 +1,15 @@
+# VibraFlow Media — reflective passages.
+#
+# Deliberately empty. Nothing reflective has been written and no contemplative
+# audio has been recorded, so this list is empty and the reading room says so.
+#
+# One passage per entry:
+#
+#   - title: A Title
+#     kind: Passage | Rhapsody | Teaching
+#     body: |
+#       Markdown body.
+#
+# The room shows ONE passage. That is the design, not a limitation: a list of
+# passages is a feed, and a feed is the thing this identity exists to not be.
+[]

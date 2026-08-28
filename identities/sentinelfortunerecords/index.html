@@ -1,0 +1,217 @@
+---
+layout: identity
+identity: sentinelfortunerecords
+permalink: /identities/sentinelfortunerecords/
+title: "Sentinel Fortune Records"
+meta_title: "Sentinel Fortune Records — the listening room"
+meta_description: "The sound house of Sentinel Fortune LLC. Releases, sound worlds and sonic identity. No recorded releases are published yet; the room is built and open."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-listening-room.css
+---
+
+{%- comment -%}
+EXPERIENCE: listening room. Primitive — the sound source. Verb — listen.
+
+The structure is a transport that stays put while a list scrolls beneath it.
+That is what makes this identity feel unlike the other six: you operate it,
+you do not read it.
+
+Origin Echo is genuinely generated in the browser by the Web Audio API, which
+is why it can be here while the release list is empty — it is a real sound,
+labelled as what it is. It is NOT presented as a release, because it is not
+one. The release list below is empty and says so.
+
+`robots: noindex` until the release list has something in it. Publishing an
+empty page to a search index is asking to be judged on it.
+{%- endcomment -%}
+
+<section class="lr" aria-labelledby="lr-h">
+  <h2 id="lr-h" class="id-h">The room</h2>
+  <p class="id-sub">
+    Sound generated live in your browser. Nothing is downloaded, nothing is
+    streamed from a server, and nothing is recorded.
+  </p>
+
+  <div class="lr-deck">
+    <canvas class="lr-wave" id="lrWave" width="900" height="120"
+            role="img" aria-label="Waveform display for the generated sound"></canvas>
+
+    <div class="lr-transport">
+      <button class="lr-key" id="lrPlay" type="button" aria-label="Play Origin Echo">▶</button>
+      <button class="lr-key" id="lrStop" type="button" aria-label="Stop Origin Echo" disabled>■</button>
+
+      <div class="lr-now">
+        <p class="lr-now-title" id="lrTitle">Origin Echo</p>
+        <p class="lr-now-kind">Generated · Web Audio · not a recording</p>
+      </div>
+
+      <label class="lr-vol">
+        <span class="id-sr-only">Volume</span>
+        <input type="range" id="lrVol" min="0" max="100" value="45" aria-label="Volume">
+      </label>
+    </div>
+
+    <p class="lr-note" id="lrNote" role="status">
+      Sound is off until you press play.
+    </p>
+  </div>
+</section>
+
+<section class="lr-cat" aria-labelledby="lr-cat-h">
+  <h2 id="lr-cat-h" class="id-h">Releases</h2>
+  <p class="id-sub">
+    Recorded work, when there is recorded work. This list is generated from the
+    release catalogue — it is empty because the catalogue is empty, not because
+    the page failed to load.
+  </p>
+
+  <div class="id-empty">
+    <p class="id-empty-h">No releases published</p>
+    <p class="id-empty-p">
+      Sentinel Fortune Records has not published a recorded release. When one
+      exists it appears here with its own transport, and this notice goes away.
+      Nothing is being withheld and there is no waiting list to join.
+    </p>
+  </div>
+</section>
+
+<script>
+/* Origin Echo — a small generative pad.
+ *
+ * Everything is synthesised at play time. There is no audio file to fetch,
+ * which is the honest reason this can exist on a page with no releases: it is
+ * a sound the browser makes, not a recording anyone made.
+ *
+ * The AudioContext is created on the first click, never on load, because
+ * browsers block autoplay and because a page that grabs the audio device
+ * before you ask it to is rude.
+ */
+(function () {
+  var playBtn = document.getElementById("lrPlay");
+  var stopBtn = document.getElementById("lrStop");
+  var volEl   = document.getElementById("lrVol");
+  var noteEl  = document.getElementById("lrNote");
+  var canvas  = document.getElementById("lrWave");
+  if (!playBtn || !canvas) return;
+
+  var AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) {
+    noteEl.textContent = "This browser has no Web Audio support, so the room is silent here.";
+    playBtn.disabled = true;
+    return;
+  }
+
+  var ctx = null, master = null, voices = [], analyser = null, raf = 0;
+  var g2d = canvas.getContext("2d");
+
+  /* Root plus a fifth and an octave — a stable, unresolved chord that can sit
+     under anything without asking for attention. */
+  var PARTIALS = [110, 164.81, 220, 329.63];
+
+  function start() {
+    if (ctx) return;
+    ctx = new AC();
+    master = ctx.createGain();
+    master.gain.value = 0;
+
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 2048;
+
+    master.connect(analyser);
+    analyser.connect(ctx.destination);
+
+    PARTIALS.forEach(function (hz, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = i % 2 ? "sine" : "triangle";
+      osc.frequency.value = hz;
+
+      /* A slow detune per voice so the chord breathes instead of sitting
+         perfectly still, which reads as synthetic within a few seconds. */
+      var lfo = ctx.createOscillator();
+      var lfoGain = ctx.createGain();
+      lfo.frequency.value = 0.05 + i * 0.017;
+      lfoGain.gain.value = 1.6;
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.detune);
+      lfo.start();
+
+      gain.gain.value = 0.25 / PARTIALS.length;
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start();
+      voices.push(osc, lfo);
+    });
+
+    master.gain.linearRampToValueAtTime(vol(), ctx.currentTime + 1.2);
+
+    playBtn.disabled = true;
+    stopBtn.disabled = false;
+    noteEl.textContent = "Playing Origin Echo — generated live, nothing is being streamed.";
+    draw();
+  }
+
+  function stop() {
+    if (!ctx) return;
+    var c = ctx;
+    master.gain.cancelScheduledValues(c.currentTime);
+    master.gain.setValueAtTime(master.gain.value, c.currentTime);
+    master.gain.linearRampToValueAtTime(0, c.currentTime + 0.5);
+    setTimeout(function () {
+      voices.forEach(function (v) { try { v.stop(); } catch (e) {} });
+      voices = [];
+      c.close();
+    }, 600);
+    ctx = null;
+    cancelAnimationFrame(raf);
+    clear();
+    playBtn.disabled = false;
+    stopBtn.disabled = true;
+    noteEl.textContent = "Stopped.";
+  }
+
+  function vol() { return (parseInt(volEl.value, 10) || 0) / 100 * 0.6; }
+
+  function clear() {
+    g2d.clearRect(0, 0, canvas.width, canvas.height);
+    g2d.strokeStyle = "rgba(200,168,75,.18)";
+    g2d.lineWidth = 1;
+    g2d.beginPath();
+    g2d.moveTo(0, canvas.height / 2);
+    g2d.lineTo(canvas.width, canvas.height / 2);
+    g2d.stroke();
+  }
+
+  function draw() {
+    if (!ctx || !analyser) return;
+    raf = requestAnimationFrame(draw);
+    var buf = new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(buf);
+
+    g2d.clearRect(0, 0, canvas.width, canvas.height);
+    g2d.lineWidth = 1.5;
+    g2d.strokeStyle = "#c8a84b";
+    g2d.beginPath();
+    var slice = canvas.width / buf.length;
+    for (var i = 0; i < buf.length; i++) {
+      var y = (buf[i] / 128) * (canvas.height / 2);
+      var x = i * slice;
+      if (i === 0) g2d.moveTo(x, y); else g2d.lineTo(x, y);
+    }
+    g2d.stroke();
+  }
+
+  playBtn.addEventListener("click", start);
+  stopBtn.addEventListener("click", stop);
+  volEl.addEventListener("input", function () {
+    if (ctx && master) master.gain.setTargetAtTime(vol(), ctx.currentTime, 0.05);
+  });
+  /* Leaving the page with the oscillators running would keep making sound in
+     a backgrounded tab on some browsers. */
+  window.addEventListener("pagehide", stop);
+
+  clear();
+})();
+</script>

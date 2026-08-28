@@ -1,0 +1,53 @@
+# Lumen School Academy — learning paths.
+#
+# A path is an ORDERED sequence. The order is the product: these steps build on
+# each other, and taking step five before step one wastes the reader's time.
+# That is the whole reason this identity renders a numbered spine instead of a
+# grid of cards — a grid silently tells the reader that order does not matter.
+#
+# STEPS REFERENCE REAL PUBLISHED CONTENT BY COLLECTION AND SLUG.
+# Titles and summaries are NOT copied here. The template looks each step up in
+# the live collection and renders the real title, so this file cannot drift out
+# of sync with what is actually published, and a step pointing at something
+# that does not exist renders as a visible gap rather than a dead link.
+#
+# Every referenced item must already be `status: ready`. Anything else has not
+# passed the editorial gate and must not appear in a path.
+
+- slug: ai-in-a-licensed-trade
+  title: Operating a licensed trade with AI
+  summary: >-
+    What to write down on site, how to turn it into a record that survives a
+    dispute, and where AI genuinely helps without putting your licence at risk.
+  audience: >-
+    Owner-operators and supervisors in licensed trades and home-service
+    businesses.
+  steps:
+    - collection: signals
+      slug: what-belongs-in-a-field-note
+      why: >-
+        Start here. Everything downstream depends on what gets captured on site
+        in the first place.
+    - collection: signals
+      slug: four-questions-defensible-estimate
+      why: >-
+        The same discipline applied to money. An estimate you cannot defend is
+        an estimate you will end up eating.
+    - collection: signals
+      slug: ai-drafts-licensed-people-decide
+      why: >-
+        Where the line sits. Read this before you let any tool near customer
+        work.
+    - collection: articles
+      slug: field-notes-to-job-records
+      why: >-
+        Now put the first two together: notes in, invoice-ready records out.
+    - collection: articles
+      slug: using-ai-safely-in-a-licensed-trade
+      why: >-
+        The practical version of step three, with the failure modes named.
+    - collection: guides
+      slug: choosing-an-ai-operations-system
+      why: >-
+        Last, because choosing a system before you know what you are recording
+        is how businesses buy software they never use.

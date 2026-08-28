@@ -1,0 +1,393 @@
+# The seven specialized identities of Sentinel Fortune LLC.
+#
+# One company, one ecosystem, one master domain. Each identity is a house
+# within it, not a separate business.
+#
+# DO NOT CONFUSE THIS FILE WITH _data/universes.yml. That file holds the FIVE
+# product universes, which are the Digital Shop's catalogue taxonomy. This file
+# holds the SEVEN identities, which are brand houses. They are different
+# things with different jobs and they are deliberately kept apart.
+#
+# ---------------------------------------------------------------------------
+# OWNERSHIP IS BY PROBLEM DOMAIN, NEVER BY TECHNOLOGY FORMAT
+# ---------------------------------------------------------------------------
+# A product belongs to the identity that owns its PRIMARY CUSTOMER PROBLEM.
+#
+#     primary customer problem  ->  primary identity        (correct)
+#     technology format         ->  identity                (WRONG)
+#
+# A mini-SaaS is not automatically LightNode's because it is software, any
+# more than a PDF is automatically Books & Publishing's because it is a file.
+# LightNode owns products whose primary problem IS the technology: AI systems,
+# automation, agents, workflows, infrastructure, operational tooling. A costing
+# calculator solves a business problem and belongs to the business-domain
+# identity even though it happens to be code.
+#
+# `domain.owns` below is the test. Ask what the customer's problem is, then
+# find the identity that lists it.
+#
+# ---------------------------------------------------------------------------
+# PRIMARY EXPERIENCE IS A DIFFERENTIATOR, NOT A CEILING
+# ---------------------------------------------------------------------------
+# `experience` names the ONE interaction that makes this identity feel unlike
+# the other six. It exists so the seven are not seven copies of one website.
+#
+# It does not define the limit of the identity. `capabilities` lists the
+# approved surface the identity may grow into inside its problem domain.
+# Something in `capabilities` is permitted, not promised, and not built.
+#
+# ---------------------------------------------------------------------------
+# READINESS IS THREE INDEPENDENT DIMENSIONS, NOT ONE BOOLEAN
+# ---------------------------------------------------------------------------
+#   experienceReady  the experience is built AND validated (G1+G2+G3 pass)
+#   hubVisible       the Public Hub may link to /identities/<slug>/
+#   subdomainLive    <slug>.sentinelfortune.com is actually serving
+#
+# They are strictly nested. Each one requires the one above it:
+#
+#     subdomainLive  =>  hubVisible  =>  experienceReady
+#
+# _includes/identity-card.html enforces that nesting at render time, so a
+# careless edit here cannot produce a link to a page that is not ready or an
+# address that does not resolve. Raising a flag out of order is ignored, and
+# the identity renders one step down.
+#
+# ONLY THE OWNER RAISES A FLAG. `subdomainLive` additionally requires DNS that
+# does not exist today: as of this writing NONE of the seven subdomains is
+# registered, configured or serving, so `subdomainLive` is false everywhere and
+# nothing in this repository may link to those addresses.
+#
+# `gates` records WHY each identity sits where it does. It is evidence, not
+# decoration — the note is what a later reader needs to re-check the claim.
+
+- slug: sentinelfortunerecords
+  title: Sentinel Fortune Records
+  tag: Sound
+  icon: "♪"
+  addr: sentinelfortunerecords.sentinelfortune.com
+  blurb: >-
+    Releases, sound worlds, artists, sonic identity, and immersive audio.
+  domain:
+    owns:
+      - recorded sound and releases
+      - sonic identity and brand audio
+      - artist development and artist tooling
+      - audio project and launch operations
+  experience:
+    model: listening-room
+    primitive: the sound source
+    verb: listen
+    differentiator: >-
+      Continuous playback with a transport that persists while you browse. The
+      page is an instrument you operate, not a document you read.
+  capabilities:
+    - listening
+    - release planning
+    - artist tools
+    - audio projects
+    - launch operations
+  never_claims:
+    - signed artists or a roster
+    - presence on streaming platforms
+    - release dates, chart positions or play counts
+    - recordings that do not exist
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: fail
+    substance_note: >-
+      No recorded audio exists. data/broadcast.json holds an empty episodes
+      array. The homepage's Origin Echo is generated live by the Web Audio API
+      and is honestly labelled as generated, not as a recording.
+    distinctness: pass
+    validation: pending
+
+- slug: codexworldtv
+  title: Codex World TV
+  tag: Cinema
+  icon: "◈"
+  addr: codexworldtv.sentinelfortune.com
+  blurb: >-
+    Films, animations, trailers, characters, and cinematic universes.
+  domain:
+    owns:
+      - narrative media and storyworlds
+      - scripts and screen development
+      - documentary development
+      - characters, canon and continuity
+  experience:
+    model: reference-codex
+    primitive: the codex entry
+    verb: look up
+    differentiator: >-
+      A searchable, cross-linked reference with a canon-status marker on every
+      entry. Chosen over a screening room deliberately: a video player with no
+      film in it is a fake product, whereas a codex is honestly empty and
+      becomes real the moment one entry is written.
+  capabilities:
+    - reference and codex
+    - storytelling
+    - scripts
+    - documentary development
+    - narrative media
+  never_claims:
+    - finished films, animations or trailers
+    - runtimes, cast, crew or festival selections
+    - release dates or distribution deals
+    - characters or canon that have not been written
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: fail
+    substance_note: >-
+      No video assets exist anywhere in the repository, and no codex entries
+      have been written. The mechanism ships empty and says so.
+    distinctness: pass
+    validation: pending
+
+- slug: lumengame
+  title: Lumen Game
+  tag: Interactive
+  icon: "⬡"
+  addr: lumengame.sentinelfortune.com
+  blurb: >-
+    Mini-games, interactive worlds, challenges, and playable concepts.
+  domain:
+    owns:
+      - playable experiences
+      - gamification and engagement mechanics
+      - challenges and simulations
+      - interactive concepts
+  experience:
+    model: arcade
+    primitive: the level
+    verb: play
+    differentiator: >-
+      One large launch target and almost no chrome. The game takes the page;
+      everything else gets out of its way. Best score is kept locally on the
+      player's own device.
+  capabilities:
+    - playable experiences
+    - gamification
+    - challenges
+    - simulations
+    - engagement tools
+  never_claims:
+    - global leaderboards or multiplayer
+    - player counts or downloads
+    - in-app purchases or virtual currency
+    - games that are not actually playable here
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: pass
+    substance_note: >-
+      S.5 ASCENT Lite is a real, playable game: a 42 KB engine with 16 KB of
+      hand-authored level data, already published at
+      /frontend/games/s5-ascent-lite/.
+    distinctness: pass
+    validation: pending
+    validation_note: >-
+      G3 not yet run. Unlike Floor, S.5 ASCENT Lite carries no automated test
+      coverage and no release record in this repository, so its readiness is
+      asserted by nobody yet.
+
+- slug: lumenschoolacademy
+  title: Lumen School Academy
+  tag: Knowledge
+  icon: "◎"
+  addr: lumenschoolacademy.sentinelfortune.com
+  blurb: >-
+    Structured knowledge, personal growth, business themes, guided lessons.
+  domain:
+    owns:
+      - structured learning and guided lessons
+      - business tools and business decision support
+      - finance education, costing and pricing
+      - entrepreneurship
+      - AI education
+      - educational software
+  experience:
+    model: sequenced-path
+    primitive: the step
+    verb: work through
+    differentiator: >-
+      An ordered path on a visible spine, not a grid of cards. Order IS the
+      product here: a card grid would let a reader take step four before step
+      one and destroy the only thing a path offers. Progress is marked on the
+      learner's own device.
+  capabilities:
+    - learning paths
+    - business tools
+    - finance education
+    - entrepreneurship
+    - AI education
+    - masterclasses
+    - educational software
+  never_claims:
+    - enrolment, cohorts or intake dates
+    - certificates, accreditation or qualifications
+    - named instructors or faculty
+    - student numbers, completion rates or outcomes
+    - that its tools are accounting, tax or financial advice
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: pass
+    substance_note: >-
+      Seven real artefacts, all addressing one reader — the owner-operator of a
+      small trades or home-service business. Floor (a working costing tool with
+      39 unit tests, 16 end-to-end checks and a release record), one guide, two
+      articles and three updates, every editorial item already status:ready.
+    distinctness: pass
+    validation: pending
+
+- slug: vibraflowmedia
+  title: VibraFlow Media
+  tag: Reflection
+  icon: "▣"
+  addr: vibraflowmedia.sentinelfortune.com
+  blurb: >-
+    Reflective writing, rhapsodies, teachings, and contemplative audio.
+  domain:
+    owns:
+      - reflective and contemplative writing
+      - reflection journeys
+      - spiritual learning
+      - contemplative publishing
+  experience:
+    model: reading-room
+    primitive: the passage
+    verb: sit with
+    differentiator: >-
+      One passage at a time in a single narrow column, with no grid and no
+      next-item call to action. The absence of onward pressure is the feature;
+      an engagement loop here would work against what the reader came for.
+  capabilities:
+    - reading
+    - reflection journeys
+    - spiritual learning
+    - contemplative publishing
+    - future tools
+  never_claims:
+    - therapeutic, medical or psychological benefit
+    - practitioners, teachers or guides
+    - contemplative audio that has not been recorded
+    - passages that have not been written
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: fail
+    substance_note: >-
+      No reflective passages have been written and no contemplative audio
+      exists. The reading room ships with nothing in it.
+    distinctness: pass
+    validation: pending
+
+- slug: lightnodesystems
+  title: LightNode Systems
+  tag: Systems
+  icon: "⊕"
+  addr: lightnodesystems.sentinelfortune.com
+  blurb: >-
+    Web modules, portals, tools, lightweight systems, guided journeys.
+  domain:
+    owns:
+      - AI systems
+      - automation and agents
+      - workflows and orchestration
+      - technical diagnostics
+      - software infrastructure and internal tooling
+      - operational technology
+  experience:
+    model: workshop
+    primitive: the system
+    verb: run
+    differentiator: >-
+      Every entry declares three things before it opens — the job it does, the
+      inputs it needs, and what it returns. A system you cannot describe in
+      those terms does not belong in the workshop.
+  capabilities:
+    - AI systems
+    - automation
+    - agents
+    - workflows
+    - technical diagnostics
+    - operational software
+  never_claims:
+    - integrations, APIs or connectors that do not exist
+    - accounts, tenancy or uptime figures
+    - customer counts or deployments
+    - autonomy or capability a system does not have
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: fail
+    substance_note: >-
+      No qualifying artefact. Floor was reassigned to Lumen School Academy
+      under the problem-domain rule — its customer problem is job costing and
+      pricing, not technology. The Shop Worker, the admin proxy and the
+      Cloudflare estate are Sentinel Fortune's own internal commerce
+      infrastructure, not customer products, and must never be exposed
+      publicly. LightNode's first product still has to be built.
+    distinctness: pass
+    validation: pending
+
+- slug: oglegacystore
+  title: OG Legacy Store
+  tag: Culture
+  icon: "◇"
+  addr: oglegacystore.sentinelfortune.com
+  blurb: >-
+    Lifestyle, design language, digital products, curated collections.
+  domain:
+    owns:
+      - product culture and design language
+      - curated collections and bundles
+      - product discovery
+      - lifestyle and legacy objects
+  experience:
+    model: lookbook
+    primitive: the object
+    verb: consider
+    differentiator: >-
+      One object at scale with a thumbnail rail beside it, rather than a wall
+      of equally sized tiles. Checkout is delegated to the Digital Shop and is
+      never reimplemented here — the lookbook's job is to make you look, not to
+      take a payment.
+  capabilities:
+    - lookbook
+    - offers
+    - collections
+    - bundles
+    - product discovery
+    - commerce tools
+  never_claims:
+    - stock levels, prices or shipping
+    - limited drops, editions or sell-outs
+    - physical goods of any kind
+    - products that are not published in the Digital Shop
+  readiness:
+    experienceReady: false
+    hubVisible: false
+    subdomainLive: false
+  gates:
+    substance: fail
+    substance_note: >-
+      The production catalogue holds one DRAFT product and zero published
+      products, verified by direct query against the production D1 database.
+      Until something is published there is nothing to put in a lookbook.
+    distinctness: pass
+    validation: pending

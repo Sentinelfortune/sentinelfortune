@@ -1,0 +1,45 @@
+{%- comment -%}
+Resolves one identity's THREE readiness dimensions into the single effective
+state the renderers act on, and enforces the nesting invariant while doing it.
+
+  Input   include identity-state.html identity=<an entry from _data/identities.yml>
+  Output  identity_state   "draft" | "hub" | "live"
+          identity_ready   true when the experience is built and validated
+          identity_linked  true when the Public Hub may link to it on-hub
+          identity_remote  true when its subdomain is actually serving
+
+THE INVARIANT
+-------------
+    subdomainLive  =>  hubVisible  =>  experienceReady
+
+A flag raised out of order is IGNORED rather than obeyed, and the identity
+renders one step down. This is why the flags are ANDed cumulatively below
+instead of being read independently: the cheapest way to guarantee we never
+link to an unvalidated page or an address that does not resolve is to make it
+impossible to express in the data. A typo in identities.yml degrades the page;
+it cannot break it.
+
+Assigns are visible to the calling template because Jekyll includes share the
+caller's scope.
+{%- endcomment -%}
+
+{%- assign r = include.identity.readiness -%}
+
+{%- assign identity_ready  = r.experienceReady -%}
+{%- assign identity_linked = false -%}
+{%- assign identity_remote = false -%}
+
+{%- if identity_ready and r.hubVisible -%}
+  {%- assign identity_linked = true -%}
+{%- endif -%}
+
+{%- if identity_linked and r.subdomainLive -%}
+  {%- assign identity_remote = true -%}
+{%- endif -%}
+
+{%- assign identity_state = "draft" -%}
+{%- if identity_remote -%}
+  {%- assign identity_state = "live" -%}
+{%- elsif identity_linked -%}
+  {%- assign identity_state = "hub" -%}
+{%- endif -%}

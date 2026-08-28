@@ -1,0 +1,105 @@
+/* LightNode Systems — workshop.
+   Structure: a rack of units, each fronted by a three-term contract strip.
+   The contract table is the identity's signature — no other house here
+   declares takes/returns/runs before you can open the thing. */
+
+.ws { margin-bottom: 8px; }
+
+.ws-rack {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.ws-unit {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+.ws-unit-kind {
+  font-family: var(--ff-brand);
+  font-size: .58rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.ws-unit-name {
+  font-family: var(--ff-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.ws-unit-job { color: var(--ink-soft); line-height: 1.66; margin-bottom: 18px; }
+.ws-unit-note { color: var(--ink-mute); font-size: .86rem; margin-top: auto; }
+.ws-run { margin-top: auto; align-self: flex-start; }
+
+/* The contract strip. Monospaced values so takes/returns/runs read as a
+   specification rather than as marketing copy. */
+.ws-contract {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+  margin-bottom: 20px;
+  display: grid;
+  gap: 9px;
+}
+.ws-contract > div {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+.ws-contract dt {
+  font-family: var(--ff-brand);
+  font-size: .56rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.ws-contract dd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .84rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.ws-contract--blank dd { color: var(--ink-mute); }
+
+/* ── empty bench ─────────────────────────────────────────────────────── */
+.ws-bench {
+  border: 1px dashed var(--line-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: clamp(28px, 5vw, 44px);
+}
+.ws-bench-h {
+  font-family: var(--ff-brand);
+  font-size: .74rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.ws-bench-p {
+  color: var(--ink-soft);
+  line-height: 1.72;
+  max-width: 62ch;
+  margin-bottom: 26px;
+}
+.ws-bench-sub {
+  font-size: .86rem;
+  color: var(--ink-mute);
+  margin-bottom: 10px;
+}
+.ws-bench-fine {
+  font-size: .84rem;
+  line-height: 1.72;
+  color: var(--ink-mute);
+  max-width: 66ch;
+}

@@ -1,0 +1,152 @@
+---
+layout: base
+permalink: /identities/
+title: "The seven houses"
+meta_title: "The seven identities of Sentinel Fortune"
+meta_description: "Sentinel Fortune LLC operates seven specialized identities under one master domain. None of the seven subdomains is active; each house is being built here first."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+---
+
+{%- comment -%}
+The index of the seven houses.
+
+Each row links to its on-hub experience ONLY when identity-state.html says the
+identity is hub-visible — which requires experienceReady AND hubVisible, in
+that order. Nothing here ever links to a *.sentinelfortune.com address: none of
+the seven subdomains is registered or serving, and a link to one would be a
+link to nothing.
+
+`noindex` while every house is in build. There is no value in indexing an
+index of pages that are themselves noindexed.
+{%- endcomment -%}
+
+<article class="id-shell">
+
+  <nav class="sf-crumbs id-crumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}">Home</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">The seven houses</span>
+  </nav>
+
+  <header class="id-head">
+    <p class="id-tag">The House</p>
+    <h1 class="id-title">Seven houses, one company</h1>
+    <p class="id-blurb">
+      Sentinel Fortune LLC operates under one master domain. Each identity is a
+      house within it — a distinct problem domain with its own way of working —
+      not a separate business. Each will open at its own address when it is
+      ready. None of them has opened yet.
+    </p>
+  </header>
+
+  <p class="id-state id-state--draft" role="note">
+    Every house below is in build. Each one is listed with the customer problems
+    it owns, so it is clear what it is for before there is much in it. Work
+    belongs to a house because of the problem it solves, never because of the
+    format it ships in.
+  </p>
+
+  <ul class="idx-list">
+    {%- for identity in site.data.identities %}
+    {%- include identity-state.html identity=identity %}
+    <li class="idx-row idx-row--{{ identity_state }}">
+
+      <p class="idx-mark" aria-hidden="true">{{ identity.icon }}</p>
+
+      <div class="idx-body">
+        <p class="idx-tag">{{ identity.tag }}</p>
+        <h2 class="idx-name">
+          {%- if identity_linked %}
+          <a href="{{ '/identities/' | append: identity.slug | append: '/' | relative_url }}">{{ identity.title }}</a>
+          {%- else %}
+          {{ identity.title }}
+          {%- endif %}
+        </h2>
+        <p class="idx-blurb">{{ identity.blurb }}</p>
+
+        <ul class="idx-owns">
+          {%- for problem in identity.domain.owns limit: 3 %}
+          <li>{{ problem }}</li>
+          {%- endfor %}
+        </ul>
+      </div>
+
+      <div class="idx-state">
+        {%- if identity_remote %}
+        <p class="idx-badge idx-badge--live">Open</p>
+        {%- elsif identity_linked %}
+        <p class="idx-badge idx-badge--hub">Ready · on this site</p>
+        {%- else %}
+        <p class="idx-badge">In build</p>
+        {%- endif %}
+        <p class="idx-addr">{{ identity.addr }}</p>
+      </div>
+
+    </li>
+    {%- endfor %}
+  </ul>
+
+  <p class="idx-fine">
+    The seven addresses above are where each house will live. None of them is
+    active today, which is why none of them is a link. A house becomes reachable
+    here first, and only moves to its own address once it is genuinely ready.
+  </p>
+
+</article>
+
+<style>
+/* Index-only furniture. Small enough that a seventh stylesheet for one page
+   would cost more than it saves. */
+.idx-list { list-style: none; padding: 0; display: grid; gap: 12px; margin-bottom: 30px; }
+.idx-row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) minmax(0, 190px);
+  gap: 18px;
+  align-items: start;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.idx-row--hub, .idx-row--live { border-color: var(--line-strong); }
+.idx-mark { font-size: 1.5rem; color: var(--gold); line-height: 1.2; }
+.idx-tag {
+  font-family: var(--ff-brand);
+  font-size: .56rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 7px;
+}
+.idx-name { font-family: var(--ff-display); font-size: 1.45rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
+.idx-name a { text-decoration: none; }
+.idx-name a:hover { text-decoration: underline; }
+.idx-blurb { color: var(--ink-soft); line-height: 1.64; margin-bottom: 12px; }
+.idx-owns { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.idx-owns li {
+  border: 1px solid var(--line); border-radius: 100px;
+  padding: 4px 11px; font-size: .76rem; color: var(--ink-mute);
+}
+.idx-state { text-align: right; }
+.idx-badge {
+  display: inline-block;
+  font-family: var(--ff-brand);
+  font-size: .56rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-mute);
+  border: 1px solid var(--line-strong); border-radius: 100px;
+  padding: 5px 11px; margin-bottom: 9px;
+}
+.idx-badge--hub  { color: var(--gold-deep); border-color: var(--gold); }
+.idx-badge--live { color: #0a1020; background: var(--gold); border-color: var(--gold); }
+.idx-addr {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .72rem; color: var(--ink-mute); word-break: break-all;
+}
+.idx-fine { font-size: .86rem; line-height: 1.72; color: var(--ink-mute); max-width: 68ch; }
+@media (max-width: 700px) {
+  .idx-row { grid-template-columns: 34px minmax(0, 1fr); }
+  .idx-state { grid-column: 1 / -1; text-align: left; }
+}
+</style>

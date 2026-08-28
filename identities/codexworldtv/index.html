@@ -1,0 +1,132 @@
+---
+layout: identity
+identity: codexworldtv
+permalink: /identities/codexworldtv/
+title: "Codex World TV"
+meta_title: "Codex World TV — the storyworld codex"
+meta_description: "The narrative house of Sentinel Fortune LLC. A cross-referenced codex of characters, places and canon. No entries are written yet; the codex is built and open."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-codex.css
+---
+
+{%- comment -%}
+EXPERIENCE: reference codex. Primitive — the entry. Verb — look up.
+
+WHY THIS AND NOT A SCREENING ROOM. There is no film, no animation and no
+trailer anywhere in this repository. A video player with nothing to play is a
+fake product: it implies a library, it invites a click that cannot be honoured,
+and the only way to make it look finished is to invent titles and runtimes.
+
+A codex fails honestly instead. An empty index reads as "nothing written yet"
+rather than "something is broken", and the day one entry is written the codex
+is genuinely useful at a size of one — which a screening room never is.
+
+The filter is live and operates on whatever entries exist. With zero entries it
+correctly reports zero, which is why it is wired up now rather than later: an
+empty state that has never run the code path it replaces is untested.
+{%- endcomment -%}
+
+{%- assign entries = site.data.codex_entries -%}
+
+<div class="cx" data-count="{{ entries | size }}">
+
+  <div class="cx-bar">
+    <label class="cx-search">
+      <span class="id-sr-only">Search the codex</span>
+      <input type="search" id="cxQ" placeholder="Search characters, places, eras…"
+             autocomplete="off" {% if entries.size == 0 %}disabled{% endif %}>
+    </label>
+    <p class="cx-count" id="cxCount" role="status">
+      {{ entries | size }} {% if entries.size == 1 %}entry{% else %}entries{% endif %}
+    </p>
+  </div>
+
+  <div class="cx-panes">
+
+    <nav class="cx-index" aria-label="Codex index">
+      <p class="cx-pane-h">Index</p>
+      {%- if entries.size > 0 %}
+      <ul class="cx-list" id="cxList">
+        {%- for e in entries %}
+        <li>
+          <button type="button" class="cx-item" data-slug="{{ e.slug }}">
+            <span class="cx-item-name">{{ e.name }}</span>
+            <span class="cx-item-kind">{{ e.kind }}</span>
+            <span class="cx-canon cx-canon--{{ e.canon }}">{{ e.canon }}</span>
+          </button>
+        </li>
+        {%- endfor %}
+      </ul>
+      {%- else %}
+      <p class="cx-index-empty">Nothing indexed yet.</p>
+      {%- endif %}
+    </nav>
+
+    <div class="cx-entry" id="cxEntry" aria-live="polite">
+      {%- if entries.size > 0 %}
+      <p class="cx-prompt">Choose an entry from the index.</p>
+      {%- else %}
+      <div class="id-empty">
+        <p class="id-empty-h">The codex has no entries</p>
+        <p class="id-empty-p">
+          Codex World TV has not published a character, place or era, and there
+          are no films, animations or trailers to list. The codex is built and
+          working — it is simply empty, and it will say so until something is
+          written into it.
+        </p>
+      </div>
+      {%- endif %}
+    </div>
+
+  </div>
+
+  <p class="cx-canon-key">
+    Every entry carries a canon marker: <strong>canon</strong> is settled,
+    <strong>draft</strong> is written but not fixed, <strong>proposed</strong>
+    is under consideration and may never happen. The marker exists so that
+    nothing here can be mistaken for a finished production.
+  </p>
+</div>
+
+<script>
+/* Codex index filter and detail pane.
+ *
+ * Runs against whatever is in the index, including nothing. The zero-entry
+ * path is the one that ships today, so it is the one that has to be right:
+ * the search box is disabled rather than left live-but-useless, and the count
+ * is rendered from the real list length rather than hardcoded. */
+(function () {
+  var q     = document.getElementById("cxQ");
+  var list  = document.getElementById("cxList");
+  var count = document.getElementById("cxCount");
+  var pane  = document.getElementById("cxEntry");
+  if (!list || !q) return;
+
+  var items = Array.prototype.slice.call(list.querySelectorAll(".cx-item"));
+
+  function plural(n) { return n + " " + (n === 1 ? "entry" : "entries"); }
+
+  q.addEventListener("input", function () {
+    var needle = q.value.trim().toLowerCase();
+    var shown = 0;
+    items.forEach(function (btn) {
+      var hit = !needle || btn.textContent.toLowerCase().indexOf(needle) !== -1;
+      btn.parentNode.hidden = !hit;
+      if (hit) shown++;
+    });
+    count.textContent = needle ? plural(shown) + " matching" : plural(items.length);
+  });
+
+  list.addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".cx-item");
+    if (!btn) return;
+    items.forEach(function (b) { b.classList.toggle("is-on", b === btn); });
+    var tpl = document.getElementById("cx-body-" + btn.dataset.slug);
+    pane.innerHTML = tpl
+      ? tpl.innerHTML
+      : "<p class=\"cx-prompt\">That entry has no body text yet.</p>";
+  });
+})();
+</script>

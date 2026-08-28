@@ -1,0 +1,94 @@
+---
+layout: identity
+identity: lightnodesystems
+permalink: /identities/lightnodesystems/
+title: "LightNode Systems"
+meta_title: "LightNode Systems — the workshop"
+meta_description: "The systems house of Sentinel Fortune LLC. AI systems, automation, agents and workflows. No system has shipped yet."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-workshop.css
+---
+
+{%- comment -%}
+EXPERIENCE: workshop. Primitive — the system. Verb — run.
+
+The distinguishing structure is the CONTRACT STRIP: every entry must state
+three things before it can be opened — the job it does, the inputs it needs,
+and what it returns. A system that cannot be described in those terms is not
+admitted. That is a real editorial constraint on this house, not a layout
+choice, and it is why the empty state below lists the contract fields: the
+shape of what is missing is itself informative.
+
+THIS HOUSE IS EMPTY, AND THAT IS A CORRECTION, NOT AN OVERSIGHT.
+Floor was previously assigned here on the reasoning that it is software.
+Ownership follows the customer's PROBLEM, not the technology it ships in.
+Floor's problem is job costing and pricing — a business problem — so it
+belongs to Lumen School Academy. LightNode owns products whose problem IS the
+technology: AI systems, automation, agents, workflows, diagnostics.
+
+Nothing in this repository qualifies. The Shop Worker, the admin proxy and the
+Cloudflare estate are Sentinel Fortune's own internal commerce infrastructure,
+not customer products, and must never be exposed publicly. So this house says
+it is empty.
+{%- endcomment -%}
+
+{%- assign systems = site.data.systems -%}
+
+<section class="ws" aria-labelledby="ws-h">
+  <h2 id="ws-h" class="id-h">The workshop</h2>
+  <p class="id-sub">
+    Every system here declares its contract before it opens: the job it does,
+    what it needs from you, and what it hands back. Anything that cannot be
+    stated that way does not go in the workshop.
+  </p>
+
+  {%- if systems.size > 0 %}
+  <ul class="ws-rack">
+    {%- for s in systems %}
+    <li class="ws-unit">
+      <p class="ws-unit-kind">{{ s.kind }}</p>
+      <h3 class="ws-unit-name">{{ s.name }}</h3>
+      <p class="ws-unit-job">{{ s.job }}</p>
+
+      <dl class="ws-contract">
+        <div><dt>Takes</dt><dd>{{ s.takes }}</dd></div>
+        <div><dt>Returns</dt><dd>{{ s.returns }}</dd></div>
+        <div><dt>Runs</dt><dd>{{ s.runs }}</dd></div>
+      </dl>
+
+      {%- if s.url %}
+      <a class="id-btn ws-run" href="{{ s.url | relative_url }}">Run it</a>
+      {%- else %}
+      <p class="ws-unit-note">Not open yet.</p>
+      {%- endif %}
+    </li>
+    {%- endfor %}
+  </ul>
+  {%- else %}
+
+  <div class="ws-bench">
+    <p class="ws-bench-h">The bench is empty</p>
+    <p class="ws-bench-p">
+      LightNode Systems has not shipped a system. Nothing is listed because
+      nothing qualifies, and the empty bench is a more useful statement than a
+      placeholder would be.
+    </p>
+
+    <p class="ws-bench-sub">The first entry will have to fill in all three:</p>
+    <dl class="ws-contract ws-contract--blank">
+      <div><dt>Takes</dt><dd>—</dd></div>
+      <div><dt>Returns</dt><dd>—</dd></div>
+      <div><dt>Runs</dt><dd>—</dd></div>
+    </dl>
+
+    <p class="ws-bench-fine">
+      Sentinel Fortune's own commerce and delivery infrastructure is not listed
+      here and never will be. It is internal plumbing, not a product anyone can
+      run, and this house lists only things a customer can actually use.
+    </p>
+  </div>
+
+  {%- endif %}
+</section>

@@ -1,0 +1,24 @@
+# LightNode Systems — the workshop rack.
+#
+# Deliberately empty. No system in this repository qualifies for this house.
+#
+# OWNERSHIP REMINDER. A product belongs here when the CUSTOMER'S PROBLEM is the
+# technology itself: AI systems, automation, agents, workflows, diagnostics,
+# operational tooling. Software that solves a business problem belongs to the
+# business-domain identity; software that teaches belongs to the education one.
+# "It is code" is not a qualification.
+#
+# Sentinel Fortune's own Shop Worker, admin proxy and Cloudflare estate are
+# internal infrastructure, not customer products. They must never be listed.
+#
+# Every entry must fill in the whole contract — an entry missing any of `job`,
+# `takes` or `returns` has not been thought through and does not go on the rack:
+#
+#   - name: Some System
+#     kind: Agent | Workflow | Diagnostic | Automation
+#     job: The one job it does, in a sentence.
+#     takes: What the customer must supply.
+#     returns: What it hands back.
+#     runs: Where it runs (e.g. in your browser).
+#     url: /path/to/it/        # omit while it is not open
+[]

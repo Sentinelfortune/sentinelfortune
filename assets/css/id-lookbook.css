@@ -1,0 +1,107 @@
+/* OG Legacy Store — lookbook.
+   Structure: one large object beside a thumbnail rail. Not a tile grid: a grid
+   makes everything equally important, which is the opposite of curation. */
+
+.lb { margin-bottom: 8px; }
+
+.lb-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px;
+  gap: 22px;
+  align-items: start;
+}
+@media (max-width: 680px) {
+  .lb-stage { grid-template-columns: 1fr; }
+}
+
+.lb-hero {
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.lb-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #060a15;
+}
+.lb-hero figcaption { padding: 22px 24px 26px; }
+.lb-hero-kind {
+  font-family: var(--ff-brand);
+  font-size: .58rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 9px;
+}
+.lb-hero-name {
+  font-family: var(--ff-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.lb-hero-note { color: var(--ink-soft); line-height: 1.66; }
+
+.lb-rail {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+@media (max-width: 680px) {
+  .lb-rail { grid-auto-flow: column; grid-auto-columns: 84px; overflow-x: auto; }
+}
+.lb-thumb {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--surface);
+  cursor: pointer;
+  overflow: hidden;
+}
+.lb-thumb img { display: block; width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; }
+.lb-thumb:hover { border-color: var(--line-strong); }
+.lb-thumb.is-on { border-color: var(--gold); }
+
+/* ── empty frame ─────────────────────────────────────────────────────── */
+.lb-void {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+@media (max-width: 680px) {
+  .lb-void { grid-template-columns: 1fr; }
+}
+.lb-void-frame {
+  aspect-ratio: 1 / 1;
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 14px,
+      rgba(200,168,75,.035) 14px 28px
+    ),
+    var(--surface);
+}
+.lb-void-h {
+  font-family: var(--ff-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.lb-void-p {
+  color: var(--ink-soft);
+  line-height: 1.72;
+  margin-bottom: 1.2em;
+  max-width: 56ch;
+}

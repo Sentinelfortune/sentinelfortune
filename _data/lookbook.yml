@@ -1,0 +1,16 @@
+# OG Legacy Store — lookbook objects.
+#
+# Deliberately empty. An object may appear here ONLY if it is published in the
+# Digital Shop. The production catalogue currently holds one DRAFT product and
+# zero published products, so this list is empty.
+#
+#   - name: Object Name
+#     collection: Which curated collection it belongs to
+#     note: One line about the object. NOT a price and NOT a claim of stock.
+#     image: /assets/img/lookbook/<file>
+#     image_alt: A real description of the image.
+#
+# NEVER put a price, a stock level, an edition size or a drop date in this
+# file. The Digital Shop is the single authority on all of that, and a second
+# copy here could only ever drift out of agreement with it.
+[]

@@ -1,0 +1,110 @@
+---
+layout: identity
+identity: oglegacystore
+permalink: /identities/oglegacystore/
+title: "OG Legacy Store"
+meta_title: "OG Legacy Store — the lookbook"
+meta_description: "The culture house of Sentinel Fortune LLC. Curated collections and design language. Nothing is published in the catalogue yet."
+robots: "noindex,follow"
+stylesheets:
+  - /assets/css/identity.css
+  - /assets/css/id-lookbook.css
+---
+
+{%- comment -%}
+EXPERIENCE: lookbook. Primitive — the object. Verb — consider.
+
+Structure: one object at scale with a thumbnail rail beside it. Not a tile
+wall — a tile wall makes every object equally important and turns looking into
+scanning. The rail keeps the rest visible without letting it compete.
+
+COMMERCE IS DELEGATED, NEVER REIMPLEMENTED. There is no cart, no price, no
+buy button and no Stripe call anywhere on this page. The Digital Shop owns
+checkout, licensing, delivery and refunds; duplicating any of that here would
+create a second surface that can disagree with the first about what something
+costs or what licence it carries. The lookbook's job is to make you look.
+
+EMPTY TODAY, VERIFIED. The production catalogue holds one DRAFT product and
+zero published products, confirmed by direct query against the production D1
+database. A lookbook with nothing published in it says so.
+{%- endcomment -%}
+
+{%- assign objects = site.data.lookbook -%}
+
+<section class="lb" aria-labelledby="lb-h">
+  <h2 id="lb-h" class="id-sr-only">Lookbook</h2>
+
+  {%- if objects.size > 0 %}
+  <div class="lb-stage">
+    <figure class="lb-hero" id="lbHero">
+      {%- assign o = objects | first %}
+      <img src="{{ o.image | relative_url }}" alt="{{ o.image_alt }}" width="900" height="900">
+      <figcaption>
+        <p class="lb-hero-kind">{{ o.collection }}</p>
+        <p class="lb-hero-name">{{ o.name }}</p>
+        <p class="lb-hero-note">{{ o.note }}</p>
+      </figcaption>
+    </figure>
+
+    <ul class="lb-rail" aria-label="Other objects">
+      {%- for obj in objects %}
+      <li>
+        <button type="button" class="lb-thumb{% if forloop.first %} is-on{% endif %}"
+                data-name="{{ obj.name | escape }}"
+                data-kind="{{ obj.collection | escape }}"
+                data-note="{{ obj.note | escape }}"
+                data-img="{{ obj.image | relative_url }}"
+                data-alt="{{ obj.image_alt | escape }}">
+          <img src="{{ obj.image | relative_url }}" alt="{{ obj.name }}" width="120" height="120" loading="lazy">
+        </button>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+  {%- else %}
+
+  <div class="lb-void">
+    <div class="lb-void-frame" aria-hidden="true"></div>
+    <div class="lb-void-body">
+      <p class="lb-void-h">Nothing is published yet</p>
+      <p class="lb-void-p">
+        The OG Legacy Store lookbook shows objects that are actually published
+        in the Digital Shop. The catalogue currently has none, so the frame is
+        empty rather than filled with something that is not for sale.
+      </p>
+      <p class="lb-void-p">
+        There are no prices, no stock levels, no drops and no editions here —
+        the Digital Shop is the only place any of that is ever stated.
+      </p>
+      <a class="id-btn" href="{{ '/shop/' | relative_url }}">Go to the Digital Shop</a>
+    </div>
+  </div>
+
+  {%- endif %}
+</section>
+
+<script>
+/* Rail to hero. Swaps the large object; does nothing else.
+ * No cart, no price lookup, no network call — this page cannot transact and
+ * must not look as though it can. */
+(function () {
+  var hero = document.getElementById("lbHero");
+  if (!hero) return;
+  var thumbs = Array.prototype.slice.call(document.querySelectorAll(".lb-thumb"));
+  var img  = hero.querySelector("img");
+  var kind = hero.querySelector(".lb-hero-kind");
+  var name = hero.querySelector(".lb-hero-name");
+  var note = hero.querySelector(".lb-hero-note");
+
+  thumbs.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      thumbs.forEach(function (b) { b.classList.toggle("is-on", b === btn); });
+      img.src = btn.dataset.img;
+      img.alt = btn.dataset.alt || "";
+      kind.textContent = btn.dataset.kind || "";
+      name.textContent = btn.dataset.name || "";
+      note.textContent = btn.dataset.note || "";
+    });
+  });
+})();
+</script>
