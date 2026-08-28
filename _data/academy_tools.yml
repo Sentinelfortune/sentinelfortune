@@ -1,0 +1,57 @@
+# Lumen School Academy — business tools.
+#
+# A tool belongs to this house when the CUSTOMER'S PROBLEM is a business
+# problem: costing, pricing, margin, profitability, or a decision an owner has
+# to make. Not when it happens to be written in JavaScript. Floor is here for
+# that reason and no other.
+#
+# THE TOOL IS NOT DUPLICATED HERE. `url_key` names a key in _config.yml that
+# holds Floor's real address; the Academy links to the canonical application
+# and never reimplements any part of it. There is exactly one Floor.
+#
+# Every field below is checkable against apps/floor/RELEASE.md. Nothing here
+# may be a claim that record does not support — no user counts, no ratings, no
+# testimonials, no "trusted by".
+
+- key: floor
+  name: Floor
+  tagline: Know the price below which a job loses you money.
+
+  # The three things the Academy states before anyone opens it.
+  problem: >-
+    Small trades and home-service operators quote from gut feel and find out a
+    job lost money only after it is finished — because rent, insurance, admin,
+    software and the van are paid whether or not the quote covered them.
+  outcome: >-
+    The break-even price floor for a job, and the price that would have hit
+    your target margin. Use it before you quote, or afterwards to find out what
+    the work actually earned.
+  cta: Open Floor
+
+  url_key: floor_app_url
+
+  # What it does, in the order it does it. Taken from the product contract in
+  # apps/floor/RELEASE.md.
+  workflow:
+    - Enter your annual overhead, billable hours, labour cost and target margin
+    - Add the jobs you want to check
+    - Read the ranked result, worst job first
+    - Export to CSV or a printable sheet
+
+  # Facts, each one verifiable in the release record.
+  facts:
+    version: "1.0.0"
+    price: "Free"
+    account: "None required"
+    data: "Stays in your browser — no server, no network requests"
+    tests: "39 unit tests and 15 end-to-end checks passing"
+
+  # Stated plainly so the tool is not mistaken for something it is not.
+  # The advice disclaimer is NOT in this list: it renders as visible text on the
+  # page rather than inside a collapsed disclosure, because a reader should not
+  # have to open anything to learn that a pricing number is not financial
+  # advice. What remains here is scope — what Floor does not reach — not risk.
+  limits:
+    - It does not connect to accounting software, a bank or an invoicing system
+    - It does not sync between devices, which is the same reason nothing is uploaded
+    - Clearing your browser data clears your figures, so export matters

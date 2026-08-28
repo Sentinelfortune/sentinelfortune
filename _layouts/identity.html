@@ -115,7 +115,7 @@ the `this_*` copies, which nothing else touches.
         <span class="id-sib-inert">
           <span class="id-sib-mark" aria-hidden="true">{{ other.icon }}</span>
           <span class="id-sib-name">{{ other.title }}</span>
-          <span class="id-sib-note">in build</span>
+          <span class="id-sib-note">{% if identity_ready %}not yet linked{% else %}in build{% endif %}</span>
         </span>
         {%- endif %}
       </li>

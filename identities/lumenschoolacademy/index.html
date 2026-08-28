@@ -3,9 +3,9 @@ layout: identity
 identity: lumenschoolacademy
 permalink: /identities/lumenschoolacademy/
 title: "Lumen School Academy"
-meta_title: "Lumen School Academy — structured paths and business tools"
-meta_description: "The knowledge house of Sentinel Fortune LLC. Ordered learning paths and practical business tools for owner-operators of small trades and home-service businesses."
-robots: "noindex,follow"
+meta_title: "Lumen School Academy — practical paths and business tools for trades"
+meta_description: "Work out what a job must be priced at to make money, and what to record so you can invoice it. A six-step path and Floor, a free break-even calculator. No account, no enrolment."
+robots: "index,follow"
 stylesheets:
   - /assets/css/identity.css
   - /assets/css/id-path.css
@@ -14,28 +14,101 @@ stylesheets:
 {%- comment -%}
 EXPERIENCE: sequenced path. Primitive — the step. Verb — work through.
 
-A numbered spine, not a grid. The order carries information that a grid would
-throw away: step six tells you to choose a system, and it is deliberately last
-because choosing one first is the mistake the whole path exists to prevent.
+A numbered spine, not a grid. Order is the product: step six says choose a
+system, and it is last on purpose because choosing one first is the mistake the
+whole path exists to prevent.
 
-Steps are resolved from _data/academy_paths.yml against the live collections,
-so every title and summary on this page is the real published one. A step
-whose target is missing renders as a visible gap — a path with a hole in it
-should look wrong, because it is.
+TWO WAYS IN, ON PURPOSE. The tool rail at the top opens Floor immediately, for
+someone who arrived with a job to price and no appetite for reading. The path
+below is for someone working the whole question through. Burying a tool that
+produces an answer in under a second behind four articles would be a worse
+product, and putting the tool ONLY at the top would make the sequence
+decorative. Floor appears in both, and is one application either way.
 
-Progress is marked on the reader's own device. There is no account, no
-enrolment and no completion record anywhere else, which is stated plainly
-below rather than left to be discovered.
+Content steps resolve against the live collections, so every title, summary and
+reading time here is the real published one. The tool step resolves through
+_data/academy_tools.yml to _config.yml, so Floor's address exists in exactly
+one place in the repository.
 
-THE TOOLS SECTION IS A DECLARED SLOT, NOT AN OMISSION. Under the problem-domain
-ownership rule, a business tool belongs to the identity that owns the customer's
-problem. Floor's problem is job costing and pricing, which is this house's, not
-LightNode's. The slot is built and labelled; wiring the tool into it is a
-separate, deliberate step and has not been taken here.
+This page is `index,follow` — unlike the six houses that are still empty, it
+has a real path and a real working tool, so there is something here worth a
+search result landing on.
 {%- endcomment -%}
 
 {%- assign path = site.data.academy_paths | first -%}
+{%- assign floor = site.data.academy_tools | where: "key", "floor" | first -%}
+{%- assign floor_url = site[floor.url_key] -%}
+{%- comment -%}
+`floor_app_preview` only means anything for an external address; a same-origin
+build is not a preview deployment, so the flag is ignored in that case rather
+than printing something untrue.
+{%- endcomment -%}
+{%- assign floor_is_preview = false -%}
+{%- if site.floor_app_external and site.floor_app_preview %}{% assign floor_is_preview = true %}{% endif -%}
 
+{%- comment -%} ── the tool, reachable immediately ───────────────────────── {%- endcomment -%}
+<section class="tl" aria-labelledby="tl-h">
+  <p class="tl-kicker">Business tool · free · no account</p>
+  <h2 id="tl-h" class="tl-name">{{ floor.name }}</h2>
+  <p class="tl-tagline">{{ floor.tagline }}</p>
+
+  <dl class="tl-case">
+    <div>
+      <dt>The problem</dt>
+      <dd>{{ floor.problem }}</dd>
+    </div>
+    <div>
+      <dt>What you get</dt>
+      <dd>{{ floor.outcome }}</dd>
+    </div>
+  </dl>
+
+  <p class="tl-act">
+    <a class="id-btn id-btn--solid tl-go"
+       href="{{ floor_url | relative_url }}"
+       {% if site.floor_app_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+      {{ floor.cta }}
+      {%- if site.floor_app_external %} <span class="tl-ext" aria-hidden="true">↗</span>{% endif %}
+    </a>
+    {%- if floor_is_preview %}
+    <span class="tl-flag">Preview build — not the final public address</span>
+    {%- endif %}
+  </p>
+
+  {%- comment -%}
+  The advice disclaimer is VISIBLE, not folded into the <details> below with
+  the other limits. G3 caught it collapsed: a reader deciding whether to price
+  a job on this number should not have to open a disclosure to learn it is not
+  financial advice. The remaining limits are scope, not risk, and stay folded.
+  {%- endcomment -%}
+  <p class="tl-guard">
+    Floor is arithmetic on figures you enter — not accounting, tax or financial
+    advice. Check your overhead and capacity figures against your own records.
+  </p>
+
+  <ol class="tl-flow">
+    {%- for stage in floor.workflow %}
+    <li>{{ stage }}</li>
+    {%- endfor %}
+  </ol>
+
+  <dl class="tl-facts">
+    {%- for f in floor.facts %}
+    <div><dt>{{ f[0] | replace: "_", " " | capitalize }}</dt><dd>{{ f[1] }}</dd></div>
+    {%- endfor %}
+  </dl>
+
+  <details class="tl-limits">
+    <summary>What Floor does not do</summary>
+    <ul>
+      {%- for limit in floor.limits %}
+      <li>{{ limit }}</li>
+      {%- endfor %}
+    </ul>
+  </details>
+</section>
+
+{%- comment -%} ── the path ─────────────────────────────────────────────── {%- endcomment -%}
 <section class="pa" aria-labelledby="pa-h">
 
   <header class="pa-head">
@@ -43,6 +116,7 @@ separate, deliberate step and has not been taken here.
     <h2 id="pa-h" class="id-h">{{ path.title }}</h2>
     <p class="id-sub">{{ path.summary }}</p>
     <p class="pa-aud"><span>For</span> {{ path.audience }}</p>
+    <p class="pa-aud"><span>You end up with</span> {{ path.outcome }}</p>
   </header>
 
   <div class="pa-bar">
@@ -52,23 +126,44 @@ separate, deliberate step and has not been taken here.
 
   <ol class="pa-spine">
     {%- for step in path.steps %}
+
+    {%- if step.type == "tool" %}
+    {%- assign tool = site.data.academy_tools | where: "key", step.tool | first -%}
+    {%- assign tool_url = site[tool.url_key] -%}
+    {%- assign step_id = "tool/" | append: step.tool -%}
+    <li class="pa-step pa-step--tool" data-step="{{ step_id }}">
+      <div class="pa-num" aria-hidden="true">{{ forloop.index }}</div>
+      <div class="pa-body">
+        <p class="pa-stage">{{ step.stage }}</p>
+        <p class="pa-kind">Tool · free · no account</p>
+        <h3 class="pa-title">
+          <a href="{{ tool_url | relative_url }}"
+             {% if site.floor_app_external %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ tool.name }}</a>
+        </h3>
+        <p class="pa-sum">{{ tool.outcome }}</p>
+        <p class="pa-why"><span>Why here:</span> {{ step.why }}</p>
+        <label class="pa-mark">
+          <input type="checkbox" class="pa-check" data-step="{{ step_id }}">
+          <span>Mark this step done</span>
+        </label>
+      </div>
+    </li>
+
+    {%- else %}
     {%- assign items = site[step.collection] | where: "slug", step.slug -%}
     {%- assign item = items | first -%}
-    <li class="pa-step{% unless item %} pa-step--missing{% endunless %}" data-step="{{ step.collection }}/{{ step.slug }}">
-
+    {%- assign step_id = step.collection | append: "/" | append: step.slug -%}
+    <li class="pa-step{% unless item %} pa-step--missing{% endunless %}" data-step="{{ step_id }}">
       <div class="pa-num" aria-hidden="true">{{ forloop.index }}</div>
-
       <div class="pa-body">
+        <p class="pa-stage">{{ step.stage }}</p>
         {%- if item %}
         <p class="pa-kind">{{ item.kind }}{% if item.reading_time %} · {{ item.reading_time }} min{% endif %}</p>
-        <h3 class="pa-title">
-          <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
-        </h3>
+        <h3 class="pa-title"><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h3>
         <p class="pa-sum">{{ item.summary }}</p>
         <p class="pa-why"><span>Why here:</span> {{ step.why }}</p>
-
         <label class="pa-mark">
-          <input type="checkbox" class="pa-check" data-step="{{ step.collection }}/{{ step.slug }}">
+          <input type="checkbox" class="pa-check" data-step="{{ step_id }}">
           <span>Mark this step done</span>
         </label>
         {%- else %}
@@ -80,8 +175,9 @@ separate, deliberate step and has not been taken here.
         </p>
         {%- endif %}
       </div>
-
     </li>
+    {%- endif %}
+
     {%- endfor %}
   </ol>
 
@@ -89,39 +185,21 @@ separate, deliberate step and has not been taken here.
     Your progress is a tick list stored in this browser. Lumen School Academy has
     no enrolment, no cohorts, no instructors and no certificates — nothing here
     is recorded anywhere but on your own device, and nothing is issued at the end.
+    Everything on this path is free to read and free to use.
   </p>
-</section>
-
-<section class="pa-tools" aria-labelledby="pa-tools-h">
-  <h2 id="pa-tools-h" class="id-h">Business tools</h2>
-  <p class="id-sub">
-    Working tools, not lessons about tools. A tool belongs to this house when
-    the customer's problem is a business problem — costing, pricing, margin,
-    or a decision an owner has to make — regardless of whether it happens to be
-    software.
-  </p>
-
-  <div class="id-empty">
-    <p class="id-empty-h">Slot declared, not yet filled</p>
-    <p class="id-empty-p">
-      This section is built and reserved for the Academy's business tools. No
-      tool has been wired into it yet, so none is listed and none is claimed.
-    </p>
-  </div>
 </section>
 
 <script>
 /* Path progress.
  *
- * localStorage only, one key, holding the set of completed step ids. There is
- * no server, so there is nothing to sync and nothing that can leak; the
- * trade-off is stated on the page rather than buried.
+ * localStorage only, one key holding the completed step ids. No server, so
+ * nothing to sync and nothing that can leak; the trade-off is stated on the
+ * page rather than buried.
  *
  * Every storage access is wrapped: private windows and blocked site data throw
- * on access rather than returning null, and a thrown error here must not take
- * the rest of the page down with it. */
+ * on access rather than returning null, and that must not take the page down. */
 (function () {
-  var KEY = "sf.academy.ai-in-a-licensed-trade";
+  var KEY = "sf.academy.getting-paid-properly";
   var checks = Array.prototype.slice.call(document.querySelectorAll(".pa-check"));
   var progEl = document.getElementById("paProg");
   var reset  = document.getElementById("paReset");
@@ -137,7 +215,7 @@ separate, deliberate step and has not been taken here.
 
   function write(done) {
     try { window.localStorage.setItem(KEY, JSON.stringify(done)); }
-    catch (e) { /* nothing to do — the tick still works for this visit */ }
+    catch (e) { /* the tick still works for this visit */ }
   }
 
   function paint() {
@@ -169,10 +247,7 @@ separate, deliberate step and has not been taken here.
   });
 
   if (reset) {
-    reset.addEventListener("click", function () {
-      write([]);
-      paint();
-    });
+    reset.addEventListener("click", function () { write([]); paint(); });
   }
 
   paint();

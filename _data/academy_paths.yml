@@ -1,53 +1,93 @@
-# Lumen School Academy — learning paths.
+# Lumen School Academy — learning and business paths.
 #
-# A path is an ORDERED sequence. The order is the product: these steps build on
-# each other, and taking step five before step one wastes the reader's time.
-# That is the whole reason this identity renders a numbered spine instead of a
-# grid of cards — a grid silently tells the reader that order does not matter.
+# A path is an ORDERED sequence, and the order carries information a grid would
+# throw away. That is why this identity renders a numbered spine.
 #
-# STEPS REFERENCE REAL PUBLISHED CONTENT BY COLLECTION AND SLUG.
-# Titles and summaries are NOT copied here. The template looks each step up in
-# the live collection and renders the real title, so this file cannot drift out
-# of sync with what is actually published, and a step pointing at something
-# that does not exist renders as a visible gap rather than a dead link.
+# STEPS REFERENCE REAL THINGS. Content steps name a collection and a slug; the
+# template resolves them against the live collections and renders the real
+# title, summary and reading time, so this file cannot drift out of sync with
+# what is published. Tool steps name a key in _data/academy_tools.yml, whose
+# address in turn comes from _config.yml. Nothing is transcribed twice.
 #
-# Every referenced item must already be `status: ready`. Anything else has not
-# passed the editorial gate and must not appear in a path.
+# A step whose target does not exist renders as a visible gap. A path with a
+# hole in it should look wrong, because it is.
+#
+# WHY THIS SEQUENCE. The six published items and Floor are not one subject —
+# they are one READER: the owner-operator of a small trades or home-service
+# business. What unites them is a single commercial question, "am I actually
+# getting paid properly for this work?", and the path follows that question
+# from the quote through to the system you eventually buy:
+#
+#   quote it -> price it -> record it -> invoice it -> set the boundary -> buy the system
+#
+# Floor sits at step 2 rather than at the end. Step 1 establishes that
+# estimates leak money in what they omit; step 2 is where you find out by how
+# much. Putting the tool last would mean reading four pieces before touching
+# the thing that produces a number in under a second.
+#
+# The stage labels are descriptions of what each step does, not a template
+# imposed on the content.
 
-- slug: ai-in-a-licensed-trade
-  title: Operating a licensed trade with AI
+- slug: getting-paid-properly
+  title: Getting paid properly for the work you do
   summary: >-
-    What to write down on site, how to turn it into a record that survives a
-    dispute, and where AI genuinely helps without putting your licence at risk.
+    The path from a quote that holds up, through a price that covers what the
+    job really costs, to a record the office can invoice from — and only then
+    to the question of what software to buy.
   audience: >-
-    Owner-operators and supervisors in licensed trades and home-service
-    businesses.
+    Owner-operators of small trades and home-service businesses — plumbing,
+    electrical, HVAC and the trades that quote job by job.
+  outcome: >-
+    A quote you can defend, a price floor you can prove, and a job record that
+    survives a callback.
+
   steps:
-    - collection: signals
-      slug: what-belongs-in-a-field-note
-      why: >-
-        Start here. Everything downstream depends on what gets captured on site
-        in the first place.
-    - collection: signals
+    - stage: Understand
+      type: content
+      collection: signals
       slug: four-questions-defensible-estimate
       why: >-
-        The same discipline applied to money. An estimate you cannot defend is
-        an estimate you will end up eating.
-    - collection: signals
-      slug: ai-drafts-licensed-people-decide
+        Start where the money leaks. An estimate loses on what it left out, so
+        before pricing anything, know what a defensible one has to say.
+
+    - stage: Use the tool
+      type: tool
+      tool: floor
       why: >-
-        Where the line sits. Read this before you let any tool near customer
-        work.
-    - collection: articles
+        Now put a number on it. You know an estimate can omit costs; Floor
+        works out what the job actually has to cover once your overhead is
+        spread across the hours you can bill.
+
+    - stage: Record it
+      type: content
+      collection: signals
+      slug: what-belongs-in-a-field-note
+      why: >-
+        A price is only as good as the record of what was done. Seven fields
+        turn a fragment into something that survives a dispute.
+
+    - stage: Invoice it
+      type: content
+      collection: articles
       slug: field-notes-to-job-records
       why: >-
-        Now put the first two together: notes in, invoice-ready records out.
-    - collection: articles
+        The long version of step three: how what the technician wrote becomes
+        something the office can invoice from, without asking anyone to write
+        more.
+
+    - stage: Set the boundary
+      type: content
+      collection: articles
       slug: using-ai-safely-in-a-licensed-trade
       why: >-
-        The practical version of step three, with the failure modes named.
-    - collection: guides
+        Before automating any of the above, fix what a tool may and may not
+        decide. In a licensed trade this is not a preference.
+
+    - stage: Choose the system
+      type: content
+      collection: guides
       slug: choosing-an-ai-operations-system
       why: >-
-        Last, because choosing a system before you know what you are recording
-        is how businesses buy software they never use.
+        Last, deliberately. Choosing a system before you know what you record
+        and what you refuse to delegate is how businesses buy software they
+        never open again.

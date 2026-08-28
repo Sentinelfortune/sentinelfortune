@@ -41,11 +41,26 @@ index of pages that are themselves noindexed.
     </p>
   </header>
 
+  {%- comment -%}
+  Counted, not asserted. An earlier version of this paragraph said "every house
+  below is in build", which stopped being true the moment one passed its gates.
+  {%- endcomment -%}
+  {%- assign ready_count = 0 -%}
+  {%- for i in site.data.identities -%}
+    {%- if i.readiness.experienceReady -%}{%- assign ready_count = ready_count | plus: 1 -%}{%- endif -%}
+  {%- endfor -%}
   <p class="id-state id-state--draft" role="note">
-    Every house below is in build. Each one is listed with the customer problems
-    it owns, so it is clear what it is for before there is much in it. Work
-    belongs to a house because of the problem it solves, never because of the
-    format it ships in.
+    {% if ready_count == 0 -%}
+    Every house below is in build.
+    {%- else -%}
+    {{ ready_count }} of {{ site.data.identities | size }} houses
+    {% if ready_count == 1 %}is{% else %}are{% endif %} built and validated;
+    the rest are in build. Nothing is linked from the
+    Public Hub yet — that is a separate decision from being ready.
+    {%- endif %}
+    Each one is listed with the customer problems it owns, so it is clear what
+    it is for before there is much in it. Work belongs to a house because of the
+    problem it solves, never because of the format it ships in.
   </p>
 
   <ul class="idx-list">
@@ -77,7 +92,14 @@ index of pages that are themselves noindexed.
         {%- if identity_remote %}
         <p class="idx-badge idx-badge--live">Open</p>
         {%- elsif identity_linked %}
-        <p class="idx-badge idx-badge--hub">Ready · on this site</p>
+        <p class="idx-badge idx-badge--hub">Open on this site</p>
+        {%- elsif identity_ready %}
+        {%- comment -%}
+        Built and validated, but the Owner has not surfaced it yet. Saying
+        "In build" here would be untrue, and linking it would be the Owner's
+        decision to make rather than this template's.
+        {%- endcomment -%}
+        <p class="idx-badge idx-badge--ready">Built · not yet linked</p>
         {%- else %}
         <p class="idx-badge">In build</p>
         {%- endif %}
@@ -91,7 +113,8 @@ index of pages that are themselves noindexed.
   <p class="idx-fine">
     The seven addresses above are where each house will live. None of them is
     active today, which is why none of them is a link. A house becomes reachable
-    here first, and only moves to its own address once it is genuinely ready.
+    here on the main site first, and only moves to its own address once it is
+    genuinely ready.
   </p>
 
 </article>
@@ -138,6 +161,7 @@ index of pages that are themselves noindexed.
   border: 1px solid var(--line-strong); border-radius: 100px;
   padding: 5px 11px; margin-bottom: 9px;
 }
+.idx-badge--ready { color: var(--ink-soft); border-color: var(--line-strong); }
 .idx-badge--hub  { color: var(--gold-deep); border-color: var(--gold); }
 .idx-badge--live { color: #0a1020; background: var(--gold); border-color: var(--gold); }
 .idx-addr {

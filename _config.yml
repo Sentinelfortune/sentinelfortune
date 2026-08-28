@@ -31,6 +31,36 @@ default_og_image: "/assets/img/sf-og.jpg"
 # endpoint is the single change that turns the feature on.
 newsletter_endpoint: ""
 
+# ---------------------------------------------------------------------------
+# Floor — the hosted application seam
+# ---------------------------------------------------------------------------
+# Lumen School Academy links to Floor from exactly one place, and this is it.
+# Moving Floor is a change to these three lines, never an edit inside a page.
+#
+# WHY THE DEFAULT IS THE SAME-ORIGIN COPY. It is the only Floor address that is
+# verified to resolve. As of this writing the repository holds no Vercel
+# Preview URL anywhere: apps/floor/RELEASE.md records
+# "NOT_DEPLOYED — no Preview, no Production" with "Deployment URL: none",
+# there is no .vercel/ project link, apps/floor/vercel.json carries headers
+# only, and Floor's own <link rel="canonical"> points at /apps/floor/ here.
+# Jekyll publishes that path in this build, so the Academy's button lands on a
+# working application rather than on an address nobody in this repository can
+# check.
+#
+# WHEN FLOOR HAS AN APPROVED PUBLIC ADDRESS:
+#   floor_app_url       set it to that address
+#   floor_app_external  true, so the link opens in a new tab and is marked
+#   floor_app_preview   true ONLY if that address is a Preview rather than a
+#                       production one — the Academy then labels the button
+#                       "preview" instead of presenting it as finished.
+#
+# Setting floor_app_preview true while floor_app_external is false is
+# contradictory (a same-origin build is not a preview deployment); the layout
+# ignores the preview flag in that case rather than printing something untrue.
+floor_app_url: "/apps/floor/"
+floor_app_external: false
+floor_app_preview: false
+
 collections:
   # The folder stays `_signals` — renaming it would rewrite every file's path
   # for no visitor-facing gain. What changed is the public vocabulary: the

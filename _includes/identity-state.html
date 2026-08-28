@@ -3,10 +3,16 @@ Resolves one identity's THREE readiness dimensions into the single effective
 state the renderers act on, and enforces the nesting invariant while doing it.
 
   Input   include identity-state.html identity=<an entry from _data/identities.yml>
-  Output  identity_state   "draft" | "hub" | "live"
+  Output  identity_state   "draft" | "ready" | "hub" | "live"
           identity_ready   true when the experience is built and validated
           identity_linked  true when the Public Hub may link to it on-hub
           identity_remote  true when its subdomain is actually serving
+
+  FOUR states, not three. "ready" is the gap between an experience that has
+  passed its gates and one the Owner has chosen to surface: built and
+  validated, but deliberately not linked from the Public Hub yet. Without it,
+  a finished house renders as "In build", which is simply false — and the
+  three readiness flags can express a combination the labels could not.
 
 THE INVARIANT
 -------------
@@ -42,4 +48,6 @@ caller's scope.
   {%- assign identity_state = "live" -%}
 {%- elsif identity_linked -%}
   {%- assign identity_state = "hub" -%}
+{%- elsif identity_ready -%}
+  {%- assign identity_state = "ready" -%}
 {%- endif -%}

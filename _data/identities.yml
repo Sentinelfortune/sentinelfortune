@@ -237,7 +237,15 @@
     - student numbers, completion rates or outcomes
     - that its tools are accounting, tax or financial advice
   readiness:
-    experienceReady: false
+    # Raised after G3 passed: 49 checks in real Chromium against a real Jekyll
+    # build — route integrity, 27 internal links resolving, the Floor call to
+    # action landing on an application that actually computes, progress
+    # persisting across reload, keyboard reach and visible focus, responsive at
+    # 360 and 768, honest claims, SEO, no subdomain link, and no regression on
+    # the other six houses.
+    experienceReady: true
+    # NOT raised. hubVisible is the Owner's to set; the nesting rule means the
+    # Public Hub keeps rendering this identity inert until they do.
     hubVisible: false
     subdomainLive: false
   gates:
@@ -245,10 +253,19 @@
     substance_note: >-
       Seven real artefacts, all addressing one reader — the owner-operator of a
       small trades or home-service business. Floor (a working costing tool with
-      39 unit tests, 16 end-to-end checks and a release record), one guide, two
+      39 unit tests, 15 end-to-end checks and a release record), one guide, two
       articles and three updates, every editorial item already status:ready.
+      Six of the seven are sequenced into the "Getting paid properly" path;
+      Floor is step 2 and is also reachable directly from the top of the page.
     distinctness: pass
-    validation: pending
+    validation: pass
+    validation_note: >-
+      G3 run against a real Jekyll build in real Chromium. Path resolves six
+      steps from live collections with zero broken links; the Floor call to
+      action resolves to a working application; progress persists across
+      reload; keyboard reaches every control; no console errors; no subdomain
+      link; no invented course, certificate, cohort, instructor, testimonial
+      or user count.
 
 - slug: vibraflowmedia
   title: VibraFlow Media
