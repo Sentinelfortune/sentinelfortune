@@ -32,3 +32,13 @@ shop-worker/.dev.vars
 # deployment package the Shop Admin branch commits under dist/, and that is a
 # separate piece of work whose choices this rule has no business overriding.
 admin/*.zip
+
+# Jekyll build output.
+#
+# `jekyll build` writes here, and so does scripts/build-preview.sh when
+# producing a directory to hand to a preview host. It is generated from the
+# sources beside it and must never be committed: a stale copy in git would be
+# a second, silently-wrong answer to "what does this site contain?".
+_site/
+.jekyll-cache/
+.jekyll-metadata

@@ -1,0 +1,32 @@
+# Preview-host overlay. Layered ON TOP of _config.yml, never instead of it:
+#
+#   jekyll build --config _config.yml,_config.preview.yml
+#
+# WHY THIS FILE EXISTS
+# --------------------
+# The site is built for GitHub Pages, which serves it from a subdirectory:
+# `baseurl: "/sentinelfortune"`. Every internal link and every stylesheet URL
+# Jekyll emits therefore starts with /sentinelfortune/.
+#
+# A Vercel Preview serves from the DOMAIN ROOT. Deploying the unmodified build
+# there produces a page that returns HTTP 200 and is completely broken —
+# measured, not assumed: every stylesheet 404s and all 27 links on the Academy
+# page are dead. Only /apps/floor/ survives, because it is self-contained and
+# uses relative paths.
+#
+# WHY BOTH KEYS, NOT JUST baseurl
+# -------------------------------
+# Setting `baseurl: ""` alone fixes the links and breaks the canonical tags:
+# absolute_url is site.url + baseurl + path, so canonicals would collapse to
+# https://sentinelfortune.github.io/identities/... — an address that does not
+# exist. Folding the subdirectory into `url` keeps absolute_url producing the
+# real production address while relative_url goes root-relative for the
+# preview host. Links work AND canonicals still point at production, which is
+# what a preview's canonical should do: the preview is a copy, not the
+# original, and must never compete with it in an index.
+#
+# _config.yml is deliberately untouched by all of this, so the GitHub Pages
+# build is completely unaffected. This overlay is opt-in per build command.
+
+baseurl: ""
+url: "https://sentinelfortune.github.io/sentinelfortune"
