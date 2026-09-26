@@ -3,10 +3,11 @@ import { getProductBySlug } from "../lib/db";
 import { createCheckoutSession } from "../lib/stripe";
 import { genericError, jsonResponse, safeServerError } from "../lib/http";
 import { checkRateLimit, hashIp } from "../lib/ratelimit";
-import { PUBLICLY_PURCHASABLE_LICENSE_TYPES } from "../lib/validate";
+import { effectiveLicenseType, isPublicCheckoutProduct } from "../lib/validate";
 
 interface CheckoutRequestBody {
   slug?: unknown;
+  acceptedTerms?: unknown;
 }
 
 const CHECKOUT_RATE_LIMIT = 10;
@@ -43,8 +44,9 @@ export async function handleCreateCheckout(request: Request, env: Env): Promise<
     const product = await getProductBySlug(env.SHOP_DB, body.slug);
     if (!product) return genericError(404, "Product not found.");
     if (product.status !== "PUBLISHED") return genericError(404, "Product not found.");
+    if (body.acceptedTerms !== true) return genericError(400, "Accept the terms before checkout.");
     // A stale or mistaken admin flag cannot sell negotiated rights through public Checkout.
-    if (!PUBLICLY_PURCHASABLE_LICENSE_TYPES.includes(product.license_type)) {
+    if (!isPublicCheckoutProduct(product)) {
       return genericError(400, "This product requires a private business offer.");
     }
     if (product.publicly_purchasable !== 1) return genericError(400, "This product is not available for direct purchase.");
@@ -66,6 +68,9 @@ export async function handleCreateCheckout(request: Request, env: Env): Promise<
       metadata: {
         product_id: product.id,
         product_slug: product.slug,
+        purchased_rights: effectiveLicenseType(product),
+        product_version: product.version,
+        terms_version: "shop-terms-2026-09-26",
         source: "sentinel_fortune_digital_shop",
       },
     });
