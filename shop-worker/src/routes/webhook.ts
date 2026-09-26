@@ -26,6 +26,12 @@ import { downloadDeliveryEmail, orderConfirmationEmail, refundConfirmationEmail 
 import { sendEmail } from "../lib/resend";
 import { genericError } from "../lib/http";
 
+function purchasedRights(session: CheckoutSessionObject): "PERSONAL" | "SINGLE_BUSINESS" {
+  const snapshot = session.metadata?.purchased_rights;
+  // Legacy public sessions predate rights snapshots and only sold SINGLE_BUSINESS.
+  return snapshot === "PERSONAL" ? "PERSONAL" : "SINGLE_BUSINESS";
+}
+
 interface CheckoutSessionObject {
   id: string;
   payment_intent: string | null;
@@ -110,7 +116,7 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
   const existingOrder = await getOrderBySessionId(env.SHOP_DB, session.id);
   if (existingOrder) {
     if (existingOrder.status === "PAID") {
-      await resumeIncompleteFulfillment(env, existingOrder, now);
+      await resumeIncompleteFulfillment(env, existingOrder, session, now);
     }
     return;
   }
@@ -155,6 +161,7 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
     created_at: nowIso,
     paid_at: nowIso,
     refunded_at: null,
+    terms_version_snapshot: session.metadata?.terms_version ?? null,
   });
 
   await insertOrderItem(env.SHOP_DB, {
@@ -168,7 +175,8 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
 
   const licenseId = newId();
   const licenseNumber = newLicenseNumber(now);
-  const { rightsSummary, restrictionsSummary } = generateLicenseText(product.license_type, product.title);
+  const rights = purchasedRights(session);
+  const { rightsSummary, restrictionsSummary } = generateLicenseText(rights, product.title);
 
   await insertLicense(env.SHOP_DB, {
     id: licenseId,
@@ -176,8 +184,8 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
     order_id: orderId,
     product_id: product.id,
     customer_id: customer.id,
-    license_type: product.license_type,
-    product_version_snapshot: product.version,
+    license_type: rights,
+    product_version_snapshot: session.metadata?.product_version ?? product.version,
     purchaser_name: name,
     purchaser_email: email,
     business_name: "",
@@ -249,7 +257,7 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
 }
 
 /** Resume only missing entitlements on a repeated, signed paid-session event. */
-async function resumeIncompleteFulfillment(env: Env, order: OrderRow, now: Date): Promise<void> {
+async function resumeIncompleteFulfillment(env: Env, order: OrderRow, session: CheckoutSessionObject, now: Date): Promise<void> {
   if (order.status !== "PAID") return;
   const orderId = order.id;
   const product = await getProductById(env.SHOP_DB, order.product_id);
@@ -260,11 +268,12 @@ async function resumeIncompleteFulfillment(env: Env, order: OrderRow, now: Date)
   if (!license) {
     const licenseId = newId();
     const licenseNumber = newLicenseNumber(now);
-    const { rightsSummary, restrictionsSummary } = generateLicenseText(product.license_type, product.title);
+    const rights = purchasedRights(session);
+    const { rightsSummary, restrictionsSummary } = generateLicenseText(rights, product.title);
     await insertLicense(env.SHOP_DB, {
       id: licenseId, license_number: licenseNumber, order_id: orderId, product_id: product.id,
-      customer_id: customer.id, license_type: product.license_type,
-      product_version_snapshot: product.version, purchaser_name: customer.name,
+      customer_id: customer.id, license_type: rights,
+      product_version_snapshot: session.metadata?.product_version ?? product.version, purchaser_name: customer.name,
       purchaser_email: customer.email, business_name: order.business_name,
       status: "ACTIVE", rights_summary: rightsSummary, restrictions_summary: restrictionsSummary,
       issued_at: now.toISOString(), revoked_at: null,
