@@ -2,6 +2,7 @@ import type { Env, ProductImageRow, ProductRow } from "../types";
 import { getProductBySlug, listProductImages, listPublishedProducts } from "../lib/db";
 import { formatUsdFromCents } from "../lib/money";
 import { genericError, jsonResponse, safeServerError } from "../lib/http";
+import { effectiveLicenseType } from "../lib/validate";
 
 function assetUrl(env: Env, r2Key: string): string {
   const base = env.SHOP_ASSETS_PUBLIC_BASE_URL.replace(/\/$/, "");
@@ -23,6 +24,7 @@ function toCatalogEntry(env: Env, product: ProductRow, coverKey: string | null) 
     title: product.title,
     shortDescription: product.short_description,
     category: product.category,
+    licenseType: effectiveLicenseType(product),
     audience: product.audience,
     priceCents: product.price_cents,
     priceDisplay: product.price_cents !== null ? formatUsdFromCents(product.price_cents) : null,
@@ -45,7 +47,7 @@ function toDetailEntry(env: Env, product: ProductRow, images: ProductImageRow[])
     audience: product.audience,
     edition: product.edition,
     version: product.version,
-    licenseType: product.license_type,
+    licenseType: effectiveLicenseType(product),
     priceCents: product.price_cents,
     priceDisplay: product.price_cents !== null ? formatUsdFromCents(product.price_cents) : null,
     currency: product.currency,

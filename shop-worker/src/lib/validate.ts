@@ -137,10 +137,18 @@ export const VALID_LICENSE_TYPES: LicenseType[] = [
   "WHITE_LABEL",
 ];
 
-// Only SINGLE_BUSINESS is sellable through public Checkout in the MVP,
-// per the mission brief. The others exist as prepared license types for
-// future manual/negotiated sales, not as public Buy Now options.
+// A PERSONAL product uses the legacy SINGLE_BUSINESS product column as a schema
+// fallback; sales_audience determines the rights actually issued on purchase.
 export const PUBLICLY_PURCHASABLE_LICENSE_TYPES: LicenseType[] = ["SINGLE_BUSINESS"];
+
+export function effectiveLicenseType(product: Pick<ProductRow, "license_type" | "sales_audience">): LicenseType {
+  return product.sales_audience === "PERSONAL" ? "PERSONAL" : product.license_type;
+}
+
+export function isPublicCheckoutProduct(product: Pick<ProductRow, "license_type" | "sales_audience">): boolean {
+  return product.license_type === "SINGLE_BUSINESS" &&
+    (product.sales_audience === "PERSONAL" || product.sales_audience === "BUSINESS" || product.sales_audience == null);
+}
 
 // ---------------------------------------------------------------------------
 // Publish readiness gate
@@ -157,6 +165,7 @@ export function checkPublishReadiness(
     | "price_cents"
     | "price_confirmed"
     | "license_type"
+    | "sales_audience"
     | "terms_acknowledged"
     | "refund_eligible"
     | "refund_policy_summary"
@@ -179,6 +188,9 @@ export function checkPublishReadiness(
   if (!hasCoverImage) errors.push("A cover image is required.");
   if (downloadableFileCount < 1) errors.push("At least one downloadable file is required.");
   if (!VALID_LICENSE_TYPES.includes(product.license_type)) errors.push("A valid license type must be selected.");
+  if (product.sales_audience === "PERSONAL" && product.license_type !== "SINGLE_BUSINESS") {
+    errors.push("Personal sales cannot include negotiated business rights.");
+  }
   if (product.terms_acknowledged !== 1) errors.push("Owner terms acknowledgement is required.");
   if (product.refund_eligible !== 0 && product.refund_eligible !== 1) errors.push("Refund eligibility must be set.");
   if (!product.refund_policy_summary || product.refund_policy_summary.trim().length === 0) {
@@ -196,7 +208,7 @@ export function coverImageOf(images: Pick<ProductImageRow, "kind">[]): boolean {
 // Small field validators used by the admin product editor
 // ---------------------------------------------------------------------------
 
-export function isValidLicenseType(value: unknown): value is LicenseType {
+export function isValidLicenseType(value: unknown): value is Exclude<LicenseType, "PERSONAL"> {
   return typeof value === "string" && (VALID_LICENSE_TYPES as string[]).includes(value);
 }
 

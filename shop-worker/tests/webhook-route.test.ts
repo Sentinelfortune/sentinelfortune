@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { handleStripeWebhook } from "../src/routes/webhook";
-import { getLicenseByOrderId, getOrderBySessionId, insertProduct, listOrders } from "../src/lib/db";
+import { getLicenseByOrderId, getOrderBySessionId, insertOrder, insertProduct, listDownloadAuthorizationsByLicense, listOrders, recordStripeEventIfNew, upsertCustomerByEmail } from "../src/lib/db";
 import { buildTestEnv, TEST_STRIPE_WEBHOOK_SECRET } from "./helpers/testEnv";
 import type { ProductRow } from "../src/types";
 
@@ -133,6 +133,20 @@ describe("POST /shop/stripe/webhook", () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
+  it("stores personal rights and the accepted terms version for a B2C purchase", async () => {
+    const env = await buildTestEnv();
+    await insertProduct(env.SHOP_DB, makeProduct({ sales_audience: "PERSONAL" }));
+    const payload = checkoutCompletedEvent("evt_personal", "cs_personal", {
+      metadata: { product_id: "prod_test_001", purchased_rights: "PERSONAL", product_version: "1.0", terms_version: "shop-terms-2026-09-26" },
+    });
+    expect((await handleStripeWebhook(await signedWebhookRequest(payload), env)).status).toBe(200);
+    const order = await getOrderBySessionId(env.SHOP_DB, "cs_personal");
+    expect(order?.terms_version_snapshot).toBe("shop-terms-2026-09-26");
+    const license = await getLicenseByOrderId(env.SHOP_DB, order!.id);
+    expect(license?.license_type).toBe("PERSONAL");
+    expect(license?.rights_summary).toContain("non-commercial");
+  });
+
   it("does NOT create an order for a session with payment_status != paid — failed payment rejection", async () => {
     const env = await buildTestEnv();
     await insertProduct(env.SHOP_DB, makeProduct());
@@ -165,6 +179,34 @@ describe("POST /shop/stripe/webhook", () => {
 
     // Only the first delivery should have triggered emails.
     expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it("recovers a paid order left without a license, then ignores further replays", async () => {
+    const env = await buildTestEnv();
+    await insertProduct(env.SHOP_DB, makeProduct());
+    const customer = await upsertCustomerByEmail(env.SHOP_DB, "cust_recovery", "buyer@example.com", "Jordan Buyer", new Date().toISOString());
+    await insertOrder(env.SHOP_DB, {
+      id: "order_recovery", order_number: "SFL-TEST-RECOVERY", product_id: "prod_test_001", customer_id: customer.id,
+      stripe_checkout_session_id: "cs_recovery", stripe_payment_intent_id: "pi_cs_recovery", status: "PAID",
+      amount_cents: 4900, currency: "usd", business_name: "", created_at: new Date().toISOString(),
+      paid_at: new Date().toISOString(), refunded_at: null,
+    });
+    const payload = checkoutCompletedEvent("evt_recovery", "cs_recovery");
+    await recordStripeEventIfNew(env.SHOP_DB, {
+      id: "ledger_recovery", stripe_event_id: "evt_recovery", type: "checkout.session.completed",
+      payload_json: payload, received_at: new Date().toISOString(),
+    });
+
+    expect((await handleStripeWebhook(await signedWebhookRequest(payload), env)).status).toBe(200);
+    const license = await getLicenseByOrderId(env.SHOP_DB, "order_recovery");
+    expect(license).not.toBeNull();
+    expect(await listDownloadAuthorizationsByLicense(env.SHOP_DB, license!.id)).toHaveLength(1);
+    expect(fetch).toHaveBeenCalledTimes(1);
+
+    expect((await handleStripeWebhook(await signedWebhookRequest(payload), env)).status).toBe(200);
+    expect(await listOrders(env.SHOP_DB)).toHaveLength(1);
+    expect(await listDownloadAuthorizationsByLicense(env.SHOP_DB, license!.id)).toHaveLength(1);
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
   it("skips fulfillment gracefully when metadata.product_id references a product that no longer exists", async () => {

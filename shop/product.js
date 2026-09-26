@@ -105,6 +105,7 @@ function render(p) {
   var ctaBlock;
   if (p.buyable) {
     ctaBlock =
+      '<label class="pd-price-note"><input type="checkbox" id="acceptTerms"> I agree to the <a href="terms-of-sale.html" target="_blank" rel="noopener">Terms of Sale</a> and the <a href="licenses.html" target="_blank" rel="noopener">usage rights</a> shown for this product.</label>' +
       '<button class="btn btn-gold btn-block" id="buyBtn">Buy Now — ' + esc(p.priceDisplay) + "</button>" +
       '<div class="pd-price-note" id="buyStatus"></div>';
   } else {
@@ -331,6 +332,7 @@ function sectionBlock(title, body) {
 
 function licenseLabel(type) {
   var labels = {
+    PERSONAL: "Personal use",
     SINGLE_BUSINESS: "Single Business",
     MULTI_LOCATION: "Multi-Location",
     CONSULTANT: "Consultant",
@@ -341,6 +343,11 @@ function licenseLabel(type) {
 
 async function startCheckout(slug, btn) {
   var statusEl = document.getElementById("buyStatus");
+  var accepted = document.getElementById("acceptTerms");
+  if (!accepted || !accepted.checked) {
+    if (statusEl) statusEl.textContent = "Please accept the terms and usage rights before checkout.";
+    return;
+  }
   btn.disabled = true;
   btn.textContent = "Redirecting to secure checkout…";
   if (statusEl) statusEl.textContent = "";
@@ -349,7 +356,7 @@ async function startCheckout(slug, btn) {
     var res = await fetch(apiBase() + "/shop/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug: slug }),
+      body: JSON.stringify({ slug: slug, acceptedTerms: true }),
     });
     var data = await res.json();
 

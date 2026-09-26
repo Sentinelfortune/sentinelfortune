@@ -50,8 +50,8 @@ export async function insertProduct(db: D1Like, row: ProductRow): Promise<void> 
         publicly_purchasable, supported_formats, deliverables_json, not_included_json, faqs_json,
         responsible_use_text, refund_eligible, refund_policy_summary, terms_acknowledged,
         stripe_product_id, stripe_price_id, download_link_expiry_hours, max_downloads,
-        created_at, updated_at, published_at
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        created_at, updated_at, published_at, sales_audience
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     )
     .bind(
       row.id, row.sku, row.slug, row.title, row.short_description, row.problem_solved, row.description,
@@ -60,6 +60,7 @@ export async function insertProduct(db: D1Like, row: ProductRow): Promise<void> 
       row.not_included_json, row.faqs_json, row.responsible_use_text, row.refund_eligible,
       row.refund_policy_summary, row.terms_acknowledged, row.stripe_product_id, row.stripe_price_id,
       row.download_link_expiry_hours, row.max_downloads, row.created_at, row.updated_at, row.published_at,
+      row.sales_audience ?? "BUSINESS",
     )
     .run();
 }
@@ -72,7 +73,7 @@ const PRODUCT_PATCHABLE_COLUMNS: (keyof ProductRow)[] = [
   "publicly_purchasable", "supported_formats", "deliverables_json", "not_included_json", "faqs_json",
   "responsible_use_text", "refund_eligible", "refund_policy_summary", "terms_acknowledged",
   "stripe_product_id", "stripe_price_id", "download_link_expiry_hours", "max_downloads",
-  "updated_at", "published_at",
+  "updated_at", "published_at", "sales_audience",
 ];
 
 export async function updateProduct(db: D1Like, id: string, patch: ProductPatch): Promise<void> {
@@ -196,13 +197,13 @@ export async function insertOrder(db: D1Like, row: OrderRow): Promise<void> {
     .prepare(
       `INSERT INTO orders
         (id, order_number, product_id, customer_id, stripe_checkout_session_id, stripe_payment_intent_id,
-         status, amount_cents, currency, business_name, created_at, paid_at, refunded_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+         status, amount_cents, currency, business_name, created_at, paid_at, refunded_at, terms_version_snapshot)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     )
     .bind(
       row.id, row.order_number, row.product_id, row.customer_id, row.stripe_checkout_session_id,
       row.stripe_payment_intent_id, row.status, row.amount_cents, row.currency, row.business_name,
-      row.created_at, row.paid_at, row.refunded_at,
+      row.created_at, row.paid_at, row.refunded_at, row.terms_version_snapshot ?? null,
     )
     .run();
 }

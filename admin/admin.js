@@ -250,6 +250,7 @@ function fillForm(p) {
   f.edition.value = p.edition || "";
   f.version.value = p.version || "1.0";
   f.licenseType.value = p.licenseType || "SINGLE_BUSINESS";
+  f.salesAudience.value = p.salesAudience || "BUSINESS";
   f.supportedFormats.value = p.supportedFormats || "";
   f.responsibleUseText.value = p.responsibleUseText || "";
   f.refundEligible.checked = !!p.refundEligible;
@@ -325,6 +326,7 @@ async function handleProductFormSubmit(evt) {
     edition: f.edition.value.trim(),
     version: f.version.value.trim(),
     licenseType: f.licenseType.value,
+    salesAudience: f.salesAudience.value,
     supportedFormats: f.supportedFormats.value.trim(),
     responsibleUseText: f.responsibleUseText.value.trim(),
     refundEligible: f.refundEligible.checked,
