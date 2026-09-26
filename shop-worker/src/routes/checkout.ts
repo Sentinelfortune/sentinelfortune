@@ -3,6 +3,7 @@ import { getProductBySlug } from "../lib/db";
 import { createCheckoutSession } from "../lib/stripe";
 import { genericError, jsonResponse, safeServerError } from "../lib/http";
 import { checkRateLimit, hashIp } from "../lib/ratelimit";
+import { PUBLICLY_PURCHASABLE_LICENSE_TYPES } from "../lib/validate";
 
 interface CheckoutRequestBody {
   slug?: unknown;
@@ -42,6 +43,10 @@ export async function handleCreateCheckout(request: Request, env: Env): Promise<
     const product = await getProductBySlug(env.SHOP_DB, body.slug);
     if (!product) return genericError(404, "Product not found.");
     if (product.status !== "PUBLISHED") return genericError(404, "Product not found.");
+    // A stale or mistaken admin flag cannot sell negotiated rights through public Checkout.
+    if (!PUBLICLY_PURCHASABLE_LICENSE_TYPES.includes(product.license_type)) {
+      return genericError(400, "This product requires a private business offer.");
+    }
     if (product.publicly_purchasable !== 1) return genericError(400, "This product is not available for direct purchase.");
     if (product.price_confirmed !== 1 || product.price_cents === null) {
       return genericError(400, "This product's price is not yet confirmed for sale.");
