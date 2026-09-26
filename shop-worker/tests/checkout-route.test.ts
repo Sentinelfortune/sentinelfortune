@@ -72,7 +72,7 @@ describe("POST /shop/checkout — server-authoritative pricing", () => {
     await insertProduct(env.SHOP_DB, makeProduct());
 
     // The browser sends only the slug — no price, no amount, nothing else trusted.
-    const request = checkoutRequest({ slug: "ai-operations-playbook-toolkit", priceCents: 1 /* must be ignored if even parsed */ });
+    const request = checkoutRequest({ slug: "ai-operations-playbook-toolkit", acceptedTerms: true, priceCents: 1 /* must be ignored if even parsed */ });
     const response = await handleCreateCheckout(request, env);
     const body = (await response.json()) as { ok: boolean; checkoutUrl: string };
 
@@ -104,6 +104,16 @@ describe("POST /shop/checkout — server-authoritative pricing", () => {
     const response = await handleCreateCheckout(checkoutRequest({ slug: "ai-operations-playbook-toolkit" }), env);
     expect(response.status).toBe(400);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("requires buyer acceptance and records personal rights for a B2C product", async () => {
+    const env = await buildTestEnv();
+    await insertProduct(env.SHOP_DB, makeProduct({ sales_audience: "PERSONAL" }));
+    expect((await handleCreateCheckout(checkoutRequest({ slug: "ai-operations-playbook-toolkit" }), env)).status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect((await handleCreateCheckout(checkoutRequest({ slug: "ai-operations-playbook-toolkit", acceptedTerms: true }), env)).status).toBe(200);
+    expect(String(fetchMock.mock.calls[0][1].body)).toContain("metadata%5Bpurchased_rights%5D=PERSONAL");
+    expect(String(fetchMock.mock.calls[0][1].body)).toContain("metadata%5Bterms_version%5D=shop-terms-2026-09-26");
   });
 
   it("rejects checkout for a product whose price is not yet confirmed", async () => {
