@@ -98,6 +98,14 @@ describe("POST /shop/checkout — server-authoritative pricing", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("never sells negotiated white-label rights even if a public flag was set by mistake", async () => {
+    const env = await buildTestEnv();
+    await insertProduct(env.SHOP_DB, makeProduct({ license_type: "WHITE_LABEL", publicly_purchasable: 1 }));
+    const response = await handleCreateCheckout(checkoutRequest({ slug: "ai-operations-playbook-toolkit" }), env);
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("rejects checkout for a product whose price is not yet confirmed", async () => {
     const env = await buildTestEnv();
     await insertProduct(env.SHOP_DB, makeProduct({ slug: "unconfirmed-price", sku: "SFL-UNCONF-001", price_confirmed: 0 }));
