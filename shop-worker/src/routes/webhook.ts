@@ -1,8 +1,9 @@
-import type { Env } from "../types";
+import type { Env, OrderRow } from "../types";
 import { parseStripeEvent, verifyStripeWebhookSignature } from "../lib/stripe";
 import {
   getCustomerById,
   getLicenseByOrderId,
+  listDownloadAuthorizationsByLicense,
   getOrderByPaymentIntentId,
   getOrderBySessionId,
   getProductById,
@@ -75,7 +76,7 @@ export async function handleStripeWebhook(request: Request, env: Env): Promise<R
     received_at: nowIso,
   });
 
-  if (!isNewEvent) {
+  if (!isNewEvent && event.type !== "checkout.session.completed") {
     console.info(`[shop-webhook] duplicate event id=${event.id} type=${event.type} — no-op`);
     return new Response("duplicate", { status: 200 });
   }
@@ -92,9 +93,7 @@ export async function handleStripeWebhook(request: Request, env: Env): Promise<R
     await markStripeEventProcessed(env.SHOP_DB, event.id, new Date().toISOString());
     return new Response("ok", { status: 200 });
   } catch (err) {
-    // Event row remains processed=0 — a retry from Stripe (or manual replay)
-    // will re-enter this handler. Business-object idempotency (order lookup
-    // by Stripe session/payment-intent id, below) makes that safe to retry.
+    // Checkout retries inspect the persisted order and finish missing steps.
     console.error(`[shop-webhook] processing error event=${event.id} type=${event.type}:`, err);
     return genericError(500, "Processing error.");
   }
@@ -110,7 +109,9 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
 
   const existingOrder = await getOrderBySessionId(env.SHOP_DB, session.id);
   if (existingOrder) {
-    console.info(`[shop-webhook] order already exists for session=${session.id} — skipping duplicate fulfillment`);
+    if (existingOrder.status === "PAID") {
+      await resumeIncompleteFulfillment(env, existingOrder, now);
+    }
     return;
   }
 
@@ -245,6 +246,54 @@ async function handleCheckoutSessionCompleted(env: Env, session: CheckoutSession
   }
 
   console.info(`[shop-webhook] fulfilled order=${orderNumber} product=${product.slug} license=${licenseNumber}`);
+}
+
+/** Resume only missing entitlements on a repeated, signed paid-session event. */
+async function resumeIncompleteFulfillment(env: Env, order: OrderRow, now: Date): Promise<void> {
+  if (order.status !== "PAID") return;
+  const orderId = order.id;
+  const product = await getProductById(env.SHOP_DB, order.product_id);
+  const customer = await getCustomerById(env.SHOP_DB, order.customer_id);
+  if (!product || !customer) throw new Error("Paid order cannot be completed without product and customer");
+
+  let license = await getLicenseByOrderId(env.SHOP_DB, orderId);
+  if (!license) {
+    const licenseId = newId();
+    const licenseNumber = newLicenseNumber(now);
+    const { rightsSummary, restrictionsSummary } = generateLicenseText(product.license_type, product.title);
+    await insertLicense(env.SHOP_DB, {
+      id: licenseId, license_number: licenseNumber, order_id: orderId, product_id: product.id,
+      customer_id: customer.id, license_type: product.license_type,
+      product_version_snapshot: product.version, purchaser_name: customer.name,
+      purchaser_email: customer.email, business_name: order.business_name,
+      status: "ACTIVE", rights_summary: rightsSummary, restrictions_summary: restrictionsSummary,
+      issued_at: now.toISOString(), revoked_at: null,
+    });
+    license = await getLicenseByOrderId(env.SHOP_DB, orderId);
+  }
+  if (!license) throw new Error("License creation could not be verified");
+  const links = await listDownloadAuthorizationsByLicense(env.SHOP_DB, license.id);
+  if (links.length > 0) return;
+
+  const { rawToken, tokenHash } = await generateDownloadToken();
+  const expiresAt = expiresAtFromHours(product.download_link_expiry_hours, now);
+  await insertDownloadAuthorization(env.SHOP_DB, {
+    id: newId(), token_hash: tokenHash, license_id: license.id, order_id: orderId,
+    product_file_id: null, max_downloads: product.max_downloads, download_count: 0,
+    expires_at: expiresAt, revoked: 0, created_at: now.toISOString(),
+  });
+  if (!customer.email || customer.email.endsWith("@no-email.invalid")) return;
+  const delivery = downloadDeliveryEmail({
+    customerName: customer.name, productTitle: product.title,
+    downloadUrl: `${env.SHOP_WORKER_BASE_URL.replace(/\/$/, "")}/shop/download/${rawToken}`,
+    expiresAtDisplay: new Date(expiresAt).toUTCString(), maxDownloads: product.max_downloads,
+    licenseNumber: license.license_number,
+  });
+  const result = await sendEmail({
+    apiKey: env.RESEND_API_KEY, from: env.RESEND_FROM_EMAIL, to: customer.email,
+    subject: delivery.subject, html: delivery.html, text: delivery.text,
+  });
+  if (!result.ok) console.error(`[shop-webhook] recovered delivery email failed order=${order.order_number}: ${result.error}`);
 }
 
 async function handleChargeRefunded(env: Env, charge: ChargeRefundedObject, now: Date): Promise<void> {
