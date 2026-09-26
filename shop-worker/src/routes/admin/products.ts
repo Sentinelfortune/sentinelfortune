@@ -22,7 +22,8 @@ import {
   isValidSku,
   isValidSlug,
   isValidStringArray,
-  PUBLICLY_PURCHASABLE_LICENSE_TYPES,
+  effectiveLicenseType,
+  isPublicCheckoutProduct,
 } from "../../lib/validate";
 import { genericError, jsonResponse, safeServerError } from "../../lib/http";
 
@@ -53,6 +54,8 @@ async function serializeProductAdmin(env: Env, product: ProductRow) {
     priceDisplay: product.price_cents !== null ? formatUsdFromCents(product.price_cents) : null,
     currency: product.currency,
     licenseType: product.license_type,
+    salesAudience: product.sales_audience ?? "BUSINESS",
+    effectiveLicenseType: effectiveLicenseType(product),
     publiclyPurchasable: product.publicly_purchasable === 1,
     supportedFormats: product.supported_formats,
     deliverables: safeParseArray(product.deliverables_json),
@@ -122,7 +125,7 @@ export async function handleAdminPreviewProduct(_request: Request, env: Env, par
         audience: product.audience,
         edition: product.edition,
         version: product.version,
-        licenseType: product.license_type,
+        licenseType: effectiveLicenseType(product),
         priceDisplay: product.price_cents !== null ? formatUsdFromCents(product.price_cents) : "Price not yet confirmed",
         supportedFormats: product.supported_formats,
         deliverables: safeParseArray(product.deliverables_json),
@@ -153,6 +156,7 @@ interface ProductWriteBody {
   edition?: unknown;
   version?: unknown;
   licenseType?: unknown;
+  salesAudience?: unknown;
   supportedFormats?: unknown;
   deliverables?: unknown;
   notIncluded?: unknown;
@@ -182,6 +186,9 @@ function validateProductWriteBody(body: ProductWriteBody, requireIdentityFields:
   }
   if (body.licenseType !== undefined && !isValidLicenseType(body.licenseType)) {
     errors.push("License type must be one of SINGLE_BUSINESS, MULTI_LOCATION, CONSULTANT, WHITE_LABEL.");
+  }
+  if (body.salesAudience !== undefined && body.salesAudience !== "PERSONAL" && body.salesAudience !== "BUSINESS") {
+    errors.push("Sales audience must be PERSONAL or BUSINESS.");
   }
   if (body.deliverables !== undefined && !isValidStringArray(body.deliverables)) {
     errors.push("Deliverables must be an array of short strings.");
@@ -232,6 +239,7 @@ export async function handleAdminCreateProduct(request: Request, env: Env, ident
       price_confirmed: 0,
       currency: "usd",
       license_type: isValidLicenseType(body.licenseType) ? body.licenseType : "SINGLE_BUSINESS",
+      sales_audience: body.salesAudience === "PERSONAL" ? "PERSONAL" : "BUSINESS",
       publicly_purchasable: 0,
       supported_formats: typeof body.supportedFormats === "string" ? body.supportedFormats : "",
       deliverables_json: JSON.stringify(isValidStringArray(body.deliverables) ? body.deliverables : []),
@@ -292,7 +300,13 @@ export async function handleAdminUpdateProduct(request: Request, env: Env, param
     if (body.version !== undefined) patch.version = body.version;
     if (body.licenseType !== undefined) {
       patch.license_type = body.licenseType;
-      patch.publicly_purchasable = PUBLICLY_PURCHASABLE_LICENSE_TYPES.includes(body.licenseType as never) && product.status === "PUBLISHED" ? 1 : 0;
+    }
+    if (body.salesAudience !== undefined) patch.sales_audience = body.salesAudience;
+    if (body.salesAudience !== undefined || body.licenseType !== undefined) {
+      patch.publicly_purchasable = isPublicCheckoutProduct({
+        license_type: (patch.license_type ?? product.license_type) as ProductRow["license_type"],
+        sales_audience: (patch.sales_audience ?? product.sales_audience) as ProductRow["sales_audience"],
+      }) && product.status === "PUBLISHED" ? 1 : 0;
     }
     if (body.supportedFormats !== undefined) patch.supported_formats = body.supportedFormats;
     if (body.deliverables !== undefined) patch.deliverables_json = JSON.stringify(body.deliverables);
@@ -384,7 +398,7 @@ async function transitionStatus(
       status: "PUBLISHED",
       published_at: nowIso,
       updated_at: nowIso,
-      publicly_purchasable: PUBLICLY_PURCHASABLE_LICENSE_TYPES.includes(product.license_type) ? 1 : 0,
+      publicly_purchasable: isPublicCheckoutProduct(product) ? 1 : 0,
     });
     await logAdminAction(env.SHOP_DB, identity.email, "product.publish", "product", productId, {});
   } else if (action === "unpublish") {
