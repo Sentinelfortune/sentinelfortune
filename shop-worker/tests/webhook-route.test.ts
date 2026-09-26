@@ -133,6 +133,20 @@ describe("POST /shop/stripe/webhook", () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
+  it("stores personal rights and the accepted terms version for a B2C purchase", async () => {
+    const env = await buildTestEnv();
+    await insertProduct(env.SHOP_DB, makeProduct({ sales_audience: "PERSONAL" }));
+    const payload = checkoutCompletedEvent("evt_personal", "cs_personal", {
+      metadata: { product_id: "prod_test_001", purchased_rights: "PERSONAL", product_version: "1.0", terms_version: "shop-terms-2026-09-26" },
+    });
+    expect((await handleStripeWebhook(await signedWebhookRequest(payload), env)).status).toBe(200);
+    const order = await getOrderBySessionId(env.SHOP_DB, "cs_personal");
+    expect(order?.terms_version_snapshot).toBe("shop-terms-2026-09-26");
+    const license = await getLicenseByOrderId(env.SHOP_DB, order!.id);
+    expect(license?.license_type).toBe("PERSONAL");
+    expect(license?.rights_summary).toContain("non-commercial");
+  });
+
   it("does NOT create an order for a session with payment_status != paid — failed payment rejection", async () => {
     const env = await buildTestEnv();
     await insertProduct(env.SHOP_DB, makeProduct());
