@@ -55,9 +55,16 @@
           <div class="field"><label>Edition</label><input type="text" name="edition" placeholder="e.g. Standard Self-Customization Edition"></div>
           <div class="field"><label>Version</label><input type="text" name="version" value="1.0"></div>
           <div class="field">
+            <label>Sales Audience</label>
+            <select name="salesAudience">
+              <option value="BUSINESS">Business</option>
+              <option value="PERSONAL">Personal use (B2C)</option>
+            </select>
+          </div>
+          <div class="field">
             <label>License Type</label>
             <select name="licenseType">
-              <option value="SINGLE_BUSINESS">Single Business (publicly purchasable)</option>
+              <option value="SINGLE_BUSINESS">Standard use (publicly purchasable)</option>
               <option value="MULTI_LOCATION">Multi-Location (inquire only)</option>
               <option value="CONSULTANT">Consultant (inquire only)</option>
               <option value="WHITE_LABEL">White Label (inquire only)</option>
