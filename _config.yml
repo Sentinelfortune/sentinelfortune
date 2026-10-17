@@ -185,6 +185,11 @@ exclude:
   # exclusion existed — none of them are web assets.
   - apps/floor/node_modules
   - apps/floor/package-lock.json
+  # The seven-identity shared runtime. A separate application deployed to its
+  # own host with hostname-aware routing, which GitHub Pages cannot perform —
+  # publishing it here would put a second, non-functioning copy of the seven
+  # houses on the Pages site at /platform/.
+  - platform
   # ORIGINUS governance manifests and canon.
   - originus
   # ORIGINUS vault manifests.
