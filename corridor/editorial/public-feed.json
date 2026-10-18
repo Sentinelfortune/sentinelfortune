@@ -1,0 +1,51 @@
+{
+  "schema": "sf.public-site/1.0",
+  "evidence": "TEST_PREVIEW",
+  "source": {
+    "system": "HOUSE_OF_ASSETS",
+    "channel": "SFL_EDITORIAL_CORRIDOR",
+    "generated_at": "2026-10-18T04:29:21.950Z"
+  },
+  "records": [
+    {
+      "id": "ed_lumen_school_academy_what-a-price-actually-says",
+      "slug": "what-a-price-actually-says",
+      "identity": "lumenschoolacademy",
+      "type": "COURSE",
+      "title": "What a Price Actually Says",
+      "summary": "A free lesson on pricing as a sentence your business speaks before you do.",
+      "description": "A price is not a number. It is a sentence your business speaks before you open your mouth, and most founders never read theirs back. This lesson reads it out loud: what a low price says, what a high one says, and what an unexplained one says loudest of all.",
+      "media": [],
+      "pricingTier": "FREE",
+      "featured": false,
+      "categories": [
+        "pricing",
+        "business",
+        "positioning"
+      ],
+      "collections": [],
+      "bundleMembership": [],
+      "publishedAt": "2026-10-18T04:29:21.948Z",
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false,
+        "approved_at": "2026-10-18T04:29:21.948Z"
+      },
+      "metadata": {
+        "editorialType": "LESSON",
+        "editorialLabel": "Lesson",
+        "author": "Lumen School Academy",
+        "languages": [
+          "en"
+        ],
+        "corridor": true
+      },
+      "cta": {
+        "kind": "READ",
+        "label": "Read",
+        "destination": "/learn/what-a-price-actually-says"
+      }
+    }
+  ]
+}

@@ -24,11 +24,12 @@ const DEFAULT_LABEL = Object.freeze({
   BUY: "Buy",
   DOWNLOAD: "Download",
   LEARN: "Start learning",
+  SUPPORT: "Support the work",
 });
 
 /** Actions that do not involve payment. Used to decide whether a price has to
  *  be shown beside the button at all. */
-const FREE_ACTIONS = Object.freeze(["OPEN", "LISTEN", "WATCH", "READ", "DOWNLOAD", "LEARN"]);
+const FREE_ACTIONS = Object.freeze(["OPEN", "LISTEN", "WATCH", "READ", "DOWNLOAD", "LEARN", "SUPPORT"]);
 
 /* ─────────────────────────────────────────────────────────────────────────
    PRICE STATE

@@ -50,6 +50,7 @@ export const CTA_KINDS = Object.freeze([
   "BUY",       // hand off to the Digital Shop
   "DOWNLOAD",  // governed free download
   "LEARN",     // start a course / path
+  "SUPPORT",   // voluntary support for free editorial work — NOT a purchase
 ]);
 
 /** Hosts a governed destination may point at. Everything else is refused.
