@@ -50,7 +50,11 @@ transport-blocking defect was found in it.
 | `runtime/worker.js` | 70 | Cloudflare Worker shim |
 | `runtime/node.mjs` | 86 | Node shim, for the live proof and local use |
 | `runtime/store-kv.js` | 77 | KV persistence through the corridor's snapshot seam |
-| `scripts/mint-credential.mjs` | 51 | generate a token + its digest, locally, once |
+| `scripts/mint-credential.mjs` | 103 | generate a token + its digest, locally, once |
+| `scripts/deploy-test-preview.sh` | 178 | the whole Owner-side activation, one command |
+| `scripts/validate-remote.mjs` | 522 | 69 checks against the deployed Worker |
+| `scripts/make-connector.mjs` | 136 | build the two client packages from the real URL |
+| `PHASE2-ACTIVATION.md` | 225 | the activation runbook and its evidence |
 | `contracts/openapi.json` | 219 | the ChatGPT connector contract |
 | `contracts/claude-tools.json` | 177 | the Claude tool contract |
 | `wrangler.toml` | 103 | Worker config — contains no secret |
@@ -292,7 +296,15 @@ scope.
 
 ## 11. Honest status
 
-**Built, tested, proven over real HTTP, not deployed.**
+**Phase 2 activation is packaged but NOT performed — see
+[`PHASE2-ACTIVATION.md`](./PHASE2-ACTIVATION.md) for the two commands that do
+it and the evidence they produce.** This container's egress proxy refuses all
+outbound HTTPS (`CONNECT tunnel failed, response 403`), so no deployment and no
+public-Internet validation was possible from here. The Worker was however
+proven to *build* for the Workers runtime, and both activation scripts were
+rehearsed end to end on loopback.
+
+**Built, tested, proven over real HTTP on loopback, not deployed.**
 
 | | |
 | --- | --- |

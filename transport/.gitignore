@@ -1,0 +1,15 @@
+# Client packages built by scripts/make-connector.mjs from the committed
+# contracts plus the deployed Worker URL. Derived output: regenerate it with
+#   node transport/scripts/make-connector.mjs https://<worker-host>
+# rather than committing a copy that will go stale against the contracts.
+contracts/generated/
+
+# Validation reports, in case SFL_REPORT_DIR is pointed in here. They contain
+# no credential, but they are run artefacts, not source.
+sfl-remote-validation-*.json
+
+# Nothing secret should ever be written inside this repository —
+# scripts/mint-credential.mjs refuses an --out path under the repo root. These
+# patterns are a second line only; they are not permission to put one here.
+*.token
+*.digest
