@@ -1,0 +1,177 @@
+{
+  "contract": "sfl.editorial-api/1.0",
+  "client": "CLIENT_CLAUDE",
+  "endpoint": {
+    "url": "https://sfl-editorial-api.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev/v1/editorial",
+    "method": "POST",
+    "auth": {
+      "scheme": "Bearer",
+      "header": "Authorization",
+      "credentialRef": "SFL_CORRIDOR_CLAUDE_TOKEN",
+      "note": "Claude's own token. Not interchangeable with ChatGPT's token or the Owner's token. The credential — never a request field — decides which identity the call acts as, so there is no `provider` field to set."
+    },
+    "optionalHeaders": {
+      "Idempotency-Key": "When sent, must equal instructionId.",
+      "X-SFL-Timestamp": "Required only when the deployment configures a signing secret.",
+      "X-SFL-Signature": "hex HMAC-SHA256 of `<timestamp>.<METHOD>.<path>.<sha256(body)>`."
+    }
+  },
+  "scopeModel": {
+    "principal": "CLIENT_CLAUDE",
+    "grants": [
+      "create_draft", "update_draft", "get_preview", "publish_approved",
+      "unpublish", "archive", "list_recent", "get_record"
+    ],
+    "deniedAndNotExpressible": [
+      "approve", "authorizeWithdrawal", "reject", "rollback",
+      "set_price", "create_checkout", "deploy", "merge", "push",
+      "write_file", "run_command", "update_dns", "purge_cache", "charge", "refund"
+    ],
+    "ownerGated": ["publish_approved", "unpublish", "archive"],
+    "notes": [
+      "publish_approved, unpublish and archive each additionally require an Owner approval recorded through /v1/owner/*, which Claude's credential cannot reach.",
+      "An approval names a record AND a version AND one action, and is spent on use.",
+      "Rate limited per client per hour. Honour Retry-After on 429.",
+      "This API carries no filesystem, Git, DNS, Cloudflare, R2, Stripe, Shop or House of Assets authority. Those actions do not exist in its surface."
+    ]
+  },
+  "behaviourRules": [
+    "An unclear instruction becomes PREPARE, never PUBLISH. When `confident` comes back false, tell the Owner it is prepared and ask whether to publish — do not retry with intent PUBLISH.",
+    "OWNER_APPROVAL_REQUIRED is the expected answer to publishing something the Owner has not approved. Relay it; do not route around it.",
+    "Reuse the same instructionId to retry. Never mint a new one for the same command — that is what would create a duplicate.",
+    "Never guess `branch`. Ask the Owner which house it belongs to.",
+    "A preview always carries preview: true and isLive: false. Never describe it to the Owner as published.",
+    "This API publishes free editorial work only. It cannot state a price or carry a checkout — do not try."
+  ],
+  "tools": [
+    {
+      "name": "sfl_editorial",
+      "description": "Prepare, preview, update or (with Owner approval) publish FREE editorial content into one of the seven Sentinel Fortune branches, through the governed SFL Editorial Corridor.\n\nAn unclear instruction becomes a DRAFT, never a publication. Publishing additionally requires an Owner approval this tool cannot grant. Every call needs a unique instructionId; re-sending the same one returns the original outcome and creates nothing, which is how a retry is made safe.\n\nThis tool publishes free work only. It cannot set a price, a non-FREE pricing tier, or a checkout link.",
+      "input_schema": {
+        "type": "object",
+        "required": ["instructionId"],
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": ["PREPARE", "UPDATE", "REPLACE", "PREVIEW", "PUBLISH", "UNPUBLISH", "ARCHIVE", "LIST", "GET"],
+            "description": "The action. Omit to have the corridor read `ownerUtterance` instead — which resolves to PREPARE whenever it is not unmistakably something else. LIST and GET are never inferred and must be stated."
+          },
+          "instructionId": {
+            "type": "string",
+            "description": "REQUIRED, unique per distinct command. Re-send the same value to retry safely; never mint a new one for the same command."
+          },
+          "ownerUtterance": {
+            "type": "string",
+            "description": "The Owner's own words, English or French, relayed verbatim. Used only when `intent` is absent."
+          },
+          "recordId": {
+            "type": "string",
+            "description": "Required for UPDATE, PREVIEW, PUBLISH, UNPUBLISH, ARCHIVE and GET. Returned as record.id by PREPARE."
+          },
+          "limit": { "type": "integer", "description": "LIST only." },
+          "branchFilter": { "type": "string", "description": "LIST only." },
+          "editorial": {
+            "type": "object",
+            "description": "The content itself. Required for PREPARE; for UPDATE send only the fields that change — omitted fields keep their stored values.",
+            "properties": {
+              "branch": {
+                "type": "string",
+                "enum": ["SENTINEL_FORTUNE_RECORDS", "CODEX_WORLD_TV", "LUMEN_GAME", "LUMEN_SCHOOL_ACADEMY", "VIBRAFLOW_MEDIA", "LIGHTNODE_SYSTEMS", "OG_LEGACY_STORE"],
+                "description": "The destination house. Always explicit — never inferred. Ask the Owner rather than guessing."
+              },
+              "contentType": {
+                "type": "string",
+                "enum": ["ARTICLE", "TEACHING", "SESSION", "REFLECTION", "RHAPSODY", "STORY", "EPISODE", "AUDIO", "PODCAST", "LESSON", "GUIDE", "TUTORIAL", "CHALLENGE", "ANNOUNCEMENT", "EDITORIAL_COLLECTION"],
+                "description": "Each house accepts only some of these; a refusal names the subject matter that house covers."
+              },
+              "title": { "type": "string" },
+              "slug": { "type": "string", "description": "Lowercase words joined by single hyphens. Unique within a house." },
+              "summary": { "type": "string" },
+              "body": { "type": "string", "description": "The editorial text. At least 20 characters." },
+              "language": { "type": "string", "enum": ["en", "fr"], "default": "en" },
+              "translations": {
+                "type": "object",
+                "description": "One record carries both languages — never create a second record for a translation.",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": ["title", "body"],
+                  "properties": { "title": { "type": "string" }, "summary": { "type": "string" }, "body": { "type": "string" } }
+                }
+              },
+              "topics": { "type": "array", "items": { "type": "string" } },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "authorDisplay": { "type": "string" },
+              "collection": { "type": "string" },
+              "relatedContent": { "type": "array", "items": { "type": "string" } },
+              "featured": { "type": "boolean" },
+              "heroMedia": { "$ref": "#/$defs/medium" },
+              "media": { "type": "array", "items": { "$ref": "#/$defs/medium" } },
+              "cta": {
+                "type": "object",
+                "description": "There is no purchase action. SUPPORT_THE_WORK is voluntary support for free work and is NOT a purchase; VIEW_PRODUCT may point at a product page but never at a cart or checkout.",
+                "required": ["type", "destination"],
+                "properties": {
+                  "type": { "type": "string", "enum": ["READ_MORE", "LISTEN", "WATCH", "OPEN", "SUPPORT_THE_WORK", "VIEW_PRODUCT"] },
+                  "label": { "type": "string" },
+                  "destination": { "type": "string" }
+                }
+              },
+              "publishAt": { "type": "string", "format": "date-time" },
+              "expiresAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "$defs": {
+          "medium": {
+            "type": "object",
+            "required": ["kind", "src", "source"],
+            "description": "Every asset must declare where it came from. SCRAPED is refused by name — benchmark or found imagery is never reused. APPROVED_PUBLIC additionally requires rights.licence and rights.approved === true. Omitting media entirely is fine: the public engine draws its own deterministic artwork.",
+            "properties": {
+              "kind": { "type": "string", "enum": ["HERO", "COVER", "THUMBNAIL", "GALLERY", "AUDIO", "VIDEO_PREVIEW", "POSTER", "ILLUSTRATION"] },
+              "src": { "type": "string" },
+              "source": { "type": "string", "enum": ["OWNER_PROVIDED", "GOVERNED_GENERATED", "APPROVED_PUBLIC", "PREMIUM_FALLBACK"] },
+              "altText": { "type": "string", "description": "Required on every visual medium." },
+              "rights": { "type": "object", "properties": { "licence": { "type": "string" }, "approved": { "type": "boolean" } } }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "responseSchema": {
+    "ok": "boolean",
+    "mode": "TEST_PREVIEW | LIVE",
+    "client": "CLIENT_CLAUDE",
+    "action": "the resolved corridor action",
+    "intent": "the resolved intent",
+    "confident": "false when the corridor fell back to PREPARE",
+    "replay": "true when this instructionId was already handled; nothing new was created",
+    "step": "the pipeline step reached",
+    "state": "DRAFT | PREVIEW | APPROVED | PUBLISHED | UNPUBLISHED | ARCHIVED | REJECTED",
+    "isLive": "whether this is publicly visible — stated on every response",
+    "record": "the stored record, as the client view",
+    "records": "LIST only",
+    "preview": "PREVIEW only; always preview: true and isLive: false",
+    "audit": "the pipeline trail for this command"
+  },
+  "errorSchema": {
+    "ok": false,
+    "error": {
+      "code": "string",
+      "step": "string|null",
+      "message": "string",
+      "retryable": "boolean — only RATE_LIMITED, INTERNAL and NOT_CONFIGURED"
+    }
+  },
+  "errorCodes": {
+    "401": ["NO_CREDENTIAL", "BAD_CREDENTIAL", "SIGNATURE_REQUIRED", "BAD_SIGNATURE", "STALE_TIMESTAMP"],
+    "403": ["REVOKED_CREDENTIAL", "REVOKED", "UNKNOWN_CLIENT", "NOT_PERMITTED", "NO_SUCH_ACTION", "OWNER_APPROVAL_REQUIRED", "APPROVAL_MISMATCH", "APPROVAL_STALE", "OWNER_ROUTE", "CLIENT_ROUTE", "PUBLICATION_DISABLED"],
+    "400": ["MALFORMED_JSON", "NO_ACTION", "NO_INSTRUCTION_ID", "INVALID_RECORD", "MEDIA_REFUSED", "UNKNOWN_BRANCH", "BRANCH_REJECTS_TYPE", "IDEMPOTENCY_KEY_MISMATCH"],
+    "404": ["NOT_FOUND", "UNKNOWN_ROUTE"],
+    "409": ["SLUG_TAKEN", "ILLEGAL_TRANSITION", "NOT_APPROVED"],
+    "413": ["BODY_TOO_LARGE"],
+    "429": ["RATE_LIMITED"],
+    "503": ["NOT_CONFIGURED"],
+    "500": ["INTERNAL"]
+  }
+}

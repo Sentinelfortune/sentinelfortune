@@ -1,0 +1,103 @@
+# Sentinel Fortune LLC — SFL Editorial API (transport for the Editorial Corridor)
+#
+# ONE Worker. One route. It exposes the already-verified SFL Editorial
+# Corridor to ChatGPT and Claude over an authenticated HTTP API.
+#
+# Deploy with:
+#   wrangler deploy --config transport/wrangler.toml
+#
+# This Worker is ISOLATED. It shares nothing with:
+#   - sentinel-fortune-digital-shop   (shop-worker/wrangler.toml)
+#   - sentinel-fortune-ecosystem      (cloudflare/wrangler-api.toml)
+#   - the ORIGINUS_R2 bucket
+#   - the public site's Vercel project (platform/vercel.json)
+# It has no Stripe binding, no R2 binding, no D1 binding, no DNS authority and
+# no deployment authority. Its entire surface is transport/core/http.js.
+#
+# ---------------------------------------------------------------------------
+# NO SECRET IS IN THIS FILE, AND NO SECRET BELONGS IN IT.
+#
+# The three credentials are supplied as SHA-256 DIGESTS through Worker secret
+# storage. A digest cannot be replayed as a credential, so a full dump of this
+# Worker's configuration grants nothing.
+#
+#   wrangler secret put SFL_CORRIDOR_CHATGPT_TOKEN_SHA256 --config transport/wrangler.toml
+#   wrangler secret put SFL_CORRIDOR_CLAUDE_TOKEN_SHA256  --config transport/wrangler.toml
+#   wrangler secret put SFL_CORRIDOR_OWNER_TOKEN_SHA256   --config transport/wrangler.toml
+#
+# Generate a token and its digest locally (the token is what you paste into
+# ChatGPT / Claude; the digest is what you paste into wrangler secret put):
+#
+#   node transport/scripts/mint-credential.mjs
+#
+# Optional, and recommended once the clients are connected:
+#   wrangler secret put SFL_CORRIDOR_SIGNING_SECRET  --config transport/wrangler.toml
+# When set, every request must also carry X-SFL-Timestamp and X-SFL-Signature.
+# ---------------------------------------------------------------------------
+
+name = "sfl-editorial-api"
+main = "runtime/worker.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+# ---------------------------------------------------------------------------
+# KV — the corridor's persistence seam (snapshot / restore only).
+#
+# Create with:
+#   wrangler kv namespace create SFL_EDITORIAL
+# then paste the returned id below.
+#
+# KNOWN LIMITATION, documented in full at the top of
+# transport/runtime/store-kv.js: KV has no compare-and-set, so two concurrent
+# writes can lose one. That is acceptable for the TEST_PREVIEW phase (one
+# Owner, one client at a time, nothing public) and MUST be replaced by a
+# Durable Object or D1 transaction before LIVE publication.
+# ---------------------------------------------------------------------------
+[[kv_namespaces]]
+binding = "EDITORIAL_KV"
+id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+
+# ---------------------------------------------------------------------------
+# Non-secret configuration.
+#
+# SFL_CORRIDOR_MODE is the deployment-level publication lock:
+#   TEST_PREVIEW  prepare and preview only. publish_approved is refused at the
+#                 edge, before it reaches the corridor. THIS IS THE DEFAULT and
+#                 is what Phase 1 deploys.
+#   LIVE          publication permitted — and still gated by the corridor's
+#                 unconditional Owner-approval requirement, which LIVE does not
+#                 relax in any way.
+#
+# A deployment that forgets to set a mode gets TEST_PREVIEW, so a
+# misconfiguration cannot publish.
+# ---------------------------------------------------------------------------
+[vars]
+SFL_CORRIDOR_MODE = "TEST_PREVIEW"
+SFL_CORRIDOR_TIMESTAMP_TOLERANCE_MS = "300000"
+# Comma-separated principals to refuse immediately, e.g. "CLIENT_CHATGPT".
+# Revocation by this list is instant and needs no secret rotation; rotating the
+# digest is the permanent form.
+SFL_CORRIDOR_REVOKED = ""
+
+# ---------------------------------------------------------------------------
+# Production environment.
+#
+# Deploying here is a separate, deliberate act:
+#   wrangler deploy --config transport/wrangler.toml --env production
+#
+# DO NOT deploy to production, and DO NOT set SFL_CORRIDOR_MODE = "LIVE",
+# until the Phase 1 TEST_PREVIEW deployment has been exercised by both
+# clients and the KV limitation above has been resolved.
+# ---------------------------------------------------------------------------
+[env.production]
+name = "sfl-editorial-api"
+workers_dev = false
+
+[env.production.vars]
+SFL_CORRIDOR_MODE = "TEST_PREVIEW"
+SFL_CORRIDOR_TIMESTAMP_TOLERANCE_MS = "300000"
+SFL_CORRIDOR_REVOKED = ""
+
+[[env.production.kv_namespaces]]
+binding = "EDITORIAL_KV"
+id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"

@@ -1,0 +1,17 @@
+{
+  "name": "sfl-editorial-transport",
+  "private": true,
+  "type": "module",
+  "description": "Authenticated HTTP transport for the SFL Editorial Corridor. Zero dependencies.",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "serve": "node runtime/node.mjs",
+    "test": "node --test tests/transport.test.mjs",
+    "proof": "node e2e/live.mjs",
+    "mint": "node scripts/mint-credential.mjs"
+  }
+}

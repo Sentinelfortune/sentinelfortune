@@ -1,0 +1,219 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SFL Editorial API",
+    "version": "1.0.0",
+    "summary": "Prepare, preview and (on Owner approval) publish free editorial content into the seven Sentinel Fortune branches.",
+    "description": "One authenticated endpoint in front of the SFL Editorial Corridor.\n\nTHE RULES THIS API ENFORCES, which a caller should not try to work around:\n\n1. An unclear instruction becomes PREPARE, never PUBLISH. If `operation` is omitted the API reads `user_message`; anything it cannot read clearly becomes a DRAFT and the response says `confident: false`. Tell the Owner \"prepared — say the word to publish\" rather than retrying with PUBLISH.\n2. PUBLISH requires an Owner approval recorded out-of-band by the Owner. A client can never approve its own publication. `OWNER_APPROVAL_REQUIRED` is the expected answer to publishing something unapproved; it is not an error to route around.\n3. Every request needs a unique `instruction_id`. Re-sending the same one returns the original outcome and creates nothing — that is how a retry is made safe. Never reuse an id for a different piece of content, and never invent a new id just to retry.\n4. `branch` is always explicit. The API will not guess a destination, and a house that does not publish a content type refuses it rather than redirecting it.\n5. This API publishes FREE editorial work only. It cannot state a price, a pricing tier other than FREE, or a checkout link. Sending `price`, `compareAtPrice` or `checkoutUrl` is refused.\n\nWhen `mode` is `TEST_PREVIEW`, publication is refused at the edge with `PUBLICATION_DISABLED`; prepare and preview work normally."
+  },
+  "servers": [
+    {
+      "url": "https://sfl-editorial-api.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev",
+      "description": "Replace with the deployed Worker URL (wrangler deploy prints it)."
+    }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Is the API up, and is it in TEST_PREVIEW or LIVE mode?",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "api": { "type": "string" },
+                    "mode": { "type": "string", "enum": ["TEST_PREVIEW", "LIVE"] },
+                    "configured": { "type": "boolean" },
+                    "publicationEnabled": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contract": {
+      "get": {
+        "operationId": "contract",
+        "summary": "The machine-readable action list, intents, rules and error schema.",
+        "security": [],
+        "responses": { "200": { "description": "Contract descriptor.", "content": { "application/json": { "schema": { "type": "object" } } } } }
+      }
+    },
+    "/v1/editorial": {
+      "post": {
+        "operationId": "editorial",
+        "summary": "Run one editorial command: prepare, update, preview, publish, unpublish, archive, list or get.",
+        "description": "The `operation` field chooses the action. Omit it only when relaying the Owner's own words in `user_message`, and expect PREPARE.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Optional. When sent it MUST equal `instruction_id`, or the request is refused.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EditorialCommand" } } }
+        },
+        "responses": {
+          "200": { "description": "The command ran.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EditorialOutcome" } } } },
+          "400": { "description": "The request must be changed before retrying.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "description": "Missing or unrecognised credential.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "403": { "description": "Not permitted — including OWNER_APPROVAL_REQUIRED and PUBLICATION_DISABLED.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "404": { "description": "No such record.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "409": { "description": "State conflict — SLUG_TAKEN, ILLEGAL_TRANSITION, NOT_APPROVED.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "413": { "description": "Body too large.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "429": { "description": "Rate limited. Honour Retry-After.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "The ChatGPT client's own token. It is not interchangeable with Claude's token or the Owner's token, and the credential — not any request field — decides which identity the call acts as."
+      }
+    },
+    "schemas": {
+      "EditorialCommand": {
+        "type": "object",
+        "required": ["instruction_id"],
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["PREPARE", "UPDATE", "REPLACE", "PREVIEW", "PUBLISH", "UNPUBLISH", "ARCHIVE", "LIST", "GET"],
+            "description": "The action. Omit to have the API read `user_message` instead — which resolves to PREPARE whenever it is not unmistakably something else. LIST and GET are never inferred and must be stated."
+          },
+          "instruction_id": {
+            "type": "string",
+            "description": "REQUIRED and unique per distinct command. Re-sending the same id returns the original outcome and writes nothing. This is the replay protection — do not generate a new id in order to retry."
+          },
+          "user_message": {
+            "type": "string",
+            "description": "The Owner's own words, English or French, relayed verbatim. Used only when `operation` is absent."
+          },
+          "record_id": { "type": "string", "description": "Required for UPDATE, PREVIEW, PUBLISH, UNPUBLISH, ARCHIVE and GET. Returned as `record.id` by PREPARE." },
+          "branch": {
+            "type": "string",
+            "enum": ["SENTINEL_FORTUNE_RECORDS", "CODEX_WORLD_TV", "LUMEN_GAME", "LUMEN_SCHOOL_ACADEMY", "VIBRAFLOW_MEDIA", "LIGHTNODE_SYSTEMS", "OG_LEGACY_STORE"],
+            "description": "The destination house. Always explicit — the API never infers it. Ask the Owner rather than guessing."
+          },
+          "content_type": {
+            "type": "string",
+            "enum": ["ARTICLE", "TEACHING", "SESSION", "REFLECTION", "RHAPSODY", "STORY", "EPISODE", "AUDIO", "PODCAST", "LESSON", "GUIDE", "TUTORIAL", "CHALLENGE", "ANNOUNCEMENT", "EDITORIAL_COLLECTION"],
+            "description": "Each house accepts only some of these. A refusal names which subject matter the house covers."
+          },
+          "title": { "type": "string" },
+          "slug": { "type": "string", "description": "Lowercase words joined by single hyphens. Unique within a house." },
+          "summary": { "type": "string" },
+          "body": { "type": "string", "description": "The editorial text. At least 20 characters." },
+          "language": { "type": "string", "enum": ["en", "fr"], "default": "en" },
+          "translations": {
+            "type": "object",
+            "description": "One record carries both languages — never create a second record for a translation.",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["title", "body"],
+              "properties": { "title": { "type": "string" }, "summary": { "type": "string" }, "body": { "type": "string" } }
+            }
+          },
+          "topics": { "type": "array", "items": { "type": "string" } },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "author_display": { "type": "string" },
+          "collection": { "type": "string" },
+          "related_content": { "type": "array", "items": { "type": "string" } },
+          "featured": { "type": "boolean" },
+          "hero_media": { "$ref": "#/components/schemas/Medium" },
+          "media": { "type": "array", "items": { "$ref": "#/components/schemas/Medium" } },
+          "cta": {
+            "type": "object",
+            "description": "There is no purchase action. SUPPORT_THE_WORK is voluntary support for free work and is NOT a purchase; VIEW_PRODUCT may point at a product page but never at a cart or checkout.",
+            "required": ["type", "destination"],
+            "properties": {
+              "type": { "type": "string", "enum": ["READ_MORE", "LISTEN", "WATCH", "OPEN", "SUPPORT_THE_WORK", "VIEW_PRODUCT"] },
+              "label": { "type": "string" },
+              "destination": { "type": "string" }
+            }
+          },
+          "publish_at": { "type": "string", "format": "date-time" },
+          "expires_at": { "type": "string", "format": "date-time" },
+          "limit": { "type": "integer", "description": "LIST only." },
+          "branch_filter": { "type": "string", "description": "LIST only." }
+        }
+      },
+      "Medium": {
+        "type": "object",
+        "required": ["kind", "src", "source"],
+        "description": "Every asset must declare where it came from. SCRAPED is refused by name — benchmark or found imagery is never reused. APPROVED_PUBLIC additionally requires rights.licence and rights.approved === true.",
+        "properties": {
+          "kind": { "type": "string", "enum": ["HERO", "COVER", "THUMBNAIL", "GALLERY", "AUDIO", "VIDEO_PREVIEW", "POSTER", "ILLUSTRATION"] },
+          "src": { "type": "string" },
+          "source": { "type": "string", "enum": ["OWNER_PROVIDED", "GOVERNED_GENERATED", "APPROVED_PUBLIC", "PREMIUM_FALLBACK"] },
+          "altText": { "type": "string", "description": "Required on every visual medium." },
+          "rights": {
+            "type": "object",
+            "properties": { "licence": { "type": "string" }, "approved": { "type": "boolean" } }
+          }
+        }
+      },
+      "EditorialOutcome": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "mode": { "type": "string", "enum": ["TEST_PREVIEW", "LIVE"] },
+          "client": { "type": "string" },
+          "action": { "type": "string" },
+          "intent": { "type": "string" },
+          "confident": { "type": "boolean", "description": "False when the API fell back to PREPARE. Say so to the Owner." },
+          "replay": { "type": "boolean", "description": "True when this instruction_id had already been handled. Nothing new was created." },
+          "step": { "type": "string" },
+          "state": { "type": "string", "enum": ["DRAFT", "PREVIEW", "APPROVED", "PUBLISHED", "UNPUBLISHED", "ARCHIVED", "REJECTED"] },
+          "isLive": { "type": "boolean", "description": "Whether this is publicly visible. Stated on every response so it never has to be inferred." },
+          "record": { "type": "object" },
+          "records": { "type": "array", "items": { "type": "object" }, "description": "LIST only." },
+          "preview": {
+            "type": "object",
+            "description": "PREVIEW only. Always carries preview: true and isLive: false — never describe it to the Owner as published.",
+            "properties": {
+              "preview": { "type": "boolean" },
+              "isLive": { "type": "boolean" },
+              "branchName": { "type": "string" },
+              "route": { "type": "string" },
+              "languages": { "type": "array", "items": { "type": "string" } },
+              "renderings": { "type": "object" }
+            }
+          },
+          "audit": { "type": "array", "items": { "type": "object" } }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean", "const": false },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "step": { "type": ["string", "null"], "description": "Which pipeline step refused: COMMAND_VALIDATION, OWNER_AUTHORITY, NORMALIZE, IDENTITY_VALIDATION, EDITORIAL_VALIDATION, MEDIA_RIGHTS, PREVIEW_BUILD, APPROVAL_STATE or PUBLISH." },
+              "message": { "type": "string" },
+              "retryable": { "type": "boolean", "description": "Only RATE_LIMITED, INTERNAL and NOT_CONFIGURED are worth retrying unchanged." }
+            }
+          }
+        }
+      }
+    }
+  }
+}
