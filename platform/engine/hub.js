@@ -73,6 +73,7 @@ const SHOP = "https://sentinelfortune.github.io/sentinelfortune/shop/";
 export function renderHub({ accepted = [], byIdentity = {}, preview = false, support = null } = {}) {
   return h("div.sf-hub", null, [
     sectionA(accepted),
+    sectionSystem(),
     sectionB(accepted, preview),
     sectionC(byIdentity, preview),
     sectionD(accepted, preview),
@@ -111,6 +112,120 @@ function sectionA(accepted) {
         : null,
     ]),
   ]);
+}
+
+/* ── A2 · SEE THE SYSTEM ───────────────────────────────────────────────────
+   THE OWNER-APPROVED BRAND FILM.
+
+   This is the mechanism moment: what goes in, what the system does to it,
+   what comes out, and where the public meets the result. It sits directly
+   after the company proposition because "what is this company" and "how does
+   it actually work" are the first two questions, in that order.
+
+   HOW IT IS PLAYED, AND WHY
+   -------------------------
+   Poster first, controls on, and NOTHING plays until a visitor asks. No
+   autoplay of any kind — which is also why reduced motion needs no special
+   case here: there is no motion to reduce until it is requested. Nobody hears
+   unexpected sound, because nothing starts on its own.
+
+   `preload="metadata"` means the initial page load fetches a few kilobytes of
+   container header, not 3.3 MB of video. The poster is what the visitor
+   actually sees, and it is 72 KB.
+
+   WHAT THE FILM DOES NOT PROVE
+   ----------------------------
+   It explains the model and the direction. It is NOT evidence that every
+   capability it depicts is operational today — so the section says so in
+   writing, and every world below keeps its own readiness state. The film does
+   not bypass a single gate.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/**
+ * The approved explainer. One asset, one place, no second media framework.
+ *
+ * TWO ENCODES, ONE DOWNLOAD. The browser picks the FIRST source it can play
+ * and fetches only that one, so a visitor never pays for both:
+ *
+ *   WebM / VP9 + Opus   3.19 MB — Chrome, Edge, Firefox, Android
+ *   MP4  / H.264 + AAC  3.31 MB — Safari, iOS, and everything else
+ *
+ * The MP4 alone would serve every real browser; the WebM is listed first
+ * because it is marginally smaller and because an open-source Chromium build
+ * carries no H.264 or AAC at all — which is what makes this film verifiable
+ * in an automated browser rather than only by hand.
+ *
+ * 720p is the floor, not a compromise: the film's argument is carried by small
+ * labels on the orchestration diagram, and 540p makes them unreadable.
+ */
+export const EXPLAINER = Object.freeze({
+  sources: Object.freeze([
+    Object.freeze({ src: "/assets/media/sentinel-fortune-explainer-720.webm", type: "video/webm" }),
+    Object.freeze({ src: "/assets/media/sentinel-fortune-explainer-720.mp4", type: "video/mp4" }),
+  ]),
+  poster: "/assets/media/sentinel-fortune-explainer-poster.webp",
+  posterFallback: "/assets/media/sentinel-fortune-explainer-poster.jpg",
+  width: 1280,
+  height: 720,
+  seconds: 35,
+});
+
+/** The film's own structure, as text. This is the accessible alternative to a
+ *  caption track — the film carries no captions, so its argument is on the
+ *  page in readable form rather than being available only to people who can
+ *  both see and hear it. */
+const SYSTEM_STAGES = Object.freeze([
+  { k: "Ideas in", t: "Knowledge, creativity, strategy, music, learning, software, content." },
+  { k: "Orchestration", t: "Sentinel Fortune structures, validates, packages and publishes that work." },
+  { k: "Worlds out", t: "Music, stories and media, games and interactive worlds, learning, reflection and editorial, systems and technology, store and commerce." },
+]);
+
+function sectionSystem() {
+  const video = h("video.sf-film-v", {
+    controls: "",
+    /* `preload="none"`, NOT "metadata".
+     *
+     * Measured, not assumed: with `preload="metadata"` Chromium fetched
+     * 3,343,758 of the film's 3,346,000 bytes on initial page load — 99.9% of
+     * it — because a WebM keeps its index at the END of the file, so "just the
+     * metadata" means reading to the end. `preload` is a hint browsers are
+     * free to exceed, and this one does.
+     *
+     * With "none" the initial load fetches the 72 KB poster and nothing else.
+     * The film is downloaded when a visitor presses play, which is the only
+     * moment they have asked for it. The cost is that the duration is not
+     * known before play — so the running time is stated in the label instead. */
+    preload: "none",
+    playsinline: "",
+    poster: EXPLAINER.poster,
+    width: EXPLAINER.width,
+    height: EXPLAINER.height,
+    "aria-label": "Sentinel Fortune — how the system works. A 35 second explainer film.",
+    "aria-describedby": "sfFilmSummary",
+  }, [
+    ...EXPLAINER.sources.map((s) => h("source", { src: s.src, type: s.type })),
+    /* A browser with no video support is given the argument, not an apology. */
+    h("p", { text: "Your browser cannot play this film. Its content is described beneath it." }),
+  ]);
+
+  return section("See the system", {
+    kicker: "How it works",
+    sub: "Thirty-five seconds: what goes in, what Sentinel Fortune does with it, and where the result shows up.",
+    body: h("div.sf-film", null, [
+      h("div.sf-film-frame", null, [video]),
+      h("div.sf-film-read", { id: "sfFilmSummary" }, [
+        h("ol.sf-film-flow", null, SYSTEM_STAGES.map((s) =>
+          h("li.sf-film-step", null, [
+            h("span.sf-film-k", { text: s.k }),
+            h("span.sf-film-t", { text: s.t }),
+          ]))),
+        /* §5. The film is an explanation, not a status page. Saying so here
+           is the difference between a brand film and an overclaim. */
+        h("p.sf-film-honest", { text: "This film explains what Sentinel Fortune is and how it works. It is not a statement that every capability it shows is open to the public today — each world below states its own current state." }),
+      ]),
+    ]),
+    id: "system",
+  });
 }
 
 /* ── B · LATEST FROM SENTINEL FORTUNE ──────────────────────────────────────

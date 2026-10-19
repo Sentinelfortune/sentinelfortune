@@ -1002,3 +1002,70 @@ token values:
 .sf-know-art { max-height: 132px; overflow: hidden; }
 .sf-know-art svg, .sf-know-art img { height: 132px; object-fit: cover; }
 .sf-exp-art { max-height: 84px; overflow: hidden; }
+
+/* =====================================================================
+SEE THE SYSTEM — the Owner-approved explainer film
+
+Poster-first, controls on, nothing plays unprompted. The frame reserves its
+aspect ratio before the poster loads, so the section cannot shift the page
+underneath whatever the visitor is already reading.
+
+The film sits beside its own text on a wide screen and above it on a phone.
+That text is not a caption or a decoration: the film carries no caption
+track, so its argument lives on the page in readable form rather than being
+available only to someone who can both see and hear.
+===================================================================== */
+
+.sf-film { display: grid; gap: 22px; grid-template-columns: 1fr; align-items: start; }
+
+.sf-film-frame {
+  position: relative;
+  /* Reserved before any byte of poster or video arrives — no layout shift. */
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  /* One gold hairline. The film is already deep blue and gold; the frame
+     should agree with it, not compete. */
+  box-shadow: 0 0 0 1px rgba(200, 168, 75, .14) inset;
+}
+.sf-film-v {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* contain, not cover: the frame and the film are both 16:9 today, so the
+     two are identical — but a future re-encode at another ratio would be
+     CROPPED by cover, and this film carries its argument in small labels at
+     the edges of the diagram. Letterbox beats losing a word. */
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.sf-film-read { display: flex; flex-direction: column; gap: 16px; }
+
+.sf-film-flow { list-style: none; display: flex; flex-direction: column; gap: 14px; counter-reset: none; }
+.sf-film-step {
+  display: flex; flex-direction: column; gap: 4px;
+  padding-left: 16px;
+  border-left: 2px solid var(--line);
+}
+/* The middle stage is the mechanism — give it the accent so the eye reads
+   in → THROUGH → out rather than three equal bullets. */
+.sf-film-step:nth-child(2) { border-left-color: var(--accent); }
+.sf-film-k {
+  font-family: var(--brand); font-size: .68rem;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
+}
+.sf-film-step:nth-child(2) .sf-film-k { color: var(--gold); }
+.sf-film-t { color: var(--ink-soft); font-size: .93rem; line-height: 1.6; }
+
+.sf-film-honest {
+  color: var(--ink-soft); font-size: .82rem; line-height: 1.6;
+  border-top: 1px solid var(--line); padding-top: 14px;
+}
+
+@media (min-width: 900px) {
+  .sf-film { grid-template-columns: minmax(0, 1.55fr) minmax(260px, 1fr); gap: 30px; }
+}

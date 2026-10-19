@@ -340,6 +340,7 @@ export const HUB = Object.freeze({
      page rather than routes — so the shell does not need a second
      implementation to render it. */
   nav: Object.freeze([
+    { label: "How it works", href: "#system" },
     { label: "Worlds", href: "#worlds" },
     { label: "Latest", href: "#latest" },
     { label: "Products", href: "#products" },

@@ -136,6 +136,73 @@ check("TEST_PREVIEW is visible and explicit",
   Boolean(d.previewBanner) && /preview/i.test(d.previewBanner) && d.engine.evidence === "TEST_PREVIEW");
 check("no console error, page error or failed request", e1.length === 0, e1.slice(0, 2).join(" | "));
 
+heading("THE EXPLAINER FILM  ·  approved brand media");
+
+const film = await p1.evaluate(() => {
+  const v = document.querySelector(".sf-film-v");
+  if (!v) return null;
+  const frame = document.querySelector(".sf-film-frame");
+  const fr = frame.getBoundingClientRect();
+  return {
+    autoplay: v.hasAttribute("autoplay"),
+    loop: v.hasAttribute("loop"),
+    controls: v.hasAttribute("controls"),
+    preload: v.getAttribute("preload"),
+    playsinline: v.hasAttribute("playsinline"),
+    paused: v.paused,
+    currentTime: v.currentTime,
+    poster: v.getAttribute("poster"),
+    label: v.getAttribute("aria-label"),
+    describedBy: v.getAttribute("aria-describedby"),
+    describedByResolves: Boolean(document.getElementById(v.getAttribute("aria-describedby"))),
+    sources: [...v.querySelectorAll("source")].map((s) => ({ src: s.getAttribute("src"), type: s.getAttribute("type") })),
+    frameRatio: Number((fr.width / fr.height).toFixed(3)),
+    stages: [...document.querySelectorAll(".sf-film-k")].map((e) => e.textContent.trim()),
+    honest: (document.querySelector(".sf-film-honest") || {}).textContent || "",
+    sectionIndex: [...document.querySelectorAll("h2")].map((e) => e.textContent.trim()).indexOf("See the system"),
+  };
+});
+
+check("the approved explainer is on the homepage", film !== null);
+check("it appears as the FIRST section after the hero", film.sectionIndex === 0, `index ${film.sectionIndex}`);
+check("NOTHING autoplays — no autoplay attribute", film.autoplay === false);
+check("it is paused at zero on load", film.paused === true && film.currentTime === 0);
+check("controls are available", film.controls === true);
+check("it does not loop", film.loop === false);
+check("it is playsinline, so a phone does not hijack the screen", film.playsinline === true);
+check('preload is "none" — the film is not downloaded until asked for', film.preload === "none", film.preload);
+check("two encodes are offered, WebM first then MP4",
+  film.sources.length === 2 && film.sources[0].type === "video/webm" && film.sources[1].type === "video/mp4",
+  film.sources.map((s) => s.type).join(" → "));
+check("it carries an accessible name", Boolean(film.label) && /35 second/i.test(film.label));
+check("its description target resolves", film.describedByResolves === true, film.describedBy);
+check("the film's argument is on the page as text, not only in audio",
+  film.stages.length === 3 && /ideas in/i.test(film.stages[0]) && /worlds out/i.test(film.stages[2]),
+  film.stages.join(" → "));
+check("the section states the film is not proof that everything is live",
+  /not a statement that every capability/i.test(film.honest));
+check("the frame reserves 16:9 before anything loads — no layout shift",
+  Math.abs(film.frameRatio - 16 / 9) < 0.02, String(film.frameRatio));
+
+/* The media must actually be fetchable — a poster or source that 404s would
+   render as an empty frame rather than an error. */
+for (const path of [...film.sources.map((s) => s.src), film.poster, "/assets/media/sentinel-fortune-explainer-poster.jpg"]) {
+  const r = await p1.request.get(`${BASE}${path}`, { headers: { Range: "bytes=0-1023" } });
+  check(`${path.split("/").pop()} resolves`, r.status() === 200 || r.status() === 206, String(r.status()));
+}
+
+/* The weight claim, measured rather than asserted. */
+const weighed = await open(preview, "/");
+let videoBytes = 0;
+weighed.page.on("response", (r) => {
+  if (/\.(webm|mp4)$/.test(r.url())) videoBytes += Number(r.headers()["content-length"] || 0);
+});
+await weighed.page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+await weighed.page.waitForSelector(".sf-film-v");
+await weighed.page.waitForTimeout(2500);
+check("ZERO video bytes are pulled on initial page load", videoBytes === 0, `${videoBytes} bytes`);
+await weighed.page.close();
+
 heading("COMMERCIAL BOUNDARIES");
 
 check("digital products show a governed price, never an invented one",
