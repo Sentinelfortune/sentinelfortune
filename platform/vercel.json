@@ -3,26 +3,6 @@
   "cleanUrls": true,
   "trailingSlash": false,
 
-  "_comment": [
-    "ONE Vercel project serves all seven hostnames.",
-    "",
-    "The rewrite below is what makes the architecture work. Every path that is",
-    "not a real file is served index.html, so a detail route like",
-    "/learn/floor or /release/origin-echo resolves without a generated page per",
-    "record. Automatic publishing depends on it: when House of Assets approves a",
-    "record, its detail route must already work.",
-    "",
-    "The negative lookahead keeps real assets out of the rewrite. Without it",
-    "/engine/boot.js would be served index.html and the module would fail on a",
-    "text/html MIME type — which is exactly what happened in testing before the",
-    "asset paths were made root-absolute.",
-    "",
-    "Identity comes from the REQUEST HOSTNAME at runtime (engine/router.js), so",
-    "no per-domain configuration is needed here and the seven cannot drift apart.",
-    "Adding a hostname is a domain attached to this project plus a DNS record —",
-    "no code change and no second deployment."
-  ],
-
   "rewrites": [
     {
       "source": "/((?!engine/|feed/|assets/|app\\.css|favicon|robots\\.txt|sitemap).*)",
