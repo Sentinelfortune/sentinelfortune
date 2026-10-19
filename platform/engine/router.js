@@ -64,6 +64,28 @@ export function isCanonicalHost(hostname = "") {
   return Boolean(HOST_MAP[String(hostname).toLowerCase().replace(/:\d+$/, "")]);
 }
 
+/**
+ * The hosts on which the COMPANY HOMEPAGE is public rather than a preview.
+ *
+ * `isCanonicalHost` answers "is this one of the seven worlds", which is not the
+ * same question: the homepage has its own addresses, and on them it must behave
+ * as production — no preview affordance, and no board linking to a world the
+ * Owner has not surfaced.
+ */
+export const HUB_PUBLIC_HOSTS = Object.freeze([
+  "sentinelfortune.com",
+  "www.sentinelfortune.com",
+  "sentinelfortune.github.io",
+]);
+
+/** True on any address where this platform is serving the public — a world's
+ *  canonical host, or one of the homepage's own. Everything else (a preview
+ *  deployment, a local server) is a preview. */
+export function isPublicHost(hostname = "") {
+  const host = String(hostname).toLowerCase().replace(/:\d+$/, "");
+  return isCanonicalHost(host) || HUB_PUBLIC_HOSTS.includes(host);
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    VIEW RESOLUTION
    ───────────────────────────────────────────────────────────────────────── */

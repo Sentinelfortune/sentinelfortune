@@ -478,13 +478,23 @@ for (const b of BRANCHES) {
 }
 check("one shell for all seven (identical bytes)", new Set(shells).size === 1, JSON.stringify(shells));
 
-/* The identity chooser must never appear on a canonical host — proven by
-   checking it DOES appear on an unknown host, and that the engine marks
-   canonical hosts differently. */
+/* PUBLIC EXPERIENCE V2 CHANGED THIS DELIBERATELY.
+   The root used to render a bare identity chooser — a list of links for an
+   unknown host. It now renders the Sentinel Fortune homepage, which is the
+   company's own surface and the one place all seven worlds belong. The old
+   assertion is replaced rather than deleted, so the change is recorded here
+   as an intended contract change and not as a quietly dropped check. */
 await page.goto(U("/"), { waitUntil: "domcontentloaded" });
-await page.waitForSelector(".sf-chooser, .sf-hero", { timeout: 10000 });
-const chooser = await page.locator(".sf-chooser").count();
-check("an unknown host offers a way in rather than an error", chooser === 1);
+await page.waitForSelector(".sf-hub-hero, .sf-chooser, .sf-hero", { timeout: 10000 });
+const hub = await page.evaluate(() => ({
+  surface: (window.SF_ENGINE || {}).surface || null,
+  boards: document.querySelectorAll(".sf-board").length,
+  h1: document.querySelectorAll("h1").length,
+  chooser: document.querySelectorAll(".sf-chooser").length,
+}));
+check("the root serves the company homepage, not a chooser", hub.surface === "HUB" && hub.chooser === 0, JSON.stringify(hub));
+check("the homepage exposes all seven worlds directly", hub.boards === 7, String(hub.boards));
+check("the homepage has exactly one h1", hub.h1 === 1, String(hub.h1));
 
 /* Deep link straight to a detail route — the SPA fallback must serve it. */
 const deep = await page.goto(U("/i/lumenschoolacademy/learn/floor"), { waitUntil: "domcontentloaded" });

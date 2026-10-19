@@ -214,8 +214,12 @@ const GRAMMAR = {
  * reader needs — the title beside it already says what this is, and announcing
  * "generated artwork" would be noise.
  */
-export function generatedArt(record, identity, { ratio = "3 / 2" } = {}) {
-  const seed = hash(`${identity}:${record.slug}`);
+export function generatedArt(record, identity, { ratio = "3 / 2", salt = "" } = {}) {
+  /* `salt` lets one record carry several DIFFERENT generated artworks — which
+     is what makes the three publication roles visually distinct without three
+     real image files existing. Same record + same salt is always the same
+     artwork, so nothing shimmers between renders. */
+  const seed = hash(`${identity}:${record.slug}${salt ? `:${salt}` : ""}`);
   const rnd = rng(seed);
   const svg = el("svg", {
     viewBox: "0 0 100 100",
@@ -358,6 +362,21 @@ export function heroBackdrop(identity) {
       }
       break;
     }
+    /* The company, not an eighth world. Seven arcs converging on one point:
+       the only grammar here that is about the whole rather than a part, and
+       deliberately the calmest of the eight so the headline stays dominant. */
+    case "sentinelfortune": {
+      for (let i = 0; i < 7; i++) {
+        const spread = 10 + i * 6;
+        svg.appendChild(el("path", {
+          d: `M${118 - spread} 90 Q ${128} ${46 - i * 3} ${118 + spread} 0`,
+          fill: "none", stroke: "var(--accent)", "stroke-width": 0.35,
+          opacity: (0.30 - i * 0.032).toFixed(3),
+        }));
+      }
+      svg.appendChild(el("circle", { cx: 128, cy: 45, r: 1.6, fill: "var(--accent)", opacity: ".45" }));
+      break;
+    }
     default: break;
   }
   return svg;
@@ -367,4 +386,64 @@ export function heroBackdrop(identity) {
  *  decide whether to give an image the dominant share of the screen. */
 export function hasGovernedImage(record) {
   return record.media.some((m) => m.kind === "IMAGE");
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THE THREE PUBLICATION ROLES
+
+   Every important editorial release supports three media roles, reusable
+   across Latest, a world's home, a category, the Featured rail, related
+   content and a share preview:
+
+     ATTENTION  the cover that earns a look
+     VALUE      the human or real-use scene that says why this matters
+     DISCOVERY  the collection visual that invites going deeper
+
+   WHAT THIS DOES AND DOES NOT PROMISE.
+   It resolves a role to the governed image for that role when House of Assets
+   has supplied one. When it has not, it returns deterministic generated
+   artwork salted by the role — so the three slots are genuinely three
+   different visuals rather than the same picture three times, and no path to a
+   non-existent file is ever emitted. Generated art is a designed premium
+   fallback, not a stand-in for photography: real imagery of people and real
+   use is Owner content, and its absence is visible as abstraction rather than
+   as a broken frame.
+   ───────────────────────────────────────────────────────────────────────── */
+
+export const MEDIA_ROLES = Object.freeze(["ATTENTION", "VALUE", "DISCOVERY"]);
+
+/** The governed image for one role, or null. */
+export function governedRole(record, role) {
+  return (record.media || []).find((m) => m.kind === "IMAGE" && m.role === role) || null;
+}
+
+/**
+ * One role's visual, as a framed element.
+ *
+ * Falls back, in order: the role's own governed image → any governed image
+ * (ATTENTION only, since a single supplied cover is an attention image) →
+ * generated art salted by the role.
+ */
+export function roleCover(record, identity, role, { ratio = "3 / 2", eager = false, width = 600, height = 400 } = {}) {
+  if (!MEDIA_ROLES.includes(role)) throw new Error(`roleCover: unknown role ${JSON.stringify(role)}`);
+
+  const governed = governedRole(record, role)
+    || (role === "ATTENTION" ? (record.media || []).find((m) => m.kind === "IMAGE" && !m.role) : null);
+
+  if (governed) {
+    /* Reuse the one media component by handing it a record whose only image is
+       this role's, so the error-to-generated-art guarantee still applies. */
+    return cover({ ...record, media: [governed] }, identity, { ratio, eager, width, height });
+  }
+
+  const frame = h("div.sf-cover", { dataset: { generated: "true", role } });
+  frame.style.aspectRatio = ratio;
+  frame.appendChild(generatedArt(record, identity, { ratio, salt: role }));
+  return frame;
+}
+
+/** Which roles this record can actually present, governed or generated. Every
+ *  record can present all three; this reports which are REAL imagery. */
+export function governedRoles(record) {
+  return MEDIA_ROLES.filter((role) => Boolean(governedRole(record, role)));
 }

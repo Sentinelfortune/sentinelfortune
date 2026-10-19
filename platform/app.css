@@ -627,3 +627,378 @@ a:hover { text-decoration: underline; }
 @media (max-width: 480px) {
   .sf-foot-brand { flex-direction: column; gap: 12px; }
 }
+
+/* =====================================================================
+PUBLIC EXPERIENCE V2 — THE COMPANY HOMEPAGE
+
+The brand layer. Everything below belongs to the ONE Sentinel Fortune
+homepage, which is not an eighth world: it is the company. It reuses the
+shared tokens, the shared button, the shared section and the shared card
+anatomy, and adds only what a homepage needs that a world does not —
+seven gateways, a company hero, a support invitation and a B2B block.
+
+THE FOUNDATION IS DEEP BLUE.
+Gold appears as an accent on a rule, a mark and a price — never as a field.
+Black appears inside media treatment only. A world bends this frame through
+--board-accent; it never replaces it.
+===================================================================== */
+
+.sf-hub { display: block; }
+
+/* ── A · hero ─────────────────────────────────────────────────────────── */
+.sf-hub-hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  /* Deep blue, lit from the upper right. Not a black slab, not a gradient
+     for decoration's sake — it gives the mark somewhere to sit. */
+  background:
+    radial-gradient(118% 92% at 78% 6%, color-mix(in srgb, var(--surface) 86%, var(--accent)) 0%, transparent 56%),
+    linear-gradient(176deg, var(--surface) 0%, var(--bg) 72%);
+}
+.sf-hub-hero-bg {
+  position: absolute; inset: 0; opacity: .5; pointer-events: none;
+}
+.sf-hub-hero-bg svg { width: 100%; height: 100%; }
+.sf-hub-hero-in {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 68px var(--gut) 60px;
+}
+.sf-hub-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--brand);
+  font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--accent);
+  padding-bottom: 18px;
+}
+.sf-hub-eyebrow-mark { font-size: .9rem; letter-spacing: 0; }
+.sf-hub-h {
+  font-family: var(--display);
+  font-weight: 400;
+  /* Large, but it must not become a wall on a phone. */
+  font-size: clamp(2rem, 7.2vw, 3.9rem);
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  max-width: 24ch;
+  color: var(--ink);
+}
+.sf-hub-sub {
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 2.1vw, 1.16rem);
+  max-width: 54ch;
+  padding-top: 18px;
+}
+.sf-hub-act { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 28px; }
+.sf-hub-count {
+  color: var(--ink-soft); font-size: .84rem; padding-top: 22px;
+  border-top: 1px solid var(--line); margin-top: 26px;
+}
+
+/* ── B · latest ───────────────────────────────────────────────────────── */
+.sf-hub-latest { display: grid; gap: 22px; grid-template-columns: 1fr; }
+.sf-hub-rel {
+  display: grid; gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.sf-hub-rel-art { position: relative; background: var(--bg); }
+.sf-hub-rel-art svg, .sf-hub-rel-art img { width: 100%; height: 100%; object-fit: cover; }
+.sf-hub-rel-body { padding: 20px; display: flex; flex-direction: column; gap: 9px; }
+.sf-hub-rel-meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  font-family: var(--brand); color: var(--accent);
+}
+.sf-hub-rel-dot { opacity: .5; }
+.sf-hub-rel-type { color: var(--ink-soft); }
+.sf-hub-rel-t { font-family: var(--display); font-weight: 400; font-size: 1.42rem; line-height: 1.2; }
+.sf-hub-rel-sum { color: var(--ink-soft); font-size: .94rem; }
+.sf-hub-rel-act { padding-top: 6px; margin-top: auto; }
+.sf-hub-rel-note, .sf-hub-inert {
+  color: var(--ink-soft); font-size: .84rem;
+  border-left: 2px solid var(--line); padding-left: 10px;
+}
+
+/* ── C · the seven worlds ─────────────────────────────────────────────── */
+.sf-hub-boards { display: grid; gap: 16px; grid-template-columns: 1fr; }
+
+.sf-board {
+  position: relative;
+  display: block;
+  min-height: 260px;
+  border: 1px solid var(--board-line, var(--line));
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--board-surface, var(--surface));
+  color: var(--ink);
+  text-decoration: none;
+  isolation: isolate;
+}
+.sf-board:hover { text-decoration: none; }
+.sf-board-art { position: absolute; inset: 0; z-index: 0; opacity: .34; }
+.sf-board-art svg, .sf-board-art img { width: 100%; height: 100%; object-fit: cover; }
+/* The scrim is what keeps a world's artwork from eating its own label. */
+.sf-board::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(183deg, rgba(5,11,26,.18) 0%, rgba(5,11,26,.72) 58%, rgba(5,11,26,.93) 100%);
+}
+.sf-board-in {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; gap: 7px;
+  height: 100%;
+  padding: 20px;
+  justify-content: flex-end;
+  min-height: 260px;
+}
+.sf-board-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--board-accent, var(--accent));
+}
+.sf-board-mark { font-size: .95rem; letter-spacing: 0; }
+.sf-board-name { font-family: var(--display); font-weight: 400; font-size: 1.44rem; line-height: 1.15; }
+.sf-board-role { color: var(--ink-soft); font-size: .9rem; max-width: 34ch; }
+.sf-board-count { color: var(--ink-soft); font-size: .76rem; opacity: .8; }
+.sf-board-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--board-accent, var(--accent));
+  font-size: .88rem; font-weight: 400;
+  padding-top: 6px;
+}
+.sf-board-arrow { transition: transform .22s ease; }
+.sf-board--open:hover .sf-board-arrow { transform: translateX(4px); }
+@media (prefers-reduced-motion: reduce) { .sf-board-arrow { transition: none; } }
+
+/* An unreachable world states its state. It is not a disabled button, because
+   it is not a link at all — there is nothing to click and nothing to mislead. */
+.sf-board-state {
+  display: inline-block;
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  font-family: var(--brand);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 11px;
+  margin-top: 8px;
+  align-self: flex-start;
+}
+.sf-board-preview {
+  display: inline-block; align-self: flex-start;
+  font-size: .66rem; letter-spacing: .14em; text-transform: uppercase;
+  font-family: var(--brand);
+  color: var(--bg); background: var(--board-accent, var(--accent));
+  border-radius: 3px; padding: 3px 8px; margin-top: 8px;
+}
+.sf-board--inert { opacity: .92; }
+.sf-board--open:focus-visible { outline: 2px solid var(--board-accent, var(--accent)); outline-offset: 3px; }
+
+/* ── D · featured experiences ─────────────────────────────────────────── */
+.sf-hub-exp { display: grid; gap: 14px; grid-template-columns: 1fr; }
+.sf-exp {
+  display: grid; grid-template-columns: 104px 1fr; gap: 14px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  color: var(--ink); text-decoration: none;
+}
+.sf-exp:hover { text-decoration: none; border-color: var(--accent); }
+.sf-exp--inert { opacity: .78; }
+.sf-exp-art { border-radius: 4px; overflow: hidden; background: var(--bg); }
+.sf-exp-art svg, .sf-exp-art img { width: 100%; height: 100%; object-fit: cover; }
+.sf-exp-in { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.sf-exp-do {
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
+}
+.sf-exp-t { font-family: var(--display); font-weight: 400; font-size: 1.1rem; line-height: 1.25; }
+.sf-exp-world { color: var(--ink-soft); font-size: .78rem; }
+
+/* ── E · knowledge ────────────────────────────────────────────────────── */
+.sf-hub-know { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.sf-know {
+  display: block; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; color: var(--ink); text-decoration: none;
+}
+.sf-know:hover { text-decoration: none; border-color: var(--accent); }
+.sf-know--inert { opacity: .82; }
+.sf-know-art { background: var(--bg); }
+.sf-know-art svg, .sf-know-art img { width: 100%; height: auto; object-fit: cover; }
+.sf-know-in { padding: 16px; display: flex; flex-direction: column; gap: 7px; }
+.sf-know-kind {
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft);
+}
+.sf-know-t { font-family: var(--display); font-weight: 400; font-size: 1.16rem; line-height: 1.25; }
+.sf-know-sum { color: var(--ink-soft); font-size: .88rem; }
+.sf-know-cost { color: var(--accent); font-size: .8rem; }
+
+/* ── F · digital products ─────────────────────────────────────────────── */
+.sf-hub-prod { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.sf-prod {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden;
+}
+.sf-prod-art { background: var(--bg); }
+.sf-prod-art svg, .sf-prod-art img { width: 100%; height: auto; object-fit: cover; }
+.sf-prod-in { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.sf-prod-kind {
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft);
+}
+.sf-prod-t { font-family: var(--display); font-weight: 400; font-size: 1.14rem; line-height: 1.25; }
+.sf-prod-price { color: var(--accent); font-size: 1.02rem; }
+
+.sf-hub-noprod {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 22px;
+  display: flex; flex-direction: column; gap: 12px; align-items: flex-start;
+  max-width: var(--measure);
+}
+.sf-hub-noprod-note { color: var(--ink-soft); font-size: .88rem; }
+
+/* ── G · support the work ─────────────────────────────────────────────── */
+.sf-sup {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  /* Gold edge, one line of it. This is the single most "premium" moment on
+     the page and it earns exactly one accent, not a gold panel. */
+  border-left: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  max-width: 68ch;
+}
+.sf-sup-lead { font-size: 1.04rem; color: var(--ink); }
+.sf-sup-amounts { display: flex; flex-wrap: wrap; gap: 10px; }
+.sf-sup-amount {
+  /* 44px minimum touch target. Support is a mobile action. */
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 76px; min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--accent); border-radius: var(--radius);
+  color: var(--accent); font-size: 1rem; text-decoration: none;
+}
+.sf-sup-amount:hover { text-decoration: none; background: var(--accent-soft); }
+.sf-sup-amount--inert {
+  border-style: dashed; color: var(--ink-soft); border-color: var(--line);
+  cursor: default;
+}
+.sf-sup-fine, .sf-sup-inert { color: var(--ink-soft); font-size: .82rem; }
+.sf-sup-inert { border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* ── H · business ─────────────────────────────────────────────────────── */
+.sf-b2b { display: flex; flex-direction: column; gap: 24px; }
+.sf-b2b-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.sf-b2b-item {
+  border-top: 1px solid var(--line); padding-top: 14px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.sf-b2b-h { font-family: var(--display); font-weight: 400; font-size: 1.1rem; }
+.sf-b2b-p { color: var(--ink-soft); font-size: .9rem; }
+
+/* ── responsive ───────────────────────────────────────────────────────────
+   Mobile is the default above. These only widen it. Nothing here changes
+   behaviour, only how much fits on a line.
+   ─────────────────────────────────────────────────────────────────────── */
+@media (min-width: 620px) {
+  .sf-hub-boards { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-exp { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-know { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-prod { grid-template-columns: repeat(3, 1fr); }
+  .sf-b2b-grid { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-rel { grid-template-columns: 240px 1fr; }
+  .sf-hub-rel-art { min-height: 100%; }
+}
+@media (min-width: 1000px) {
+  .sf-hub-hero-in { padding: 104px var(--gut) 92px; }
+  .sf-hub-boards { grid-template-columns: repeat(3, 1fr); }
+  /* The first board spans two columns: seven items in a three-column grid
+     leaves a hole otherwise, and the label world earns the emphasis. */
+  .sf-hub-boards > .sf-board:first-child { grid-column: span 2; }
+  .sf-hub-boards > .sf-board:first-child .sf-board-in { min-height: 320px; }
+  .sf-hub-exp { grid-template-columns: repeat(3, 1fr); }
+  .sf-hub-know { grid-template-columns: repeat(3, 1fr); }
+  .sf-b2b-grid { grid-template-columns: repeat(3, 1fr); }
+  .sf-board { min-height: 300px; }
+  .sf-board-in { min-height: 300px; }
+}
+
+/* =====================================================================
+V2 REFINEMENT — RESTRAINING GOLD, AND FILLING THE GRID
+
+Two corrections made after looking at the rendered page rather than at the
+token values:
+
+1. GOLD WAS THE ACCENT, SO GOLD WAS EVERYTHING. Every kicker, arrow, badge
+   and generated stroke inherits --accent. With --accent set to gold the
+   result read as a black-and-gold template even though the field was
+   already deep blue. The homepage now carries a luminous blue accent and a
+   SEPARATE --gold token, spent only where premium emphasis is earned: a
+   governed price, the support edge, the monogram rule.
+
+2. SEVEN BOARDS IN A THREE-COLUMN GRID LEFT A HOLE. The last row rendered
+   two boards and one empty cell, which reads as unfinished. The seventh
+   board now spans the full width — and because the seventh is OG Legacy
+   Store, it leads directly into Digital products below it.
+===================================================================== */
+
+:root { --gold: #c8a84b; }
+
+/* Premium emphasis, deliberately scarce. */
+.sf-prod-price,
+.sf-know-cost { color: var(--gold); }
+.sf-sup { border-left-color: var(--gold); }
+.sf-sup-amount { border-color: var(--gold); color: var(--gold); }
+.sf-sup-amount:hover { background: rgba(200, 168, 75, .10); }
+.sf-sup-amount--inert { border-color: var(--line); color: var(--ink-soft); }
+.sf-hub-eyebrow { color: var(--gold); }
+
+/* The seventh board carries the row. */
+@media (min-width: 1000px) {
+  .sf-hub-boards > .sf-board:first-child { grid-column: auto; }
+  .sf-hub-boards > .sf-board:first-child .sf-board-in { min-height: 300px; }
+  .sf-hub-boards > .sf-board:last-child { grid-column: span 3; }
+  .sf-hub-boards > .sf-board:last-child .sf-board-in {
+    min-height: 240px; max-width: 760px;
+  }
+  .sf-hub-boards > .sf-board:last-child { min-height: 240px; }
+}
+@media (min-width: 620px) and (max-width: 999px) {
+  /* Two columns: seven items leave one odd. Let the last fill the row. */
+  .sf-hub-boards > .sf-board:last-child { grid-column: span 2; }
+}
+
+/* ── hero presence ────────────────────────────────────────────────────
+   The backdrop was so faint it read as an empty field. It is still
+   atmosphere — the headline must win — but it now has enough contrast to
+   be a subject rather than a texture. */
+.sf-hub-hero-bg { opacity: .85; }
+.sf-hub-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(74% 62% at 82% 14%, rgba(127, 180, 232, .14) 0%, transparent 62%);
+}
+.sf-hub-hero-in { z-index: 2; }
+.sf-hub-h {
+  /* A hairline of gold under the headline: one premium moment, not a theme. */
+  padding-bottom: 20px;
+  background-image: linear-gradient(90deg, var(--gold) 0%, transparent 42%);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+}
+
+/* ── knowledge: let the words lead ────────────────────────────────────
+   Three large abstract artworks per row read as placeholder wallpaper, which
+   is exactly what the brief warns against. Until real imagery exists the art
+   is a band, not a panel — present, but no longer the subject. */
+.sf-know-art { max-height: 132px; overflow: hidden; }
+.sf-know-art svg, .sf-know-art img { height: 132px; object-fit: cover; }
+.sf-exp-art { max-height: 84px; overflow: hidden; }

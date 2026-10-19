@@ -8,10 +8,11 @@
  * declares and what the governed feed carries.
  */
 
-import { selectPublic } from "./core.js";
+import { selectPublic, selectAllPublic } from "./core.js";
 import { loadFeed } from "./feed.js";
-import { branch, allBranches } from "./identities.js";
-import { resolveIdentity, resolveView, links as makeLinks, isCanonicalHost } from "./router.js";
+import { branch, allBranches, HUB, worldState } from "./identities.js";
+import { renderHub, worldHref } from "./hub.js";
+import { resolveIdentity, resolveView, links as makeLinks, isCanonicalHost, isPublicHost } from "./router.js";
 import { applySeo, applyTheme } from "./seo.js";
 import { renderDetail } from "./renderers.js";
 import {
@@ -40,8 +41,12 @@ export async function boot() {
   const loc = window.location;
   const resolved = resolveIdentity({ hostname: loc.hostname, pathname: loc.pathname, search: loc.search });
 
+  /* NO WORLD IN THE ADDRESS = THE COMPANY.
+     An unknown host is not an error and not a chooser list — it is the
+     Sentinel Fortune homepage, which is the one surface that legitimately
+     shows all seven worlds at once. */
   if (!resolved.identity) {
-    renderIdentityChooser(resolved.host);
+    await bootHub();
     return;
   }
 
@@ -158,12 +163,16 @@ function interceptLinks() {
    SHELL — identical across the seven, themed per branch
    ───────────────────────────────────────────────────────────────────────── */
 
-function renderShell(cfg, body) {
-  const links = makeLinks(STATE.identity, STATE.devPrefix);
+function renderShell(cfg, body, linksOverride = null) {
+  const links = linksOverride || makeLinks(STATE.identity, STATE.devPrefix);
 
   const nav = h("nav.sf-nav", { "aria-label": "Primary" }, cfg.nav.map((item) => {
+    /* A nav item may name a route (the seven worlds) or carry an href outright
+       (the homepage, whose destinations are its own sections). One renderer
+       serves both rather than the hub forking the shell. */
     const href =
-      item.view === "home" ? links.home()
+      item.href ? item.href
+      : item.view === "home" ? links.home()
       : item.view === "collections" ? links.collections()
       : links.browse({ type: item.type, filter: item.filter });
     return h("a.sf-nav-a", { href, text: item.label });
@@ -255,7 +264,75 @@ function devPicker() {
   ]);
 }
 
-/** No identity: an unknown host. Not an error page — a way in. */
+/* ─────────────────────────────────────────────────────────────────────────
+   THE COMPANY HOMEPAGE
+
+   Same shell, same feed, same readiness gate, same commercial heart. The only
+   difference from a world is that selection is not filtered to one identity —
+   because the company's own page is the one place all seven belong.
+   ───────────────────────────────────────────────────────────────────────── */
+
+async function bootHub() {
+  applyTheme(HUB);
+  STATE.identity = null;
+
+  clear(app()).appendChild(loadingState("Loading Sentinel Fortune"));
+
+  /* The homepage's nav points at its own sections, so it needs a links object
+     with only a home — not a world's route builder. */
+  const hubLinks = { home: () => "/" };
+
+  const result = await loadFeed({ url: window.SF_FEED_URL || undefined });
+  if (!result.ok) {
+    renderShell(HUB, errorState({ detail: `${result.error}: ${result.detail}`, onRetry: () => boot() }), hubLinks);
+    return;
+  }
+
+  const { accepted, rejected, byIdentity } = selectAllPublic(result.records);
+  STATE.evidence = result.evidence;
+  STATE.generatedAt = result.generatedAt;
+
+  /* Off a canonical host this is a preview, and the boards say so rather than
+     pretending the worlds are published. */
+  const preview = !isPublicHost(window.location.hostname);
+
+  renderShell(HUB, renderHub({
+    accepted,
+    byIdentity,
+    preview,
+    /* Support infrastructure is injected or absent. There is no default, so a
+       payment action cannot appear by accident. */
+    support: (typeof window !== "undefined" && window.SF_SUPPORT) || null,
+  }), hubLinks);
+
+  applySeo({ branch: HUB, route: { view: "home" }, evidence: STATE.evidence });
+  interceptHashOnly();
+
+  window.SF_ENGINE = Object.freeze({
+    identity: null,
+    surface: "HUB",
+    identitySource: "NO_IDENTITY",
+    evidence: result.evidence,
+    accepted: accepted.length,
+    rejected: rejected.length,
+    rejectedReasons: rejected.map((r) => r.reason),
+    worlds: Object.fromEntries(allBranches().map((b) => [b.slug, {
+      published: (byIdentity[b.slug] || []).length,
+      state: worldState(b),
+      linked: Boolean(worldHref(b, worldState(b), { preview: false })),
+    }])),
+  });
+}
+
+/** On the homepage a same-page anchor must not be intercepted into a route. */
+function interceptHashOnly() {
+  document.addEventListener("click", (ev) => {
+    const a = ev.target.closest && ev.target.closest('a[href^="#"]');
+    if (a) ev.stopPropagation();
+  }, true);
+}
+
+/** No identity: an unknown host. Kept for the preview host's own fallback. */
 function renderIdentityChooser(host) {
   clear(app()).appendChild(h("div.sf-chooser", null, [
     h("h1", { text: "Sentinel Fortune" }),

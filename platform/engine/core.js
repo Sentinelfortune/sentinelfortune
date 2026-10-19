@@ -236,7 +236,19 @@ function normalizeMedium(m) {
   if (!kind) return null;
   const src = governedDestination(m.src);
   if (!src) return null;
-  return Object.freeze({ kind, src: src.href, alt: m.alt ? String(m.alt) : "", poster: m.poster ? String(m.poster) : "" });
+  /* THE THREE PUBLICATION ROLES.
+     ATTENTION the cover that earns a look
+     VALUE     the human or real-use scene that says why this matters
+     DISCOVERY the collection visual that invites going deeper
+     An unknown or absent role is null rather than guessed, so a record with
+     unroled media behaves exactly as it did before roles existed. */
+  const role = ["ATTENTION", "VALUE", "DISCOVERY"].includes(m.role) ? m.role : null;
+  return Object.freeze({
+    kind, role,
+    src: src.href,
+    alt: m.alt ? String(m.alt) : "",
+    poster: m.poster ? String(m.poster) : "",
+  });
 }
 
 /** A CTA survives only if its kind is known AND its destination is allowed.
@@ -282,4 +294,36 @@ export function selectPublic(records, identity) {
     accepted.push(normalize(raw));
   }
   return { accepted, rejected };
+}
+
+/**
+ * The SAME gate, for the Sentinel Fortune homepage.
+ *
+ * The homepage is the one surface that legitimately shows all seven worlds at
+ * once, so it needs selection WITHOUT the identity filter — but it must not get
+ * that by relaxing readiness. This calls `publicReadiness()` exactly as
+ * `selectPublic()` does; the only difference is that belonging to another world
+ * is not a rejection here, because every world is this surface's subject.
+ *
+ * Returns `{ accepted, rejected, byIdentity }`. `byIdentity` is keyed by all
+ * seven identities and is always complete — a world with nothing published maps
+ * to an empty array rather than being absent, so the homepage renders seven
+ * boards whatever the feed happens to contain.
+ */
+export function selectAllPublic(records) {
+  const accepted = [];
+  const rejected = [];
+  const byIdentity = Object.fromEntries(IDENTITIES.map((id) => [id, []]));
+
+  for (const raw of Array.isArray(records) ? records : []) {
+    const readiness = publicReadiness(raw);
+    if (!readiness.public) {
+      rejected.push({ id: raw && raw.id, reason: "NOT_PUBLIC", problems: readiness.problems });
+      continue;
+    }
+    const record = normalize(raw);
+    accepted.push(record);
+    byIdentity[record.identity].push(record);
+  }
+  return { accepted, rejected, byIdentity };
 }
