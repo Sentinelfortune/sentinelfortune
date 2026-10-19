@@ -244,7 +244,7 @@
       "cta": {
         "kind": "OPEN",
         "label": "Open Floor",
-        "destination": "https://sentinelfortune.github.io/sentinelfortune/apps/floor/"
+        "destination": "https://floor.sentinelfortune.com/"
       },
       "featured": true,
       "categories": [

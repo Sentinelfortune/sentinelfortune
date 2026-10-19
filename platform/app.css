@@ -116,9 +116,35 @@ a:hover { text-decoration: underline; }
   display: none;
   flex-direction: column; justify-content: center; gap: 4px;
   width: 44px; height: 44px; padding: 10px; flex: none;
-  background: transparent; border: 1px solid var(--line); border-radius: var(--radius); cursor: pointer;
+  /* The outline carried --line (#1e2a48) on a #070f22 field — a hairline with
+     almost no contrast, so the control's SHAPE read as absent on a phone even
+     though the strokes were light. A low-alpha gold tint makes the boundary
+     perceptible without becoming a gold button. */
+  background: transparent; border: 1px solid rgba(200, 168, 75, .22);
+  border-radius: var(--radius); cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
 }
-.sf-js .sf-burger span { display: block; height: 1.5px; background: var(--ink); }
+/* GOLD, AND 2px RATHER THAN 1.5px.
+   The strokes were never dark — they were --ink (#eef1f7). What made them
+   vanish was thickness: a 1.5px hairline sub-pixel-antialiased on a phone
+   reads as a smudge. Gold at 1.5px would have been WORSE, because #c8a84b
+   carries 8.35:1 against #070f22 where near-white carries about 15:1. So the
+   stroke goes gold AND gains half a pixel; contrast stays far above the 3:1
+   WCAG asks of a UI component, and the control finally reads.
+   --gold is the scarce premium token, identical across all seven worlds,
+   which is why one mobile control may spend it where --accent would drift
+   teal, amber or violet from house to house. */
+.sf-js .sf-burger span {
+  display: block; height: 2px; border-radius: 1px;
+  background: var(--gold);
+  transition: background-color .15s ease;
+}
+.sf-js .sf-burger:hover { border-color: rgba(200, 168, 75, .38); background: rgba(200, 168, 75, .06); }
+.sf-js .sf-burger:hover span,
+.sf-js .sf-burger[aria-expanded="true"] span { background: #dcc06a; }
+.sf-js .sf-burger[aria-expanded="true"] { border-color: rgba(200, 168, 75, .45); }
+/* The focus ring is the global :focus-visible rule — 2px solid var(--accent),
+   which stays each world's own colour. It is not overridden here. */
 
 @media (max-width: 720px) {
   .sf-js .sf-burger { display: inline-flex; }

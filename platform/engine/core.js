@@ -65,6 +65,14 @@ export const ALLOWED_DESTINATION_HOSTS = Object.freeze([
   "vibraflowmedia.sentinelfortune.com",
   "lightnodesystems.sentinelfortune.com",
   "oglegacystore.sentinelfortune.com",
+  /* FLOOR IS A TOOL, NOT A WORLD.
+     It is a separate application on its own Vercel project, linked from Lumen
+     School Academy — it has no identity, no rails and no place in the seven.
+     It appears here because a governed CTA may point at it; registering the
+     host is the ONLY way a destination becomes legal, which is why adding the
+     link without this line produced "Not yet available." rather than a button
+     that went somewhere unvetted. That refusal is the gate working. */
+  "floor.sentinelfortune.com",
   "sentinelfortune.github.io",
 ]);
 

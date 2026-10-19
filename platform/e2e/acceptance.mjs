@@ -422,7 +422,10 @@ for (const b of BRANCHES) {
     [...document.querySelectorAll("a[href]")]
       .map((a) => a.href)
       .filter((hv) => !hv.startsWith(window.location.origin))
-      .filter((hv) => !/^https:\/\/(sentinelfortune\.com|sentinelfortune\.github\.io)\//.test(hv)));
+      /* floor.sentinelfortune.com is a SEPARATE Vercel application, not a
+         world: it is linked from Lumen School Academy and bound to its own
+         project. It is an allowed public host; it is not part of the seven. */
+      .filter((hv) => !/^https:\/\/(sentinelfortune\.com|floor\.sentinelfortune\.com|sentinelfortune\.github\.io)\//.test(hv)));
   check("15. every off-origin link is an allowed public https address", offOrigin.length === 0, offOrigin.join(", "));
   /* Check the HOSTNAME, not the whole string: one fixture's slug is literally
      "localhost-destination", and a slug that contains the word is not a local
@@ -436,7 +439,13 @@ for (const b of BRANCHES) {
       /* The test server itself is on localhost; that is the harness, not the app. */
       .filter((hv) => !hv.startsWith(window.location.origin)));
   check("    no hardcoded local URL emitted by the engine", rawLocal.length === 0, rawLocal.join(", "));
-  const subdomainLinks = absolute.filter((hv) => /\/\/[a-z]+\.sentinelfortune\.com/.test(hv));
+  /* The guard still catches a link to any WORLD subdomain, because a world is
+     reachable only once the Owner raises its readiness and the engine — not a
+     hand-written href — decides that. `floor.` is exempt by name rather than
+     by loosening the pattern: it is a separate application bound to its own
+     Vercel project, so any OTHER unexpected subdomain link is still caught. */
+  const subdomainLinks = absolute.filter((hv) => /\/\/[a-z]+\.sentinelfortune\.com/.test(hv))
+    .filter((hv) => !/\/\/floor\.sentinelfortune\.com/.test(hv));
   check("    no link to an inactive subdomain", subdomainLinks.length === 0, subdomainLinks.join(", "));
 
   check("    no page errors", errors.length === 0, errors.slice(0, 3).join(" | "));
