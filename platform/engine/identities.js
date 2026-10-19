@@ -329,6 +329,14 @@ export const BRANCHES = Object.freeze({
  */
 export const HUB = Object.freeze({
   slug: "sentinelfortune",
+  /* The company's own canonical host. Without this, seo.js builds the WebSite
+     node from `branch.host` and emits a literal "https://undefined/" — which
+     is exactly what it did until this was added. */
+  host: "sentinelfortune.com",
+  /* The share card. The explainer's poster is the one image that states the
+     whole proposition, and JPEG rather than WebP because several social
+     crawlers still refuse WebP. */
+  shareImage: "/assets/media/sentinel-fortune-explainer-poster.jpg",
   name: "Sentinel Fortune",
   tag: "One company",
   mark: "✦",

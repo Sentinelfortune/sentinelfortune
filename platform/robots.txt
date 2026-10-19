@@ -1,0 +1,22 @@
+# Sentinel Fortune — public platform
+#
+# The per-page robots directive is authoritative and is set at runtime by
+# engine/seo.js: anything other than a LIVE feed renders noindex,nofollow.
+# This file is the coarse, pre-JavaScript signal for crawlers that do not
+# execute scripts.
+#
+# WHILE THE FEED IS A PREVIEW, NOTHING HERE SHOULD BE INDEXED.
+# Change this file in the same change that sets the feed to LIVE — not before.
+
+User-agent: *
+Disallow: /
+
+# When the feed goes LIVE, replace the two lines above with:
+#   User-agent: *
+#   Allow: /
+#   Disallow: /i/
+# and publish a sitemap:
+#   Sitemap: https://sentinelfortune.com/sitemap.xml
+#
+# /i/ is the preview route prefix. It serves the same content as a world's
+# canonical host and must never be indexed as a duplicate.

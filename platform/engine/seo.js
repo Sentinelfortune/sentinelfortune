@@ -48,7 +48,11 @@ function link(rel, href) {
 export function applySeo({ branch, route, record = null, evidence = "TEST_PREVIEW" } = {}) {
   const title = pageTitle(branch, route, record);
   const description = pageDescription(branch, route, record);
-  const canonical = canonicalUrl(branch.slug, route);
+  /* `canonicalUrl` resolves the seven worlds. The company homepage is not one
+     of them, so it falls back to its own declared host — otherwise the one
+     page most likely to be shared is the one page with no canonical. */
+  const canonical = canonicalUrl(branch.slug, route)
+    || (branch.host ? `https://${branch.host}/` : null);
 
   document.title = title;
   document.documentElement.lang = "en";
@@ -63,10 +67,16 @@ export function applySeo({ branch, route, record = null, evidence = "TEST_PREVIE
   meta('meta[property="og:description"]', "content", description);
   if (canonical) meta('meta[property="og:url"]', "content", canonical);
 
-  const image = record && record.media.find((m) => m.kind === "IMAGE");
-  if (image) {
-    meta('meta[property="og:image"]', "content", image.src);
-    meta('meta[name="twitter:image"]', "content", image.src);
+  /* A record's own governed image wins. Failing that, a branch may declare a
+     share image — the homepage does. An absolute URL either way, because a
+     relative og:image is ignored by most crawlers. */
+  const recordImage = record && record.media.find((m) => m.kind === "IMAGE");
+  const shareSrc = recordImage ? recordImage.src
+    : (branch.shareImage && branch.host ? `https://${branch.host}${branch.shareImage}` : null);
+  if (shareSrc) {
+    const absolute = /^https?:\/\//.test(shareSrc) || !branch.host ? shareSrc : `https://${branch.host}${shareSrc}`;
+    meta('meta[property="og:image"]', "content", absolute);
+    meta('meta[name="twitter:image"]', "content", absolute);
   }
   meta('meta[name="twitter:card"]', "content", "summary_large_image");
   meta('meta[name="twitter:title"]', "content", title);

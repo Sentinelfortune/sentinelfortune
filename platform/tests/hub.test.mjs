@@ -243,3 +243,39 @@ test("the homepage defines no price, tier or checkout of its own", () => {
   /* It must USE the one commercial heart rather than reimplement it. */
   assert.ok(source.includes('from "./commerce.js"'));
 });
+
+/* ═══ SEO ═════════════════════════════════════════════════════════════ */
+
+test("the company homepage declares its own canonical host and share image", () => {
+  /* Without a host, seo.js builds the WebSite node from `branch.host` and
+     emits a literal "https://undefined/" — which it did until this existed. */
+  assert.equal(HUB.host, "sentinelfortune.com");
+  assert.ok(HUB.shareImage.startsWith("/assets/"), HUB.shareImage);
+  /* JPEG, not WebP: several social crawlers still refuse WebP. */
+  assert.match(HUB.shareImage, /\.jpg$/);
+});
+
+test("no branch can produce an undefined host in a canonical or JSON-LD", () => {
+  for (const cfg of [HUB, ...allBranches()]) {
+    assert.ok(typeof cfg.host === "string" && cfg.host.length > 3, `${cfg.slug} has no host`);
+    assert.ok(!/undefined/.test(`https://${cfg.host}/`), `${cfg.slug} host is undefined`);
+    assert.match(cfg.host, /^[a-z0-9.-]+\.[a-z]{2,}$/, `${cfg.slug} host is not a hostname`);
+  }
+});
+
+test("robots.txt disallows everything while the feed is a preview", () => {
+  const robots = readFileSync(new URL("../robots.txt", import.meta.url), "utf8");
+  assert.match(robots, /User-agent:\s*\*/);
+  assert.match(robots, /Disallow:\s*\//);
+  /* The feed that ships today is a preview, so the coarse signal must agree
+     with the per-page directive rather than contradict it. */
+  assert.notEqual(FEED.evidence, "LIVE");
+});
+
+test("a preview feed is never indexable", () => {
+  /* The rule lives in seo.js; this asserts the rule exists, so that making a
+     page indexable can never be a one-character edit nobody notices. */
+  const seo = readFileSync(new URL("../engine/seo.js", import.meta.url), "utf8");
+  assert.ok(seo.includes('evidence === "LIVE" ? "index,follow'), "indexability must be gated on LIVE evidence");
+  assert.ok(seo.includes("noindex,nofollow"));
+});
