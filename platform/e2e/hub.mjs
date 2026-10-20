@@ -260,6 +260,23 @@ const publicBrowser = await chromium.launch({
 const { page: p3, errors: e3 } = await open(publicBrowser, "http://sentinelfortune.com/");
 const pub = await p3.evaluate(SCRAPE);
 
+/* A LITERAL "null" REACHED PRODUCTION AND RENDERED IN THE TOP-LEFT CORNER.
+   Native Element.append stringifies anything that is not a Node, so the child
+   `cond ? node : null` appended the word null. No existing check caught it:
+   it is not a console error, not a failed request, and not inside any element
+   the other checks query — it was a bare text node directly under #app.
+   This looks for stray top-level text and for the stringified values that
+   betray it, on the surface where it actually shipped. */
+const stray = await p3.evaluate(() => {
+  const app = document.getElementById("app") || document.body;
+  const bare = [...app.childNodes]
+    .filter((n) => n.nodeType === 3 && n.textContent.trim() !== "")
+    .map((n) => n.textContent.trim());
+  return { bare, leak: /(^|\s)(null|undefined|NaN|\[object Object\])(\s|$)/.test(app.innerText) };
+});
+check("no stray text node at the top of the shell", stray.bare.length === 0, stray.bare.join(" | "));
+check("no stringified null/undefined/NaN rendered anywhere", stray.leak === false);
+
 check("the homepage serves on its own canonical host", pub.engine && pub.engine.surface === "HUB");
 check("all seven worlds are still visible publicly", pub.boards.length === 7, `${pub.boards.length}`);
 /* These three asserted the SHAPE OF THE OWNER'S DATA — zero anchors, and the

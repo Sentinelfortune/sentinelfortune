@@ -16,7 +16,7 @@ import { resolveIdentity, resolveView, links as makeLinks, isCanonicalHost, isPu
 import { applySeo, applyTheme } from "./seo.js";
 import { renderDetail } from "./renderers.js";
 import {
-  h, clear, section, cardGrid, chips, emptyState, errorState, loadingState,
+  h, clear, appendAll, section, cardGrid, chips, emptyState, errorState, loadingState,
   previewNotice, priceTag, ctaButton,
 } from "./ui.js";
 import { featured, byType, categoryIndex, collectionIndex, splitByCost, search } from "./commerce.js";
@@ -178,7 +178,9 @@ function renderShell(cfg, body, linksOverride = null) {
     return h("a.sf-nav-a", { href, text: item.label });
   }));
 
-  clear(app()).append(
+  /* appendAll, NOT the native append: a `cond ? node : null` child handed to
+     native Element.append renders the literal text "null". */
+  appendAll(clear(app()),
     h("a.sf-skip", { href: "#main", text: "Skip to content" }),
     /* THE GLOBAL BANNER IS NOW ENVIRONMENT-SCOPED, NOT FEED-SCOPED.
        It appears on a preview deployment, a staging host or a local server —
@@ -438,7 +440,7 @@ function dynamicHero(spotlights, ctx) {
   function paint(i) {
     index = i;
     const record = spotlights[i];
-    clear(stage).append(
+    appendAll(clear(stage),
       h("div.sf-hero-art", { "aria-hidden": "true" },
         [cover(record, cfg.slug, { ratio: ratioFor(record.type), eager: true, width: 800, height: 600 })]),
       h("div.sf-hero-in", null, [

@@ -57,6 +57,31 @@ export function clear(node) {
   return node;
 }
 
+/**
+ * Append children to a real DOM node, DROPPING the absent ones.
+ *
+ * This exists because of a production defect. `clear(app()).append(a, b, c)`
+ * calls the NATIVE `Element.append`, which stringifies anything that is not a
+ * Node — so a conditional child written as `cond ? node : null` appends the
+ * literal text "null". It sat first in the shell, so it rendered as the word
+ * null in the top-left corner of every page.
+ *
+ * `h()` has always filtered absent children, which is why the same idiom is
+ * safe everywhere else in this engine and why the bug stayed hidden: the one
+ * ternary that fed a native append had a condition that was never false in
+ * production until the preview banner became environment-scoped.
+ *
+ * Use this for every append onto a raw node. Never call native append with a
+ * conditional child.
+ */
+export function appendAll(node, ...children) {
+  for (const child of children.flat(Infinity)) {
+    if (child === null || child === undefined || child === false || child === "") continue;
+    node.append(child);
+  }
+  return node;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    THE THREE HONEST STATES
    ───────────────────────────────────────────────────────────────────────── */
