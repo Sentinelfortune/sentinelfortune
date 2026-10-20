@@ -8,17 +8,18 @@
  * no second publishing system and no per-assistant branch in this file —
  * which is the whole point of the corridor being one corridor.
  *
- * EIGHT ACTIONS: create_draft, update_draft, get_preview, publish_approved,
- * unpublish, archive, list_recent, get_record.
+ * THE EIGHT ASSISTANT ACTIONS: create_draft, update_draft, get_preview,
+ * publish_approved, unpublish, archive, list_recent, get_record — plus
+ * submit_review, and approve, which only the Owner's own credential may call.
  *
  * WHAT THIS ENDPOINT WILL NOT DO, AND WHY IT MATTERS MORE THAN WHAT IT DOES:
  *
  * 1. IT CANNOT PUBLISH SOMETHING NOBODY APPROVED. `publish_approved` only
  *    publishes a record already in APPROVED, or one covered by an Owner
  *    standing policy. An assistant holding a corridor credential cannot move
- *    a record from REVIEW to APPROVED — that transition is not reachable
- *    through this API at all. Self-approval is not rate-limited or discouraged
- *    here; it is absent.
+ *    a record from REVIEW to APPROVED: `approve` exists, but it is refused to
+ *    every credential except the Owner's, before the record is even read.
+ *    Self-approval is not rate-limited or discouraged here; it is unreachable.
  *
  * 2. IT CANNOT SELL ANYTHING. The schema pins pricing_tier to FREE and this
  *    file never writes a price. Paid work goes through House of Assets or it
@@ -44,16 +45,26 @@ const CF_API = "https://api.cloudflare.com/client/v4";
 const TYPES = ["MUSIC_RELEASE", "STORY", "GAME", "COURSE", "TEACHING", "SOFTWARE", "BOOK", "PODCAST", "BUNDLE"];
 
 const ACTIONS = [
-  "create_draft", "update_draft", "get_preview", "publish_approved",
-  "unpublish", "archive", "list_recent", "get_record",
+  "create_draft", "update_draft", "get_preview", "submit_review", "approve",
+  "publish_approved", "unpublish", "archive", "list_recent", "get_record",
 ];
 
-const WRITE_ACTIONS = ["create_draft", "update_draft", "publish_approved", "unpublish", "archive"];
+const WRITE_ACTIONS = [
+  "create_draft", "update_draft", "submit_review", "approve",
+  "publish_approved", "unpublish", "archive",
+];
+
+/* Only the Owner's own credential may do these. An assistant presenting its
+   own token gets 403 — which is what keeps "an assistant cannot approve its
+   own work" true now that approving is reachable at all. */
+const OWNER_ONLY_ACTIONS = ["approve"];
 
 /* Which transitions exist. Anything absent is not merely refused — it is not
    expressible, which is the difference between a rule and a hope. */
 const TRANSITIONS = {
   update_draft:     ["DRAFT", "REVIEW", "APPROVED", "PUBLISHED"],
+  submit_review:    ["DRAFT"],
+  approve:          ["DRAFT", "REVIEW"],
   publish_approved: ["APPROVED"],
   unpublish:        ["PUBLISHED"],
   archive:          ["DRAFT", "REVIEW", "APPROVED", "UNPUBLISHED"],
@@ -173,6 +184,10 @@ function identifyCaller(req) {
   const known = [
     ["claude", process.env.CORRIDOR_TOKEN_CLAUDE],
     ["chatgpt", process.env.CORRIDOR_TOKEN_CHATGPT],
+    /* The Owner's own credential. It is a THIRD value, never one of the
+       assistants' — approval authority that an assistant also holds is not
+       approval authority. */
+    ["owner", process.env.CORRIDOR_TOKEN_OWNER],
   ];
   for (const [name, secret] of known) {
     if (secret && sameSecret(presented, secret)) return name;
@@ -513,15 +528,14 @@ async function publishApproved(body, caller, env) {
   const restoring = row.status === "UNPUBLISHED" && Boolean(row.approved_by);
 
   if (!approvedAlready && !byPolicy && !restoring) {
-    /* THE IMPORTANT REFUSAL. There is no path from here to APPROVED: an
-       assistant cannot approve its own work, so the honest answer is to name
-       what is missing and stop. */
+    /* THE IMPORTANT REFUSAL. An assistant cannot approve its own work, so the
+       honest answer is to name what is missing and who can supply it. */
     return {
       status: 409,
       body: {
         error: "OWNER_REVIEW_REQUIRED",
         status: row.status,
-        detail: "this record is neither APPROVED nor covered by a standing policy; approval is not reachable through this API",
+        detail: "this record is neither APPROVED nor covered by a standing policy; the Owner must call approve, which an assistant credential cannot",
       },
     };
   }
@@ -555,6 +569,66 @@ async function publishApproved(body, caller, env) {
 
   const fresh = await loadRecord(row.record_id, env);
   return { status: 200, body: { record: present(fresh), public_url: publicUrl(fresh), approval_mode: mode } };
+}
+
+/**
+ * DRAFT -> REVIEW. Any caller may put its own work up for review; that is
+ * asking, not deciding, so it needs no special credential.
+ */
+async function submitReview(body, caller, env) {
+  const row = await loadRecord(body.record_id, env);
+  if (!row) return { status: 404, body: { error: "NOT_FOUND" } };
+  if (row.status === "REVIEW") return { status: 200, body: { record: present(row), already: true } };
+  if (!TRANSITIONS.submit_review.includes(row.status)) {
+    return { status: 409, body: { error: "NOT_SUBMITTABLE", status: row.status } };
+  }
+  await d1("UPDATE editorial_records SET status='REVIEW', updated_at=?2 WHERE record_id=?1",
+    [row.record_id, now()], env);
+  await logEvent({
+    record_id: row.record_id, action: "submit_review", from: row.status, to: "REVIEW",
+    actor: caller, adapter: caller,
+  }, env);
+  return { status: 200, body: { record: present(await loadRecord(row.record_id, env)) } };
+}
+
+/**
+ * REVIEW (or DRAFT) -> APPROVED. The Owner's decision, and ONLY the Owner's.
+ *
+ * This action exists because its absence was a hole, not a safeguard. The
+ * corridor refused to publish anything unapproved and offered no way to
+ * approve, so the only routes to a public page were a standing policy or the
+ * Owner writing to D1 by hand — and writing to D1 by hand is precisely what
+ * the Owner must never have to do. The safeguard was never "nobody can
+ * approve"; it was "an assistant cannot approve its own work", and that is
+ * enforced here by the credential rather than by the absence of a door.
+ */
+async function approve(body, caller, env) {
+  const row = await loadRecord(body.record_id, env);
+  if (!row) return { status: 404, body: { error: "NOT_FOUND" } };
+  if (row.status === "APPROVED") {
+    return { status: 200, body: { record: present(row), already: true } };
+  }
+  if (!TRANSITIONS.approve.includes(row.status)) {
+    return { status: 409, body: { error: "NOT_APPROVABLE", status: row.status } };
+  }
+  const at = now();
+  await d1(
+    `UPDATE editorial_records
+        SET status='APPROVED', approved_by='owner', approval_mode='EXPLICIT',
+            approved_at=?2, updated_at=?2
+      WHERE record_id=?1`,
+    [row.record_id, at], env,
+  );
+  await logEvent({
+    record_id: row.record_id, action: "approve", from: row.status, to: "APPROVED",
+    /* actor is the Owner because the Owner decided; adapter records which
+       surface carried the decision. */
+    actor: "owner", adapter: caller, approval_mode: "EXPLICIT",
+  }, env);
+  return {
+    status: 200,
+    body: { record: present(await loadRecord(row.record_id, env)), approval_mode: "EXPLICIT" },
+  };
 }
 
 async function unpublish(body, caller, env) {
@@ -616,6 +690,8 @@ const HANDLERS = {
   create_draft: createDraft,
   update_draft: updateDraft,
   get_preview: getPreview,
+  submit_review: submitReview,
+  approve: approve,
   publish_approved: publishApproved,
   unpublish: unpublish,
   archive: archive,
@@ -661,6 +737,15 @@ module.exports = async function handler(req, res) {
   if (body === null) return send(400, { error: "MALFORMED_JSON" });
   const action = body.action;
   if (!ACTIONS.includes(action)) return send(400, { error: "UNKNOWN_ACTION", allowed: ACTIONS });
+
+  /* THE ONE PRIVILEGE BOUNDARY. Checked here, before anything is read or
+     written, so no handler has to remember it. */
+  if (OWNER_ONLY_ACTIONS.includes(action) && caller !== "owner") {
+    return send(403, {
+      error: "OWNER_CREDENTIAL_REQUIRED",
+      detail: "approval requires the Owner credential; an assistant cannot approve editorial work",
+    });
+  }
 
   try {
     /* RATE LIMIT, from the audit log itself rather than a second counter that

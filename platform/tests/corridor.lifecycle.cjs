@@ -128,4 +128,47 @@ const P = (label, r, pick) => console.log(String(label).padEnd(34), r.status, pi
   console.log("=== 12. no secret anywhere in any response ===");
   const dump = JSON.stringify(r.body);
   console.log("write token leaked:", dump.includes("W")&&dump.includes("CF_D1")?"CHECK":"no", "| corridor token leaked:", dump.includes("claude-tok")?"LEAK":"no");
+
+  /* ── THE OWNER'S OWN APPROVAL ROUTE ──────────────────────────────────────
+     Everything above published under a standing policy. This proves the other
+     route: the Owner approving a specific record explicitly, with no policy in
+     force, and an assistant being unable to do the same thing. A second
+     record, so the narrative above is untouched. */
+  console.log("=== 13. explicit Owner approval, no standing policy in force ===");
+  process.env.CORRIDOR_STANDING_POLICY="[]";
+  process.env.CORRIDOR_TOKEN_OWNER="owner-tok";
+  r = await call("claude-tok", { action:"create_draft", type:"LESSON",
+    title:"Reading a System Before Changing It", summary:"What to look at first.",
+    description:"A lesson on inspection before intervention." });
+  if(!r.body.record){console.log("owner-route draft failed:",r.status,JSON.stringify(r.body));process.exit(1);}
+  const id2 = r.body.record.record_id;
+  P("create_draft (LESSON->learn)", r, b=>`${b.record.identity} type=${b.record.type} status=${b.record.status}`);
+
+  r = await call("claude-tok", { action:"submit_review", record_id:id2 });
+  P("submit_review (claude)", r, b=>`status=${b.record.status}`);
+  if (r.body.record.status !== "REVIEW") { console.log("expected REVIEW"); process.exit(1); }
+
+  console.log("=== 14. an assistant CANNOT approve — the credential refuses ===");
+  for (const tok of ["claude-tok", "chatgpt-tok"]) {
+    r = await call(tok, { action:"approve", record_id:id2 });
+    P(`approve as ${tok}`, r, b=>`${b.error}`);
+    if (r.status !== 403) { console.log("EXPECTED 403 for an assistant approving"); process.exit(1); }
+  }
+  console.log("status after assistant attempts:", db.prepare("SELECT status FROM editorial_records WHERE record_id=?").get(id2).status);
+
+  console.log("=== 15. the Owner approves, then publish needs no policy ===");
+  r = await call("owner-tok", { action:"approve", record_id:id2, idempotency_key:"k-appr-1" });
+  P("approve (owner)", r, b=>`status=${b.record.status} mode=${b.approval_mode}`);
+  if (r.body.record.status !== "APPROVED") { console.log("expected APPROVED"); process.exit(1); }
+  r = await call("claude-tok", { action:"publish_approved", record_id:id2 });
+  P("publish_approved (claude)", r, b=>`mode=${b.approval_mode} url=${b.public_url}`);
+  if (r.status !== 200 || r.body.approval_mode !== "EXPLICIT") { console.log("expected an EXPLICIT publication"); process.exit(1); }
+  r = await call("owner-tok", { action:"get_record", record_id:id2 });
+  r.body.history.forEach(h=>console.log(`     ${h.action.padEnd(17)} ${String(h.from_status).padEnd(11)}-> ${String(h.to_status).padEnd(11)} actor=${h.actor} adapter=${h.adapter} mode=${h.approval_mode||"-"}`));
+  const approval = r.body.history.find(h=>h.action==="approve");
+  if (!approval || approval.actor !== "owner" || approval.approval_mode !== "EXPLICIT") {
+    console.log("the audit trail must record the Owner as the approver"); process.exit(1);
+  }
+  if (JSON.stringify(r.body).includes("owner-tok")) { console.log("OWNER TOKEN LEAKED"); process.exit(1); }
+  console.log("owner token leaked: no");
 })();

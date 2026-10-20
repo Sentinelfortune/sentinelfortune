@@ -23,14 +23,20 @@ presented becomes the `created_by` and `adapter` in the audit trail.
 | `CF_D1_WRITE_TOKEN` | **every corridor operation** |
 | `CORRIDOR_TOKEN_CLAUDE` | Claude's bearer credential |
 | `CORRIDOR_TOKEN_CHATGPT` | ChatGPT's bearer credential — a *different* value |
-| `CORRIDOR_STANDING_POLICY` | optional; absent means every publish needs Owner approval |
+| `CORRIDOR_TOKEN_OWNER` | the Owner's own credential — a *third* value, the only one that may `approve` |
+| `CORRIDOR_STANDING_POLICY` | optional; absent means every publish needs an explicit Owner approval |
 
-Until the two `CORRIDOR_TOKEN_*` values exist the endpoint answers `401` to
+Until the `CORRIDOR_TOKEN_*` values exist the endpoint answers `401` to
 everything. That is the correct closed default, not a fault.
+
+Generate each as an opaque high-entropy string (e.g. `openssl rand -hex 32`)
+and set it as a **sensitive** production variable. A sensitive value cannot be
+read back from Vercel afterwards, so keep your own copy: the assistant
+connector needs the value, and the dashboard will not give it to you twice.
 
 ## Actions
 
-All eight take `{"action": "<name>", ...}`. Add `"idempotency_key"` to any
+All ten take `{"action": "<name>", ...}`. Add `"idempotency_key"` to any
 write and a retry returns the first result instead of acting twice.
 
 ### create_draft
@@ -77,6 +83,8 @@ eighth world. A governed type may also be given directly, with an `identity`.
 |---|---|---|
 | `update_draft` | `record_id` + any of `title`, `summary`, `body` | bumps `version` |
 | `get_preview` | `record_id` | returns `preview_url`, and `public_url` only once published |
+| `submit_review` | `record_id` | `DRAFT → REVIEW`; any caller may ask |
+| `approve` | `record_id` | `REVIEW → APPROVED`. **Owner credential only** — `403 OWNER_CREDENTIAL_REQUIRED` for an assistant token |
 | `publish_approved` | `record_id` | `409 OWNER_REVIEW_REQUIRED` unless APPROVED or covered by standing policy |
 | `unpublish` | `record_id` | returns a `rollback_reference` |
 | `archive` | `record_id` | refused while PUBLISHED — unpublish first |
@@ -85,8 +93,9 @@ eighth world. A governed type may also be given directly, with an `identity`.
 
 ## What the corridor refuses
 
-- **Publishing unapproved work.** `REVIEW → APPROVED` is not reachable through
-  this API at all. An assistant cannot approve its own writing.
+- **Publishing unapproved work.** `REVIEW → APPROVED` is reachable only with
+  the Owner's own credential. An assistant cannot approve its own writing —
+  enforced by the credential, before the record is even read.
 - **Selling.** `pricing_tier` is pinned to `FREE` by a database constraint and
   no action writes a price. Paid work goes through House of Assets.
 - **An eighth world.** `identity` is checked here and again by a D1 CHECK.
@@ -99,10 +108,15 @@ eighth world. A governed type may also be given directly, with an `identity`.
 
 **ChatGPT** — add a custom action / connector pointing at the URL above, auth
 type Bearer, with `CORRIDOR_TOKEN_CHATGPT` as the token. One operation
-(`POST /api/corridor`) covers all eight actions via the `action` field.
+(`POST /api/corridor`) covers every action via the `action` field.
 
 **Claude** — the same endpoint as a connector with the same Bearer scheme,
 using `CORRIDOR_TOKEN_CLAUDE`.
+
+**The Owner** — approving is a decision, not a drafting step, so give
+`CORRIDOR_TOKEN_OWNER` to whichever surface you want to approve from and keep
+it out of both assistant connectors. Assistants draft and submit; you approve;
+then anyone may publish what you approved.
 
 Neither assistant receives a Cloudflare token, a D1 database id, or any
 infrastructure credential. They get one URL and one bearer value, and the
