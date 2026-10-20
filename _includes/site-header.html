@@ -13,6 +13,15 @@
     </button>
 
     <nav class="sf-nav" id="sfNav" aria-label="Primary">
+      {%- comment -%}
+        ONE COMPANY — the Experience Hub. An ABSOLUTE url, not `relative_url`:
+        the Hub is a different surface on its own hostname, served by the
+        Vercel platform project, and this site is not being migrated into it.
+        The two implementations stay separate and talk through URLs. It leads
+        the menu because discovery is the first thing a visitor wants and the
+        catalogue below it is the second.
+      {%- endcomment -%}
+      <a class="sf-nav-onecompany" href="https://onecompany.sentinelfortune.com/" rel="noopener">One Company</a>
       <a href="{{ '/products/' | relative_url }}"{% if page.url == '/products/' %} aria-current="page"{% endif %}>Products</a>
       <a href="{{ '/shop/' | relative_url }}">Shop</a>
       <a href="{{ '/software/' | relative_url }}"{% if page.url == '/software/' %} aria-current="page"{% endif %}>Software</a>

@@ -58,6 +58,9 @@ export const CTA_KINDS = Object.freeze([
  *  somebody else's domain, in front of the public. */
 export const ALLOWED_DESTINATION_HOSTS = Object.freeze([
   "sentinelfortune.com",
+  /* The ONE COMPANY Experience Hub. A governed CTA may send a visitor to the
+     discovery gateway, and every world's footer links back to it. */
+  "onecompany.sentinelfortune.com",
   "sentinelfortunerecords.sentinelfortune.com",
   "codexworldtv.sentinelfortune.com",
   "lumengame.sentinelfortune.com",

@@ -121,10 +121,28 @@ test("the platform's readiness matches the institutional site's _data/identities
   }
 });
 
-test("on the Owner's current data no world may be linked publicly", () => {
+test("on the Owner's current data a world is publicly linked ONLY when it is LIVE", () => {
+  /* This replaced an assertion that NO world may be linked, which was a
+     snapshot of the Owner's data rather than a rule — it had to fail the first
+     time a world was legitimately published, which tells you nothing. The rule
+     is what matters, and it holds whatever the flags say: a world is reachable
+     from a public Hub exactly when its own readiness reached LIVE, and the
+     destination is then its canonical hostname, never an internal route. */
+  const linked = [];
   for (const b of allBranches()) {
     const state = worldState(b);
-    assert.equal(worldHref(b, state, { preview: false }), null, `${b.slug} must not be publicly linked while ${state}`);
+    const href = worldHref(b, state, { preview: false });
+    if (state === "LIVE") {
+      assert.equal(href, `https://${b.host}/`, `${b.slug} is LIVE and must link to its canonical hostname`);
+      linked.push(b.slug);
+    } else {
+      assert.equal(href, null, `${b.slug} must not be publicly linked while ${state}`);
+    }
+  }
+  /* Whatever is linked today, it is a strict subset of what passed validation.
+     A world cannot appear here on a raised flag alone. */
+  for (const slug of linked) {
+    assert.equal(BRANCHES[slug].readiness.experienceReady, true, `${slug} is linked without experienceReady`);
   }
 });
 
@@ -249,7 +267,11 @@ test("the homepage defines no price, tier or checkout of its own", () => {
 test("the company homepage declares its own canonical host and share image", () => {
   /* Without a host, seo.js builds the WebSite node from `branch.host` and
      emits a literal "https://undefined/" — which it did until this existed. */
-  assert.equal(HUB.host, "sentinelfortune.com");
+  /* onecompany, NOT the apex. The apex is the institutional site; the Hub is
+     the discovery gateway. Two surfaces claiming one canonical would put the
+     gateway in the index competing with the company's authority page. */
+  assert.equal(HUB.host, "onecompany.sentinelfortune.com");
+  assert.notEqual(HUB.host, "sentinelfortune.com", "the Hub must not claim the institutional canonical");
   assert.ok(HUB.shareImage.startsWith("/assets/"), HUB.shareImage);
   /* JPEG, not WebP: several social crawlers still refuse WebP. */
   assert.match(HUB.shareImage, /\.jpg$/);

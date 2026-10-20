@@ -38,7 +38,7 @@ import { priceState, ctaState, byType, splitByCost } from "./commerce.js";
 import { newestRecords, featuredRecords } from "./rails.js";
 import { cover, roleCover, heroBackdrop } from "./visual.js";
 import { ratioFor } from "./renderers.js";
-import { HUB, orderedBranches, worldState, STATE_LABEL } from "./identities.js";
+import { HUB, orderedBranches, worldState, STATE_LABEL, addressLive } from "./identities.js";
 
 /* ─────────────────────────────────────────────────────────────────────────
    DESTINATIONS
@@ -53,6 +53,25 @@ export function worldHref(cfg, state, { preview = false } = {}) {
   if (state === "LIVE") return `https://${cfg.host}/`;
   if (state === "HUB") return `/i/${cfg.slug}/`;
   return preview ? `/i/${cfg.slug}/` : null;
+}
+
+/**
+ * The explicit PREVIEW control's destination — a world's real HTTPS hostname.
+ *
+ * Separate from `worldHref` on purpose. `worldHref` decides whether the WHOLE
+ * BOARD becomes a link, which is a statement that the world is open; this
+ * decides whether a small, plainly labelled control may take someone to the
+ * address for a look. The two answer different questions and must not share a
+ * gate — collapsing them is how "the hostname resolves" quietly becomes "this
+ * world is ready for business".
+ *
+ * Returns null when the board is already a link to that same hostname, so a
+ * LIVE world never renders a redundant control, and null when the address does
+ * not resolve, so this can never produce a dead link.
+ */
+export function worldPreviewHref(cfg, state) {
+  if (state === "LIVE") return null;
+  return addressLive(cfg) ? `https://${cfg.host}/` : null;
 }
 
 /** The institutional site and the Shop. Absolute, governed, never invented. */
@@ -303,6 +322,7 @@ function worldBoard(cfg, records, preview) {
   const state = worldState(cfg);
   const href = worldHref(cfg, state, { preview });
   const open = Boolean(href);
+  const previewHref = worldPreviewHref(cfg, state);
 
   /* The board's visual. A world with published content shows its newest
      artwork; a world without shows its own generated field, which is a
@@ -332,12 +352,32 @@ function worldBoard(cfg, records, preview) {
             h("span.sf-board-arrow", { "aria-hidden": "true", text: "→" }),
           ])
         : h("span.sf-board-state", { text: STATE_LABEL[state] }),
-      /* A preview route is reachable, and says so. This is how the seven can
-         be walked for validation without one public link pointing at an
-         experience the Owner has not surfaced. */
+      /* THE PREVIEW AFFORDANCE, IN ITS TWO FORMS.
+         The state badge above is untouched either way: a world in build still
+         says "In build". Being able to go and look is not being told the world
+         is finished.
+
+         A LABEL, when the board is already an anchor. On a preview host every
+         world is walkable via /i/<slug>/, and the board must still say that
+         route is a preview — but it cannot contain a second anchor, so this is
+         a span, exactly as it always was.
+
+         A LINK, when the board is inert. This is the Owner's explicit control:
+         it opens the world's own verified https hostname from a public Hub
+         while the card goes on stating BUILD. A LIVE board gets neither — the
+         whole board already points at that same address. */
       open && state !== "LIVE" && state !== "HUB"
-        ? h("span.sf-board-preview", { text: "Preview" })
-        : null,
+        ? h("span.sf-board-preview.sf-board-preview--label", { text: "Preview" })
+        : !open && previewHref
+          ? h("a.sf-board-preview", {
+              href: previewHref,
+              rel: "noopener",
+              "aria-label": `Preview ${cfg.name} — opens ${cfg.host}`,
+            }, [
+              "Preview",
+              h("span.sf-board-arrow", { "aria-hidden": "true", text: "↗" }),
+            ])
+          : null,
     ]),
   ];
 

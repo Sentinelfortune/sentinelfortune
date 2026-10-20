@@ -216,9 +216,25 @@ function renderShell(cfg, body, linksOverride = null) {
           }),
           h("p.sf-foot-job", { text: cfg.job }),
         ]),
+        /* THE WAY BACK OUT — four DISTINCT places, not four names for one.
+           Each surface keeps its own authority and none is a competing
+           homepage:
+             Sentinel Fortune   institutional company authority (Jekyll)
+             One Company        the Experience Hub / discovery gateway
+             Public site        the existing GitHub Pages catalogue surface
+             Digital Shop       the existing commerce surface, preserved
+           "Public site" is NOT labelled as the institutional site: they are
+           different things, and calling the catalogue the company would
+           misrepresent both. The Shop link stays on GitHub Pages on purpose —
+           commerce authority is not being moved or duplicated.
+           The One Company link is omitted on the Hub itself, because a
+           surface should not offer a link to where you already are. */
         h("nav.sf-foot-nav", { "aria-label": "Sentinel Fortune" }, [
           h("a", { href: "https://sentinelfortune.com/", rel: "noopener", text: "Sentinel Fortune" }),
-          h("a", { href: "https://sentinelfortune.github.io/sentinelfortune/", rel: "noopener", text: "Public hub" }),
+          cfg.slug === HUB.slug
+            ? null
+            : h("a", { href: `https://${HUB.host}/`, rel: "noopener", text: "One Company" }),
+          h("a", { href: "https://sentinelfortune.github.io/sentinelfortune/", rel: "noopener", text: "Public site" }),
           h("a", { href: "https://sentinelfortune.github.io/sentinelfortune/shop/", rel: "noopener", text: "Digital Shop" }),
         ]),
         h("p.sf-foot-note", {

@@ -52,10 +52,21 @@
 # address that does not resolve. Raising a flag out of order is ignored, and
 # the identity renders one step down.
 #
-# ONLY THE OWNER RAISES A FLAG. `subdomainLive` additionally requires DNS that
-# does not exist today: as of this writing NONE of the seven subdomains is
-# registered, configured or serving, so `subdomainLive` is false everywhere and
-# nothing in this repository may link to those addresses.
+# ONLY THE OWNER RAISES A FLAG.
+#
+# DNS STATUS CHANGED ON 2026-10-19. All seven subdomains now resolve and serve
+# over HTTPS: seven explicit Cloudflare CNAMEs to cname.vercel-dns.com, all
+# bound to the ONE Vercel `platform` project, with the Identity Router choosing
+# the world from the request hostname. `subdomainLive` is therefore true
+# everywhere, because that is the fact the flag records.
+#
+# IT CHANGES ALMOST NOTHING, AND THAT IS THE POINT. Six identities still have
+# `experienceReady: false` and a failing `gates.substance`, so for them
+# `subdomainLive` sits above an unraised `hubVisible`, the nesting rule ignores
+# it, and they keep rendering inert. A hostname that serves is not an
+# experience that is ready; conflating the two is the exact mistake this
+# three-dimensional contract exists to make unexpressible. Only
+# lumenschoolacademy has all three raised in order, and only it is LIVE.
 #
 # `gates` records WHY each identity sits where it does. It is evidence, not
 # decoration — the note is what a later reader needs to re-check the claim.
@@ -94,7 +105,10 @@
   readiness:
     experienceReady: false
     hubVisible: false
-    subdomainLive: false
+    # True as a fact about DNS, and deliberately ahead of hubVisible: the
+    # nesting rule therefore IGNORES it and this identity stays inert. See the
+    # header — a serving address is not a validated experience.
+    subdomainLive: true
   gates:
     substance: fail
     substance_note: >-
@@ -140,7 +154,10 @@
   readiness:
     experienceReady: false
     hubVisible: false
-    subdomainLive: false
+    # True as a fact about DNS, and deliberately ahead of hubVisible: the
+    # nesting rule therefore IGNORES it and this identity stays inert. See the
+    # header — a serving address is not a validated experience.
+    subdomainLive: true
   gates:
     substance: fail
     substance_note: >-
@@ -184,7 +201,10 @@
   readiness:
     experienceReady: false
     hubVisible: false
-    subdomainLive: false
+    # True as a fact about DNS, and deliberately ahead of hubVisible: the
+    # nesting rule therefore IGNORES it and this identity stays inert. See the
+    # header — a serving address is not a validated experience.
+    subdomainLive: true
   gates:
     substance: pass
     substance_note: >-
@@ -244,10 +264,15 @@
     # 360 and 768, honest claims, SEO, no subdomain link, and no regression on
     # the other six houses.
     experienceReady: true
-    # NOT raised. hubVisible is the Owner's to set; the nesting rule means the
-    # Public Hub keeps rendering this identity inert until they do.
-    hubVisible: false
-    subdomainLive: false
+    # RAISED by the Owner for the Experience Hub decision of 2026-10-19. This
+    # is the only identity where the flag can take effect, because it is the
+    # only one whose experience has passed G1+G2+G3.
+    hubVisible: true
+    # lumenschoolacademy.sentinelfortune.com is serving over HTTPS, verified by
+    # the Owner on 2026-10-19 after the seven hostnames were bound to the one
+    # platform project. With all three raised in order, this identity is LIVE
+    # and the Hub links to its canonical hostname rather than an internal route.
+    subdomainLive: true
   gates:
     substance: pass
     substance_note: >-
@@ -302,7 +327,10 @@
   readiness:
     experienceReady: false
     hubVisible: false
-    subdomainLive: false
+    # True as a fact about DNS, and deliberately ahead of hubVisible: the
+    # nesting rule therefore IGNORES it and this identity stays inert. See the
+    # header — a serving address is not a validated experience.
+    subdomainLive: true
   gates:
     substance: fail
     substance_note: >-
@@ -349,7 +377,10 @@
   readiness:
     experienceReady: false
     hubVisible: false
-    subdomainLive: false
+    # True as a fact about DNS, and deliberately ahead of hubVisible: the
+    # nesting rule therefore IGNORES it and this identity stays inert. See the
+    # header — a serving address is not a validated experience.
+    subdomainLive: true
   gates:
     substance: fail
     substance_note: >-
@@ -399,7 +430,10 @@
   readiness:
     experienceReady: false
     hubVisible: false
-    subdomainLive: false
+    # True as a fact about DNS, and deliberately ahead of hubVisible: the
+    # nesting rule therefore IGNORES it and this identity stays inert. See the
+    # header — a serving address is not a validated experience.
+    subdomainLive: true
   gates:
     substance: fail
     substance_note: >-

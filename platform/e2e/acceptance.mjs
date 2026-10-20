@@ -16,6 +16,37 @@ const ROOT = process.argv[2] || new URL("..", import.meta.url).pathname;
 const PORT = Number(process.env.PORT || 8899);
 const CHROME = process.env.PLAYWRIGHT_CHROMIUM_PATH || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
+/* SENTINEL FORTUNE HOSTNAMES THAT ACTUALLY RESOLVE.
+ *
+ * This harness is deliberately black-box — it drives a browser and imports
+ * nothing from engine/ — so this list is declared here rather than derived.
+ * That makes it a CHECKLIST, not a bypass: adding a host is an assertion that
+ * the address resolves over HTTPS, and a link to any sentinelfortune.com
+ * subdomain missing from it fails the run. That is what caught the explore
+ * link while explore had no DNS record.
+ *
+ * Verified by the Owner over HTTPS, and by Vercel reporting
+ * `misconfigured: false` with `acceptedChallenges: ["http-01"]` for each. */
+const LIVE_SF_HOSTS = [
+  "onecompany.sentinelfortune.com",          // the ONE COMPANY Experience Hub
+  "sentinelfortunerecords.sentinelfortune.com",
+  "codexworldtv.sentinelfortune.com",
+  "lumengame.sentinelfortune.com",
+  "lumenschoolacademy.sentinelfortune.com",
+  "vibraflowmedia.sentinelfortune.com",
+  "lightnodesystems.sentinelfortune.com",
+  "oglegacystore.sentinelfortune.com",
+  "floor.sentinelfortune.com",               // a separate tool, not a world
+];
+
+/* Everything an emitted link may point at off-origin: the live hostnames
+ * above, the institutional apex, and the existing public site / Shop. */
+const ALLOWED_OFF_ORIGIN = [
+  ...LIVE_SF_HOSTS,
+  "sentinelfortune.com",
+  "sentinelfortune.github.io",
+];
+
 const MIME = {
   ".html": "text/html", ".css": "text/css", ".js": "text/javascript",
   ".mjs": "text/javascript", ".json": "application/json", ".svg": "image/svg+xml",
@@ -418,14 +449,12 @@ for (const b of BRANCHES) {
   const absolute = await page.$$eval("a[href]", (as) => as.map((a) => a.href));
   /* Every emitted href is either same-origin (the harness host) or an https
      address on an allowed public host. Nothing else may appear. */
-  const offOrigin = await page.evaluate(() =>
-    [...document.querySelectorAll("a[href]")]
-      .map((a) => a.href)
-      .filter((hv) => !hv.startsWith(window.location.origin))
-      /* floor.sentinelfortune.com is a SEPARATE Vercel application, not a
-         world: it is linked from Lumen School Academy and bound to its own
-         project. It is an allowed public host; it is not part of the seven. */
-      .filter((hv) => !/^https:\/\/(sentinelfortune\.com|floor\.sentinelfortune\.com|sentinelfortune\.github\.io)\//.test(hv)));
+  /* Filtered HERE, in Node, not inside page.evaluate: the allowlist is a
+     harness constant and does not exist in the page's scope. */
+  const origin = await page.evaluate(() => window.location.origin);
+  const offOrigin = absolute
+    .filter((hv) => !hv.startsWith(origin))
+    .filter((hv) => !ALLOWED_OFF_ORIGIN.some((host) => hv.startsWith(`https://${host}/`)));
   check("15. every off-origin link is an allowed public https address", offOrigin.length === 0, offOrigin.join(", "));
   /* Check the HOSTNAME, not the whole string: one fixture's slug is literally
      "localhost-destination", and a slug that contains the word is not a local
@@ -439,13 +468,13 @@ for (const b of BRANCHES) {
       /* The test server itself is on localhost; that is the harness, not the app. */
       .filter((hv) => !hv.startsWith(window.location.origin)));
   check("    no hardcoded local URL emitted by the engine", rawLocal.length === 0, rawLocal.join(", "));
-  /* The guard still catches a link to any WORLD subdomain, because a world is
-     reachable only once the Owner raises its readiness and the engine — not a
-     hand-written href — decides that. `floor.` is exempt by name rather than
-     by loosening the pattern: it is a separate application bound to its own
-     Vercel project, so any OTHER unexpected subdomain link is still caught. */
-  const subdomainLinks = absolute.filter((hv) => /\/\/[a-z]+\.sentinelfortune\.com/.test(hv))
-    .filter((hv) => !/\/\/floor\.sentinelfortune\.com/.test(hv));
+  /* The guard's real question is "does this address resolve", so it now tests
+     membership of LIVE_SF_HOSTS rather than banning subdomains outright. A
+     link to any sentinelfortune.com subdomain NOT on that list still fails —
+     which is what caught the explore link before its record existed. */
+  const subdomainLinks = absolute
+    .filter((hv) => /\/\/[a-z0-9-]+\.sentinelfortune\.com/.test(hv))
+    .filter((hv) => !LIVE_SF_HOSTS.some((host) => hv.startsWith(`https://${host}/`)));
   check("    no link to an inactive subdomain", subdomainLinks.length === 0, subdomainLinks.join(", "));
 
   check("    no page errors", errors.length === 0, errors.slice(0, 3).join(" | "));

@@ -73,6 +73,19 @@ export function isCanonicalHost(hostname = "") {
  * Owner has not surfaced.
  */
 export const HUB_PUBLIC_HOSTS = Object.freeze([
+  /* THE CANONICAL EXPERIENCE HUB — "ONE COMPANY". The Owner's architecture
+     separates three surfaces that must never claim one another's authority:
+       sentinelfortune.com             institutional company authority
+       onecompany.sentinelfortune.com  the Experience Hub / worlds gateway
+       sentinelfortune.github.io       the existing public site and Shop entry
+     This host must be listed here or the Hub would treat its own canonical
+     address as a preview — offering preview affordances and the development
+     identity picker to the public. */
+  "onecompany.sentinelfortune.com",
+  /* Retained, not promoted. The apex serves the institutional Jekyll site; it
+     stays on this list so that if the platform is ever reached there it still
+     behaves as production rather than a preview. The Hub's canonical is
+     onecompany (see HUB.host). */
   "sentinelfortune.com",
   "www.sentinelfortune.com",
   "sentinelfortune.github.io",

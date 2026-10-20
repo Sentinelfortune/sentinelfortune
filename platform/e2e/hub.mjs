@@ -262,16 +262,49 @@ const pub = await p3.evaluate(SCRAPE);
 
 check("the homepage serves on its own canonical host", pub.engine && pub.engine.surface === "HUB");
 check("all seven worlds are still visible publicly", pub.boards.length === 7, `${pub.boards.length}`);
-check("NOT ONE unsurfaced world is a link",
-  pub.boards.filter((b) => b.tag === "A").length === 0,
-  pub.boards.filter((b) => b.tag === "A").map((b) => b.world).join(" ") || "zero anchors");
-check("each unsurfaced world states its honest state instead",
-  pub.boards.every((b) => Boolean(b.stateBadge)), pub.boards.map((b) => b.stateBadge).join(" | "));
-check("the Academy reads READY, the other six read In build",
-  pub.boards.find((b) => b.world === "lumenschoolacademy").stateBadge === "Ready — not yet published"
-  && pub.boards.filter((b) => b.stateBadge === "In build").length === 6);
-check("no preview affordance leaks onto a public host",
-  pub.boards.every((b) => b.preview === false));
+/* These three asserted the SHAPE OF THE OWNER'S DATA — zero anchors, and the
+   Academy reading "Ready — not yet published". They had to fail the first time
+   a world was legitimately published, which is a guard that cries wolf. They
+   now assert the RULE, which holds whatever the flags say: a world is an
+   anchor exactly when it is LIVE, an anchor always points at that world's own
+   canonical https hostname, and anything not an anchor says why in words. */
+const liveBoards = pub.boards.filter((b) => b.tag === "A");
+const inertBoards = pub.boards.filter((b) => b.tag !== "A");
+check("every world that IS a link points at its own canonical https hostname",
+  liveBoards.length > 0
+  && liveBoards.every((b) => b.href === `https://${b.world}.sentinelfortune.com/`),
+  liveBoards.map((b) => `${b.world}→${b.href}`).join(" ") || "no world is linked");
+check("every world that is NOT a link states its honest state instead",
+  inertBoards.every((b) => Boolean(b.stateBadge)),
+  inertBoards.map((b) => `${b.world}:${b.stateBadge}`).join(" | ") || "none inert");
+check("no world is a link without having been surfaced",
+  liveBoards.every((b) => !b.stateBadge || b.stateBadge === "Live"),
+  liveBoards.map((b) => `${b.world}:${b.stateBadge}`).join(" | "));
+/* THE OWNER REVERSED THIS RULE DELIBERATELY, so the check is replaced rather
+   than deleted. It used to assert that no preview affordance may appear on a
+   public host. The standing decision is that each world card carries an
+   explicit PREVIEW control opening that world's own verified https hostname —
+   navigation availability is not a claim of commercial readiness — while the
+   card goes on stating its honest BUILD state. The guard that matters now is
+   that the control cannot point ANYWHERE ELSE, and that the state badge did
+   not quietly disappear along with the old rule. */
+const pubPreview = await p3.evaluate(() =>
+  [...document.querySelectorAll(".sf-board")].map((el) => ({
+    world: el.dataset.world,
+    state: el.dataset.state,
+    badge: el.querySelector(".sf-board-state") ? el.querySelector(".sf-board-state").textContent.trim() : null,
+    href: el.querySelector("a.sf-board-preview") ? el.querySelector("a.sf-board-preview").getAttribute("href") : null,
+  })));
+const needControl = pubPreview.filter((b) => b.state !== "LIVE");
+check("every world that is not LIVE offers a PREVIEW control on a public host",
+  needControl.length > 0 && needControl.every((b) => b.href),
+  needControl.map((b) => `${b.world}:${b.href}`).join(" "));
+check("each PREVIEW control opens that world's OWN canonical https hostname",
+  needControl.every((b) => b.href === `https://${b.world}.sentinelfortune.com/`),
+  needControl.map((b) => `${b.world}→${b.href}`).join(" "));
+check("a PREVIEW control never replaces the world's honest state",
+  needControl.every((b) => Boolean(b.badge)),
+  needControl.map((b) => `${b.world}:${b.badge}`).join(" | "));
 check("no localhost link on the public host",
   pub.allHrefs.filter((h) => /localhost|127\.0\.0\.1/.test(h)).length === 0);
 check("no console error on the public host", e3.length === 0, e3.slice(0, 2).join(" | "));

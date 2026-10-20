@@ -240,7 +240,13 @@ a:hover { text-decoration: underline; }
   margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);
   display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
 }
-.sf-card-foot .sf-btn { min-height: 40px; padding: 9px 17px; font-size: .62rem; }
+/* 44px, not 40. At exactly 40 this sat ON the mobile tap-target threshold, so
+   sub-pixel rounding decided whether the acceptance check passed — it failed
+   intermittently, which is worse than failing, because a flaky guard teaches
+   you to re-run instead of to look. 44 is the conventional minimum and the
+   size .sf-nav-a and .sf-burger already use; the padding stays compact so the
+   card footer still reads as a footer. */
+.sf-card-foot .sf-btn { min-height: 44px; padding: 9px 17px; font-size: .62rem; }
 
 /* ── chips ───────────────────────────────────────────────────────────── */
 .sf-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -800,8 +806,9 @@ Black appears inside media treatment only. A world bends this frame through
 .sf-board--open:hover .sf-board-arrow { transform: translateX(4px); }
 @media (prefers-reduced-motion: reduce) { .sf-board-arrow { transition: none; } }
 
-/* An unreachable world states its state. It is not a disabled button, because
-   it is not a link at all — there is nothing to click and nothing to mislead. */
+/* A world that is not OPEN still states its state — "In build" stays "In
+   build". The board itself is not a link, so the claim is never overstated;
+   the Preview control below is a separate, explicitly labelled way in. */
 .sf-board-state {
   display: inline-block;
   font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
@@ -813,14 +820,44 @@ Black appears inside media treatment only. A world bends this frame through
   margin-top: 8px;
   align-self: flex-start;
 }
+/* THE PREVIEW CONTROL. It was a passive badge; it is now a real link to the
+   world's own hostname, so it has to look and behave like something you press
+   and reach by keyboard — a 44px target, its own focus ring, and the ↗ that
+   says it leaves this page. It carries the world's accent rather than --gold
+   so each card still reads as its own house. */
 .sf-board-preview {
-  display: inline-block; align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  min-height: 44px; padding: 8px 15px; margin-top: 10px;
   font-size: .66rem; letter-spacing: .14em; text-transform: uppercase;
   font-family: var(--brand);
-  color: var(--bg); background: var(--board-accent, var(--accent));
-  border-radius: 3px; padding: 3px 8px; margin-top: 8px;
+  color: var(--board-accent, var(--accent));
+  background: transparent;
+  border: 1px solid var(--board-accent, var(--accent));
+  border-radius: var(--radius);
+  transition: background-color .15s ease;
 }
+.sf-board-preview:hover {
+  background: var(--board-accent, var(--accent));
+  color: var(--bg);
+  text-decoration: none;
+}
+.sf-board-preview:focus-visible {
+  outline: 2px solid var(--board-accent, var(--accent)); outline-offset: 3px;
+}
+/* The LABEL form — a span, used where the board is already an anchor and a
+   nested link would be invalid. It is not pressable, so it keeps the original
+   flat badge look rather than borrowing the button's affordances. */
+.sf-board-preview--label {
+  min-height: 0; padding: 3px 8px; margin-top: 8px;
+  color: var(--bg); background: var(--board-accent, var(--accent));
+  border: 0; border-radius: 3px;
+}
+.sf-board-preview--label:hover { color: var(--bg); background: var(--board-accent, var(--accent)); }
+
+/* The inert board is slightly held back, but NOT the control inside it: a
+   dimmed link is the thing that reads as disabled when it is not. */
 .sf-board--inert { opacity: .92; }
+.sf-board--inert .sf-board-preview { opacity: 1; }
 .sf-board--open:focus-visible { outline: 2px solid var(--board-accent, var(--accent)); outline-offset: 3px; }
 
 /* ── D · featured experiences ─────────────────────────────────────────── */
