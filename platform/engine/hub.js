@@ -33,7 +33,7 @@
  *   H  Work with us          B2B, outcomes first
  */
 
-import { h, section, emptyState } from "./ui.js";
+import { h, section, emptyState, demoBadge } from "./ui.js";
 import { priceState, ctaState, byType, splitByCost } from "./commerce.js";
 import { newestRecords, featuredRecords } from "./rails.js";
 import { cover, roleCover, heroBackdrop } from "./visual.js";
@@ -416,6 +416,7 @@ function sectionD(accepted, preview) {
           [roleCover(record, record.identity, "VALUE", { ratio: "16 / 9", width: 480, height: 270 })]),
         h("div.sf-exp-in", null, [
           h("p.sf-exp-do", { text: doingVerb(record.type) }),
+          demoBadge(record),
           h("h3.sf-exp-t", { text: record.title }),
           h("p.sf-exp-world", { text: cfg ? cfg.name : record.identity }),
         ]),
@@ -454,6 +455,7 @@ function sectionE(accepted, preview) {
           [roleCover(record, record.identity, "DISCOVERY", { ratio: "3 / 2", width: 420, height: 280 })]),
         h("div.sf-know-in", null, [
           h("p.sf-know-kind", { text: `${typeWord(record.type)} · ${cfg ? cfg.name : record.identity}` }),
+          demoBadge(record),
           h("h3.sf-know-t", { text: record.title }),
           record.summary ? h("p.sf-know-sum", { text: record.summary }) : null,
           /* FREE is stated only when the governed price state says FREE. An
@@ -512,6 +514,7 @@ function sectionF(accepted) {
           [cover(record, record.identity, { ratio: "1 / 1", width: 400, height: 400 })]),
         h("div.sf-prod-in", null, [
           h("p.sf-prod-kind", { text: typeWord(record.type) }),
+          demoBadge(record),
           h("h3.sf-prod-t", { text: record.title }),
           h("p.sf-prod-price", { text: money.label }),
           h("a.sf-btn.sf-btn--primary", {

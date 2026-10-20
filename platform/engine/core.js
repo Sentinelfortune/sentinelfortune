@@ -215,6 +215,16 @@ export function normalize(record) {
     pricingTier: record.pricingTier === "FREE" || record.pricingTier === "PAID" ? record.pricingTier : null,
     cta: normalizeCta(record.cta),
     featured: record.featured === true,
+    /* IS THIS A REAL ARTEFACT, OR A FIXTURE?
+       The global "test content" banner used to carry this truth for the whole
+       catalogue, which meant production could not stop looking like a draft
+       without the site quietly claiming fixtures were real. The claim moves
+       here, per record, so it can be told accurately item by item.
+       The default FAILS SAFE: absence of `realArtefact: true` means demo. A
+       new record cannot be promoted to real by forgetting a field — the same
+       reason `evidence` treats anything that is not literally LIVE as
+       preview. */
+    demo: record.realArtefact !== true,
     categories: Object.freeze(stringList(record.categories)),
     collections: Object.freeze(stringList(record.collections)),
     bundleMembership: Object.freeze(stringList(record.bundleMembership)),

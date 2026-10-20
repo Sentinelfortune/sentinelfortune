@@ -199,6 +199,7 @@
     },
     {
       "id": "real-rec-003",
+      "realArtefact": true,
       "publishedAt": "2026-08-20T09:00:00Z",
       "slug": "s5-ascent-lite",
       "identity": "lumengame",
@@ -232,6 +233,7 @@
     },
     {
       "id": "real-rec-004",
+      "realArtefact": true,
       "publishedAt": "2026-10-15T09:00:00Z",
       "slug": "floor",
       "identity": "lumenschoolacademy",

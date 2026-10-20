@@ -101,14 +101,37 @@ export function errorState({ detail, onRetry = null } = {}) {
   ]);
 }
 
-/** The preview banner. Visible on every page while the feed is not LIVE, so a
- *  fixture can never be mistaken for real inventory. */
+/**
+ * The environment banner — for NON-PRODUCTION hosts only.
+ *
+ * It used to render wherever the feed was not LIVE, which meant the public
+ * production ecosystem described itself as a draft. A global draft banner is
+ * the wrong instrument for that: it says nothing about any particular item
+ * while making everything look provisional.
+ *
+ * The truth did not get dropped, it got moved. `demoBadge` carries it per
+ * record, so a fixture is still marked a fixture on a production host and a
+ * real artefact is no longer tarred with it. This banner now says only what
+ * it can honestly say globally: which ENVIRONMENT you are looking at.
+ */
 export function previewNotice(generatedAt) {
   return h("div.sf-preview", { role: "note" }, [
-    h("strong", { text: "Preview" }),
-    " — this catalogue is test content, not real inventory. Nothing here is for sale.",
+    h("strong", { text: "Preview environment" }),
+    " — not the public production site. Items marked Demo are fixtures, not real inventory.",
     generatedAt ? h("span.sf-preview-at", { text: ` Feed generated ${generatedAt}.` }) : null,
   ]);
+}
+
+/**
+ * ITEM-LEVEL TRUTH. A record that has not declared itself a real artefact is
+ * labelled, on every host including production, wherever it appears.
+ *
+ * This is what makes removing the global banner honest rather than merely
+ * tidier: the claim becomes narrower and more accurate at the same time.
+ */
+export function demoBadge(record) {
+  if (!record || record.demo !== true) return null;
+  return h("span.sf-demo", { title: "Example content — not real inventory", text: "Demo" });
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -193,6 +216,7 @@ export function recordCard(record, href, { badge = null, meta = null, identity =
       [cover(record, identity || record.identity, { ratio, eager })]),
     h("div.sf-card-body", null, [
       badge ? h("p.sf-card-badge", { text: badge }) : null,
+      demoBadge(record),
       h("h3.sf-card-title", null, [h("a", { href, text: record.title })]),
       record.summary ? h("p.sf-card-sum", { text: record.summary }) : null,
       meta ? h("p.sf-card-meta", { text: meta }) : null,

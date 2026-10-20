@@ -180,7 +180,16 @@ function renderShell(cfg, body, linksOverride = null) {
 
   clear(app()).append(
     h("a.sf-skip", { href: "#main", text: "Skip to content" }),
-    STATE.evidence !== "LIVE" ? previewNotice(STATE.generatedAt) : null,
+    /* THE GLOBAL BANNER IS NOW ENVIRONMENT-SCOPED, NOT FEED-SCOPED.
+       It appears on a preview deployment, a staging host or a local server —
+       never on a public production host. Production states the same truth
+       where it actually belongs: on each item, via demoBadge. A live public
+       ecosystem must not describe itself as a draft, and a fixture must not
+       be able to pass as real inventory; those are two requirements and they
+       need two different mechanisms. */
+    STATE.evidence !== "LIVE" && !isPublicHost(window.location.hostname)
+      ? previewNotice(STATE.generatedAt)
+      : null,
     h("header.sf-head", null, [
       h("div.sf-head-in", null, [
         h("a.sf-brand", { href: links.home() }, [

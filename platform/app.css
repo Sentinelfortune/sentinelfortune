@@ -203,6 +203,18 @@ a:hover { text-decoration: underline; }
 /* A refused action is a sentence, never a dead button. */
 .sf-cta-note { color: var(--ink-soft); font-size: .86rem; font-style: italic; }
 
+/* ITEM-LEVEL TRUTH, carried on production where the global draft banner used
+   to be. Deliberately quiet — it marks one item as an example, it is not a
+   warning about the site — but legible enough that nobody mistakes a fixture
+   for real inventory. */
+.sf-demo {
+  display: inline-block; align-self: flex-start;
+  font-family: var(--brand); font-size: .6rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 3px 9px; margin-bottom: 6px;
+}
+
 /* ── price ───────────────────────────────────────────────────────────── */
 .sf-price { font-family: var(--brand); font-size: .9rem; letter-spacing: .04em; display: flex; align-items: baseline; gap: 9px; }
 .sf-price-now { color: var(--ink); }

@@ -20,7 +20,7 @@
  *   BUNDLE        -> what is inside, and one price. You buy it.
  */
 
-import { h, priceTag, ctaButton, actionRow, section, cardGrid, emptyState } from "./ui.js";
+import { h, priceTag, ctaButton, actionRow, section, cardGrid, emptyState, demoBadge } from "./ui.js";
 import { relatedTo, bundlesContaining, priceState } from "./commerce.js";
 import { cover, hasGovernedImage } from "./visual.js";
 
@@ -73,6 +73,7 @@ function detailFrame(record, { kicker, body, aside = null }, ctx) {
         [cover(record, record.identity, { ratio, eager: true, width: 900, height: 900 })]),
       h("header.sf-detail-head", null, [
         h("p.sf-kicker", { text: kicker }),
+        demoBadge(record),
         h("h1.sf-detail-title", { text: record.title }),
         record.summary ? h("p.sf-detail-sum", { text: record.summary }) : null,
         actionRow(record),
