@@ -31,7 +31,18 @@
  */
 
 const FEED_SCHEMA = "sf.public-site/1.0";
-const DEFAULT_FEED_URL = "/feed/public-site.json";
+/* THE GOVERNED DYNAMIC SOURCE, FIRST. `/api/feed` serves PUBLISHED records
+   from the Editorial Corridor's D1 database merged over the static base, so a
+   conversation-originated publication reaches a world without a commit.
+   The static file remains in the repository as the fallback and the rollback:
+   if the endpoint is unconfigured or D1 is unreachable it answers 503, and
+   `loadFeed` drops to STATIC_FEED_URL rather than showing an empty catalogue.
+   A degraded read path must never look like a world with nothing in it. */
+/** The only systems allowed to author a public feed. Closed set. */
+const GOVERNED_SOURCES = Object.freeze(["HOUSE_OF_ASSETS", "EDITORIAL_CORRIDOR"]);
+
+const DEFAULT_FEED_URL = "/api/feed";
+const STATIC_FEED_URL = "/feed/public-site.json";
 
 /* ─────────────────────────────────────────────────────────────────────────
    ENVELOPE
@@ -52,9 +63,18 @@ export function readEnvelope(payload) {
   if (payload.schema !== FEED_SCHEMA) {
     problems.push(`schema is ${JSON.stringify(payload.schema)}, expected ${JSON.stringify(FEED_SCHEMA)}`);
   }
+  /* TWO GOVERNED WRITE PATHS, AND ONLY TWO.
+     House of Assets is the commercial source of truth; the Editorial Corridor
+     is the free-editorial path and deliberately does NOT pass through it. So
+     the envelope has to name both — the alternative was an endpoint that
+     claimed to be House of Assets in order to pass validation, which is the
+     kind of small lie that destroys the value of having a source block at all.
+     The set stays CLOSED: any other system is still refused. */
   const src = payload.source;
   if (!src || typeof src !== "object") problems.push("source block is missing");
-  else if (src.system !== "HOUSE_OF_ASSETS") problems.push(`source.system is ${JSON.stringify(src.system)}, expected "HOUSE_OF_ASSETS"`);
+  else if (!GOVERNED_SOURCES.includes(src.system)) {
+    problems.push(`source.system is ${JSON.stringify(src.system)}, expected one of ${GOVERNED_SOURCES.join(", ")}`);
+  }
 
   if (!Array.isArray(payload.records)) problems.push("records is not an array");
 
@@ -90,8 +110,30 @@ export function readEnvelope(payload) {
  * Never throws. Returns `{ ok: false, error }` so the caller renders an honest
  * error state instead of a blank page and a console trace.
  */
+/**
+ * Load the feed, preferring the governed dynamic source.
+ *
+ * When no explicit `url` is given this tries `/api/feed` and, if that attempt
+ * does not yield a usable envelope, falls back ONCE to the static file. The
+ * fallback is deliberately broad — network error, 503, bad JSON, bad envelope
+ * all take it — because every one of those failure shapes has the same right
+ * answer: serve the catalogue that is known to be in the repository.
+ *
+ * An explicit `url` is never second-guessed. The tests and the e2e harnesses
+ * pass one, and silently redirecting a caller's chosen source would make the
+ * harness stop testing what it names.
+ */
 export async function loadFeed({ url, fetchImpl, cache = "no-store" } = {}) {
-  const target = url || DEFAULT_FEED_URL;
+  if (!url) {
+    const dynamic = await fetchFeed(DEFAULT_FEED_URL, fetchImpl, cache);
+    if (dynamic.ok) return { ...dynamic, feedSource: "DYNAMIC" };
+    const fallback = await fetchFeed(STATIC_FEED_URL, fetchImpl, cache);
+    return { ...fallback, feedSource: fallback.ok ? "STATIC_FALLBACK" : "NONE", dynamicError: dynamic.error };
+  }
+  return fetchFeed(url, fetchImpl, cache);
+}
+
+async function fetchFeed(target, fetchImpl, cache) {
   const doFetch = fetchImpl || (typeof fetch === "function" ? fetch : null);
   if (!doFetch) return { ok: false, records: [], error: "NO_FETCH", detail: "no fetch implementation available" };
 
@@ -125,4 +167,4 @@ export async function loadFeed({ url, fetchImpl, cache = "no-store" } = {}) {
   };
 }
 
-export { FEED_SCHEMA, DEFAULT_FEED_URL };
+export { FEED_SCHEMA, DEFAULT_FEED_URL, STATIC_FEED_URL };

@@ -19,7 +19,7 @@ import {
   featured, byType, categoryIndex, collectionIndex, splitByCost, search,
 } from "../engine/commerce.js";
 import { resolveIdentity, resolveView, links, canonicalUrl, isCanonicalHost, canonicalHosts } from "../engine/router.js";
-import { readEnvelope, loadFeed, FEED_SCHEMA } from "../engine/feed.js";
+import { readEnvelope, loadFeed, FEED_SCHEMA, DEFAULT_FEED_URL, STATIC_FEED_URL } from "../engine/feed.js";
 import { BRANCHES, HOST_MAP, allBranches } from "../engine/identities.js";
 import { rendererFor, rendererName } from "../engine/renderers.js";
 
@@ -578,5 +578,75 @@ describe("fixtures — every identity has governed evidence", () => {
     /* Ownership by problem domain: Floor is a business tool and belongs to the
        education/business house, not to the technical one. */
     assert.equal(floor.identity, "lumenschoolacademy");
+  });
+});
+
+/* ─────────────────────────────────────────────────────────────────────────
+   DYNAMIC FEED SOURCE + STATIC FALLBACK
+
+   The public feed moved from a repo-static file to the Editorial Corridor's
+   D1 database behind /api/feed. The fallback is the part that must not be
+   taken on trust: if it breaks, a world shows an empty catalogue rather than
+   the records that are sitting in the repository.
+   ───────────────────────────────────────────────────────────────────────── */
+
+describe("feed — dynamic source with static fallback", () => {
+  const envelope = {
+    schema: "sf.public-site/1.0",
+    evidence: "TEST_PREVIEW",
+    source: { system: "EDITORIAL_CORRIDOR", generated_at: "2026-10-20T06:34:00Z" },
+    records: [{
+      id: "t1", slug: "t1", identity: "vibraflowmedia", type: "TEACHING", title: "T",
+      pricingTier: "FREE", media: [], publicationStatus: "PUBLIC_SITE",
+      publicReadiness: { approved: true, withheld: false },
+    }],
+  };
+  const ok = (body) => ({ ok: true, status: 200, json: async () => body });
+  const fail = (status) => ({ ok: false, status, json: async () => ({}) });
+
+  test("prefers the dynamic source when it answers", async () => {
+    const seen = [];
+    const r = await loadFeed({ fetchImpl: async (u) => { seen.push(u); return ok(envelope); } });
+    assert.equal(r.ok, true);
+    assert.equal(r.feedSource, "DYNAMIC");
+    assert.deepEqual(seen, [DEFAULT_FEED_URL]);
+  });
+
+  test("falls back to the static file on 503, and says which source served", async () => {
+    const seen = [];
+    const r = await loadFeed({ fetchImpl: async (u) => { seen.push(u); return u === DEFAULT_FEED_URL ? fail(503) : ok(envelope); } });
+    assert.equal(r.ok, true);
+    assert.equal(r.feedSource, "STATIC_FALLBACK");
+    assert.deepEqual(seen, [DEFAULT_FEED_URL, STATIC_FEED_URL]);
+    assert.equal(r.records.length, 1);
+  });
+
+  test("falls back when the dynamic source answers with unusable JSON", async () => {
+    const r = await loadFeed({ fetchImpl: async (u) =>
+      u === DEFAULT_FEED_URL ? { ok: true, status: 200, json: async () => { throw new Error("not json"); } } : ok(envelope) });
+    assert.equal(r.ok, true);
+    assert.equal(r.feedSource, "STATIC_FALLBACK");
+  });
+
+  test("falls back when the dynamic source throws outright", async () => {
+    const r = await loadFeed({ fetchImpl: async (u) => {
+      if (u === DEFAULT_FEED_URL) throw new Error("network down");
+      return ok(envelope);
+    } });
+    assert.equal(r.ok, true);
+    assert.equal(r.feedSource, "STATIC_FALLBACK");
+  });
+
+  test("when BOTH sources fail it reports failure rather than an empty catalogue", async () => {
+    const r = await loadFeed({ fetchImpl: async () => fail(500) });
+    assert.equal(r.ok, false);
+    assert.equal(r.feedSource, "NONE");
+    assert.equal(r.records.length, 0);
+  });
+
+  test("an explicit url is never silently redirected", async () => {
+    const seen = [];
+    await loadFeed({ url: "/custom/feed.json", fetchImpl: async (u) => { seen.push(u); return ok(envelope); } });
+    assert.deepEqual(seen, ["/custom/feed.json"]);
   });
 });
