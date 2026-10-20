@@ -38,10 +38,6 @@
 
 const CF_API = "https://api.cloudflare.com/client/v4";
 
-const IDENTITIES = [
-  "sentinelfortunerecords", "codexworldtv", "lumengame", "lumenschoolacademy",
-  "vibraflowmedia", "lightnodesystems", "oglegacystore",
-];
 
 /* The engine's closed type set. A type with no renderer is refused at the
    door rather than becoming a record nothing can display. */
@@ -63,12 +59,72 @@ const TRANSITIONS = {
   archive:          ["DRAFT", "REVIEW", "APPROVED", "UNPUBLISHED"],
 };
 
-/* Each world's public path segment, for the preview and published URLs. */
-const SEGMENT = {
-  sentinelfortunerecords: "release", codexworldtv: "story", lumengame: "play",
-  lumenschoolacademy: "learn", vibraflowmedia: "reflect",
-  lightnodesystems: "system", oglegacystore: "drop",
+/* Each world's public path segment and the governed types it accepts, mirrored
+ * from engine/identities.js. Two of these segments were WRONG in the first
+ * version — "system" for lightnodesystems (it is "systems") and "drop" for
+ * oglegacystore (it is "offer") — so every published URL for those two worlds
+ * would have been a 404 handed back to the caller as a success. */
+const WORLDS = {
+  sentinelfortunerecords: { segment: "release", types: ["MUSIC_RELEASE", "PODCAST", "BUNDLE"] },
+  codexworldtv:           { segment: "story",   types: ["STORY", "BOOK", "BUNDLE"] },
+  lumengame:              { segment: "play",    types: ["GAME", "BUNDLE"] },
+  lumenschoolacademy:     { segment: "learn",   types: ["COURSE", "BOOK", "SOFTWARE", "PODCAST", "BUNDLE"] },
+  vibraflowmedia:         { segment: "reflect", types: ["TEACHING", "BOOK", "PODCAST", "BUNDLE"] },
+  lightnodesystems:       { segment: "systems", types: ["SOFTWARE", "COURSE", "BOOK", "BUNDLE"] },
+  oglegacystore:          { segment: "offer",   types: ["BUNDLE", "BOOK", "SOFTWARE", "MUSIC_RELEASE", "GAME", "STORY", "TEACHING"] },
 };
+
+/**
+ * EDITORIAL TYPE NAMES, mapped onto the governed types that already exist.
+ *
+ * The Owner speaks in editorial terms — a LESSON, a TECHNICAL_NOTE, a
+ * GAME_UPDATE. The engine has a CLOSED type set because each type maps to
+ * exactly one renderer, and inventing five more types would mean inventing
+ * five more renderers: new architecture, which this mission forbids.
+ *
+ * So the editorial vocabulary is an ALIAS LAYER, resolved here at the door.
+ * Nothing downstream learns a new type, no renderer is added, and a request
+ * phrased the natural way still lands in the right world with a type that
+ * already knows how to display itself.
+ */
+const EDITORIAL_TYPES = {
+  TEACHING:             { type: "TEACHING",      identity: "vibraflowmedia" },
+  REFLECTION:           { type: "TEACHING",      identity: "vibraflowmedia" },
+  ARTICLE:              { type: "TEACHING",      identity: "vibraflowmedia" },
+  LESSON:               { type: "COURSE",        identity: "lumenschoolacademy" },
+  TECHNICAL_NOTE:       { type: "SOFTWARE",      identity: "lightnodesystems" },
+  STORY:                { type: "STORY",         identity: "codexworldtv" },
+  EDITORIAL_EPISODE:    { type: "PODCAST",       identity: "vibraflowmedia" },
+  MUSIC_RELEASE_NOTE:   { type: "MUSIC_RELEASE", identity: "sentinelfortunerecords" },
+  GAME_UPDATE:          { type: "GAME",          identity: "lumengame" },
+  EDITORIAL_COLLECTION: { type: "BUNDLE",        identity: "oglegacystore" },
+  ANNOUNCEMENT:         { type: "TEACHING",      identity: "vibraflowmedia" },
+  FREE_EBOOK:           { type: "BOOK",          identity: "vibraflowmedia" },
+};
+
+/** Hosts a governed media or attachment URL may point at. Mirrors
+ *  ALLOWED_DESTINATION_HOSTS in engine/core.js. A src outside this set is
+ *  REFUSED here rather than silently dropped later by normalizeMedium — a
+ *  caller that supplied a cover image deserves to be told it was rejected. */
+/** Derived from WORLDS so the two can never disagree about how many worlds
+ *  there are. There are seven, and an eighth is not expressible. */
+const IDENTITIES = Object.keys(WORLDS);
+
+const ALLOWED_MEDIA_HOSTS = [
+  "sentinelfortune.com", "onecompany.sentinelfortune.com", "floor.sentinelfortune.com",
+  "sentinelfortune.github.io",
+  ...Object.keys(WORLDS).map((slug) => `${slug}.sentinelfortune.com`),
+];
+
+function governedSrc(value) {
+  if (typeof value !== "string" || !value) return null;
+  if (value.startsWith("/") && !value.startsWith("//")) return value;
+  let url;
+  try { url = new URL(value); } catch { return null; }
+  if (url.protocol !== "https:") return null;
+  if (!ALLOWED_MEDIA_HOSTS.includes(url.hostname)) return null;
+  return url.toString();
+}
 
 const RATE_LIMIT_PER_HOUR = 60;
 
@@ -152,7 +208,7 @@ function slugify(value) {
 }
 
 function publicUrl(record) {
-  const seg = SEGMENT[record.identity];
+  const seg = WORLDS[record.identity].segment;
   return `https://${record.identity}.sentinelfortune.com/${seg}/${record.slug}`;
 }
 
@@ -180,7 +236,13 @@ function present(row) {
     unpublished_at: row.unpublished_at,
     rollback_of: row.rollback_of,
     updated_at: row.updated_at,
+    body: typeof payload.body === "string" ? payload.body : (row.description || ""),
     media: Array.isArray(payload.media) ? payload.media : [],
+    cover_image: (Array.isArray(payload.media) ? payload.media : []).find((m) => m.role === "ATTENTION") || null,
+    inline_images: (Array.isArray(payload.media) ? payload.media : []).filter((m) => m.kind === "IMAGE" && m.role !== "ATTENTION"),
+    media_refs: (Array.isArray(payload.media) ? payload.media : []).filter((m) => m.kind !== "IMAGE"),
+    attachments: Array.isArray(payload.attachments) ? payload.attachments : [],
+    editorial_type: (payload.metadata && payload.metadata.editorial_type) || null,
     categories: Array.isArray(payload.categories) ? payload.categories : [],
     collections: Array.isArray(payload.collections) ? payload.collections : [],
     cta: payload.cta || null,
@@ -205,24 +267,159 @@ async function logEvent(e, env) {
 
 /* ── the actions ───────────────────────────────────────────────────────── */
 
+/**
+ * Resolve the editorial request into a governed (identity, type) pair.
+ *
+ * An editorial alias may carry its own destination, so "publish this teaching"
+ * needs no identity at all. An explicit identity always wins over the alias's
+ * default — the Owner naming a world is not a suggestion.
+ *
+ * NOTHING IS GUESSED. If the pair does not resolve, or the world does not
+ * accept that type, the request is refused with the choices named. Publishing
+ * into the wrong world silently is the one outcome this must never produce.
+ */
+function resolveDestination(body) {
+  const alias = typeof body.type === "string" ? EDITORIAL_TYPES[body.type] : null;
+  const identity = body.identity || (alias && alias.identity) || null;
+  const type = alias ? alias.type : body.type;
+
+  /* THE TYPE IS CHECKED FIRST, and the order matters. A request carrying an
+     unrecognised type and no identity used to be told DESTINATION_REQUIRED,
+     which sent the caller hunting for an identity when the actual mistake was
+     the type — a correct refusal pointing at the wrong thing. */
+  if (!TYPES.includes(type)) {
+    return {
+      error: "UNKNOWN_TYPE",
+      requested_type: body.type === undefined ? null : body.type,
+      governed_types: TYPES,
+      editorial_types: Object.keys(EDITORIAL_TYPES),
+    };
+  }
+  if (!identity) {
+    return { error: "DESTINATION_REQUIRED", detail: "give an identity, or a type that implies one", identities: IDENTITIES };
+  }
+  if (!IDENTITIES.includes(identity)) {
+    return { error: "UNKNOWN_IDENTITY", identities: IDENTITIES };
+  }
+  if (!WORLDS[identity].types.includes(type)) {
+    /* The world exists and the type exists, but this world does not present
+       this type — it has no rail for it, so the record would be invisible.
+       Refusing is kinder than publishing something nobody can reach. */
+    return {
+      error: "TYPE_NOT_ACCEPTED_BY_WORLD",
+      detail: `${identity} presents ${WORLDS[identity].types.join(", ")}`,
+      requested_type: type,
+    };
+  }
+  return { identity, type, editorial_type: alias ? body.type : null };
+}
+
+/**
+ * Build the governed media list and the action from the editorial fields.
+ *
+ * `cover_image` becomes the ATTENTION medium, `inline_images` become VALUE
+ * media, `media_refs` carry audio and video. Every src is checked HERE: the
+ * engine's own normalizer silently DROPS a medium whose src is not governed,
+ * which for a caller who supplied a cover image is indistinguishable from
+ * having supplied nothing. A refusal names the offending URL instead.
+ */
+function buildMedia(body) {
+  const media = [];
+  const rejected = [];
+
+  const add = (src, kind, role, alt, poster) => {
+    const governed = governedSrc(src);
+    if (!governed) { rejected.push(src); return; }
+    media.push({ kind, role, src: governed, alt: String(alt || ""), ...(poster ? { poster } : {}) });
+  };
+
+  if (body.cover_image) {
+    const c = typeof body.cover_image === "string" ? { src: body.cover_image } : body.cover_image;
+    add(c.src, "IMAGE", "ATTENTION", c.alt || c.alt_text);
+  }
+  for (const img of Array.isArray(body.inline_images) ? body.inline_images : []) {
+    const i = typeof img === "string" ? { src: img } : img;
+    add(i.src, "IMAGE", "VALUE", i.alt || i.alt_text);
+  }
+  for (const ref of Array.isArray(body.media_refs) ? body.media_refs : []) {
+    if (!ref || typeof ref !== "object") continue;
+    const kind = ["AUDIO", "VIDEO", "EMBED", "IMAGE"].includes(ref.kind) ? ref.kind : null;
+    if (!kind) { rejected.push(ref.src); continue; }
+    add(ref.src, kind, ref.role === "DISCOVERY" ? "DISCOVERY" : "VALUE", ref.alt || ref.alt_text, governedSrc(ref.poster) || undefined);
+  }
+  return { media, rejected };
+}
+
+/**
+ * A free attachment — a PDF, an ebook — becomes a governed DOWNLOAD action.
+ *
+ * It is NOT a new storage system and NOT a price. The file is referenced by a
+ * governed public URL, so there is no secret link to leak and no credential
+ * involved. Several attachments are recorded, and the first becomes the
+ * record's action, because a record has one action by design.
+ */
+function buildAttachments(body) {
+  const attachments = [];
+  const rejected = [];
+  for (const att of Array.isArray(body.attachments) ? body.attachments : []) {
+    const a = typeof att === "string" ? { src: att } : att;
+    if (!a || !a.src) continue;
+    const governed = governedSrc(a.src);
+    if (!governed) { rejected.push(a.src); continue; }
+    attachments.push({
+      src: governed,
+      title: String(a.title || "Download"),
+      format: String(a.format || "").toUpperCase() || null,
+      alt: String(a.alt || a.alt_text || ""),
+    });
+  }
+  return { attachments, rejected };
+}
+
 async function createDraft(body, caller, env) {
-  const identity = body.identity;
-  const type = body.type;
-  if (!IDENTITIES.includes(identity)) return { status: 400, body: { error: "UNKNOWN_IDENTITY" } };
-  if (!TYPES.includes(type)) return { status: 400, body: { error: "UNKNOWN_TYPE" } };
+  const dest = resolveDestination(body);
+  if (dest.error) return { status: 400, body: dest };
+  const { identity, type } = dest;
   if (!body.title || typeof body.title !== "string") return { status: 400, body: { error: "TITLE_REQUIRED" } };
 
   const slug = slugify(body.slug || body.title);
   if (!slug) return { status: 400, body: { error: "SLUG_UNRESOLVABLE" } };
   const recordId = body.record_id || `edl-${identity.slice(0, 3)}-${slug}`.slice(0, 120);
 
+  const { media, rejected: badMedia } = buildMedia(body);
+  const { attachments, rejected: badAttachments } = buildAttachments(body);
+  const bad = [...badMedia, ...badAttachments].filter(Boolean);
+  if (bad.length) {
+    return {
+      status: 400,
+      body: {
+        error: "UNGOVERNED_MEDIA_SRC",
+        detail: "every image, media reference and attachment must be site-relative or https on an allowed Sentinel Fortune host",
+        rejected: bad,
+        allowed_hosts: ALLOWED_MEDIA_HOSTS,
+      },
+    };
+  }
+
+  /* `body` is the editorial long form. It is stored intact AND mapped to the
+     record's `description`, which is what the detail renderer already shows —
+     so a structured body needs no new renderer to become readable prose. */
+  const prose = typeof body.body === "string" && body.body ? body.body : (body.description || "");
+
   const payload = {
-    media: Array.isArray(body.media) ? body.media : [],
+    body: prose,
+    media,
+    attachments,
     categories: Array.isArray(body.categories) ? body.categories : [],
     collections: Array.isArray(body.collections) ? body.collections : [],
     featured: body.featured === true,
-    cta: body.cta || { kind: "READ", label: "Read this", destination: `/${SEGMENT[identity]}/${slug}` },
-    metadata: { evidence: "CONVERSATION_ORIGINATED" },
+    cta: attachments.length
+      ? { kind: "DOWNLOAD", label: attachments[0].title, destination: attachments[0].src }
+      : (body.cta || { kind: "READ", label: "Read this", destination: `/${WORLDS[identity].segment}/${slug}` }),
+    metadata: {
+      evidence: "CONVERSATION_ORIGINATED",
+      ...(dest.editorial_type ? { editorial_type: dest.editorial_type } : {}),
+    },
   };
 
   /* The timestamp is passed twice as two distinct placeholders rather than
@@ -235,7 +432,7 @@ async function createDraft(body, caller, env) {
         (record_id, identity, slug, type, title, summary, description, pricing_tier,
          status, version, payload_json, created_by, source, created_at, updated_at)
        VALUES (?1,?2,?3,?4,?5,?6,?7,'FREE','DRAFT',1,?8,?9,'CONVERSATION',?10,?11)`,
-      [recordId, identity, slug, type, body.title, body.summary || "", body.description || "",
+      [recordId, identity, slug, type, body.title, body.summary || "", prose,
        JSON.stringify(payload), caller, stamp, stamp],
       env,
     );
@@ -291,7 +488,7 @@ async function getPreview(body, caller, env) {
       /* A preview is reachable on any host via the /i/ route, and is LABELLED
          a preview by the engine. The canonical url is given separately and
          only once the record is actually published. */
-      preview_url: `https://onecompany.sentinelfortune.com/i/${row.identity}/${SEGMENT[row.identity]}/${row.slug}`,
+      preview_url: `https://onecompany.sentinelfortune.com/i/${row.identity}/${WORLDS[row.identity].segment}/${row.slug}`,
       public_url: record.public_url,
       visible_publicly: row.status === "PUBLISHED",
     },
