@@ -1144,3 +1144,9 @@ available only to someone who can both see and hear.
 @media (min-width: 900px) {
   .sf-film { grid-template-columns: minmax(0, 1.55fr) minmax(260px, 1fr); gap: 30px; }
 }
+
+/* EN / FR reader switch for governed localized editorial. */
+.sf-lang { display:flex; align-items:center; gap:8px; margin:10px 0 4px; font-family:var(--brand); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; }
+.sf-lang a { color:var(--ink-soft); text-decoration:none; }
+.sf-lang a[aria-current="page"] { color:var(--gold); }
+.sf-lang span { color:var(--line); }
