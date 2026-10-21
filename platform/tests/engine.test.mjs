@@ -650,3 +650,55 @@ describe("feed — dynamic source with static fallback", () => {
     assert.deepEqual(seen, ["/custom/feed.json"]);
   });
 });
+
+/* ─────────────────────────────────────────────────────────────────────────
+   DEEP LINKS — THE HOSTING CONTRACT
+
+   Every route below `/` exists only because the host rewrites unknown paths
+   onto the one runtime file. That rewrite lives in vercel.json, which no other
+   test reads, so a config edit could — and did — take every deep link down
+   while all 100-odd runtime tests stayed green.
+
+   The specific defect these guard: with `cleanUrls: true` the host generates a
+   308 on `/…/index(.html)` ahead of the filesystem, so a rewrite whose
+   destination still carried `.html` sent every deep link back into that
+   redirect instead of serving the runtime. Vercel says it plainly — with
+   cleanUrls on, a destination must not carry a file extension — and nothing
+   here was checking.
+   ───────────────────────────────────────────────────────────────────────── */
+describe("hosting — deep links reach the one runtime", () => {
+  const VERCEL = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
+  const spa = VERCEL.rewrites.find((r) => r.source.includes("(?!"));
+
+  test("there is exactly one SPA fallback rewrite", () => {
+    assert.ok(spa, "no catch-all rewrite found in vercel.json");
+    assert.equal(VERCEL.rewrites.length, 1);
+  });
+
+  test("its destination carries no file extension while cleanUrls is on", () => {
+    if (VERCEL.cleanUrls !== true) return;        // the rule only binds then
+    assert.ok(!/\.[a-z0-9]+$/i.test(spa.destination),
+      `cleanUrls rewrites every /…/index(.html) away, so destination "${spa.destination}" cannot resolve`);
+  });
+
+  test("it carries every route the router can produce, and nothing served as a file", () => {
+    /* Compiled the way the host compiles it: the source is path-to-regexp
+       with one unnamed group, which becomes ^/(…)$. */
+    const re = new RegExp(`^${spa.source.replace(/^\//, "\\/")}$`);
+    const segments = allBranches().map((b) => b.segment);
+    assert.equal(new Set(segments).size, 7);
+
+    for (const seg of segments) {
+      assert.ok(re.test(`/${seg}/the-cost-of-an-unmade-decision`), `/${seg}/<slug> must reach the runtime`);
+    }
+    for (const route of ["/", "/browse", "/collections", "/c/Foundations", "/i/vibraflowmedia/reflect/x"]) {
+      assert.ok(re.test(route), `${route} must reach the runtime`);
+    }
+    /* And the paths that are real files or functions must NOT be swallowed —
+       /api/ above all, or the corridor and the feed become the homepage. */
+    for (const real of ["/api/feed", "/api/corridor", "/engine/boot.js", "/feed/public-site.json",
+                        "/assets/x.webp", "/app.css", "/robots.txt", "/sitemap.xml"]) {
+      assert.ok(!re.test(real), `${real} must never be rewritten to the runtime`);
+    }
+  });
+});

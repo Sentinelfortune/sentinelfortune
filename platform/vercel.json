@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/((?!api/|engine/|feed/|assets/|app\\.css|favicon|robots\\.txt|sitemap).*)",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
 
