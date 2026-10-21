@@ -18,7 +18,7 @@ import {
   priceState, ctaState, showsPrice, formatMoney, relatedTo, bundlesContaining,
   featured, byType, categoryIndex, collectionIndex, splitByCost, search,
 } from "../engine/commerce.js";
-import { resolveIdentity, resolveView, links, canonicalUrl, isCanonicalHost, canonicalHosts } from "../engine/router.js";
+import { resolveIdentity, resolveView, links, canonicalUrl, isCanonicalHost, canonicalHosts, isPreviewEnvironmentHost } from "../engine/router.js";
 import { readEnvelope, loadFeed, FEED_SCHEMA, DEFAULT_FEED_URL, STATIC_FEED_URL } from "../engine/feed.js";
 import { BRANCHES, HOST_MAP, allBranches } from "../engine/identities.js";
 import { rendererFor, rendererName } from "../engine/renderers.js";
@@ -373,6 +373,15 @@ describe("router — hostname resolves the identity", () => {
     assert.equal(isCanonicalHost("lumengame.sentinelfortune.com"), true);
     assert.equal(isCanonicalHost("sf.vercel.app"), false);
     assert.equal(isCanonicalHost("localhost"), false);
+  });
+
+  test("preview chrome appears only on explicit preview/local hosts", () => {
+    assert.equal(isPreviewEnvironmentHost("onecompany.sentinelfortune.com"), false);
+    assert.equal(isPreviewEnvironmentHost("vibraflowmedia.sentinelfortune.com"), false);
+    assert.equal(isPreviewEnvironmentHost("platform-eight-chi.vercel.app"), false);
+    assert.equal(isPreviewEnvironmentHost("platform-o2vhwf73z-sentinelfortunes-projects.vercel.app"), false);
+    assert.equal(isPreviewEnvironmentHost("platform-git-feature-public-ex-b5de69-sentinelfortunes-projects.vercel.app"), true);
+    assert.equal(isPreviewEnvironmentHost("localhost"), true);
   });
 });
 
