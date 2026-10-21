@@ -12,7 +12,7 @@ import { selectPublic, selectAllPublic } from "./core.js";
 import { loadFeed } from "./feed.js";
 import { branch, allBranches, HUB, worldState } from "./identities.js";
 import { renderHub, worldHref } from "./hub.js";
-import { resolveIdentity, resolveView, links as makeLinks, isCanonicalHost, isPublicHost } from "./router.js";
+import { resolveIdentity, resolveView, links as makeLinks, isCanonicalHost, isPublicHost, isPreviewEnvironmentHost } from "./router.js";
 import { applySeo, applyTheme } from "./seo.js";
 import { renderDetail } from "./renderers.js";
 import {
@@ -189,7 +189,7 @@ function renderShell(cfg, body, linksOverride = null) {
        ecosystem must not describe itself as a draft, and a fixture must not
        be able to pass as real inventory; those are two requirements and they
        need two different mechanisms. */
-    STATE.evidence !== "LIVE" && !isPublicHost(window.location.hostname)
+    STATE.evidence !== "LIVE" && isPreviewEnvironmentHost(window.location.hostname)
       ? previewNotice(STATE.generatedAt)
       : null,
     h("header.sf-head", null, [
@@ -253,7 +253,7 @@ function renderShell(cfg, body, linksOverride = null) {
         }),
         /* The development identity picker exists only off a canonical host, so
            it can never appear in front of the public. */
-        !isCanonicalHost(window.location.hostname) ? devPicker() : null,
+        isPreviewEnvironmentHost(window.location.hostname) ? devPicker() : null,
       ]),
     ]),
   );
@@ -321,7 +321,7 @@ async function bootHub() {
 
   /* Off a canonical host this is a preview, and the boards say so rather than
      pretending the worlds are published. */
-  const preview = !isPublicHost(window.location.hostname);
+  const preview = isPreviewEnvironmentHost(window.location.hostname);
 
   renderShell(HUB, renderHub({
     accepted,
