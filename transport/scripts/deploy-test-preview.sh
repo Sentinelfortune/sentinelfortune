@@ -73,7 +73,7 @@ echo "  wrangler $("$WRANGLER" --version 2>/dev/null | tail -1), node $NODE_MAJO
 
 # The bundle must build before anything is created in the account.
 say "2/6  Building the Worker (offline dry run) before touching the account"
-"$WRANGLER" deploy --dry-run --env="" --outdir "$(mktemp -d)" --config "$CONFIG" >/dev/null \
+"$WRANGLER" deploy --dry-run --outdir "$(mktemp -d)" --config "$CONFIG" >/dev/null \
   || die "the Worker does not build. Nothing was created. Fix the build first."
 echo "  builds cleanly."
 
@@ -143,9 +143,12 @@ put_secret SFL_CORRIDOR_OWNER_TOKEN_SHA256   "$CRED_DIR/OWNER.digest"
 # ─────────────────────────────────────────────────────────────────────────────
 say "6/6  Deploying in TEST_PREVIEW mode"
 
-# --env="" targets the top-level environment explicitly, so this can never be
-# mistaken for the production environment.
-DEPLOY_OUT="$("$WRANGLER" deploy --env="" --config "$CONFIG" 2>&1)"
+# No --env flag: wrangler then targets the top-level (TEST_PREVIEW) environment.
+# The production environment is reachable only with an explicit
+# `--env production`, which this script never passes. (`--env=""` was used
+# here before; wrangler 3.114 and 4.20 both REJECT it — "No environment found
+# in configuration with name \"\"" — so the script stopped at step 2/6.)
+DEPLOY_OUT="$("$WRANGLER" deploy --config "$CONFIG" 2>&1)"
 printf '%s\n' "$DEPLOY_OUT" | grep -vE 'SHA256|digest' || true
 
 BASE_URL="$(printf '%s' "$DEPLOY_OUT" | grep -oE 'https://[a-z0-9.-]+\.workers\.dev' | head -1 || true)"

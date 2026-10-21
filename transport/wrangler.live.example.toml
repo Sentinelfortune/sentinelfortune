@@ -1,0 +1,33 @@
+# Sentinel Fortune LLC — SFL Editorial API — LIVE persistence EXAMPLE
+#
+# THIS FILE IS AN EXAMPLE. Wrangler never reads it unless it is passed
+# explicitly with --config. It exists so the Durable Object configuration for
+# LIVE is reviewed in advance, not improvised on the day.
+#
+# Read transport/LIVE-PERSISTENCE.md before using it. In particular:
+#   - it still sets SFL_CORRIDOR_MODE = "TEST_PREVIEW". Switching to LIVE is a
+#     separate Owner decision AFTER this persistence has been validated
+#     remotely, and the corridor's Owner-approval gate applies regardless;
+#   - it uses a DIFFERENT Worker name so it can be validated side by side with
+#     the KV TEST_PREVIEW Worker, without replacing it;
+#   - it carries no secret. The three *_TOKEN_SHA256 digests are set with
+#     `wrangler secret put ... --config transport/wrangler.live.example.toml`.
+
+name = "sfl-editorial-api-ledger"
+main = "runtime/worker-live.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+[[durable_objects.bindings]]
+name = "EDITORIAL_LEDGER"
+class_name = "EditorialLedger"
+
+# SQLite-backed Durable Objects are available on the Workers Free plan.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["EditorialLedger"]
+
+[vars]
+SFL_CORRIDOR_MODE = "TEST_PREVIEW"
+SFL_CORRIDOR_TIMESTAMP_TOLERANCE_MS = "300000"
+SFL_CORRIDOR_REVOKED = ""

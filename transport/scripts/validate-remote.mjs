@@ -19,7 +19,7 @@
  * pass as the working credentials. Pass 1 reports it NOT_TESTED. To test it:
  *
  *   1. set  SFL_CORRIDOR_REVOKED = "CLIENT_CHATGPT"  in transport/wrangler.toml
- *   2. wrangler deploy --env="" --config transport/wrangler.toml
+ *   2. wrangler deploy --config transport/wrangler.toml
  *   3. node transport/scripts/validate-remote.mjs --revoked CLIENT_CHATGPT
  *   4. set it back to "" and deploy again
  *

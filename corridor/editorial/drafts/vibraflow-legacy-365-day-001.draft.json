@@ -1,0 +1,81 @@
+{
+  "schema": "sf.corridor-draft-package/1.0",
+  "packageId": "vibraflow-legacy-365-day-001",
+  "status": "DRAFT_ONLY",
+  "governance": {
+    "targetState": "DRAFT",
+    "publicationAuthorized": false,
+    "corridorMode": "TEST_PREVIEW",
+    "ownerApprovalRequired": true,
+    "rules": [
+      "This package may only be sent as PREPARE (create_draft) and PREVIEW. It must never be sent as PUBLISH.",
+      "Publication requires an explicit Owner approval naming this record and version, through /v1/owner/approve, and a deployment whose SFL_CORRIDOR_MODE is LIVE. Neither exists during this mission.",
+      "Pricing tier is FREE. No price, checkout link or commercial CTA is attached.",
+      "The English text is canonical. The French text is a distinct translation carried in translations.fr, never a second record.",
+      "No media is attached until the Owner supplies or approves it; the engine renders its deterministic PREMIUM_FALLBACK artwork meanwhile. No scraped or third-party imagery."
+    ],
+    "sourceOfText": "platform/editorial/chatgpt-manifests.json → manifests[\"legacy-365-day-001\"].record (copied verbatim; not rewritten)",
+    "translationParity": {
+      "enParagraphs": 47,
+      "frParagraphs": 44,
+      "note": "The French text omits three English paragraphs (\"If you believe responsibility matters…\", \"But ignorance of legal structure…\", and \"A person can transfer property…\" with \"The strongest legacy…\" condensed). Preserved as supplied; flagged for Owner editorial review — not completed by machine translation."
+    }
+  },
+  "visualPackage": {
+    "status": "PENDING_OWNER_ASSET",
+    "world": "vibraflowmedia",
+    "accent": "#d8c9a8",
+    "background": "#080e1d",
+    "heroBrief": {
+      "kind": "HERO",
+      "requiredSource": "OWNER_PROVIDED or GOVERNED_GENERATED",
+      "concept": "Two open hands receiving a small, warm light at dawn, a closed ledger and an old key resting nearby; quiet, unhurried, no text in the image.",
+      "aspect": "16:9 hero, 4:5 social crop, 1:1 thumbnail",
+      "altText": {
+        "en": "Two open hands receiving a small warm light at dawn beside a closed ledger and an old key",
+        "fr": "Deux mains ouvertes recevant une petite lumière chaude à l’aube, près d’un registre fermé et d’une vieille clé"
+      }
+    },
+    "socialCard": {
+      "en": {
+        "line1": "LEGACY 365 · DAY 001",
+        "line2": "You Were Not Given an Inheritance Merely to Possess It"
+      },
+      "fr": {
+        "line1": "LEGACY 365 · JOUR 001",
+        "line2": "Un héritage ne t'a pas été confié simplement pour que tu le possèdes"
+      }
+    },
+    "fallback": "Until an asset is approved, hero_media is null and the public engine uses its deterministic PREMIUM_FALLBACK artwork."
+  },
+  "prepareRequest": {
+    "operation": "PREPARE",
+    "instruction_id": "vfm-legacy-365-day-001-draft-v1",
+    "branch": "VIBRAFLOW_MEDIA",
+    "content_type": "TEACHING",
+    "title": "You Were Not Given an Inheritance Merely to Possess It",
+    "slug": "legacy-365-day-001-inheritance-to-responsibility",
+    "summary": "Legacy begins when possession becomes responsibility. Day 001 explores stewardship, law, finance, spiritual formation and the movement from inheritance to transmission.",
+    "body": "DAY 001 OF 365 — FOUNDATION\n\nOPENING MEDITATION\n\nThere is a difference between receiving something and becoming capable of carrying it.\n\nA child may receive an inheritance without understanding its weight. A mature son begins to ask different questions: What has been entrusted to me? Why was it placed in my hands? What must I preserve? What must I grow? What must never die with me?\n\nLegacy begins when possession becomes responsibility.\n\nMany people pray for increase, opportunity, influence, property, knowledge, business, relationships and resources. Yet increase without stewardship can become another form of loss. What enters an unprepared hand may disappear even when it arrived as a blessing.\n\nThe Father does not merely reveal what belongs to you. He forms the person who must carry it.\n\nTHE PRINCIPLE\n\nInheritance answers: What have I received?\nLegacy answers: What will remain because I received it?\n\nMoney can be inherited and disappear. A company can be inherited and collapse. Knowledge can be inherited and never taught. A name can be inherited and dishonored. A revelation can be received and never embodied.\n\nPossession alone does not complete inheritance.\n\nInheritance must pass through understanding, stewardship, multiplication and transmission before it becomes legacy.\n\nTHE SPIRITUAL LAW\n\nScripture repeatedly joins blessing with responsibility. In Matthew 25, what was entrusted was expected to be administered. The issue was not merely possession, but faithful stewardship.\n\nThis does not mean every blessing must become money. Multiplication may appear as wisdom transmitted, people developed, work completed, families strengthened, knowledge documented, institutions preserved, wrongs corrected, or resources protected for those who come after us.\n\nThe deeper question is: What is God expecting your stewardship to produce from what has entered your hands?\n\nFROM THE INVISIBLE TO THE VISIBLE\n\nSpiritual conviction should not become an excuse for neglecting the natural world.\n\nA conviction that never influences a decision has not completed its journey.\n\nBelief shapes character. Character influences decisions. Decisions repeated become discipline. Discipline produces action. Action creates structure. Structure produces results. Results, when preserved and transmitted, become legacy.\n\nFaith does not replace administration. Wisdom should improve administration.\n\nIf you believe responsibility matters, then your books, agreements, records, ownership, succession and operating habits should eventually reflect that belief.\n\nLEGACY AND LAW\n\nIf something matters, learn how it is legally held.\n\nWho owns the asset? Who controls it? What happens if the founder dies? Can another person sell it? Is the intellectual property documented? Does a verbal promise actually protect a family? Does the business survive the owner?\n\nThese are stewardship questions expressed in legal language.\n\nLegal systems differ by jurisdiction, so education must be separated from individualized legal advice. But ignorance of legal structure does not make structure irrelevant.\n\nLEGACY AND FINANCE\n\nRevenue is not legacy. Income is not legacy. Even wealth is not automatically legacy.\n\nFinancial legacy requires the ability to preserve productive value across time.\n\nThat means learning the difference between consumption and assets, revenue and profit, liquidity and net worth, ownership and access, leverage and destructive debt.\n\nThe mature question is no longer only: How much did I earn?\nIt becomes: What did those earnings build?\n\nTHE MYSTICAL REFLECTION\n\nAcross spiritual and philosophical traditions, inheritance has also carried symbolic meanings: name, memory, blessing, calling, lineage, covenant, wisdom and responsibility.\n\nThese ideas belong to spiritual and interpretive traditions; they should not be confused with scientific claims.\n\nBut the reflective question remains valuable: What invisible values are shaping the visible structures you are building?\n\nA person can transfer property while transmitting disorder. Another can leave modest property while transmitting discipline, wisdom, courage and structures that help later generations prosper.\n\nThe strongest legacy attempts to preserve both substance and spirit.\n\nLEGACY AUDIT — DAY 001\n\n1. What has entered my hands that did not begin with me?\n2. Which part of it am I merely consuming?\n3. Which part am I actively preserving?\n4. Which part am I multiplying?\n5. If I disappeared tomorrow, what knowledge, ownership or responsibility would become unclear?\n\nTODAY'S ACTION\n\nChoose one important asset in your life — spiritual, intellectual, relational, financial or commercial — and document how it is currently being preserved, developed and transmitted.\n\nPRAYER\n\nFather, give me wisdom to recognize what You have entrusted to me. Teach me to preserve what must be protected, cultivate what must grow, correct what is disordered, and transmit what should outlive me. Form in me the character required to carry responsibility with humility, discipline and love. Let what passes through my hands become a blessing beyond my lifetime. Amen.\n\nCLOSING THOUGHT\n\nYou do not honor an inheritance by admiring what was placed in your hands. You honor it by becoming the kind of person through whom it can survive, mature and bless another generation.\n\nREFLECT · GOVERN · BUILD · TRANSMIT",
+    "language": "en",
+    "translations": {
+      "fr": {
+        "title": "Un héritage ne t'a pas été confié simplement pour que tu le possèdes",
+        "summary": "Le legacy commence lorsque la possession devient responsabilité. Le Jour 001 explore l'intendance, le droit, la finance, la formation spirituelle et le passage de l'héritage à la transmission.",
+        "body": "JOUR 001 SUR 365 — FONDATION\n\nMÉDITATION D'OUVERTURE\n\nIl existe une différence entre recevoir quelque chose et devenir capable de le porter.\n\nUn enfant peut recevoir un héritage sans en comprendre le poids. Un fils mûr commence à poser d'autres questions : Qu'est-ce qui m'a été confié ? Pourquoi cela a-t-il été placé entre mes mains ? Que dois-je préserver ? Que dois-je faire croître ? Qu'est-ce qui ne doit jamais mourir avec moi ?\n\nLe legacy commence lorsque la possession devient responsabilité.\n\nBeaucoup prient pour l'augmentation, les opportunités, l'influence, les biens, la connaissance, les entreprises, les relations et les ressources. Pourtant, l'augmentation sans intendance peut devenir une autre forme de perte. Ce qui entre dans une main non préparée peut disparaître même si cela est arrivé comme une bénédiction.\n\nLe Père ne révèle pas seulement ce qui t'appartient. Il forme la personne qui doit être capable de le porter.\n\nLE PRINCIPE\n\nL'héritage répond : Qu'ai-je reçu ?\nLe legacy répond : Qu'est-ce qui demeurera parce que je l'ai reçu ?\n\nL'argent peut être hérité et disparaître. Une entreprise peut être héritée et s'effondrer. Une connaissance peut être héritée et ne jamais être enseignée. Un nom peut être hérité et déshonoré. Une révélation peut être reçue sans jamais être incarnée.\n\nLa possession seule n'accomplit pas l'héritage.\n\nL'héritage doit passer par la compréhension, l'intendance, la multiplication et la transmission avant de devenir legacy.\n\nLA LOI SPIRITUELLE\n\nLes Écritures relient à plusieurs reprises bénédiction et responsabilité. Dans Matthieu 25, ce qui avait été confié devait être administré. La question n'était pas seulement de posséder, mais d'être fidèle dans l'intendance.\n\nCela ne signifie pas que toute bénédiction doit devenir de l'argent. La multiplication peut prendre la forme d'une sagesse transmise, de personnes développées, d'un travail accompli, de familles fortifiées, de connaissances documentées, d'institutions préservées, d'injustices corrigées ou de ressources protégées pour ceux qui viennent après nous.\n\nLa question plus profonde devient : Qu'est-ce que Dieu attend que ton intendance produise à partir de ce qui est entré entre tes mains ?\n\nDE L'INVISIBLE AU VISIBLE\n\nLa conviction spirituelle ne doit pas devenir une excuse pour négliger le monde naturel.\n\nUne conviction qui n'influence jamais une décision n'a pas achevé son trajet.\n\nLa croyance façonne le caractère. Le caractère influence les décisions. Les décisions répétées deviennent discipline. La discipline produit l'action. L'action crée la structure. La structure produit des résultats. Les résultats, lorsqu'ils sont préservés et transmis, deviennent legacy.\n\nLa foi ne remplace pas l'administration. La sagesse doit améliorer l'administration.\n\nLEGACY ET DROIT\n\nSi quelque chose compte, apprends comment il est juridiquement détenu.\n\nQui possède l'actif ? Qui le contrôle ? Que se passe-t-il si le fondateur meurt ? Une autre personne peut-elle le vendre ? La propriété intellectuelle est-elle documentée ? Une promesse verbale protège-t-elle réellement une famille ? L'entreprise survit-elle à son propriétaire ?\n\nCe sont des questions d'intendance exprimées dans le langage du droit.\n\nLes systèmes juridiques varient selon les juridictions ; l'éducation doit donc rester distincte du conseil juridique personnalisé.\n\nLEGACY ET FINANCE\n\nLe chiffre d'affaires n'est pas le legacy. Le revenu n'est pas le legacy. Même la richesse n'est pas automatiquement un legacy.\n\nUn legacy financier demande la capacité de préserver une valeur productive dans le temps.\n\nIl faut apprendre la différence entre consommation et actifs, chiffre d'affaires et bénéfice, liquidité et valeur nette, propriété et accès, levier utile et dette destructrice.\n\nLa question mûre n'est plus seulement : Combien ai-je gagné ?\nElle devient : Qu'est-ce que ces revenus ont construit ?\n\nRÉFLEXION MYSTIQUE\n\nDans différentes traditions spirituelles et philosophiques, l'héritage porte aussi des significations symboliques : nom, mémoire, bénédiction, appel, lignée, alliance, sagesse et responsabilité.\n\nCes idées relèvent des traditions spirituelles et interprétatives et ne doivent pas être confondues avec des affirmations scientifiques.\n\nMais la question demeure féconde : Quelles valeurs invisibles façonnent les structures visibles que tu construis ?\n\nAUDIT LEGACY — JOUR 001\n\n1. Qu'est-ce qui est entré entre mes mains sans commencer avec moi ?\n2. Quelle partie suis-je simplement en train de consommer ?\n3. Quelle partie suis-je en train de préserver ?\n4. Quelle partie suis-je en train de multiplier ?\n5. Si je disparaissais demain, quelles connaissances, propriétés ou responsabilités deviendraient floues ?\n\nACTION DU JOUR\n\nChoisis un actif important de ta vie — spirituel, intellectuel, relationnel, financier ou commercial — et documente comment il est actuellement préservé, développé et transmis.\n\nPRIÈRE\n\nPère, donne-moi la sagesse de reconnaître ce que Tu m'as confié. Apprends-moi à préserver ce qui doit être protégé, à cultiver ce qui doit grandir, à corriger ce qui est désordonné et à transmettre ce qui doit me survivre. Forme en moi le caractère nécessaire pour porter la responsabilité avec humilité, discipline et amour. Que ce qui passe par mes mains devienne une bénédiction au-delà de ma vie. Amen.\n\nPENSÉE FINALE\n\nTu n'honores pas un héritage en admirant ce qui a été placé entre tes mains. Tu l'honores en devenant le type de personne par laquelle il peut survivre, mûrir et bénir une autre génération.\n\nRÉFLÉCHIR · GOUVERNER · BÂTIR · TRANSMETTRE"
+      }
+    },
+    "topics": [
+      "Legacy",
+      "Stewardship",
+      "Spiritual Formation",
+      "Responsibility",
+      "Finance",
+      "Law"
+    ],
+    "collection": "The Law of Legacy · 365 Days of Wisdom",
+    "featured": true,
+    "author_display": "VibraFlow Media",
+    "hero_media": null
+  }
+}

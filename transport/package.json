@@ -12,6 +12,8 @@
     "serve": "node runtime/node.mjs",
     "test": "node --test tests/transport.test.mjs",
     "proof": "node e2e/live.mjs",
-    "mint": "node scripts/mint-credential.mjs"
+    "mint": "node scripts/mint-credential.mjs",
+    "test:ledger": "node --test tests/store-do.test.mjs",
+    "test:day001": "node --test tests/day001-draft.test.mjs"
   }
 }

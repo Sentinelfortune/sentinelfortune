@@ -45,7 +45,7 @@ node transport/scripts/make-connector.mjs https://sfl-editorial-api.<subdomain>.
 | 3/6 | creates (or reuses) the KV namespace and writes its id into `wrangler.toml` |
 | 4/6 | mints `CLIENT_CHATGPT`, `CLIENT_CLAUDE`, `OWNER` into `~/.sfl-editorial` (0700, files 0600) |
 | 5/6 | pipes each **digest** into `wrangler secret put` over stdin |
-| 6/6 | `wrangler deploy --env=""` and prints the hostname |
+| 6/6 | `wrangler deploy` and prints the hostname |
 
 ### Secret hygiene, by construction
 
@@ -105,7 +105,7 @@ pretending. To test it:
 
 ```bash
 # 1. set SFL_CORRIDOR_REVOKED = "CLIENT_CHATGPT" in transport/wrangler.toml
-wrangler deploy --env="" --config transport/wrangler.toml
+wrangler deploy --config transport/wrangler.toml
 node transport/scripts/validate-remote.mjs --revoked CLIENT_CHATGPT
 # 2. set it back to "" and deploy again
 ```
