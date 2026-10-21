@@ -433,7 +433,17 @@ async function createDraft(body, caller, env) {
       : (body.cta || { kind: "READ", label: "Read this", destination: `/${WORLDS[identity].segment}/${slug}` }),
     metadata: {
       evidence: "CONVERSATION_ORIGINATED",
+      locale: "en",
       ...(dest.editorial_type ? { editorial_type: dest.editorial_type } : {}),
+      ...(body.translation_fr && typeof body.translation_fr === "object" ? {
+        translations: {
+          fr: {
+            title: String(body.translation_fr.title || ""),
+            summary: String(body.translation_fr.summary || ""),
+            description: String(body.translation_fr.description || body.translation_fr.body || ""),
+          },
+        },
+      } : {}),
     },
   };
 
