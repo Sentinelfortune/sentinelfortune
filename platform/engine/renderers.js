@@ -49,6 +49,34 @@ export function ratioFor(type) {
 
 /** Every detail page shares this frame. Only `body` differs by type, which is
  *  what keeps the seven coherent while letting each one feel like itself. */
+function localizedRecord(record) {
+  if (typeof window === "undefined") return { record, lang: "en", hasFrench: false };
+  const requested = new URLSearchParams(window.location.search).get("lang");
+  const fr = record.metadata && record.metadata.translations && record.metadata.translations.fr;
+  const hasFrench = Boolean(fr && (fr.title || fr.summary || fr.description));
+  if (requested !== "fr" || !hasFrench) return { record, lang: "en", hasFrench };
+  return {
+    lang: "fr",
+    hasFrench,
+    record: {
+      ...record,
+      title: fr.title || record.title,
+      summary: fr.summary || record.summary,
+      description: fr.description || record.description,
+    },
+  };
+}
+
+function languageSwitch(record, lang, hasFrench) {
+  if (!hasFrench || typeof window === "undefined") return null;
+  const path = window.location.pathname;
+  return h("nav.sf-lang", { "aria-label": "Language" }, [
+    h("a", { href: path, text: "EN", "aria-current": lang === "en" ? "page" : null }),
+    h("span", { "aria-hidden": "true", text: "|" }),
+    h("a", { href: path + "?lang=fr", text: "FR", "aria-current": lang === "fr" ? "page" : null }),
+  ]);
+}
+
 function detailFrame(record, { kicker, body, aside = null }, ctx) {
   const { links, pool } = ctx;
   const related = relatedTo(record, pool, 3);
@@ -73,6 +101,7 @@ function detailFrame(record, { kicker, body, aside = null }, ctx) {
         [cover(record, record.identity, { ratio, eager: true, width: 900, height: 900 })]),
       h("header.sf-detail-head", null, [
         h("p.sf-kicker", { text: kicker }),
+        languageSwitch(record, record.__lang || "en", record.__hasFrench === true),
         demoBadge(record),
         h("h1.sf-detail-title", { text: record.title }),
         record.summary ? h("p.sf-detail-sum", { text: record.summary }) : null,
@@ -262,6 +291,7 @@ function renderTeaching(record, ctx) {
     h("div.vf-art", { "aria-hidden": "true" }, [cover(record, record.identity, { ratio: "21 / 9", eager: true })]),
     h("div.vf-piece", null, [
       h("p.vf-kicker", { text: "Teaching" }),
+      languageSwitch(record, record.__lang || "en", record.__hasFrench === true),
       h("h1.vf-title", { text: record.title }),
       /* The price renders; the CTA deliberately does not. A reader is still
          entitled to know whether this costs anything — that is a commercial
@@ -402,7 +432,13 @@ export function renderDetail(record, ctx) {
       body: `No presentation exists for content of type ${record.type}.`,
     });
   }
-  return fn(record, ctx);
+  const localized = localizedRecord(record);
+  const viewRecord = Object.freeze({
+    ...localized.record,
+    __lang: localized.lang,
+    __hasFrench: localized.hasFrench,
+  });
+  return fn(viewRecord, ctx);
 }
 
 /** Which specialized renderer a type uses — reported by the acceptance gate. */
