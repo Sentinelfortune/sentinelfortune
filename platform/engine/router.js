@@ -99,6 +99,23 @@ export function isPublicHost(hostname = "") {
   return isCanonicalHost(host) || HUB_PUBLIC_HOSTS.includes(host);
 }
 
+/**
+ * Whether this host should show development/preview affordances.
+ *
+ * Public custom domains are production. Vercel's stable/generated production
+ * deployment URLs are also treated as production so a real Production
+ * deployment never labels itself PREVIEW merely because the visitor used the
+ * Vercel deployment URL. Explicit branch-preview aliases ("-git-") and local
+ * development hosts keep the preview affordances.
+ */
+export function isPreviewEnvironmentHost(hostname = "") {
+  const host = String(hostname).toLowerCase().replace(/:\d+$/, "");
+  if (isPublicHost(host)) return false;
+  if (host === "localhost" || host === "127.0.0.1" || host === "::1") return true;
+  if (host.endsWith(".vercel.app")) return host.includes("-git-");
+  return true;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    VIEW RESOLUTION
    ───────────────────────────────────────────────────────────────────────── */
