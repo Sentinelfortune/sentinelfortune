@@ -35,7 +35,7 @@ CREATE TABLE corridor_idempotency (idem_key TEXT PRIMARY KEY, actor TEXT NOT NUL
 
 const handler = require("../api/corridor.js");
 process.env.CF_ACCOUNT_ID="a"; process.env.CF_D1_DATABASE_ID="d"; process.env.CF_D1_WRITE_TOKEN="W";
-process.env.CORRIDOR_TOKEN_CLAUDE="claude-tok"; process.env.CORRIDOR_TOKEN_CHATGPT="chatgpt-tok";
+process.env.CORRIDOR_TOKEN_CLAUDE="claude-tok"; process.env.CORRIDOR_TOKEN_CHATGPT="chatgpt-tok"; process.env.CORRIDOR_TOKEN_OWNER="owner-tok";
 process.env.CORRIDOR_STANDING_POLICY="[]";
 
 global.fetch = async (url, init) => {
@@ -86,7 +86,9 @@ const ROUTES = [
     if (rec) {
       ids.push(rec.record_id);
       /* publish it so the public url can be checked against the real segment */
-      db.prepare("UPDATE editorial_records SET status='APPROVED', approved_by='owner', approval_mode='EXPLICIT', approved_at='t' WHERE record_id=?").run(rec.record_id);
+      /* Through the real Owner approval, which records the approved version —
+         a status forced by SQL is not an approval and is refused as stale. */
+      await call("owner-tok", { action: "approve", record_id: rec.record_id });
       const p = await call("claude-tok", { action: "publish_approved", record_id: rec.record_id });
       ok(`   public url uses /${segment}/`, p.body.public_url === `https://${world}.sentinelfortune.com/${segment}/${rec.slug}`, p.body.public_url || JSON.stringify(p.body));
     }

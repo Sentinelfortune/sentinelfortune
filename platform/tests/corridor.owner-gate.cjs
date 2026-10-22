@@ -151,16 +151,65 @@ async function draft(tok, over = {}) {
       again.status === 200 && again.body.approval_mode === "EXPLICIT", `${again.status} ${again.body.approval_mode}`);
   }
 
-  console.log("=== 6. the ChatGPT manifest adapter cannot publish on its own authority ===");
+  console.log("=== 6. the ChatGPT manifest adapter never writes on GET and never publishes ===");
   delete process.env.CORRIDOR_STANDING_POLICY;
+  const host = { host: "platform-git-x-sentinelfortune.vercel.app" };
   {
     const res = mockRes();
-    await chatgptAdapter({ method: "GET", headers: { host: "platform-git-x-sentinelfortune.vercel.app" }, query: { id: "legacy-365-day-001" } }, res);
+    await chatgptAdapter({ method: "GET", headers: host, query: { id: "legacy-365-day-001" } }, res);
+    check("GET is refused 405 and writes nothing",
+      res.statusCode === 405 && status("edl-vfm-legacy-365-day-001") === undefined, `${res.statusCode}`);
+  }
+  for (const prodHost of ["onecompany.sentinelfortune.com", "vibraflowmedia.sentinelfortune.com"]) {
+    const res = mockRes();
+    await chatgptAdapter({ method: "POST", headers: { host: prodHost }, query: { id: "legacy-365-day-001" } }, res);
+    check(`the adapter is unreachable on the production host ${prodHost}`, res.statusCode === 404 && status("edl-vfm-legacy-365-day-001") === undefined, `${res.statusCode}`);
+  }
+  {
+    const res = mockRes();
+    await chatgptAdapter({ method: "POST", headers: host, query: { id: "legacy-365-day-001" } }, res);
     const body = JSON.parse(res.body);
     const st = status("edl-vfm-legacy-365-day-001");
-    check("legacy-365-day-001 is NOT published by the adapter", st !== "PUBLISHED", `adapter ${res.statusCode} ${body.error || body.status} → record ${st}`);
-    check("the adapter leaves it awaiting Owner review", st === "REVIEW", `record ${st}`);
-    check("the adapter does not report success", res.statusCode !== 200, `${res.statusCode}`);
+    check("POST drafts Day 001 and stops at REVIEW", res.statusCode === 200 && st === "REVIEW" && body.next === "OWNER_APPROVAL_REQUIRED", `${res.statusCode} → ${st}`);
+    check("Day 001 is NOT published", st !== "PUBLISHED");
+  }
+
+  console.log("=== 7. an approval covers one exact version ===");
+  {
+    const id = await draft("chatgpt-tok");
+    await call("chatgpt-tok", { action: "submit_review", record_id: id });
+    await call("owner-tok", { action: "approve", record_id: id });
+    const edit = await call("chatgpt-tok", { action: "update_draft", record_id: id, summary: "changed after approval" });
+    check("editing an APPROVED record withdraws the approval (→ REVIEW)", edit.status === 200 && status(id) === "REVIEW", `${edit.status} → ${status(id)}`);
+    const pub = await call("chatgpt-tok", { action: "publish_approved", record_id: id });
+    check("the edited version cannot be published on the old approval", pub.status === 409 && status(id) === "REVIEW", `${pub.status} ${pub.body.error}`);
+    await call("owner-tok", { action: "approve", record_id: id });
+    const pub2 = await call("chatgpt-tok", { action: "publish_approved", record_id: id });
+    check("re-approved version publishes", pub2.status === 200 && pub2.body.approval_mode === "EXPLICIT", `${pub2.status}`);
+    const live = await call("chatgpt-tok", { action: "update_draft", record_id: id, title: "live edit" });
+    check("a PUBLISHED record cannot be edited in place", live.status === 409 && live.body.error === "NOT_EDITABLE", `${live.status}`);
+  }
+  {
+    /* An approval recorded with no version (before this rule) is not proof. */
+    const id = await draft("chatgpt-tok");
+    db.prepare("UPDATE editorial_records SET status='APPROVED', approved_by='owner', approval_mode='EXPLICIT', approved_at='2026-01-01T00:00:00Z' WHERE record_id=?").run(id);
+    db.prepare("INSERT INTO editorial_events (record_id, action, from_status, to_status, actor, adapter, approval_mode, at) VALUES (?, 'approve', 'REVIEW', 'APPROVED', 'owner', 'owner', 'EXPLICIT', '2026-01-01T00:00:00Z')").run(id);
+    const pub = await call("chatgpt-tok", { action: "publish_approved", record_id: id });
+    check("an approval without a recorded version is stale", pub.status === 409 && pub.body.error === "APPROVAL_STALE", `${pub.status} ${pub.body.error}`);
+  }
+
+  console.log("=== 8. idempotency keys are scoped to the caller ===");
+  {
+    const id = await draft("chatgpt-tok");
+    await call("chatgpt-tok", { action: "submit_review", record_id: id });
+    const ownerKey = `owner-approve-${id}`;
+    const byOwner = await call("owner-tok", { action: "approve", record_id: id, idempotency_key: ownerKey });
+    const replayAttempt = await call("chatgpt-tok", { action: "approve", record_id: id, idempotency_key: ownerKey });
+    check("an assistant reusing the Owner's key is still refused 403", byOwner.status === 200 && replayAttempt.status === 403, `${byOwner.status}/${replayAttempt.status}`);
+    const k = `shared-key-${id}`;
+    await call("owner-tok", { action: "get_record", record_id: id, idempotency_key: k });
+    const other = await call("chatgpt-tok", { action: "update_draft", record_id: id, summary: "x", idempotency_key: k });
+    check("one caller's key never replays another caller's response", other.status === 200 && other.body.record && other.body.record.version === 2, `${other.status} v${other.body.record && other.body.record.version}`);
   }
 
   console.log(failures ? `\nOWNER GATE: ${failures} check(s) FAILED` : "\nOWNER GATE: all checks passed.");
