@@ -16,7 +16,6 @@ lang: en_US
 author: "Sentinel Fortune LLC"
 publisher: "Sentinel Fortune LLC"
 org_email: "contact@sentinelfortune.com"
-telegram_url: "https://t.me/sentinelfortune_bot"
 institutional_url: "https://sentinelfortune.com"
 # 1200x630 social card generated from the real brand mark by
 # scripts/build_brand_assets.py. Replaces the 307 KB unresized IMG_7098.jpeg.
