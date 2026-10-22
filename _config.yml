@@ -10,8 +10,8 @@
 # dependency whose output would have to be audited anyway.
 title: "Sentinel Fortune LLC"
 description: "Operational systems, field-tested tools, and practical intelligence for small businesses that run on execution."
-url: "https://sentinelfortune.github.io"
-baseurl: "/sentinelfortune"
+url: "https://public.sentinelfortune.com"
+baseurl: ""
 lang: en_US
 author: "Sentinel Fortune LLC"
 publisher: "Sentinel Fortune LLC"
