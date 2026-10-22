@@ -21,8 +21,22 @@ export function createStore() {
   const records = new Map();
   /** ownerInstructionId -> { recordId, version, outcome } */
   const instructions = new Map();
+  /* Corridor governance state. It lives HERE, in the store, so that it is
+     persisted with the records it governs: a transport that builds a fresh
+     corridor per request (the Worker does) must not lose an Owner approval,
+     the Owner's audit trail or a client's rate-limit window between requests. */
+  /** `${recordId}|${action}` -> Owner approval */
+  const approvals = new Map();
+  /** Owner audit entries, append-only */
+  const ownerAudit = [];
+  /** client -> [timestamps] in the rolling rate-limit window */
+  const rateHits = new Map();
 
   return {
+    approvals,
+    ownerAudit,
+    rateHits,
+
     /** The outcome of an instruction already seen, or null. */
     replay(instructionId) {
       if (!instructionId) return null;
@@ -118,12 +132,21 @@ export function createStore() {
     /* The persistence seam. A Git-backed or API-backed transport implements
        these two and nothing else changes. */
     snapshot() {
-      return { records: [...records.values()], instructions: [...instructions.entries()] };
+      return {
+        records: [...records.values()],
+        instructions: [...instructions.entries()],
+        approvals: [...approvals.entries()],
+        ownerAudit: [...ownerAudit],
+        rateHits: [...rateHits.entries()],
+      };
     },
     restore(snap) {
-      records.clear(); instructions.clear();
+      records.clear(); instructions.clear(); approvals.clear(); ownerAudit.length = 0; rateHits.clear();
       for (const r of snap.records || []) records.set(r.id, r);
       for (const [k, v] of snap.instructions || []) instructions.set(k, v);
+      for (const [k, v] of snap.approvals || []) approvals.set(k, v);
+      for (const e of snap.ownerAudit || []) ownerAudit.push(e);
+      for (const [k, v] of snap.rateHits || []) rateHits.set(k, v);
     },
   };
 }

@@ -38,9 +38,10 @@ function memoryStorage({ failTransactions = false } = {}) {
     async get(key) { return data.has(key) ? clone(data.get(key)) : undefined; },
     async transaction(fn) {
       const staged = new Map();
-      await fn({ put: async (k, v) => { staged.set(k, clone(v)); } });
+      const DELETE = Symbol("delete");
+      await fn({ put: async (k, v) => { staged.set(k, clone(v)); }, delete: async (k) => { staged.set(k, DELETE); } });
       if (failTransactions) throw new Error("simulated storage failure");
-      for (const [k, v] of staged) data.set(k, v);   // all-or-nothing
+      for (const [k, v] of staged) { if (v === DELETE) data.delete(k); else data.set(k, v); }   // all-or-nothing
       storage.commits += 1;
     },
   };
@@ -89,6 +90,11 @@ const draft = (n = ++seq) => ({
   language: "en",
 });
 
+/** Every record and instruction-ledger entry, serialized — the editorial
+ *  state, excluding the rate-limit window. */
+const editorialState = (storage) => JSON.stringify([...storage.data.entries()]
+  .filter(([k]) => k.startsWith("rec:") || k.startsWith("ins:") || k.startsWith("apr:") || k.startsWith("oau:")));
+
 async function run(storage, request, envOver) {
   return handleWithLedger({ storage, env: await env(envOver), request, log: silent });
 }
@@ -111,19 +117,20 @@ test("a replayed instruction writes nothing and returns the original outcome", a
   const storage = memoryStorage();
   const body = draft();
   const first = await run(storage, post("/v1/editorial", body, TOKENS.chatgpt));
-  const commitsAfterFirst = storage.commits;
+  const before = editorialState(storage);
   const again = await run(storage, post("/v1/editorial", body, TOKENS.chatgpt));
   assert.equal(again.status, 200);
   assert.equal(again.body.replay, true);
   assert.equal(again.body.record.id, first.body.record.id);
-  assert.equal(storage.commits, commitsAfterFirst, "a replay must not commit");
+  assert.equal(editorialState(storage), before, "a replay must not change any record or ledger entry");
 });
 
-test("a refusal and a read commit nothing", async () => {
+test("a refusal and a read change no editorial state (only the rate window counts them)", async () => {
   const storage = memoryStorage();
   await run(storage, post("/v1/editorial", { ...draft(), content_type: "NOT_A_TYPE" }, TOKENS.chatgpt));
   await run(storage, { method: "GET", path: "/v1/health", headers: {}, rawBody: "" });
-  assert.equal(storage.commits, 0);
+  assert.equal(editorialState(storage), "[]");
+  assert.ok([...storage.data.keys()].every((k) => k.startsWith("rl:") || k.startsWith("meta:")));
 });
 
 test("concurrent commands through the serial gate lose nothing", async () => {
@@ -222,4 +229,34 @@ test("the Durable Object class serializes through blockConcurrencyWhile", async 
   assert.equal(res.status, 200);
   assert.equal(gateCalls, 1);
   assert.equal((await readSnapshot(storage)).records.length, 1);
+});
+
+test("an Owner approval survives across requests and is consumed by the act it authorizes", async () => {
+  /* Each handleWithLedger call builds a fresh corridor, exactly as the Worker
+     does per request. Before approvals lived in the store, this was lost. */
+  const storage = memoryStorage();
+  const created = await run(storage, post("/v1/editorial", draft(), TOKENS.chatgpt));
+  const recordId = created.body.record.id;
+  await run(storage, post("/v1/owner/approve", { recordId }, TOKENS.owner));
+  assert.ok([...storage.data.keys()].some((k) => k.startsWith("apr:")), "approval persisted");
+  assert.ok([...storage.data.keys()].some((k) => k.startsWith("oau:")), "Owner audit persisted");
+
+  const pub = await run(storage, post("/v1/editorial", { operation: "PUBLISH", instruction_id: `do_live_${++seq}`, record_id: recordId }, TOKENS.chatgpt), { SFL_CORRIDOR_MODE: "LIVE" });
+  assert.equal(pub.status, 200, JSON.stringify(pub.body.error || {}));
+  assert.equal(pub.body.state, "PUBLISHED");
+  assert.ok(![...storage.data.keys()].some((k) => k.startsWith("apr:")), "a publication consumes its approval");
+
+  const again = await run(storage, post("/v1/editorial", { operation: "UNPUBLISH", instruction_id: `do_un_${++seq}`, record_id: recordId }, TOKENS.chatgpt), { SFL_CORRIDOR_MODE: "LIVE" });
+  assert.equal(again.status, 403, "withdrawal needs its own Owner authorization");
+});
+
+test("the rate limit holds across requests", async () => {
+  const storage = memoryStorage();
+  const e = await env();
+  let limited = null;
+  for (let i = 0; i < 200 && !limited; i++) {
+    const r = await handleWithLedger({ storage, env: e, request: post("/v1/editorial", draft(), TOKENS.chatgpt), log: silent });
+    if (r.status === 429) limited = i;
+  }
+  assert.ok(limited !== null, "a per-request corridor must still hit the hourly ceiling");
 });

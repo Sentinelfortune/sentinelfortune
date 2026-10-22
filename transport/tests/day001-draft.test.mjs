@@ -99,3 +99,26 @@ test("the Day 001 instruction id is idempotent", async () => {
   assert.equal(b.body.record.id, a.body.record.id);
   assert.equal(b.body.record.version, a.body.record.version);
 });
+
+test("the French translation is complete — one French paragraph per English paragraph", () => {
+  const en = PKG.prepareRequest.body.split("\n\n");
+  const fr = PKG.prepareRequest.translations.fr.body.split("\n\n");
+  assert.equal(fr.length, en.length);
+  for (const marker of ["PRIÈRE", "AUDIT LEGACY", "ACTION DU JOUR", "RÉFLEXION MYSTIQUE", "LEGACY ET DROIT", "LEGACY ET FINANCE"]) {
+    assert.ok(fr.some((p) => p.startsWith(marker)), `${marker} section present`);
+  }
+  assert.ok(PKG.prepareRequest.translations.fr.body.includes("ne rend pas cette structure sans importance"));
+});
+
+test("Day 001 previewed by the client stays a non-public DRAFT awaiting the Owner", async () => {
+  const { api, corridor } = await setup();
+  const draft = await api.handle(post("/v1/editorial", PKG.prepareRequest, TOKENS.chatgpt));
+  const recordId = draft.body.record.id;
+  await api.handle(post("/v1/editorial", { operation: "PREVIEW", instruction_id: "day001-review-1", record_id: recordId }, TOKENS.chatgpt));
+  const status = corridor.store.get(recordId).status;
+  /* The transport corridor has no client-driven review state: a DRAFT is
+     what awaits the Owner's approval. */
+  assert.equal(status, "DRAFT");
+  assert.notEqual(status, "PUBLISHED");
+  assert.equal(corridor.feed().records.length, 0);
+});

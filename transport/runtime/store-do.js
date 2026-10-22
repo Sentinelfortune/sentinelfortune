@@ -33,8 +33,11 @@
  * else. The corridor and the request handler are unchanged.
  *
  * STORAGE LAYOUT (per-entry keys, not one blob)
- *   rec:<recordId>        one corridor record
- *   ins:<instructionId>   one instruction-ledger entry (idempotency / replay)
+ *   rec:<recordId>        one corridor record                    never deleted
+ *   ins:<instructionId>   one instruction-ledger entry (replay)  never deleted
+ *   apr:<recordId|action> one pending Owner approval             deleted when consumed
+ *   oau:<000000n>         one Owner audit entry                  append-only
+ *   rl:<client>           a client's rate-limit window           replaced
  *   meta:schema           STORAGE_SCHEMA
  * Per-entry keys keep each value small, and let a command write only what it
  * changed instead of rewriting the whole corpus.
@@ -49,6 +52,10 @@ export const STORAGE_SCHEMA = "sfl.editorial.do/1";
 
 const REC = "rec:";
 const INS = "ins:";
+const APR = "apr:";
+const OAU = "oau:";
+const RL = "rl:";
+const auditKey = (i) => OAU + String(i).padStart(9, "0");
 const META_SCHEMA = "meta:schema";
 
 /* Values are compared as JSON, so a write happens only when an entry really
@@ -58,13 +65,20 @@ const encode = (v) => JSON.stringify(v);
 /** Read the whole corpus out of Durable Object storage into a snapshot the
  *  corridor store can `restore()`. */
 export async function readSnapshot(storage) {
-  const [recs, ins] = await Promise.all([
+  const [recs, ins, apr, oau, rl] = await Promise.all([
     storage.list({ prefix: REC }),
     storage.list({ prefix: INS }),
+    storage.list({ prefix: APR }),
+    storage.list({ prefix: OAU }),
+    storage.list({ prefix: RL }),
   ]);
+  const strip = (prefix, m) => [...m.entries()].map(([k, v]) => [k.slice(prefix.length), v]);
   return {
     records: [...recs.values()],
-    instructions: [...ins.entries()].map(([k, v]) => [k.slice(INS.length), v]),
+    instructions: strip(INS, ins),
+    approvals: strip(APR, apr),
+    ownerAudit: [...oau.values()],      // list() is key-ordered, so this is append order
+    rateHits: strip(RL, rl),
   };
 }
 
@@ -72,29 +86,42 @@ export async function readSnapshot(storage) {
  *  deletes (it archives), so a diff of puts is complete; a key present before
  *  and absent after is reported, not silently dropped. */
 export function diffSnapshots(before, after) {
-  const prior = new Map();
-  for (const r of before.records || []) prior.set(REC + r.id, encode(r));
-  for (const [k, v] of before.instructions || []) prior.set(INS + k, encode(v));
+  /* Records, instructions and the Owner audit are permanent: a key that
+     disappears is reported as `vanished` and refused. Approvals (consumed by
+     the act they authorize) and rate windows are legitimately removed. */
+  const permanent = (snap) => {
+    const m = new Map();
+    for (const r of snap.records || []) m.set(REC + r.id, r);
+    for (const [k, v] of snap.instructions || []) m.set(INS + k, v);
+    (snap.ownerAudit || []).forEach((e, i) => m.set(auditKey(i), e));
+    return m;
+  };
+  const transient = (snap) => {
+    const m = new Map();
+    for (const [k, v] of snap.approvals || []) m.set(APR + k, v);
+    for (const [k, v] of snap.rateHits || []) m.set(RL + k, v);
+    return m;
+  };
 
   const puts = {};
-  const seen = new Set();
-  for (const r of after.records || []) {
-    const key = REC + r.id;
-    seen.add(key);
-    if (prior.get(key) !== encode(r)) puts[key] = r;
+  const deletes = [];
+  const vanished = [];
+  for (const [kind, prior, next] of [
+    ["permanent", permanent(before), permanent(after)],
+    ["transient", transient(before), transient(after)],
+  ]) {
+    for (const [key, value] of next) if (encode(prior.get(key)) !== encode(value)) puts[key] = value;
+    for (const key of prior.keys()) {
+      if (next.has(key)) continue;
+      if (kind === "permanent") vanished.push(key); else deletes.push(key);
+    }
   }
-  for (const [k, v] of after.instructions || []) {
-    const key = INS + k;
-    seen.add(key);
-    if (prior.get(key) !== encode(v)) puts[key] = v;
-  }
-  const vanished = [...prior.keys()].filter((k) => !seen.has(k));
-  return { puts, vanished };
+  return { puts, deletes, vanished };
 }
 
 /** Write a diff in ONE transaction. Throws if the transaction fails, so the
  *  caller can refuse rather than report a success that was not stored. */
-export async function commitDiff(storage, { puts, vanished }) {
+export async function commitDiff(storage, { puts, deletes = [], vanished }) {
   if (vanished.length) {
     /* The corridor's contract is append/version, never delete. A vanished
        key means that contract was broken somewhere; refuse to persist a
@@ -102,12 +129,13 @@ export async function commitDiff(storage, { puts, vanished }) {
     throw new Error(`refusing to persist: ${vanished.length} stored entr${vanished.length === 1 ? "y" : "ies"} would be lost`);
   }
   const keys = Object.keys(puts);
-  if (!keys.length) return { written: 0 };
+  if (!keys.length && !deletes.length) return { written: 0, deleted: 0 };
   await storage.transaction(async (txn) => {
     for (const key of keys) await txn.put(key, puts[key]);
+    for (const key of deletes) await txn.delete(key);
     await txn.put(META_SCHEMA, STORAGE_SCHEMA);
   });
-  return { written: keys.length };
+  return { written: keys.length, deleted: deletes.length };
 }
 
 const PERSIST_FAILED = Object.freeze({

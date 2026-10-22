@@ -51,6 +51,17 @@ const CTA_LABEL = Object.freeze({
  * `pricingTier` is hardcoded FREE and no `price` key is ever emitted. The
  * corridor cannot express a price, so it cannot leak one.
  */
+/** Every language other than the one rendered, in the engine's shape. */
+function publicTranslations(record, renderedLang) {
+  const out = {};
+  for (const lang of availableLanguages(record)) {
+    if (lang === renderedLang) continue;
+    const t = inLanguage(record, lang);
+    out[lang] = { title: t.title, summary: t.summary, description: t.body };
+  }
+  return out;
+}
+
 export function toPublicRecord(record, { language = null } = {}) {
   const lang = language || record.language;
   const text = inLanguage(record, lang);
@@ -86,6 +97,10 @@ export function toPublicRecord(record, { language = null } = {}) {
       editorialLabel: TYPE_LABEL[record.contentType] || "Item",
       author: record.authorDisplay,
       languages: availableLanguages(record),
+      /* The public engine's localization contract (platform/engine/renderers.js,
+         localizedRecord): metadata.translations.<lang> = {title, summary,
+         description}. Without it the EN/FR reader switch has nothing to show. */
+      translations: publicTranslations(record, lang),
       corridor: true,
     },
   };

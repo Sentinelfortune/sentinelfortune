@@ -8,7 +8,9 @@
 #
 # It will:
 #   1. check wrangler is present and you are logged in
-#   2. create (or reuse) the KV namespace and write its id into wrangler.toml
+#   2. persistence: the Durable Object ledger is created by the deploy itself
+#      (its migration is in wrangler.toml); a KV namespace is created only if
+#      the config still declares one
 #   3. mint three independent credentials into a 0600 directory OUTSIDE this repo
 #   4. pipe each DIGEST into `wrangler secret put` over stdin
 #   5. deploy the Worker in TEST_PREVIEW mode
@@ -78,9 +80,11 @@ say "2/6  Building the Worker (offline dry run) before touching the account"
 echo "  builds cleanly."
 
 # ─────────────────────────────────────────────────────────────────────────────
-say "3/6  KV namespace (the corridor's snapshot seam)"
+say "3/6  Persistence"
 
-if grep -q 'REPLACE_WITH_REAL_KV_NAMESPACE_ID' "$CONFIG"; then
+if grep -q 'class_name = "EditorialLedger"' "$CONFIG" && ! grep -q 'kv_namespaces' "$CONFIG"; then
+  echo "  Durable Object ledger (EditorialLedger) — created by the deploy's migration; no KV needed."
+elif grep -q 'REPLACE_WITH_REAL_KV_NAMESPACE_ID' "$CONFIG"; then
   KV_ID="${SFL_KV_ID:-}"
 
   if [ -z "$KV_ID" ]; then

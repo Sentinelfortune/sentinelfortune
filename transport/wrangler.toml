@@ -11,8 +11,9 @@
 #   - sentinel-fortune-ecosystem      (cloudflare/wrangler-api.toml)
 #   - the ORIGINUS_R2 bucket
 #   - the public site's Vercel project (platform/vercel.json)
-# It has no Stripe binding, no R2 binding, no D1 binding, no DNS authority and
-# no deployment authority. Its entire surface is transport/core/http.js.
+# It has no Stripe binding, no R2 binding, no D1 binding, no KV binding, no DNS
+# authority and no deployment authority. Its entire surface is
+# transport/core/http.js, behind one Durable Object ledger.
 #
 # ---------------------------------------------------------------------------
 # NO SECRET IS IN THIS FILE, AND NO SECRET BELONGS IN IT.
@@ -36,26 +37,27 @@
 # ---------------------------------------------------------------------------
 
 name = "sfl-editorial-api"
-main = "runtime/worker.js"
+# The Durable Object ledger (runtime/store-do.js): every command is serialized
+# and committed in one transaction. runtime/worker.js (KV) is kept for
+# reference but is NOT deployed: on the real Workers runtime (workerd), 12
+# concurrent PREPAREs against it each returned 200 and 9 of the 12 drafts were
+# lost (evidence: DANI-EDITORIAL-CORRIDOR-1.0-FINAL-ACCEPTANCE.md).
+main = "runtime/worker-live.js"
 compatibility_date = "2024-09-23"
 workers_dev = true
 
 # ---------------------------------------------------------------------------
-# KV — the corridor's persistence seam (snapshot / restore only).
-#
-# Create with:
-#   wrangler kv namespace create SFL_EDITORIAL
-# then paste the returned id below.
-#
-# KNOWN LIMITATION, documented in full at the top of
-# transport/runtime/store-kv.js: KV has no compare-and-set, so two concurrent
-# writes can lose one. That is acceptable for the TEST_PREVIEW phase (one
-# Owner, one client at a time, nothing public) and MUST be replaced by a
-# Durable Object or D1 transaction before LIVE publication.
+# Persistence — one SQLite-backed Durable Object (available on Workers Free).
+# Nothing to create beforehand: the migration below creates the class on the
+# first deploy. No KV namespace is needed.
 # ---------------------------------------------------------------------------
-[[kv_namespaces]]
-binding = "EDITORIAL_KV"
-id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+[[durable_objects.bindings]]
+name = "EDITORIAL_LEDGER"
+class_name = "EditorialLedger"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["EditorialLedger"]
 
 # ---------------------------------------------------------------------------
 # Non-secret configuration.
@@ -86,8 +88,8 @@ SFL_CORRIDOR_REVOKED = ""
 #   wrangler deploy --config transport/wrangler.toml --env production
 #
 # DO NOT deploy to production, and DO NOT set SFL_CORRIDOR_MODE = "LIVE",
-# until the Phase 1 TEST_PREVIEW deployment has been exercised by both
-# clients and the KV limitation above has been resolved.
+# until the TEST_PREVIEW deployment has been exercised by both clients and the
+# Owner has explicitly authorized LIVE.
 # ---------------------------------------------------------------------------
 [env.production]
 name = "sfl-editorial-api"
@@ -98,6 +100,6 @@ SFL_CORRIDOR_MODE = "TEST_PREVIEW"
 SFL_CORRIDOR_TIMESTAMP_TOLERANCE_MS = "300000"
 SFL_CORRIDOR_REVOKED = ""
 
-[[env.production.kv_namespaces]]
-binding = "EDITORIAL_KV"
-id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+[[env.production.durable_objects.bindings]]
+name = "EDITORIAL_LEDGER"
+class_name = "EditorialLedger"

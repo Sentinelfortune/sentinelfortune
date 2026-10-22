@@ -50,8 +50,7 @@ export const OWNER_ACTIONS = Object.freeze(["approve", "authorizeWithdrawal", "r
    compromised credential must hit a ceiling before it does damage.
    ───────────────────────────────────────────────────────────────────────── */
 
-function createLimiter(now) {
-  const hits = new Map();   // client -> [timestamps]
+function createLimiter(now, hits = new Map()) {   // hits: client -> [timestamps]
   return {
     check(client, perHour) {
       const t = now();
@@ -88,16 +87,16 @@ export function createCorridor({
     CLIENT_CHATGPT: clients.CLIENT_CHATGPT || clientIdentity("CLIENT_CHATGPT", { credentialRef: "SFL_CORRIDOR_CHATGPT_TOKEN" }),
     CLIENT_CLAUDE: clients.CLIENT_CLAUDE || clientIdentity("CLIENT_CLAUDE", { credentialRef: "SFL_CORRIDOR_CLAUDE_TOKEN" }),
   };
-  const limiter = createLimiter(clock);
+  const limiter = createLimiter(clock, store.rateHits);
   /**
    * Owner approvals, keyed by RECORD **and ACTION**. Held here rather than on
    * the record so an AI client's update cannot carry one in, and scoped to one
    * action so permission to withdraw a piece is not also permission to publish
    * it.
    */
-  const approvals = new Map();
+  const approvals = store.approvals || new Map();
   const key = (recordId, action) => `${recordId}|${action}`;
-  const ownerAudit = [];
+  const ownerAudit = store.ownerAudit || [];
 
   function execute(command) {
     const identity = identities[command.client];
