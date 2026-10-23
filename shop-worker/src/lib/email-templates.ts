@@ -60,12 +60,12 @@ export function orderConfirmationEmail(input: OrderConfirmationInput): EmailOutp
     <p>Your order for <strong>${escapeHtml(input.productTitle)}</strong> has been confirmed.</p>
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:16px 0;font-size:13px;">
       <tr><td style="color:#888;padding:4px 0;">Order number</td><td style="text-align:right;">${escapeHtml(input.orderNumber)}</td></tr>
-      <tr><td style="color:#888;padding:4px 0;">License number</td><td style="text-align:right;">${escapeHtml(input.licenseNumber)}</td></tr>
+      <tr><td style="color:#888;padding:4px 0;">Usage record reference</td><td style="text-align:right;">${escapeHtml(input.licenseNumber)}</td></tr>
       <tr><td style="color:#888;padding:4px 0;">Amount charged</td><td style="text-align:right;">${escapeHtml(input.amountDisplay)}</td></tr>
     </table>
     <p>Your secure download link is sent in a separate email.</p>
   `);
-  const text = `${greeting}\n\nYour order for ${input.productTitle} has been confirmed.\n\nOrder number: ${input.orderNumber}\nLicense number: ${input.licenseNumber}\nAmount charged: ${input.amountDisplay}\n\nYour secure download link is sent in a separate email.\n\nQuestions? Contact ${SUPPORT_EMAIL}.`;
+  const text = `${greeting}\n\nYour order for ${input.productTitle} has been confirmed.\n\nOrder number: ${input.orderNumber}\nUsage record reference: ${input.licenseNumber}\nAmount charged: ${input.amountDisplay}\n\nYour secure download link is sent in a separate email.\n\nQuestions? Contact ${SUPPORT_EMAIL}.`;
   return { subject, html, text };
 }
 
@@ -87,10 +87,10 @@ export function downloadDeliveryEmail(input: DownloadDeliveryInput): EmailOutput
     <p style="margin:20px 0;">
       <a href="${escapeHtml(input.downloadUrl)}" style="display:inline-block;background:#c8a84b;color:#04060f;padding:12px 22px;border-radius:4px;text-decoration:none;font-weight:700;font-size:13px;">Download Now</a>
     </p>
-    <p style="font-size:12px;color:#888;">This link expires ${escapeHtml(input.expiresAtDisplay)} and may be used up to ${input.maxDownloads} times. License number: ${escapeHtml(input.licenseNumber)}.</p>
+    <p style="font-size:12px;color:#888;">This link expires ${escapeHtml(input.expiresAtDisplay)} and may be used up to ${input.maxDownloads} times. Usage record reference: ${escapeHtml(input.licenseNumber)}.</p>
     <p style="font-size:12px;color:#888;">If this link expires, you (or Sentinel Fortune LLC on your behalf) can request a replacement from the license lookup page.</p>
   `);
-  const text = `${greeting}\n\nYour secure download for ${input.productTitle} is ready:\n${input.downloadUrl}\n\nThis link expires ${input.expiresAtDisplay} and may be used up to ${input.maxDownloads} times.\nLicense number: ${input.licenseNumber}\n\nIf this link expires, request a replacement from the license lookup page.\n\nQuestions? Contact ${SUPPORT_EMAIL}.`;
+  const text = `${greeting}\n\nYour secure download for ${input.productTitle} is ready:\n${input.downloadUrl}\n\nThis link expires ${input.expiresAtDisplay} and may be used up to ${input.maxDownloads} times.\nUsage record reference: ${input.licenseNumber}\n\nIf this link expires, request a replacement from support.\n\nQuestions? Contact ${SUPPORT_EMAIL}.`;
   return { subject, html, text };
 }
 

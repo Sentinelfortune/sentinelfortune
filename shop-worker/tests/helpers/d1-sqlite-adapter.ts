@@ -98,6 +98,8 @@ export async function createTestD1(includeSeed = false): Promise<D1Like> {
   const schemaSql = readFileSync(path.join(MIGRATIONS_DIR, "0001_init.sql"), "utf-8");
   db.exec(schemaSql);
 
+  db.exec(readFileSync(path.join(MIGRATIONS_DIR, "0003_sales_audience.sql"), "utf-8"));
+
   if (includeSeed) {
     const seedSql = readFileSync(path.join(MIGRATIONS_DIR, "0002_seed_first_product.sql"), "utf-8");
     db.exec(seedSql);
