@@ -10,7 +10,12 @@
  * - Vercel Authentication protects those deployment hosts.
  * - The request can only name a pre-committed manifest. It cannot supply
  *   arbitrary editorial content.
- * - The manifest itself is the reviewed publication instruction.
+ * - The manifest is a reviewed DRAFTING instruction, not a publication
+ *   authority. The adapter creates the draft and submits it for review, and
+ *   stops there: publication needs the Owner's explicit approval of that
+ *   version, given through /api/corridor with the Owner credential.
+ * - It writes only on POST. A GET is answered 405, so a link, a prefetch or
+ *   an image tag can never cause a write.
  * - The actual write still goes through /api/corridor and therefore through
  *   the same D1 governance, rate limits, idempotency and audit trail.
  */
@@ -47,7 +52,7 @@ module.exports = async function handler(req, res) {
     res.end(JSON.stringify(body));
   };
 
-  if (req.method !== "GET") return send(405, { error: "METHOD_NOT_ALLOWED" });
+  if (req.method !== "POST") return send(405, { error: "METHOD_NOT_ALLOWED" });
   if (!isVercelControlHost(req)) return send(404, { error: "NOT_FOUND" });
 
   const id = String((req.query && req.query.id) || "").toLowerCase();
@@ -55,7 +60,7 @@ module.exports = async function handler(req, res) {
 
   const manifest = MANIFESTS && MANIFESTS.manifests ? MANIFESTS.manifests[id] : null;
   if (!manifest) return send(404, { error: "MANIFEST_NOT_FOUND" });
-  if (manifest.adapter !== "chatgpt" || manifest.state !== "READY_TO_PUBLISH" || manifest.owner_authorized !== true) {
+  if (manifest.adapter !== "chatgpt" || manifest.state !== "READY_FOR_REVIEW") {
     return send(409, { error: "MANIFEST_NOT_AUTHORIZED" });
   }
 
@@ -89,22 +94,13 @@ module.exports = async function handler(req, res) {
     return send(review.status, { error: "REVIEW_FAILED", corridor: review.body });
   }
 
-  const publish = await corridor(token, {
-    action: "publish_approved",
-    record_id: recordId,
-    idempotency_key: `${id}:publish:v1`,
-  });
-  if (publish.status >= 400) {
-    return send(publish.status, { error: "PUBLISH_FAILED", corridor: publish.body });
-  }
-
+  /* No publish step. The record now waits in REVIEW for the Owner. */
   return send(200, {
     ok: true,
     manifest_id: id,
     record_id: recordId,
     identity: record.identity,
-    status: publish.body && publish.body.record ? publish.body.record.status : "PUBLISHED",
-    public_url: publish.body && publish.body.public_url,
-    approval_mode: publish.body && publish.body.approval_mode,
+    status: (review.body && review.body.record && review.body.record.status) || "REVIEW",
+    next: "OWNER_APPROVAL_REQUIRED",
   });
 };

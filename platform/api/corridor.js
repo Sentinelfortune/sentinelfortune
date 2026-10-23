@@ -62,7 +62,9 @@ const OWNER_ONLY_ACTIONS = ["approve"];
 /* Which transitions exist. Anything absent is not merely refused — it is not
    expressible, which is the difference between a rule and a hope. */
 const TRANSITIONS = {
-  update_draft:     ["DRAFT", "REVIEW", "APPROVED", "PUBLISHED"],
+  /* Not PUBLISHED: editing live content would change what the public reads
+     without an approval of that content. Unpublish, edit, re-approve. */
+  update_draft:     ["DRAFT", "REVIEW", "APPROVED"],
   submit_review:    ["DRAFT"],
   approve:          ["DRAFT", "REVIEW"],
   publish_approved: ["APPROVED"],
@@ -203,25 +205,16 @@ function identifyCaller(req) {
  * CORRIDOR_STANDING_POLICY is a JSON array of {identity, types[]} entries.
  * Absent or unparseable means NO standing policy, so the failure direction is
  * towards Owner review — the safe one.
+ *
+ * There is deliberately NO built-in default. A policy compiled into the code
+ * is a publishing grant no Owner can see or withdraw from configuration, and
+ * an absent variable would silently mean "publish" rather than "review".
+ * Pinned by tests/corridor.owner-gate.cjs.
  */
-const OWNER_AUTHORIZED_CHATGPT_POLICY = Object.freeze([
-  { identity: "sentinelfortunerecords", types: ["MUSIC_RELEASE", "PODCAST", "BUNDLE"] },
-  { identity: "codexworldtv", types: ["STORY", "BOOK", "BUNDLE"] },
-  { identity: "lumengame", types: ["GAME", "BUNDLE"] },
-  { identity: "lumenschoolacademy", types: ["COURSE", "BOOK", "SOFTWARE", "PODCAST", "BUNDLE"] },
-  { identity: "vibraflowmedia", types: ["TEACHING", "BOOK", "PODCAST", "BUNDLE"] },
-  { identity: "lightnodesystems", types: ["SOFTWARE", "COURSE", "BOOK", "BUNDLE"] },
-  { identity: "oglegacystore", types: ["BUNDLE", "BOOK", "SOFTWARE", "MUSIC_RELEASE", "GAME", "STORY", "TEACHING"] },
-]);
-
-function standingPolicyAllows(record, caller) {
-  let configured = null;
-  try {
-    const parsed = JSON.parse(process.env.CORRIDOR_STANDING_POLICY || "null");
-    if (Array.isArray(parsed) && parsed.length) configured = parsed;
-  } catch { configured = null; }
-
-  const policy = configured || (caller === "chatgpt" ? OWNER_AUTHORIZED_CHATGPT_POLICY : []);
+function standingPolicyAllows(record) {
+  let policy;
+  try { policy = JSON.parse(process.env.CORRIDOR_STANDING_POLICY || "[]"); } catch { return false; }
+  if (!Array.isArray(policy)) return false;
   return policy.some((rule) =>
     rule && rule.identity === record.identity
     && Array.isArray(rule.types) && rule.types.includes(record.type));
@@ -503,14 +496,20 @@ async function updateDraft(body, caller, env) {
   const summary = body.summary !== undefined ? String(body.summary) : row.summary;
   const description = body.description !== undefined ? String(body.description) : row.description;
 
+  /* An approval covers the version the Owner read. Changing an APPROVED
+     record therefore withdraws its approval and returns it to REVIEW. */
+  const to = row.status === "APPROVED" ? "REVIEW" : row.status;
   await d1(
     `UPDATE editorial_records
-        SET title=?2, summary=?3, description=?4, version=version+1, updated_at=?5
+        SET title=?2, summary=?3, description=?4, version=version+1, updated_at=?5, status=?6,
+            approved_by=CASE WHEN ?6='REVIEW' AND status='APPROVED' THEN NULL ELSE approved_by END,
+            approval_mode=CASE WHEN ?6='REVIEW' AND status='APPROVED' THEN NULL ELSE approval_mode END,
+            approved_at=CASE WHEN ?6='REVIEW' AND status='APPROVED' THEN NULL ELSE approved_at END
       WHERE record_id=?1`,
-    [row.record_id, title, summary, description, now()], env,
+    [row.record_id, title, summary, description, now(), to], env,
   );
   await logEvent({
-    record_id: row.record_id, action: "update_draft", from: row.status, to: row.status,
+    record_id: row.record_id, action: "update_draft", from: row.status, to,
     actor: caller, adapter: caller, detail: { version: row.version + 1 },
   }, env);
   return { status: 200, body: { record: present(await loadRecord(row.record_id, env)) } };
@@ -534,6 +533,19 @@ async function getPreview(body, caller, env) {
   };
 }
 
+/** The version named by the most recent explicit Owner approval, or null. */
+async function latestApprovedVersion(recordId, env) {
+  const rows = await d1(
+    "SELECT detail_json FROM editorial_events WHERE record_id=?1 AND action='approve' ORDER BY event_id DESC LIMIT 1",
+    [recordId], env,
+  );
+  if (!rows.length) return null;
+  try {
+    const v = JSON.parse(rows[0].detail_json || "null");
+    return v && Number.isInteger(v.version) ? v.version : null;
+  } catch { return null; }
+}
+
 async function publishApproved(body, caller, env) {
   const row = await loadRecord(body.record_id, env);
   if (!row) return { status: 404, body: { error: "NOT_FOUND" } };
@@ -542,14 +554,37 @@ async function publishApproved(body, caller, env) {
   }
 
   const approvedAlready = row.status === "APPROVED";
-  const byPolicy = standingPolicyAllows(row, caller) && ["DRAFT", "REVIEW", "APPROVED", "UNPUBLISHED"].includes(row.status);
+  const byPolicy = standingPolicyAllows(row) && ["DRAFT", "REVIEW", "APPROVED", "UNPUBLISHED"].includes(row.status);
   /* RE-PUBLISHING WHAT WAS ALREADY APPROVED AND THEN WITHDRAWN.
      UNPUBLISHED was missing from the eligible set, which made rollback
      impossible: a record could be taken down and never restored, because the
      only route back was an APPROVED status it could no longer reach. A record
      carrying a prior explicit approval may return — that approval was given to
-     this record and withdrawing it from view did not revoke it. */
-  const restoring = row.status === "UNPUBLISHED" && Boolean(row.approved_by);
+     this record and withdrawing it from view did not revoke it.
+     A record first published under a standing policy is NOT restored on that
+     history alone: it is restored only while the policy still covers it; if
+     the Owner has withdrawn the policy, it needs an explicit approval. */
+  const restoring = row.status === "UNPUBLISHED" && Boolean(row.approved_by)
+    && (row.approval_mode !== "STANDING_POLICY" || byPolicy);
+
+  /* AN EXPLICIT APPROVAL IS FOR ONE VERSION. Publishing on it requires that
+     the Owner's latest approval names the version about to go public. A
+     record approved before versions were recorded has no such proof and
+     must be approved again. */
+  if ((approvedAlready || restoring) && !byPolicy && (row.approval_mode || "EXPLICIT") === "EXPLICIT") {
+    const approvedVersion = await latestApprovedVersion(row.record_id, env);
+    if (approvedVersion !== row.version) {
+      return {
+        status: 409,
+        body: {
+          error: "APPROVAL_STALE",
+          status: row.status,
+          version: row.version,
+          detail: "the Owner's approval does not name this version; the Owner must approve it again",
+        },
+      };
+    }
+  }
 
   if (!approvedAlready && !byPolicy && !restoring) {
     /* THE IMPORTANT REFUSAL. An assistant cannot approve its own work, so the
@@ -648,6 +683,8 @@ async function approve(body, caller, env) {
     /* actor is the Owner because the Owner decided; adapter records which
        surface carried the decision. */
     actor: "owner", adapter: caller, approval_mode: "EXPLICIT",
+    /* The exact version approved. publish_approved checks it. */
+    detail: { version: row.version },
   }, env);
   return {
     status: 200,
@@ -792,8 +829,10 @@ module.exports = async function handler(req, res) {
     /* IDEMPOTENCY. A repeated key returns the first result verbatim rather
        than performing the action again — so a retried publish cannot become
        two publications or a doubled version number. */
+    /* Scoped to the caller: one principal's key can never replay another
+       principal's response (an Owner approval included). */
     const idem = typeof body.idempotency_key === "string" && body.idempotency_key.trim()
-      ? body.idempotency_key.trim().slice(0, 200) : null;
+      ? `${caller}:${body.idempotency_key.trim().slice(0, 200)}` : null;
     if (idem) {
       const prior = await d1("SELECT response_json FROM corridor_idempotency WHERE idem_key=?1", [idem], env);
       if (prior.length) {
