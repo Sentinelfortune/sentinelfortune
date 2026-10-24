@@ -18,6 +18,7 @@ import { validate, normalize } from "../schema/record.js";
 import { validateMedia } from "./media.js";
 import { canTransition, canPublish, isPublic } from "../schema/states.js";
 import { toPublicRecord } from "./publish.js";
+import { checkEditorialFit } from "./editorial-policy.js";
 
 const STEPS = Object.freeze([
   "COMMAND_VALIDATION", "OWNER_AUTHORITY", "NORMALIZE", "IDENTITY_VALIDATION",
@@ -124,6 +125,12 @@ function prepare(command, { store, identity, audit, log, now, base = null }) {
     log("EDITORIAL_VALIDATION", "REFUSED", ed.problems.join("; "));
     return refuse("EDITORIAL_VALIDATION", "INVALID_RECORD", ed.problems.join("; "), audit);
   }
+  const fitPolicy = checkEditorialFit(draft);
+  if (!fitPolicy.ok) {
+    log("EDITORIAL_VALIDATION", "REFUSED", fitPolicy.code);
+    return refuse("EDITORIAL_VALIDATION", fitPolicy.code, fitPolicy.reason || "Editorial world mismatch", audit);
+  }
+  if (fitPolicy.reviewRequired) log("EDITORIAL_VALIDATION", "WORLD_REVIEW_REQUIRED", fitPolicy.signals.join(","));
   log("EDITORIAL_VALIDATION", "OK");
 
   /* ── 6. media and rights ──────────────────────────────────────────────── */
@@ -195,6 +202,11 @@ function publish(command, ctx) {
   const { existing, ownerApproval } = ctx;
   if (!existing) return refuse("PUBLISH", "NOT_FOUND", `no record ${command.recordId}`, ctx.audit);
 
+  const publishFit = checkEditorialFit(existing);
+  if (!publishFit.ok) {
+    ctx.log("EDITORIAL_VALIDATION", "REFUSED", publishFit.code);
+    return refuse("EDITORIAL_VALIDATION", publishFit.code, publishFit.reason || "Editorial world mismatch", ctx.audit);
+  }
   if (!canPublish(existing.status)) {
     ctx.log("APPROVAL_STATE", "REFUSED", existing.status);
     return refuse("APPROVAL_STATE", "NOT_APPROVED",

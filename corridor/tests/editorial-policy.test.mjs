@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {EDITORIAL_CHARTERS,EDITORIAL_POLICY_VERSION,checkEditorialFit} from "../core/editorial-policy.js";
+test("seven distinct versioned charters",()=>{ assert.equal(Object.keys(EDITORIAL_CHARTERS).length,7);assert.equal(EDITORIAL_POLICY_VERSION,"sfl-seven-worlds/1.0.0");assert.equal(new Set(Object.values(EDITORIAL_CHARTERS).map(x=>x.identity)).size,7); });
+test("music rights content cannot be published as VibraFlow",()=>{const r=checkEditorialFit({branch:"VIBRAFLOW_MEDIA",title:"Understanding Music Royalties",body:"How artists can license their recording rights"});assert.equal(r.ok,false);assert.equal(r.code,"EDITORIAL_WORLD_MISMATCH")});
+test("spiritual prayer cannot be published as LightNode technical article",()=>{const r=checkEditorialFit({branch:"LIGHTNODE_SYSTEMS",title:"Spiritual prayer",body:"Prayer, faith and spiritual grace in daily life"});assert.equal(r.ok,false)});
+test("technology tutorials belong to LightNode",()=>{const r=checkEditorialFit({branch:"LIGHTNODE_SYSTEMS",title:"Software architecture",body:"Designing resilient APIs"});assert.equal(r.ok,true)});
+test("music business belongs to Records even with business overlap",()=>{const r=checkEditorialFit({branch:"SENTINEL_FORTUNE_RECORDS",title:"Music royalty business",body:"How artists structure recording income"});assert.equal(r.ok,true);assert.equal(r.reviewRequired,true)});
+test("ambiguous work is flagged, never silently routed",()=>{const r=checkEditorialFit({branch:"CODEX_WORLD_TV",title:"Tomorrow",body:"A new horizon awaits"});assert.equal(r.ok,true);assert.equal(r.reviewRequired,true)});
+test("unknown identity is refused",()=>{assert.equal(checkEditorialFit({branch:"ANOTHER_WORLD"}).ok,false)});
