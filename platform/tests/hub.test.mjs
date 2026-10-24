@@ -1,4 +1,4 @@
-/* Sentinel Fortune — PUBLIC EXPERIENCE V2 unit tests.
+﻿/* Sentinel Fortune â€” PUBLIC EXPERIENCE V2 unit tests.
  *
  * These guard the things the browser run cannot: the readiness contract, the
  * selection gate the homepage uses, the media-role system, and the invariant
@@ -20,9 +20,9 @@ import { MEDIA_ROLES, governedRole, governedRoles } from "../engine/visual.js";
 import { isPublicHost, isCanonicalHost, HUB_PUBLIC_HOSTS } from "../engine/router.js";
 import { priceState, ctaState } from "../engine/commerce.js";
 
-const FEED = JSON.parse(readFileSync(new URL("../feed/public-site.json", import.meta.url), "utf8"));
+const FEED = JSON.parse(readFileSync(new URL("./preview-fixture.json", import.meta.url), "utf8"));
 
-/* ═══ ONE ENGINE, SEVEN WORLDS ════════════════════════════════════════ */
+/* â•â•â• ONE ENGINE, SEVEN WORLDS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 test("there are exactly seven worlds, and they match the engine's identities", () => {
   assert.equal(Object.keys(BRANCHES).length, 7);
@@ -48,9 +48,9 @@ test("every world declares the public presentation the homepage needs", () => {
   }
 });
 
-/* ═══ THE BRAND FOUNDATION IS DEEP BLUE ═══════════════════════════════ */
+/* â•â•â• THE BRAND FOUNDATION IS DEEP BLUE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-test("every field in the family is blue-dominant — not black, not black-and-gold", () => {
+test("every field in the family is blue-dominant â€” not black, not black-and-gold", () => {
   const fields = [["hub", HUB.theme.bg], ...allBranches().map((b) => [b.slug, b.theme.bg])];
   for (const [name, hex] of fields) {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -62,7 +62,7 @@ test("every field in the family is blue-dominant — not black, not black-and-go
   }
 });
 
-test("the homepage accent is not gold — gold is a separate, scarce token", () => {
+test("the homepage accent is not gold â€” gold is a separate, scarce token", () => {
   assert.notEqual(HUB.theme.accent.toLowerCase(), "#c8a84b");
   const r = parseInt(HUB.theme.accent.slice(1, 3), 16);
   const b = parseInt(HUB.theme.accent.slice(5, 7), 16);
@@ -70,7 +70,7 @@ test("the homepage accent is not gold — gold is a separate, scarce token", () 
   assert.equal(HUB.theme.gold, "#c8a84b");
 });
 
-/* ═══ THE READINESS CONTRACT ══════════════════════════════════════════ */
+/* â•â•â• THE READINESS CONTRACT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 test("worldState implements the strict nesting, and ignores a flag raised out of order", () => {
   const mk = (experienceReady, hubVisible, subdomainLive) => ({ readiness: { experienceReady, hubVisible, subdomainLive } });
@@ -92,7 +92,7 @@ test("worldState implements the strict nesting, and ignores a flag raised out of
 
 test("the platform's readiness matches the institutional site's _data/identities.yml", () => {
   /* The institutional site is the source of truth. The platform is a static
-     runtime and cannot read YAML, so it mirrors it — and THIS TEST is what
+     runtime and cannot read YAML, so it mirrors it â€” and THIS TEST is what
      makes the mirror safe. If the two disagree, this fails rather than the
      homepage quietly linking to something the Owner has not surfaced. */
   const yaml = readFileSync(new URL("../../_data/identities.yml", import.meta.url), "utf8");
@@ -123,7 +123,7 @@ test("the platform's readiness matches the institutional site's _data/identities
 
 test("on the Owner's current data a world is publicly linked ONLY when it is LIVE", () => {
   /* This replaced an assertion that NO world may be linked, which was a
-     snapshot of the Owner's data rather than a rule — it had to fail the first
+     snapshot of the Owner's data rather than a rule â€” it had to fail the first
      time a world was legitimately published, which tells you nothing. The rule
      is what matters, and it holds whatever the flags say: a world is reachable
      from a public Hub exactly when its own readiness reached LIVE, and the
@@ -169,7 +169,7 @@ test("the homepage's own hosts are public, and a preview host is not", () => {
   assert.equal(isCanonicalHost("sentinelfortune.com"), false);
 });
 
-/* ═══ THE SELECTION GATE ══════════════════════════════════════════════ */
+/* â•â•â• THE SELECTION GATE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 test("selectAllPublic uses the same readiness gate as selectPublic", () => {
   const all = selectAllPublic(FEED.records);
@@ -196,7 +196,7 @@ test("a withheld or unapproved record never reaches the homepage", () => {
   }
 });
 
-/* ═══ THE THREE PUBLICATION ROLES ═════════════════════════════════════ */
+/* â•â•â• THE THREE PUBLICATION ROLES â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 test("the three media roles exist and are resolved, not guessed", () => {
   assert.deepEqual([...MEDIA_ROLES], ["ATTENTION", "VALUE", "DISCOVERY"]);
@@ -205,7 +205,7 @@ test("the three media roles exist and are resolved, not guessed", () => {
   const record = accepted.find((r) => r.slug === "the-discipline-of-an-unhurried-morning");
   assert.ok(record, "the V2 preview record should be published");
 
-  /* No governed imagery yet, so no role claims real imagery — and the page
+  /* No governed imagery yet, so no role claims real imagery â€” and the page
      says so by generating, not by emitting a path to a file that is not there. */
   assert.deepEqual(governedRoles(record), []);
   for (const role of MEDIA_ROLES) assert.equal(governedRole(record, role), null);
@@ -219,7 +219,7 @@ test("an unknown media role is dropped rather than carried", () => {
   assert.equal(accepted[0].media[0].role, null);
 });
 
-/* ═══ COMMERCE: THE HOMEPAGE CANNOT MANUFACTURE A SALE ════════════════ */
+/* â•â•â• COMMERCE: THE HOMEPAGE CANNOT MANUFACTURE A SALE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 test("only a record with a governed price AND a governed BUY action is sellable", () => {
   const { accepted } = selectAllPublic(FEED.records);
@@ -237,14 +237,14 @@ test("only a record with a governed price AND a governed BUY action is sellable"
     assert.match(ctaState(r).href, /^https:\/\/sentinelfortune\.github\.io\/sentinelfortune\/shop\//);
   }
 
-  /* An UNPRICED record is never sellable — absence of a price is not free. */
+  /* An UNPRICED record is never sellable â€” absence of a price is not free. */
   const unpriced = accepted.find((r) => priceState(r).state === "UNPRICED");
   if (unpriced) assert.notEqual(ctaState(unpriced).enabled && ctaState(unpriced).kind, "BUY");
 });
 
 test("support is voluntary, bounded, and carries no payment by default", () => {
   assert.deepEqual([...SUPPORT_AMOUNTS], [5, 10, 25]);
-  /* There is no default endpoint anywhere in the module — a payment action
+  /* There is no default endpoint anywhere in the module â€” a payment action
      cannot appear because someone forgot to configure one. */
   const source = readFileSync(new URL("../engine/hub.js", import.meta.url), "utf8");
   assert.ok(!/https:\/\/[^"'\s]*(donate|support|pay|checkout|stripe)/i.test(source),
@@ -262,11 +262,11 @@ test("the homepage defines no price, tier or checkout of its own", () => {
   assert.ok(source.includes('from "./commerce.js"'));
 });
 
-/* ═══ SEO ═════════════════════════════════════════════════════════════ */
+/* â•â•â• SEO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 test("the company homepage declares its own canonical host and share image", () => {
   /* Without a host, seo.js builds the WebSite node from `branch.host` and
-     emits a literal "https://undefined/" — which it did until this existed. */
+     emits a literal "https://undefined/" â€” which it did until this existed. */
   /* onecompany, NOT the apex. The apex is the institutional site; the Hub is
      the discovery gateway. Two surfaces claiming one canonical would put the
      gateway in the index competing with the company's authority page. */
@@ -301,3 +301,4 @@ test("a preview feed is never indexable", () => {
   assert.ok(seo.includes('evidence === "LIVE" ? "index,follow'), "indexability must be gated on LIVE evidence");
   assert.ok(seo.includes("noindex,nofollow"));
 });
+

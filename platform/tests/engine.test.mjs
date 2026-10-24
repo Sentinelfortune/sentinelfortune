@@ -1,4 +1,4 @@
-/* Unit tests — shared core, commercial heart, identity router, feed envelope.
+﻿/* Unit tests â€” shared core, commercial heart, identity router, feed envelope.
  *
  * Run: node --test platform/tests/engine.test.mjs
  *
@@ -23,7 +23,7 @@ import { readEnvelope, loadFeed, FEED_SCHEMA, DEFAULT_FEED_URL, STATIC_FEED_URL 
 import { BRANCHES, HOST_MAP, allBranches } from "../engine/identities.js";
 import { rendererFor, rendererName } from "../engine/renderers.js";
 
-const FEED = JSON.parse(readFileSync(new URL("../feed/public-site.json", import.meta.url), "utf8"));
+const FEED = JSON.parse(readFileSync(new URL("./preview-fixture.json", import.meta.url), "utf8"));
 
 /** A minimal valid public record, for building variations on. */
 function rec(over = {}) {
@@ -35,11 +35,11 @@ function rec(over = {}) {
   };
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   SHARED CORE — governance
-   ═══════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SHARED CORE â€” governance
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-describe("core — the seven identities are a closed set", () => {
+describe("core â€” the seven identities are a closed set", () => {
   test("exactly seven, and the branch config agrees", () => {
     assert.equal(IDENTITIES.length, 7);
     assert.deepEqual([...IDENTITIES].sort(), Object.keys(BRANCHES).sort());
@@ -59,7 +59,7 @@ describe("core — the seven identities are a closed set", () => {
   });
 });
 
-describe("core — public readiness", () => {
+describe("core â€” public readiness", () => {
   test("a complete record is public", () => {
     assert.equal(publicReadiness(rec()).public, true);
   });
@@ -70,7 +70,7 @@ describe("core — public readiness", () => {
     assert.match(r.problems.join(" "), /publicationStatus/);
   });
 
-  test("approved must be boolean true — a truthy string is refused", () => {
+  test("approved must be boolean true â€” a truthy string is refused", () => {
     for (const truthy of ["yes", 1, "true", {}]) {
       const r = publicReadiness(rec({ publicReadiness: { approved: truthy } }));
       assert.equal(r.public, false, `approved=${JSON.stringify(truthy)} must be refused`);
@@ -95,7 +95,7 @@ describe("core — public readiness", () => {
   });
 });
 
-describe("core — pricing authority", () => {
+describe("core â€” pricing authority", () => {
   test("a governed USD price converts to exact cents", () => {
     assert.deepEqual(governedPrice(rec({ price: { amount: 224, currency: "USD" } })), { amount: 224, currency: "USD", cents: 22400 });
     assert.deepEqual(governedPrice(rec({ price: { amount: 49.5, currency: "USD" } })), { amount: 49.5, currency: "USD", cents: 4950 });
@@ -105,7 +105,7 @@ describe("core — pricing authority", () => {
     assert.equal(governedPrice(rec({ price: { amount: 224.999, currency: "USD" } })), null);
   });
 
-  test("no price means no price — there is no default", () => {
+  test("no price means no price â€” there is no default", () => {
     assert.equal(governedPrice(rec()), null);
     assert.equal(governedPrice(rec({ price: null })), null);
     assert.equal(governedPrice(rec({ price: { amount: "224", currency: "USD" } })), null);
@@ -123,7 +123,7 @@ describe("core — pricing authority", () => {
   });
 });
 
-describe("core — destinations never leak a non-public address", () => {
+describe("core â€” destinations never leak a non-public address", () => {
   test("site-relative paths are allowed", () => {
     assert.deepEqual(governedDestination("/learn/floor"), { href: "/learn/floor", external: false });
   });
@@ -151,7 +151,7 @@ describe("core — destinations never leak a non-public address", () => {
   });
 });
 
-describe("core — normalization", () => {
+describe("core â€” normalization", () => {
   test("a CTA with a refused destination is dropped whole", () => {
     const n = normalize(rec({ cta: { kind: "OPEN", destination: "http://127.0.0.1:8899/x" } }));
     assert.equal(n.cta, null, "half a CTA is worse than none");
@@ -173,7 +173,7 @@ describe("core — normalization", () => {
   });
 });
 
-describe("core — selectPublic is the one gate", () => {
+describe("core â€” selectPublic is the one gate", () => {
   const pool = [
     rec({ id: "a", identity: "lumenschoolacademy" }),
     rec({ id: "b", identity: "lumengame", type: "GAME" }),
@@ -205,11 +205,11 @@ describe("core — selectPublic is the one gate", () => {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SHARED COMMERCIAL HEART
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-describe("commerce — price state has three values, not two", () => {
+describe("commerce â€” price state has three values, not two", () => {
   test("FREE requires the governed tier, never the absence of a price", () => {
     assert.equal(priceState(normalize(rec({ pricingTier: "FREE" }))).state, "FREE");
     assert.equal(priceState(normalize(rec())).state, "UNPRICED", "no price must NOT read as free");
@@ -227,7 +227,7 @@ describe("commerce — price state has three values, not two", () => {
   });
 });
 
-describe("commerce — the CTA cannot be dishonest", () => {
+describe("commerce â€” the CTA cannot be dishonest", () => {
   test("a BUY with no governed price is DISABLED and says why", () => {
     const c = ctaState(normalize(rec({ cta: { kind: "BUY", destination: "https://sentinelfortune.github.io/sentinelfortune/shop/" } })));
     assert.equal(c.enabled, false);
@@ -258,12 +258,12 @@ describe("commerce — the CTA cannot be dishonest", () => {
   });
 });
 
-describe("commerce — related offers never cross identities", () => {
+describe("commerce â€” related offers never cross identities", () => {
   const pool = [
     normalize(rec({ id: "1", slug: "a", collections: ["Ops"], categories: ["X"] })),
     normalize(rec({ id: "2", slug: "b", collections: ["Ops"] })),
     normalize(rec({ id: "3", slug: "c", categories: ["X"] })),
-    /* No shared collection, no shared category, and a DIFFERENT type — the
+    /* No shared collection, no shared category, and a DIFFERENT type â€” the
        only genuinely unrelated shape. A same-type record with no overlap is
        still a real (weak) signal and is deliberately allowed to score. */
     normalize(rec({ id: "4", slug: "d", type: "GAME" })),
@@ -295,7 +295,7 @@ describe("commerce — related offers never cross identities", () => {
   });
 });
 
-describe("commerce — browse surfaces", () => {
+describe("commerce â€” browse surfaces", () => {
   const pool = [
     normalize(rec({ id: "1", slug: "a", featured: true, pricingTier: "FREE", categories: ["X"], collections: ["C"] })),
     normalize(rec({ id: "2", slug: "b", pricingTier: "PAID", price: { amount: 10, currency: "USD" }, categories: ["X"] })),
@@ -328,11 +328,11 @@ describe("commerce — browse surfaces", () => {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    IDENTITY ROUTER
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-describe("router — hostname resolves the identity", () => {
+describe("router â€” hostname resolves the identity", () => {
   test("each of the seven canonical hosts resolves to its own house", () => {
     for (const b of allBranches()) {
       const r = resolveIdentity({ hostname: b.host, pathname: "/" });
@@ -345,7 +345,7 @@ describe("router — hostname resolves the identity", () => {
     assert.equal(resolveIdentity({ hostname: "LumenGame.SentinelFortune.com:443" }).identity, "lumengame");
   });
 
-  test("hostname BEATS the dev overrides — no identity switch from the address bar", () => {
+  test("hostname BEATS the dev overrides â€” no identity switch from the address bar", () => {
     const r = resolveIdentity({
       hostname: "sentinelfortunerecords.sentinelfortune.com",
       pathname: "/i/lumenschoolacademy/",
@@ -385,7 +385,7 @@ describe("router — hostname resolves the identity", () => {
   });
 });
 
-describe("router — paths resolve to views", () => {
+describe("router â€” paths resolve to views", () => {
   const id = "lumenschoolacademy";
 
   test("home, browse, collections", () => {
@@ -429,7 +429,7 @@ describe("router — paths resolve to views", () => {
   });
 });
 
-describe("router — links and canonicals", () => {
+describe("router â€” links and canonicals", () => {
   test("dev links carry the prefix; production links do not", () => {
     const dev = links("lumengame", "/i/lumengame");
     assert.equal(dev.browse({ type: "GAME" }), "/i/lumengame/browse?type=GAME");
@@ -455,11 +455,11 @@ describe("router — links and canonicals", () => {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FEED
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-describe("feed — the envelope is governance, not decoration", () => {
+describe("feed â€” the envelope is governance, not decoration", () => {
   test("the shipped fixture file is a valid envelope", () => {
     const e = readEnvelope(FEED);
     assert.equal(e.ok, true, e.problems.join("; "));
@@ -475,7 +475,7 @@ describe("feed — the envelope is governance, not decoration", () => {
     assert.equal(readEnvelope(rest).evidence, "TEST_PREVIEW");
   });
 
-  test("a wrong schema is refused with NO records — never a partial read", () => {
+  test("a wrong schema is refused with NO records â€” never a partial read", () => {
     const e = readEnvelope({ ...FEED, schema: "something.else/9" });
     assert.equal(e.ok, false);
     assert.deepEqual(e.records, []);
@@ -508,11 +508,11 @@ describe("feed — the envelope is governance, not decoration", () => {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    THE FIXTURE PROVES THE WHOLE FLOW
-   ═══════════════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-describe("fixtures — every identity has governed evidence", () => {
+describe("fixtures â€” every identity has governed evidence", () => {
   test("all seven houses receive at least one public record", () => {
     for (const id of IDENTITIES) {
       const { accepted } = selectPublic(FEED.records, id);
@@ -590,16 +590,16 @@ describe("fixtures — every identity has governed evidence", () => {
   });
 });
 
-/* ─────────────────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    DYNAMIC FEED SOURCE + STATIC FALLBACK
 
    The public feed moved from a repo-static file to the Editorial Corridor's
    D1 database behind /api/feed. The fallback is the part that must not be
    taken on trust: if it breaks, a world shows an empty catalogue rather than
    the records that are sitting in the repository.
-   ───────────────────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-describe("feed — dynamic source with static fallback", () => {
+describe("feed â€” dynamic source with static fallback", () => {
   const envelope = {
     schema: "sf.public-site/1.0",
     evidence: "TEST_PREVIEW",
@@ -660,22 +660,22 @@ describe("feed — dynamic source with static fallback", () => {
   });
 });
 
-/* ─────────────────────────────────────────────────────────────────────────
-   DEEP LINKS — THE HOSTING CONTRACT
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   DEEP LINKS â€” THE HOSTING CONTRACT
 
    Every route below `/` exists only because the host rewrites unknown paths
    onto the one runtime file. That rewrite lives in vercel.json, which no other
-   test reads, so a config edit could — and did — take every deep link down
+   test reads, so a config edit could â€” and did â€” take every deep link down
    while all 100-odd runtime tests stayed green.
 
    The specific defect these guard: with `cleanUrls: true` the host generates a
-   308 on `/…/index(.html)` ahead of the filesystem, so a rewrite whose
+   308 on `/â€¦/index(.html)` ahead of the filesystem, so a rewrite whose
    destination still carried `.html` sent every deep link back into that
-   redirect instead of serving the runtime. Vercel says it plainly — with
-   cleanUrls on, a destination must not carry a file extension — and nothing
+   redirect instead of serving the runtime. Vercel says it plainly â€” with
+   cleanUrls on, a destination must not carry a file extension â€” and nothing
    here was checking.
-   ───────────────────────────────────────────────────────────────────────── */
-describe("hosting — deep links reach the one runtime", () => {
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+describe("hosting â€” deep links reach the one runtime", () => {
   const VERCEL = JSON.parse(readFileSync(new URL("../vercel.json", import.meta.url), "utf8"));
   const spa = VERCEL.rewrites.find((r) => r.source.includes("(?!"));
 
@@ -687,12 +687,12 @@ describe("hosting — deep links reach the one runtime", () => {
   test("its destination carries no file extension while cleanUrls is on", () => {
     if (VERCEL.cleanUrls !== true) return;        // the rule only binds then
     assert.ok(!/\.[a-z0-9]+$/i.test(spa.destination),
-      `cleanUrls rewrites every /…/index(.html) away, so destination "${spa.destination}" cannot resolve`);
+      `cleanUrls rewrites every /â€¦/index(.html) away, so destination "${spa.destination}" cannot resolve`);
   });
 
   test("it carries every route the router can produce, and nothing served as a file", () => {
     /* Compiled the way the host compiles it: the source is path-to-regexp
-       with one unnamed group, which becomes ^/(…)$. */
+       with one unnamed group, which becomes ^/(â€¦)$. */
     const re = new RegExp(`^${spa.source.replace(/^\//, "\\/")}$`);
     const segments = allBranches().map((b) => b.segment);
     assert.equal(new Set(segments).size, 7);
@@ -703,7 +703,7 @@ describe("hosting — deep links reach the one runtime", () => {
     for (const route of ["/", "/browse", "/collections", "/c/Foundations", "/i/vibraflowmedia/reflect/x"]) {
       assert.ok(re.test(route), `${route} must reach the runtime`);
     }
-    /* And the paths that are real files or functions must NOT be swallowed —
+    /* And the paths that are real files or functions must NOT be swallowed â€”
        /api/ above all, or the corridor and the feed become the homepage. */
     for (const real of ["/api/feed", "/api/corridor", "/engine/boot.js", "/feed/public-site.json",
                         "/assets/x.webp", "/app.css", "/robots.txt", "/sitemap.xml"]) {
@@ -711,3 +711,4 @@ describe("hosting — deep links reach the one runtime", () => {
     }
   });
 });
+

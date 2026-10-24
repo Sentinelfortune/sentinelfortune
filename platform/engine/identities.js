@@ -75,7 +75,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["MUSIC_RELEASE", "PODCAST", "BUNDLE"]),
     segment: "release",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#070f24", surface: "#101a38", accent: "#c9a227", accentSoft: "rgba(201,162,39,.10)",
       ink: "#f3f1fb", inkSoft: "#b8bed8", line: "#1c2a4e",
@@ -114,7 +114,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["STORY", "BOOK", "BUNDLE"]),
     segment: "story",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#060d1f", surface: "#0d1830", accent: "#6fb3d9", accentSoft: "rgba(111,179,217,.10)",
       ink: "#eaf1f8", inkSoft: "#a9bccd", line: "#16253f",
@@ -151,7 +151,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["GAME", "BUNDLE"]),
     segment: "play",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#061024", surface: "#0c1a33", accent: "#3fd9b4", accentSoft: "rgba(63,217,180,.10)",
       ink: "#e9fbf7", inkSoft: "#9fc0c8", line: "#14283f",
@@ -192,7 +192,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["COURSE", "BOOK", "SOFTWARE", "PODCAST", "BUNDLE"]),
     segment: "learn",
-    readiness: Object.freeze({ experienceReady: true, hubVisible: true, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: true, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#070f22", surface: "#0d1730", accent: "#c8a84b", accentSoft: "rgba(200,168,75,.10)",
       ink: "#eef1f7", inkSoft: "#b4bfd4", line: "#1e2a48",
@@ -231,7 +231,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["TEACHING", "BOOK", "PODCAST", "BUNDLE"]),
     segment: "reflect",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#080e1d", surface: "#111a2c", accent: "#d8c9a8", accentSoft: "rgba(216,201,168,.08)",
       ink: "#f4f2ee", inkSoft: "#b6b8bd", line: "#1b2438",
@@ -271,7 +271,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["SOFTWARE", "COURSE", "BOOK", "BUNDLE"]),
     segment: "systems",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#050d1c", surface: "#0b1628", accent: "#7fa8c9", accentSoft: "rgba(127,168,201,.10)",
       ink: "#e8eef4", inkSoft: "#a3b4c4", line: "#142231",
@@ -310,7 +310,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["BUNDLE", "BOOK", "SOFTWARE", "MUSIC_RELEASE", "GAME", "STORY", "TEACHING"]),
     segment: "offer",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: true }),
+    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
     theme: Object.freeze({
       bg: "#080e20", surface: "#121a30", accent: "#d9a66c", accentSoft: "rgba(217,166,108,.10)",
       ink: "#f7f1ea", inkSoft: "#c0b6ad", line: "#1f2840",
