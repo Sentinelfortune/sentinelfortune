@@ -71,8 +71,8 @@ test("Day 001 previews in English (canonical) and French (distinct translation)"
   assert.equal(pv.body.preview.preview, true);
   assert.equal(pv.body.preview.isLive, false);
   const text = JSON.stringify(pv.body.preview);
-  assert.ok(text.includes("You Were Not Given an Inheritance"), "EN title in preview");
-  assert.ok(text.includes("Un héritage ne t'a pas été confié"), "FR title in preview");
+  assert.ok(text.includes(PKG.prepareRequest.title), "EN title in preview");
+  assert.ok(text.includes(PKG.prepareRequest.translations.fr.title), "FR title in preview");
 });
 
 test("Day 001 cannot be published in TEST_PREVIEW, even after Owner approval", async () => {
