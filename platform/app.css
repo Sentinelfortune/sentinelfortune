@@ -1,0 +1,1152 @@
+/* =====================================================================
+Sentinel Fortune — ONE FAMILY, SEVEN WORLDS.
+
+ONE stylesheet for all seven houses. What a branch changes is the token set
+written onto :root by engine/seo.js applyTheme() — background, surface, accent,
+ink, line, display face, mood. Everything structural is shared, so the seven
+cannot drift apart in spacing, component quality, accessibility or mobile
+behaviour.
+
+What is shared:   typography scale, spacing rhythm, component anatomy, focus
+                  treatment, touch targets, motion discipline, states.
+What differs:     atmosphere (tokens), hierarchy emphasis, media behaviour,
+                  and the lead interaction each branch's renderer builds.
+
+`[data-mood]` is how a world bends the shared shell without forking it: a few
+rules per mood, never a second implementation of a component.
+===================================================================== */
+
+:root {
+  /* Defaults. applyTheme() overwrites these per branch before first paint of
+     the shell, so a flash of the wrong world is not possible. */
+  --bg: #070b18;
+  --surface: #0d1428;
+  --accent: #c8a84b;
+  --accent-soft: rgba(200, 168, 75, .10);
+  --ink: #eef1f7;
+  --ink-soft: #b4bfd4;
+  --line: #1e2a48;
+  --display: "Cormorant Garamond", Georgia, serif;
+
+  --brand: "Cinzel", Georgia, serif;
+  --body: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --measure: 68ch;
+  --gut: 20px;
+  --radius: 7px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.65;
+  min-height: 100vh;
+  /* No horizontal scroll, ever. Mobile is a primary commercial surface. */
+  overflow-x: hidden;
+}
+
+img, canvas, video { max-width: 100%; display: block; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Focus is replaced, never removed — the browser default is invisible on
+   these dark fields. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+.sf-sr, .sf-skip:not(:focus) {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.sf-skip:focus {
+  position: fixed; top: 8px; left: 8px; z-index: 100; width: auto; height: auto;
+  clip: auto; margin: 0; padding: 10px 16px; background: var(--accent); color: #0a0a0a;
+  border-radius: var(--radius);
+}
+
+/* ── preview notice ──────────────────────────────────────────────────── */
+/* Visible on every page while the feed is not LIVE. A fixture must never be
+   mistakable for real inventory. */
+.sf-preview {
+  background: var(--accent);
+  color: #0a0a0a;
+  font-size: .82rem;
+  line-height: 1.5;
+  padding: 9px var(--gut);
+  text-align: center;
+}
+.sf-preview strong { font-family: var(--brand); letter-spacing: .14em; text-transform: uppercase; font-size: .72rem; }
+.sf-preview-at { opacity: .72; }
+
+/* ── header ──────────────────────────────────────────────────────────── */
+.sf-head { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; z-index: 20; }
+.sf-head-in {
+  max-width: 1120px; margin: 0 auto; padding: 14px var(--gut);
+  display: flex; align-items: center; gap: 16px; position: relative;
+}
+.sf-brand { display: inline-flex; align-items: center; gap: 11px; min-height: 44px; flex: 1; }
+.sf-brand:hover { text-decoration: none; }
+.sf-brand-mark { font-size: 1.5rem; color: var(--accent); line-height: 1; flex: none; }
+.sf-brand-txt { display: flex; flex-direction: column; min-width: 0; }
+.sf-brand-name {
+  font-family: var(--brand); font-size: .82rem; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--ink); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.sf-brand-tag { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft); }
+
+.sf-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+.sf-nav-a {
+  min-height: 44px; display: inline-flex; align-items: center; padding: 8px 13px;
+  font-size: .86rem; color: var(--ink-soft); border-radius: var(--radius);
+}
+.sf-nav-a:hover { background: var(--accent-soft); color: var(--ink); text-decoration: none; }
+
+/* The burger is a MOBILE control. It stays hidden at every width except the
+   one where the nav collapses — showing it beside a fully visible nav gives a
+   visitor two navigations and no reason to prefer either. */
+.sf-burger { display: none; }
+.sf-js .sf-burger {
+  display: none;
+  flex-direction: column; justify-content: center; gap: 4px;
+  width: 44px; height: 44px; padding: 10px; flex: none;
+  /* The outline carried --line (#1e2a48) on a #070f22 field — a hairline with
+     almost no contrast, so the control's SHAPE read as absent on a phone even
+     though the strokes were light. A low-alpha gold tint makes the boundary
+     perceptible without becoming a gold button. */
+  background: transparent; border: 1px solid rgba(200, 168, 75, .22);
+  border-radius: var(--radius); cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+/* GOLD, AND 2px RATHER THAN 1.5px.
+   The strokes were never dark — they were --ink (#eef1f7). What made them
+   vanish was thickness: a 1.5px hairline sub-pixel-antialiased on a phone
+   reads as a smudge. Gold at 1.5px would have been WORSE, because #c8a84b
+   carries 8.35:1 against #070f22 where near-white carries about 15:1. So the
+   stroke goes gold AND gains half a pixel; contrast stays far above the 3:1
+   WCAG asks of a UI component, and the control finally reads.
+   --gold is the scarce premium token, identical across all seven worlds,
+   which is why one mobile control may spend it where --accent would drift
+   teal, amber or violet from house to house. */
+.sf-js .sf-burger span {
+  display: block; height: 2px; border-radius: 1px;
+  background: var(--gold);
+  transition: background-color .15s ease;
+}
+.sf-js .sf-burger:hover { border-color: rgba(200, 168, 75, .38); background: rgba(200, 168, 75, .06); }
+.sf-js .sf-burger:hover span,
+.sf-js .sf-burger[aria-expanded="true"] span { background: #dcc06a; }
+.sf-js .sf-burger[aria-expanded="true"] { border-color: rgba(200, 168, 75, .45); }
+/* The focus ring is the global :focus-visible rule — 2px solid var(--accent),
+   which stays each world's own colour. It is not overridden here. */
+
+@media (max-width: 720px) {
+  .sf-js .sf-burger { display: inline-flex; }
+  .sf-js .sf-nav {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0; background: var(--surface);
+    border-bottom: 1px solid var(--line); padding: 8px var(--gut) 14px;
+  }
+  .sf-js .sf-nav.open { display: flex; }
+  .sf-js .sf-nav-a { width: 100%; }
+}
+
+/* ── main / sections ─────────────────────────────────────────────────── */
+.sf-main { max-width: 1120px; margin: 0 auto; padding: 32px var(--gut) 72px; }
+
+.sf-kicker {
+  font-family: var(--brand); font-size: .64rem; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+}
+.sf-section { margin-bottom: 54px; }
+.sf-section-h {
+  font-family: var(--display); font-size: clamp(1.5rem, 3.6vw, 2rem);
+  font-weight: 600; line-height: 1.16; margin-bottom: 8px;
+}
+.sf-section-sub { color: var(--ink-soft); font-size: .94rem; max-width: 60ch; margin-bottom: 20px; }
+
+/* ── hero ────────────────────────────────────────────────────────────── */
+/* A visitor must know where they are and what they can do within seconds, so
+   the hero carries exactly three things: tag, promise, and the lead action. */
+.sf-hero { padding: 34px 0 44px; border-bottom: 1px solid var(--line); margin-bottom: 46px; }
+.sf-hero-tag {
+  font-family: var(--brand); font-size: .66rem; letter-spacing: .26em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+}
+.sf-hero-h {
+  font-family: var(--display); font-size: clamp(2.1rem, 7vw, 3.6rem);
+  font-weight: 600; line-height: 1.06; margin-bottom: 16px; max-width: 24ch;
+}
+.sf-hero-sub { color: var(--ink-soft); font-size: 1.06rem; line-height: 1.6; max-width: 58ch; margin-bottom: 26px; }
+.sf-hero-act { display: flex; gap: 11px; flex-wrap: wrap; }
+
+/* ── buttons ─────────────────────────────────────────────────────────── */
+.sf-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 12px 26px;
+  border: 1px solid var(--accent); border-radius: var(--radius);
+  background: transparent; color: var(--accent);
+  font-family: var(--brand); font-size: .72rem; letter-spacing: .18em;
+  text-transform: uppercase; cursor: pointer; text-align: center;
+}
+.sf-btn:hover { background: var(--accent-soft); text-decoration: none; }
+.sf-btn--primary { background: var(--accent); color: #0a0a0a; }
+.sf-btn--primary:hover { filter: brightness(1.12); }
+.sf-ext { font-size: .9em; }
+
+/* A refused action is a sentence, never a dead button. */
+.sf-cta-note { color: var(--ink-soft); font-size: .86rem; font-style: italic; }
+
+/* ITEM-LEVEL TRUTH, carried on production where the global draft banner used
+   to be. Deliberately quiet — it marks one item as an example, it is not a
+   warning about the site — but legible enough that nobody mistakes a fixture
+   for real inventory. */
+.sf-demo {
+  display: inline-block; align-self: flex-start;
+  font-family: var(--brand); font-size: .6rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 3px 9px; margin-bottom: 6px;
+}
+
+/* ── price ───────────────────────────────────────────────────────────── */
+.sf-price { font-family: var(--brand); font-size: .9rem; letter-spacing: .04em; display: flex; align-items: baseline; gap: 9px; }
+.sf-price-now { color: var(--ink); }
+.sf-price-was { color: var(--ink-soft); text-decoration: line-through; font-size: .8em; opacity: .75; }
+.sf-price--free { color: var(--accent); letter-spacing: .18em; text-transform: uppercase; font-size: .72rem; }
+.sf-price--tbc { color: var(--ink-soft); font-size: .78rem; letter-spacing: .08em; font-style: italic; }
+
+/* ── cards + grid ────────────────────────────────────────────────────── */
+.sf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.sf-card {
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sf-card:hover { border-color: var(--accent); }
+.sf-card-img { aspect-ratio: 3 / 2; object-fit: cover; background: var(--bg); width: 100%; height: auto; }
+.sf-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
+.sf-card-badge {
+  font-family: var(--brand); font-size: .58rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--accent);
+}
+.sf-card-title { font-family: var(--display); font-size: 1.22rem; font-weight: 600; line-height: 1.24; }
+/* The title is the card's primary action. Padding grows the hit box past 40px;
+   the matching negative margin keeps the visual rhythm exactly as it was, so
+   the target is usable on a phone without the card getting taller. */
+.sf-card-title a {
+  color: var(--ink);
+  display: block;
+  padding: 11px 0;
+  margin: -11px 0;
+}
+.sf-card-title a:hover { color: var(--accent); }
+.sf-card-sum { color: var(--ink-soft); font-size: .92rem; line-height: 1.6; }
+.sf-card-meta { color: var(--ink-soft); font-size: .8rem; opacity: .8; }
+.sf-card-foot {
+  margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}
+/* 44px, not 40. At exactly 40 this sat ON the mobile tap-target threshold, so
+   sub-pixel rounding decided whether the acceptance check passed — it failed
+   intermittently, which is worse than failing, because a flaky guard teaches
+   you to re-run instead of to look. 44 is the conventional minimum and the
+   size .sf-nav-a and .sf-burger already use; the padding stays compact so the
+   card footer still reads as a footer. */
+.sf-card-foot .sf-btn { min-height: 44px; padding: 9px 17px; font-size: .62rem; }
+
+/* ── chips ───────────────────────────────────────────────────────────── */
+.sf-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.sf-chip {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 8px 15px;
+  border: 1px solid var(--line); border-radius: 100px;
+  font-size: .84rem; color: var(--ink-soft); background: var(--surface);
+}
+.sf-chip:hover { border-color: var(--accent); color: var(--ink); text-decoration: none; }
+
+/* ── free / paid split ───────────────────────────────────────────────── */
+.sf-split { display: grid; gap: 26px; }
+@media (min-width: 860px) { .sf-split { grid-template-columns: 1fr 1fr; gap: 32px; } }
+.sf-split-h {
+  font-family: var(--brand); font-size: .68rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--line);
+}
+.sf-split-none { color: var(--ink-soft); font-size: .88rem; font-style: italic; }
+
+/* ── browse / search ─────────────────────────────────────────────────── */
+.sf-browse-head { margin-bottom: 22px; }
+.sf-browse-h { font-family: var(--display); font-size: clamp(1.7rem, 5vw, 2.5rem); font-weight: 600; line-height: 1.1; }
+.sf-browse-count { color: var(--ink-soft); font-size: .86rem; margin-top: 6px; }
+.sf-search { display: flex; gap: 9px; margin-bottom: 26px; flex-wrap: wrap; }
+.sf-search input {
+  flex: 1 1 220px; min-height: 46px; padding: 11px 15px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  color: var(--ink); font-family: var(--body); font-size: .95rem;
+}
+.sf-search input::placeholder { color: var(--ink-soft); opacity: .7; }
+
+/* ── states ──────────────────────────────────────────────────────────── */
+.sf-state {
+  border: 1px dashed var(--line); border-radius: var(--radius); background: var(--surface);
+  padding: 38px 26px; text-align: center;
+}
+.sf-state--error { border-style: solid; border-color: var(--accent); }
+.sf-state-h {
+  font-family: var(--brand); font-size: .74rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+}
+.sf-state-text { color: var(--ink-soft); font-size: .96rem; line-height: 1.68; max-width: 54ch; margin: 0 auto 14px; }
+.sf-state-detail {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .78rem; color: var(--ink-soft); opacity: .75; margin-bottom: 14px; word-break: break-word;
+}
+.sf-spinner {
+  display: inline-block; width: 22px; height: 22px; margin-bottom: 14px;
+  border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%;
+  animation: sf-spin .8s linear infinite;
+}
+@keyframes sf-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sf-spinner { animation-duration: 3s; } }
+
+/* ── detail (shared frame) ───────────────────────────────────────────── */
+.sf-crumbs { font-size: .82rem; color: var(--ink-soft); margin-bottom: 22px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sf-crumbs a { display: inline-flex; align-items: center; min-height: 40px; }
+.sf-detail-head { padding-bottom: 26px; border-bottom: 1px solid var(--line); margin-bottom: 30px; }
+.sf-detail-title { font-family: var(--display); font-size: clamp(2rem, 6vw, 3.1rem); font-weight: 600; line-height: 1.07; margin-bottom: 13px; }
+.sf-detail-sum { color: var(--ink-soft); font-size: 1.08rem; line-height: 1.6; max-width: 56ch; margin-bottom: 22px; }
+.sf-detail-act { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.sf-prose { max-width: var(--measure); margin-bottom: 44px; }
+.sf-prose p { color: var(--ink-soft); line-height: 1.78; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   THE SEVEN WORLDS — specialized renderers
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* Records — a transport you operate. */
+.rn-deck { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; margin-bottom: 30px; }
+.rn-wave { width: 100%; height: 110px; background: color-mix(in srgb, var(--bg) 85%, #000); border-bottom: 1px solid var(--line); }
+.rn-transport { display: flex; align-items: center; gap: 15px; padding: 17px 19px; flex-wrap: wrap; }
+.rn-key {
+  width: 48px; height: 48px; flex: none; border: 1px solid var(--accent); border-radius: 50%;
+  background: transparent; color: var(--accent); font-size: 1rem; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.rn-key:hover:not([disabled]) { background: var(--accent-soft); }
+.rn-key[disabled] { opacity: .3; cursor: not-allowed; }
+.rn-now { flex: 1 1 170px; min-width: 0; }
+.rn-now-title { font-family: var(--display); font-size: 1.2rem; }
+.rn-now-kind { font-size: .76rem; color: var(--ink-soft); }
+.rn-note { border-top: 1px solid var(--line); padding: 11px 19px; font-size: .84rem; color: var(--ink-soft); }
+
+/* Codex — your position in a world. */
+.cx-spine { list-style: none; border-left: 1px solid var(--line); padding-left: 0; margin-bottom: 18px; }
+.cx-ep { display: flex; align-items: baseline; gap: 13px; padding: 11px 0 11px 19px; position: relative; }
+.cx-ep-n { font-family: var(--brand); font-size: .68rem; color: var(--ink-soft); flex: none; min-width: 1.4em; }
+.cx-ep.is-here { background: var(--accent-soft); border-left: 2px solid var(--accent); margin-left: -1px; }
+.cx-ep.is-here .cx-ep-t { color: var(--accent); }
+.cx-ep-t { font-family: var(--display); font-size: 1.1rem; color: var(--ink); }
+.cx-pos { font-family: var(--brand); font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* Lumen Game — one enormous target. */
+.gm-cab {
+  border: 1px solid var(--accent); border-radius: 10px; text-align: center;
+  padding: clamp(32px, 7vw, 68px) clamp(20px, 5vw, 50px); margin-bottom: 16px;
+  background: radial-gradient(120% 90% at 50% 0%, var(--accent-soft) 0%, transparent 64%), var(--surface);
+}
+.gm-title { font-family: var(--display); font-size: clamp(2.3rem, 10vw, 4.6rem); line-height: .96; font-weight: 600; margin-bottom: 12px; }
+.gm-controls { font-family: var(--brand); font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 28px; }
+.gm-act .sf-btn { min-height: 62px; padding: 17px 48px; font-size: .84rem; }
+.gm-fine { font-size: .84rem; color: var(--ink-soft); text-align: center; }
+
+/* Academy — order carries information. */
+.lp-path { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 22px; margin-bottom: 18px; }
+.lp-path-h { font-family: var(--brand); font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.lp-spine { list-style: none; }
+.lp-step { display: grid; grid-template-columns: 38px 1fr; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.lp-step:last-child { border-bottom: none; }
+.lp-n {
+  width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-size: 1.05rem; color: var(--ink-soft);
+}
+.lp-step.is-here .lp-n { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+.lp-body { display: flex; flex-direction: column; gap: 3px; }
+.lp-t { font-family: var(--display); font-size: 1.16rem; color: var(--ink); }
+.lp-kind { font-family: var(--brand); font-size: .56rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.lp-fine, .bn-note { font-size: .84rem; color: var(--ink-soft); line-height: 1.7; max-width: 66ch; }
+
+/* VibraFlow — the room that lets you stop. */
+.vf { max-width: 34rem; margin: 0 auto; }
+.vf-piece { padding: clamp(22px, 6vw, 56px) 0; text-align: center; }
+.vf-kicker { font-family: var(--brand); font-size: .62rem; letter-spacing: .28em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+.vf-title { font-family: var(--display); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 400; line-height: 1.2; margin-bottom: 32px; }
+.vf-text { text-align: left; }
+.vf-text p { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.92; margin-bottom: 1.5em; }
+.vf-fine { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--line); font-size: .8rem; color: var(--ink-soft); text-align: center; }
+
+/* LightNode — the contract strip. */
+.ws-contract, .ws-facts { border-top: 1px solid var(--line); padding: 16px 0; display: grid; gap: 10px; margin-bottom: 20px; }
+.ws-contract > div, .ws-facts > div { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+.ws-contract dt, .ws-facts dt { font-family: var(--brand); font-size: .56rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.ws-contract dd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .86rem; color: var(--ink); }
+.ws-facts dd { font-size: .9rem; color: var(--ink-soft); }
+
+/* OG Legacy — the collection. */
+.bn-in-h { font-family: var(--brand); font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.bn-in { margin-bottom: 22px; }
+.bk-lead, .pd-title { font-family: var(--display); font-size: 1.3rem; color: var(--ink-soft); }
+.pd-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; }
+
+/* ── mood adjustments — a world bends the shell, never forks it ──────── */
+[data-mood="arcade"] .sf-section-h,
+[data-mood="lab"] .sf-section-h { letter-spacing: -.01em; }
+[data-mood="quiet"] .sf-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+[data-mood="quiet"] .sf-hero-h { font-weight: 400; }
+[data-mood="boutique"] .sf-card-img { aspect-ratio: 1 / 1; }
+[data-mood="boutique"] .sf-hero-h { font-family: var(--brand); font-size: clamp(1.6rem, 5vw, 2.6rem); letter-spacing: .04em; }
+[data-mood="widescreen"] .sf-card-img { aspect-ratio: 16 / 9; }
+[data-mood="nocturne"] .sf-hero { padding-bottom: 54px; }
+
+/* ── footer ──────────────────────────────────────────────────────────── */
+.sf-foot { border-top: 1px solid var(--line); background: var(--surface); margin-top: 40px; }
+.sf-foot-in { max-width: 1120px; margin: 0 auto; padding: 34px var(--gut); }
+.sf-foot-job { color: var(--ink-soft); font-size: .92rem; max-width: 56ch; margin-bottom: 18px; }
+.sf-foot-nav { display: flex; gap: 8px 22px; flex-wrap: wrap; margin-bottom: 18px; }
+.sf-foot-nav a { font-size: .86rem; min-height: 44px; display: inline-flex; align-items: center; }
+.sf-foot-note { font-size: .78rem; color: var(--ink-soft); opacity: .72; }
+
+/* Development identity picker. Rendered only off a canonical host. */
+.sf-dev { margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--line); }
+.sf-dev-h { font-family: var(--brand); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 10px; }
+.sf-dev-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.sf-dev-list a { font-size: .8rem; min-height: 40px; display: inline-flex; align-items: center; }
+.sf-dev-list a[aria-current] { color: var(--ink); font-weight: 500; }
+
+/* ── identity chooser (unknown host) ─────────────────────────────────── */
+.sf-chooser { max-width: 720px; margin: 0 auto; padding: 56px var(--gut); }
+.sf-chooser h1 { font-family: var(--display); font-size: clamp(2rem, 6vw, 3rem); font-weight: 600; margin-bottom: 12px; }
+.sf-chooser p { color: var(--ink-soft); margin-bottom: 10px; }
+.sf-chooser-host { font-size: .84rem; opacity: .75; }
+.sf-chooser-list { list-style: none; display: grid; gap: 9px; margin-top: 26px; }
+.sf-chooser-list a {
+  display: flex; align-items: center; gap: 14px; min-height: 58px; padding: 14px 18px;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink);
+}
+.sf-chooser-list a:hover { border-color: var(--accent); text-decoration: none; }
+.sf-chooser-list strong { display: block; font-family: var(--display); font-size: 1.15rem; font-weight: 600; }
+.sf-chooser-list span span { display: block; font-size: .84rem; color: var(--ink-soft); }
+.sf-chooser-mark { font-size: 1.4rem; color: var(--accent); flex: none; }
+
+.sf-noscript { max-width: 640px; margin: 0 auto; padding: 56px var(--gut); }
+.sf-noscript h1 { font-family: var(--display); font-size: 2rem; margin-bottom: 16px; }
+.sf-noscript p { color: var(--ink-soft); margin-bottom: 14px; }
+
+/* VibraFlow states the cost without adding an onward action. */
+.vf-cost { display: flex; justify-content: center; margin-bottom: 28px; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   PREMIUM VISUAL LAYER
+   Artwork is governed imagery when it exists and deliberate generated art
+   when it does not. Both go through one component, so a page can be
+   text-light, image-led and free of broken frames by construction.
+   ═════════════════════════════════════════════════════════════════════ */
+
+.sf-cover {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(130% 110% at 20% 0%, var(--accent-soft) 0%, transparent 60%),
+    color-mix(in srgb, var(--bg) 78%, #000);
+  border-bottom: 1px solid var(--line);
+  /* aspect-ratio is set inline per medium, so the box is reserved before any
+     paint and nothing shifts as art or an image arrives. */
+}
+.sf-cover-img,
+.sf-art { display: block; width: 100%; height: 100%; object-fit: cover; }
+.sf-art { position: absolute; inset: 0; }
+
+/* Generated art is ornament; a governed photograph is content. The faint
+   vignette only applies to the generated kind so real imagery stays true. */
+.sf-cover[data-generated="true"]::after,
+.sf-cover[data-generated="fallback"]::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(170deg, transparent 42%, color-mix(in srgb, var(--bg) 72%, transparent) 100%);
+  pointer-events: none;
+}
+
+/* The card cover is a second route to the same destination as the title, so it
+   is removed from the tab order and hidden from screen readers — the title is
+   the one announced, accessible target. */
+.sf-card-cover { display: block; line-height: 0; }
+.sf-card-cover:hover { text-decoration: none; }
+.sf-card:hover .sf-cover { filter: brightness(1.08); }
+.sf-cover, .sf-card:hover .sf-cover { transition: filter .25s ease; }
+@media (prefers-reduced-motion: reduce) { .sf-cover { transition: none; } }
+
+/* ── hero: atmosphere behind the words, never competing with them ────── */
+.sf-hero { position: relative; overflow: hidden; }
+.sf-hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.sf-hero-art { width: 100%; height: 100%; display: block; }
+.sf-hero-in { position: relative; z-index: 1; }
+.sf-hero::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 86%, transparent) 48%, transparent 100%);
+}
+.sf-hero-cost {
+  margin-top: 22px;
+  font-family: var(--brand); font-size: .64rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+
+/* ── detail: the image gets a real share of the screen ──────────────── */
+.sf-detail-top { display: grid; gap: 28px; margin-bottom: 34px; }
+@media (min-width: 880px) {
+  .sf-detail-top { grid-template-columns: minmax(0, 44%) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .sf-detail-head { padding-bottom: 0; border-bottom: none; margin-bottom: 0; }
+}
+.sf-detail-art .sf-cover { border: 1px solid var(--line); border-radius: var(--radius); }
+
+/* On a phone the image leads, then the headline — closest this gets to the
+   image-dominant product page the benchmark work pointed at. */
+@media (max-width: 879px) {
+  .sf-detail-art { margin-bottom: 4px; }
+  .sf-detail-head { padding-bottom: 22px; }
+}
+
+/* VibraFlow keeps its band wide and quiet. */
+.vf-art { margin-bottom: 30px; }
+.vf-art .sf-cover { border-radius: var(--radius); border: 1px solid var(--line); opacity: .9; }
+
+/* ── world-specific imagery behaviour ───────────────────────────────── */
+[data-mood="nocturne"] .sf-card .sf-cover { border-radius: 0; }
+[data-mood="boutique"] .sf-cover { background: color-mix(in srgb, var(--surface) 92%, #fff); }
+[data-mood="boutique"] .sf-card { border-radius: 0; }
+[data-mood="arcade"] .sf-card:hover .sf-cover { filter: brightness(1.16) saturate(1.1); }
+[data-mood="quiet"] .sf-cover { opacity: .88; }
+[data-mood="lab"] .sf-cover { background: color-mix(in srgb, var(--bg) 88%, #000); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   LIVING DISCOVERY — rails and the dynamic hero
+   Streaming-style mechanics on governed content. Horizontal shelves that
+   work by touch, wheel, keyboard and arrows; a hero driven by whatever
+   House of Assets has featured.
+   ═════════════════════════════════════════════════════════════════════ */
+
+.sf-rails { display: flex; flex-direction: column; gap: 46px; }
+.sf-rail { position: relative; }
+
+.sf-rail-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 16px;
+}
+.sf-rail-h {
+  font-family: var(--display); font-size: clamp(1.25rem, 3vw, 1.7rem);
+  font-weight: 600; line-height: 1.18;
+}
+.sf-rail-note { color: var(--ink-soft); font-size: .82rem; margin-top: 5px; max-width: 56ch; opacity: .85; }
+
+.sf-rail-navs { display: flex; gap: 7px; flex: none; }
+.sf-rail-nav, .sf-rail-clear {
+  width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); cursor: pointer;
+  font-size: 1.15rem; line-height: 1;
+}
+.sf-rail-clear { width: auto; padding: 0 15px; font-family: var(--brand); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
+.sf-rail-nav:hover, .sf-rail-clear:hover { border-color: var(--accent); color: var(--accent); }
+.sf-rail-nav[hidden] { display: none; }
+
+/* The track. An ordinary overflow container, so touch and wheel work with no
+   JavaScript; the arrows are a convenience layered on top. */
+.sf-rail-track {
+  display: flex; gap: 16px; list-style: none;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
+  padding: 2px 2px 10px;
+  margin: -2px -2px -10px;
+  /* Hide the bar without disabling the scrolling it represents. */
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.sf-rail-track::-webkit-scrollbar { height: 6px; }
+.sf-rail-track::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.sf-rail-track:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.sf-rail-item { flex: 0 0 auto; width: 272px; scroll-snap-align: start; }
+.sf-rail-item .sf-card { height: 100%; }
+@media (max-width: 560px) { .sf-rail-item { width: 78vw; max-width: 300px; } }
+
+/* ── living card interaction ─────────────────────────────────────────── */
+/* A lift on hover for pointers; nothing essential depends on it, and the
+   card's action is always visible for touch. */
+@media (hover: hover) and (pointer: fine) {
+  .sf-card { transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease; }
+  .sf-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px -14px rgba(0, 0, 0, .75);
+  }
+}
+.sf-card:focus-within { border-color: var(--accent); }
+
+/* ── dynamic hero ────────────────────────────────────────────────────── */
+.sf-hero--dynamic .sf-hero-stage {
+  position: relative; z-index: 1;
+  display: grid; gap: 26px; align-items: center;
+  padding: 30px 0 18px;
+}
+@media (min-width: 900px) {
+  .sf-hero--dynamic .sf-hero-stage { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); gap: 44px; }
+  .sf-hero--dynamic .sf-hero-art { order: 2; }
+  .sf-hero--dynamic .sf-hero-in { order: 1; }
+}
+.sf-hero--dynamic .sf-hero-art { position: static; }
+.sf-hero--dynamic .sf-hero-art .sf-cover { border: 1px solid var(--line); border-radius: var(--radius); }
+.sf-hero--dynamic .sf-hero-h { font-size: clamp(1.9rem, 5.4vw, 3.1rem); }
+.sf-hero--dynamic .sf-detail-act { margin-bottom: 18px; }
+
+.sf-hero-dots { position: relative; z-index: 1; display: flex; gap: 9px; padding: 6px 0 22px; }
+.sf-hero-dot {
+  width: 34px; height: 44px; padding: 0;
+  background: none; border: none; cursor: pointer;
+  display: inline-flex; align-items: center;
+}
+.sf-hero-dot::before {
+  content: ""; display: block; width: 100%; height: 3px; border-radius: 2px;
+  background: var(--line); transition: background .2s ease;
+}
+.sf-hero-dot[aria-selected="true"]::before { background: var(--accent); }
+.sf-hero-dot:hover::before { background: var(--accent-soft); }
+
+/* ── entrance motion, and the switch that turns it all off ───────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .sf-rail { animation: sf-rise .4s ease both; }
+  .sf-rails > *:nth-child(2) { animation-delay: .04s; }
+  .sf-rails > *:nth-child(3) { animation-delay: .08s; }
+  .sf-rails > *:nth-child(n+4) { animation-delay: .12s; }
+}
+@keyframes sf-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-rail-track { scroll-behavior: auto; }
+  .sf-rail { animation: none; }
+  .sf-card { transition: none; }
+  .sf-card:hover { transform: none; }
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* The house promise, above the featured item. It is what answers "where am
+   I?" when the hero is showing a single product. */
+.sf-hero-promise {
+  font-family: var(--display);
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  max-width: 34ch;
+}
+
+/* ── the company mark ────────────────────────────────────────────────── */
+/* ONE FAMILY, SEVEN WORLDS, made literal: the Sentinel Fortune mark is the
+   constant across all seven mastheads; the house glyph sits beside the tag as
+   the variable. A visitor reads the company first, the house second. */
+.sf-brand-logo {
+  width: 38px; height: 38px; flex: none;
+  border-radius: 7px; display: block;
+}
+.sf-brand-glyph { color: var(--accent); margin-right: 7px; font-size: 1.05em; line-height: 1; }
+.sf-brand-tag { display: inline-flex; align-items: center; }
+
+.sf-foot-brand { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+.sf-foot-logo { width: 52px; height: 52px; flex: none; border-radius: 9px; opacity: .92; }
+.sf-foot-brand .sf-foot-job { margin-bottom: 0; }
+@media (max-width: 480px) {
+  .sf-foot-brand { flex-direction: column; gap: 12px; }
+}
+
+/* =====================================================================
+PUBLIC EXPERIENCE V2 — THE COMPANY HOMEPAGE
+
+The brand layer. Everything below belongs to the ONE Sentinel Fortune
+homepage, which is not an eighth world: it is the company. It reuses the
+shared tokens, the shared button, the shared section and the shared card
+anatomy, and adds only what a homepage needs that a world does not —
+seven gateways, a company hero, a support invitation and a B2B block.
+
+THE FOUNDATION IS DEEP BLUE.
+Gold appears as an accent on a rule, a mark and a price — never as a field.
+Black appears inside media treatment only. A world bends this frame through
+--board-accent; it never replaces it.
+===================================================================== */
+
+.sf-hub { display: block; }
+
+/* ── A · hero ─────────────────────────────────────────────────────────── */
+.sf-hub-hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  /* Deep blue, lit from the upper right. Not a black slab, not a gradient
+     for decoration's sake — it gives the mark somewhere to sit. */
+  background:
+    radial-gradient(118% 92% at 78% 6%, color-mix(in srgb, var(--surface) 86%, var(--accent)) 0%, transparent 56%),
+    linear-gradient(176deg, var(--surface) 0%, var(--bg) 72%);
+}
+.sf-hub-hero-bg {
+  position: absolute; inset: 0; opacity: .5; pointer-events: none;
+}
+.sf-hub-hero-bg svg { width: 100%; height: 100%; }
+.sf-hub-hero-in {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 68px var(--gut) 60px;
+}
+.sf-hub-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--brand);
+  font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--accent);
+  padding-bottom: 18px;
+}
+.sf-hub-eyebrow-mark { font-size: .9rem; letter-spacing: 0; }
+.sf-hub-h {
+  font-family: var(--display);
+  font-weight: 400;
+  /* Large, but it must not become a wall on a phone. */
+  font-size: clamp(2rem, 7.2vw, 3.9rem);
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  max-width: 24ch;
+  color: var(--ink);
+}
+.sf-hub-sub {
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 2.1vw, 1.16rem);
+  max-width: 54ch;
+  padding-top: 18px;
+}
+.sf-hub-act { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 28px; }
+.sf-hub-count {
+  color: var(--ink-soft); font-size: .84rem; padding-top: 22px;
+  border-top: 1px solid var(--line); margin-top: 26px;
+}
+
+/* ── B · latest ───────────────────────────────────────────────────────── */
+.sf-hub-latest { display: grid; gap: 22px; grid-template-columns: 1fr; }
+.sf-hub-rel {
+  display: grid; gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.sf-hub-rel-art { position: relative; background: var(--bg); }
+.sf-hub-rel-art svg, .sf-hub-rel-art img { width: 100%; height: 100%; object-fit: cover; }
+.sf-hub-rel-body { padding: 20px; display: flex; flex-direction: column; gap: 9px; }
+.sf-hub-rel-meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  font-family: var(--brand); color: var(--accent);
+}
+.sf-hub-rel-dot { opacity: .5; }
+.sf-hub-rel-type { color: var(--ink-soft); }
+.sf-hub-rel-t { font-family: var(--display); font-weight: 400; font-size: 1.42rem; line-height: 1.2; }
+.sf-hub-rel-sum { color: var(--ink-soft); font-size: .94rem; }
+.sf-hub-rel-act { padding-top: 6px; margin-top: auto; }
+.sf-hub-rel-note, .sf-hub-inert {
+  color: var(--ink-soft); font-size: .84rem;
+  border-left: 2px solid var(--line); padding-left: 10px;
+}
+
+/* ── C · the seven worlds ─────────────────────────────────────────────── */
+.sf-hub-boards { display: grid; gap: 16px; grid-template-columns: 1fr; }
+
+.sf-board {
+  position: relative;
+  display: block;
+  min-height: 260px;
+  border: 1px solid var(--board-line, var(--line));
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--board-surface, var(--surface));
+  color: var(--ink);
+  text-decoration: none;
+  isolation: isolate;
+}
+.sf-board:hover { text-decoration: none; }
+.sf-board-art { position: absolute; inset: 0; z-index: 0; opacity: .34; }
+.sf-board-art svg, .sf-board-art img { width: 100%; height: 100%; object-fit: cover; }
+/* The scrim is what keeps a world's artwork from eating its own label. */
+.sf-board::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(183deg, rgba(5,11,26,.18) 0%, rgba(5,11,26,.72) 58%, rgba(5,11,26,.93) 100%);
+}
+.sf-board-in {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; gap: 7px;
+  height: 100%;
+  padding: 20px;
+  justify-content: flex-end;
+  min-height: 260px;
+}
+.sf-board-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--board-accent, var(--accent));
+}
+.sf-board-mark { font-size: .95rem; letter-spacing: 0; }
+.sf-board-name { font-family: var(--display); font-weight: 400; font-size: 1.44rem; line-height: 1.15; }
+.sf-board-role { color: var(--ink-soft); font-size: .9rem; max-width: 34ch; }
+.sf-board-count { color: var(--ink-soft); font-size: .76rem; opacity: .8; }
+.sf-board-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--board-accent, var(--accent));
+  font-size: .88rem; font-weight: 400;
+  padding-top: 6px;
+}
+.sf-board-arrow { transition: transform .22s ease; }
+.sf-board--open:hover .sf-board-arrow { transform: translateX(4px); }
+@media (prefers-reduced-motion: reduce) { .sf-board-arrow { transition: none; } }
+
+/* A world that is not OPEN still states its state — "In build" stays "In
+   build". The board itself is not a link, so the claim is never overstated;
+   the Preview control below is a separate, explicitly labelled way in. */
+.sf-board-state {
+  display: inline-block;
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  font-family: var(--brand);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 11px;
+  margin-top: 8px;
+  align-self: flex-start;
+}
+/* THE PREVIEW CONTROL. It was a passive badge; it is now a real link to the
+   world's own hostname, so it has to look and behave like something you press
+   and reach by keyboard — a 44px target, its own focus ring, and the ↗ that
+   says it leaves this page. It carries the world's accent rather than --gold
+   so each card still reads as its own house. */
+.sf-board-preview {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  min-height: 44px; padding: 8px 15px; margin-top: 10px;
+  font-size: .66rem; letter-spacing: .14em; text-transform: uppercase;
+  font-family: var(--brand);
+  color: var(--board-accent, var(--accent));
+  background: transparent;
+  border: 1px solid var(--board-accent, var(--accent));
+  border-radius: var(--radius);
+  transition: background-color .15s ease;
+}
+.sf-board-preview:hover {
+  background: var(--board-accent, var(--accent));
+  color: var(--bg);
+  text-decoration: none;
+}
+.sf-board-preview:focus-visible {
+  outline: 2px solid var(--board-accent, var(--accent)); outline-offset: 3px;
+}
+/* The LABEL form — a span, used where the board is already an anchor and a
+   nested link would be invalid. It is not pressable, so it keeps the original
+   flat badge look rather than borrowing the button's affordances. */
+.sf-board-preview--label {
+  min-height: 0; padding: 3px 8px; margin-top: 8px;
+  color: var(--bg); background: var(--board-accent, var(--accent));
+  border: 0; border-radius: 3px;
+}
+.sf-board-preview--label:hover { color: var(--bg); background: var(--board-accent, var(--accent)); }
+
+/* The inert board is slightly held back, but NOT the control inside it: a
+   dimmed link is the thing that reads as disabled when it is not. */
+.sf-board--inert { opacity: .92; }
+.sf-board--inert .sf-board-preview { opacity: 1; }
+.sf-board--open:focus-visible { outline: 2px solid var(--board-accent, var(--accent)); outline-offset: 3px; }
+
+/* ── D · featured experiences ─────────────────────────────────────────── */
+.sf-hub-exp { display: grid; gap: 14px; grid-template-columns: 1fr; }
+.sf-exp {
+  display: grid; grid-template-columns: 104px 1fr; gap: 14px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  color: var(--ink); text-decoration: none;
+}
+.sf-exp:hover { text-decoration: none; border-color: var(--accent); }
+.sf-exp--inert { opacity: .78; }
+.sf-exp-art { border-radius: 4px; overflow: hidden; background: var(--bg); }
+.sf-exp-art svg, .sf-exp-art img { width: 100%; height: 100%; object-fit: cover; }
+.sf-exp-in { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.sf-exp-do {
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
+}
+.sf-exp-t { font-family: var(--display); font-weight: 400; font-size: 1.1rem; line-height: 1.25; }
+.sf-exp-world { color: var(--ink-soft); font-size: .78rem; }
+
+/* ── E · knowledge ────────────────────────────────────────────────────── */
+.sf-hub-know { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.sf-know {
+  display: block; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; color: var(--ink); text-decoration: none;
+}
+.sf-know:hover { text-decoration: none; border-color: var(--accent); }
+.sf-know--inert { opacity: .82; }
+.sf-know-art { background: var(--bg); }
+.sf-know-art svg, .sf-know-art img { width: 100%; height: auto; object-fit: cover; }
+.sf-know-in { padding: 16px; display: flex; flex-direction: column; gap: 7px; }
+.sf-know-kind {
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft);
+}
+.sf-know-t { font-family: var(--display); font-weight: 400; font-size: 1.16rem; line-height: 1.25; }
+.sf-know-sum { color: var(--ink-soft); font-size: .88rem; }
+.sf-know-cost { color: var(--accent); font-size: .8rem; }
+
+/* ── F · digital products ─────────────────────────────────────────────── */
+.sf-hub-prod { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.sf-prod {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); overflow: hidden;
+}
+.sf-prod-art { background: var(--bg); }
+.sf-prod-art svg, .sf-prod-art img { width: 100%; height: auto; object-fit: cover; }
+.sf-prod-in { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.sf-prod-kind {
+  font-family: var(--brand); font-size: .64rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft);
+}
+.sf-prod-t { font-family: var(--display); font-weight: 400; font-size: 1.14rem; line-height: 1.25; }
+.sf-prod-price { color: var(--accent); font-size: 1.02rem; }
+
+.sf-hub-noprod {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 22px;
+  display: flex; flex-direction: column; gap: 12px; align-items: flex-start;
+  max-width: var(--measure);
+}
+.sf-hub-noprod-note { color: var(--ink-soft); font-size: .88rem; }
+
+/* ── G · support the work ─────────────────────────────────────────────── */
+.sf-sup {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  /* Gold edge, one line of it. This is the single most "premium" moment on
+     the page and it earns exactly one accent, not a gold panel. */
+  border-left: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  max-width: 68ch;
+}
+.sf-sup-lead { font-size: 1.04rem; color: var(--ink); }
+.sf-sup-amounts { display: flex; flex-wrap: wrap; gap: 10px; }
+.sf-sup-amount {
+  /* 44px minimum touch target. Support is a mobile action. */
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 76px; min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--accent); border-radius: var(--radius);
+  color: var(--accent); font-size: 1rem; text-decoration: none;
+}
+.sf-sup-amount:hover { text-decoration: none; background: var(--accent-soft); }
+.sf-sup-amount--inert {
+  border-style: dashed; color: var(--ink-soft); border-color: var(--line);
+  cursor: default;
+}
+.sf-sup-fine, .sf-sup-inert { color: var(--ink-soft); font-size: .82rem; }
+.sf-sup-inert { border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* ── H · business ─────────────────────────────────────────────────────── */
+.sf-b2b { display: flex; flex-direction: column; gap: 24px; }
+.sf-b2b-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+.sf-b2b-item {
+  border-top: 1px solid var(--line); padding-top: 14px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.sf-b2b-h { font-family: var(--display); font-weight: 400; font-size: 1.1rem; }
+.sf-b2b-p { color: var(--ink-soft); font-size: .9rem; }
+
+/* ── responsive ───────────────────────────────────────────────────────────
+   Mobile is the default above. These only widen it. Nothing here changes
+   behaviour, only how much fits on a line.
+   ─────────────────────────────────────────────────────────────────────── */
+@media (min-width: 620px) {
+  .sf-hub-boards { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-exp { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-know { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-prod { grid-template-columns: repeat(3, 1fr); }
+  .sf-b2b-grid { grid-template-columns: repeat(2, 1fr); }
+  .sf-hub-rel { grid-template-columns: 240px 1fr; }
+  .sf-hub-rel-art { min-height: 100%; }
+}
+@media (min-width: 1000px) {
+  .sf-hub-hero-in { padding: 104px var(--gut) 92px; }
+  .sf-hub-boards { grid-template-columns: repeat(3, 1fr); }
+  /* The first board spans two columns: seven items in a three-column grid
+     leaves a hole otherwise, and the label world earns the emphasis. */
+  .sf-hub-boards > .sf-board:first-child { grid-column: span 2; }
+  .sf-hub-boards > .sf-board:first-child .sf-board-in { min-height: 320px; }
+  .sf-hub-exp { grid-template-columns: repeat(3, 1fr); }
+  .sf-hub-know { grid-template-columns: repeat(3, 1fr); }
+  .sf-b2b-grid { grid-template-columns: repeat(3, 1fr); }
+  .sf-board { min-height: 300px; }
+  .sf-board-in { min-height: 300px; }
+}
+
+/* =====================================================================
+V2 REFINEMENT — RESTRAINING GOLD, AND FILLING THE GRID
+
+Two corrections made after looking at the rendered page rather than at the
+token values:
+
+1. GOLD WAS THE ACCENT, SO GOLD WAS EVERYTHING. Every kicker, arrow, badge
+   and generated stroke inherits --accent. With --accent set to gold the
+   result read as a black-and-gold template even though the field was
+   already deep blue. The homepage now carries a luminous blue accent and a
+   SEPARATE --gold token, spent only where premium emphasis is earned: a
+   governed price, the support edge, the monogram rule.
+
+2. SEVEN BOARDS IN A THREE-COLUMN GRID LEFT A HOLE. The last row rendered
+   two boards and one empty cell, which reads as unfinished. The seventh
+   board now spans the full width — and because the seventh is OG Legacy
+   Store, it leads directly into Digital products below it.
+===================================================================== */
+
+:root { --gold: #c8a84b; }
+
+/* Premium emphasis, deliberately scarce. */
+.sf-prod-price,
+.sf-know-cost { color: var(--gold); }
+.sf-sup { border-left-color: var(--gold); }
+.sf-sup-amount { border-color: var(--gold); color: var(--gold); }
+.sf-sup-amount:hover { background: rgba(200, 168, 75, .10); }
+.sf-sup-amount--inert { border-color: var(--line); color: var(--ink-soft); }
+.sf-hub-eyebrow { color: var(--gold); }
+
+/* The seventh board carries the row. */
+@media (min-width: 1000px) {
+  .sf-hub-boards > .sf-board:first-child { grid-column: auto; }
+  .sf-hub-boards > .sf-board:first-child .sf-board-in { min-height: 300px; }
+  .sf-hub-boards > .sf-board:last-child { grid-column: span 3; }
+  .sf-hub-boards > .sf-board:last-child .sf-board-in {
+    min-height: 240px; max-width: 760px;
+  }
+  .sf-hub-boards > .sf-board:last-child { min-height: 240px; }
+}
+@media (min-width: 620px) and (max-width: 999px) {
+  /* Two columns: seven items leave one odd. Let the last fill the row. */
+  .sf-hub-boards > .sf-board:last-child { grid-column: span 2; }
+}
+
+/* ── hero presence ────────────────────────────────────────────────────
+   The backdrop was so faint it read as an empty field. It is still
+   atmosphere — the headline must win — but it now has enough contrast to
+   be a subject rather than a texture. */
+.sf-hub-hero-bg { opacity: .85; }
+.sf-hub-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(74% 62% at 82% 14%, rgba(127, 180, 232, .14) 0%, transparent 62%);
+}
+.sf-hub-hero-in { z-index: 2; }
+.sf-hub-h {
+  /* A hairline of gold under the headline: one premium moment, not a theme. */
+  padding-bottom: 20px;
+  background-image: linear-gradient(90deg, var(--gold) 0%, transparent 42%);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+}
+
+/* ── knowledge: let the words lead ────────────────────────────────────
+   Three large abstract artworks per row read as placeholder wallpaper, which
+   is exactly what the brief warns against. Until real imagery exists the art
+   is a band, not a panel — present, but no longer the subject. */
+.sf-know-art { max-height: 132px; overflow: hidden; }
+.sf-know-art svg, .sf-know-art img { height: 132px; object-fit: cover; }
+.sf-exp-art { max-height: 84px; overflow: hidden; }
+
+/* =====================================================================
+SEE THE SYSTEM — the Owner-approved explainer film
+
+Poster-first, controls on, nothing plays unprompted. The frame reserves its
+aspect ratio before the poster loads, so the section cannot shift the page
+underneath whatever the visitor is already reading.
+
+The film sits beside its own text on a wide screen and above it on a phone.
+That text is not a caption or a decoration: the film carries no caption
+track, so its argument lives on the page in readable form rather than being
+available only to someone who can both see and hear.
+===================================================================== */
+
+.sf-film { display: grid; gap: 22px; grid-template-columns: 1fr; align-items: start; }
+
+.sf-film-frame {
+  position: relative;
+  /* Reserved before any byte of poster or video arrives — no layout shift. */
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  /* One gold hairline. The film is already deep blue and gold; the frame
+     should agree with it, not compete. */
+  box-shadow: 0 0 0 1px rgba(200, 168, 75, .14) inset;
+}
+.sf-film-v {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* contain, not cover: the frame and the film are both 16:9 today, so the
+     two are identical — but a future re-encode at another ratio would be
+     CROPPED by cover, and this film carries its argument in small labels at
+     the edges of the diagram. Letterbox beats losing a word. */
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.sf-film-read { display: flex; flex-direction: column; gap: 16px; }
+
+.sf-film-flow { list-style: none; display: flex; flex-direction: column; gap: 14px; counter-reset: none; }
+.sf-film-step {
+  display: flex; flex-direction: column; gap: 4px;
+  padding-left: 16px;
+  border-left: 2px solid var(--line);
+}
+/* The middle stage is the mechanism — give it the accent so the eye reads
+   in → THROUGH → out rather than three equal bullets. */
+.sf-film-step:nth-child(2) { border-left-color: var(--accent); }
+.sf-film-k {
+  font-family: var(--brand); font-size: .68rem;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--accent);
+}
+.sf-film-step:nth-child(2) .sf-film-k { color: var(--gold); }
+.sf-film-t { color: var(--ink-soft); font-size: .93rem; line-height: 1.6; }
+
+.sf-film-honest {
+  color: var(--ink-soft); font-size: .82rem; line-height: 1.6;
+  border-top: 1px solid var(--line); padding-top: 14px;
+}
+
+@media (min-width: 900px) {
+  .sf-film { grid-template-columns: minmax(0, 1.55fr) minmax(260px, 1fr); gap: 30px; }
+}
+
+/* EN / FR reader switch for governed localized editorial. */
+.sf-lang { display:flex; align-items:center; gap:8px; margin:10px 0 4px; font-family:var(--brand); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; }
+.sf-lang a { color:var(--ink-soft); text-decoration:none; }
+.sf-lang a[aria-current="page"] { color:var(--gold); }
+.sf-lang span { color:var(--line); }
