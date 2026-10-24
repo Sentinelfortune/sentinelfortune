@@ -231,7 +231,7 @@ export const BRANCHES = Object.freeze({
   ]),
     types: Object.freeze(["TEACHING", "BOOK", "PODCAST", "BUNDLE"]),
     segment: "reflect",
-    readiness: Object.freeze({ experienceReady: false, hubVisible: false, subdomainLive: false }),
+    readiness: Object.freeze({ experienceReady: true, hubVisible: true, subdomainLive: true }),
     theme: Object.freeze({
       bg: "#080e1d", surface: "#111a2c", accent: "#d8c9a8", accentSoft: "rgba(216,201,168,.08)",
       ink: "#f4f2ee", inkSoft: "#b6b8bd", line: "#1b2438",
