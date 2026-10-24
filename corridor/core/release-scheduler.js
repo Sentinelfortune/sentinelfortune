@@ -2,33 +2,35 @@
  * No timer, API endpoint, Owner impersonation or production publication.
  * Persistence/cron activation requires a separately validated adapter. */
 import { EDITORIAL_CHARTERS, checkEditorialFit } from "./editorial-policy.js";
-export const RELEASE_POLICY_VERSION="sfl-release/0.1.0";
+export const RELEASE_POLICY_VERSION="sfl-release/0.2.0";
 const CHANNELS=new Set(["FREE","PREMIUM","PRODUCT","SUPPORT"]);
-const STATES=new Set(["APPROVED","PUBLISHED"]);
 const dayMs=86400000;
 const isoDay=/^\d{4}-\d{2}-\d{2}$/;
 const validTime=/^(?:[01]\d|2[0-3]):[0-5]\d$/;
 export function makeSeries(input) {
-  const {id,branch,title,length,startDate,releaseTime="09:00",timezone="UTC",access="FREE"}=input||{};
+  const {id,branch,title,length,startDate,releaseTime="09:00",timezone="UTC",access="FREE",intervalDays=1,pausedDays=[]}=input||{};
   if(typeof id!=="string"||!/^[a-z0-9-]{3,80}$/.test(id)) throw Error("INVALID_SERIES_ID");
   if(!EDITORIAL_CHARTERS[branch]) throw Error("INVALID_WORLD");
   if(typeof title!=="string"||title.trim().length<3) throw Error("INVALID_SERIES_TITLE");
-  if(!Number.isInteger(length)||length<1||length>365) throw Error("INVALID_LENGTH");
+  if(!Number.isInteger(length)||length<1||length>731) throw Error("INVALID_LENGTH");
   if(!isoDay.test(startDate)||Number.isNaN(Date.parse(startDate+"T00:00:00Z"))||new Date(startDate+"T00:00:00Z").toISOString().slice(0,10)!==startDate) throw Error("INVALID_START_DATE");
   if(!validTime.test(releaseTime)) throw Error("INVALID_RELEASE_TIME");
   if(timezone!=="UTC") throw Error("UNSUPPORTED_TIMEZONE_V0_1");
   if(!CHANNELS.has(access)) throw Error("INVALID_ACCESS");
-  return Object.freeze({id,branch,title,length,startDate,releaseTime,timezone,access,policy:RELEASE_POLICY_VERSION});
+  if(!Number.isInteger(intervalDays)||intervalDays<1||intervalDays>365) throw Error("INVALID_INTERVAL");
+  if(!Array.isArray(pausedDays)||pausedDays.some(x=>!Number.isInteger(x)||x<1||x>length)||new Set(pausedDays).size!==pausedDays.length) throw Error("INVALID_PAUSED_DAYS");
+  return Object.freeze({id,branch,title,length,startDate,releaseTime,timezone,access,intervalDays,pausedDays:Object.freeze([...pausedDays]),policy:RELEASE_POLICY_VERSION});
 }
 export function slotForDay(series,day) {
   if(!Number.isInteger(day)||day<1||day>series.length) throw Error("INVALID_DAY");
   const start=Date.parse(series.startDate+"T"+series.releaseTime+":00Z");
-  return new Date(start+(day-1)*dayMs).toISOString();
+  return new Date(start+(day-1)*series.intervalDays*dayMs).toISOString();
 }
 export function validateRelease(series,item,now=new Date().toISOString()) {
   const reject=(code)=>({ok:false,code});
   if(!series||!item||!EDITORIAL_CHARTERS[series.branch]) return reject("INVALID_SERIES");
   if(!Number.isInteger(item.day)||item.day<1||item.day>series.length) return reject("INVALID_DAY");
+  if(series.pausedDays.includes(item.day)) return reject("RELEASE_PAUSED");
   if(item.branch!==series.branch||item.record?.branch!==series.branch) return reject("WRONG_WORLD");
   if(item.seriesId!==series.id) return reject("WRONG_SERIES");
   if(item.access!==series.access) return reject("ACCESS_MISMATCH");
