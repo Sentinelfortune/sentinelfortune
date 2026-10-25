@@ -25,12 +25,11 @@ If the Worker crashes partway through fulfilling a `checkout.session.completed` 
 the Stripe event as received but before finishing order/license/download-authorization creation), the
 event-level idempotency check (`recordStripeEventIfNew`) will treat a Stripe retry of that same event as a
 duplicate and skip it — because the event row already exists — even though fulfillment never completed.
-The business-object check (`getOrderBySessionId` before creating an order) closes this gap for the most
-likely case (crash before any order exists), but a crash *between* order creation and license/download-
-authorization creation is not automatically retried. **Mitigation today:** `/admin` → Orders lets the
-Owner see an order with no license and manually investigate; **real fix** would be wrapping the whole
-fulfillment sequence in a D1 transaction with a proper saga/outbox pattern, which was judged out of scope
-for the MVP.
+The recovery patch on this branch re-enters a signed paid checkout event and fills a missing license or
+download authorization on a stored PAID order. Simultaneous deliveries are not serialized, and a crash
+after token creation but before email delivery can still leave the customer without a usable raw link.
+Before live sales, add durable delivery state and enforce uniqueness for entitlements, then verify the
+recovery path against real D1 and Resend.
 
 ## One shared download budget across multiple files
 
@@ -59,9 +58,9 @@ pipeline — which is the safe failure mode, but it does mean "the code is in th
 ## No customer accounts, coupons, subscriptions, or multi-currency
 
 Explicitly out of scope per the mission brief: only one-time purchases, only USD, no discount codes, no
-buyer login/dashboard (license lookup is via the emailed download link and license number, not a
-password-protected account), and only `SINGLE_BUSINESS` licenses are purchasable through self-checkout
-(the other three license types exist as prepared data but require a manual/negotiated sale — see
+buyer login/dashboard (support handles link replacement, not a password-protected account). Public
+self-checkout supports PERSONAL and SINGLE_BUSINESS rights on separately priced product listings;
+multi-location, consultant, and white-label rights require a manual/negotiated sale — see
 `shop/licenses.html` and `shop/contact.html`).
 
 ## License and policy text require legal review

@@ -87,7 +87,7 @@ export interface Env {
 // ---------------------------------------------------------------------------
 
 export type ProductStatus = "DRAFT" | "PUBLISHED" | "UNPUBLISHED" | "ARCHIVED";
-export type LicenseType = "SINGLE_BUSINESS" | "MULTI_LOCATION" | "CONSULTANT" | "WHITE_LABEL";
+export type LicenseType = "PERSONAL" | "SINGLE_BUSINESS" | "MULTI_LOCATION" | "CONSULTANT" | "WHITE_LABEL";
 export type OrderStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED" | "CANCELLED";
 export type LicenseStatus = "ACTIVE" | "REVOKED";
 export type DownloadEventResult = "SUCCESS" | "EXPIRED" | "REVOKED" | "LIMIT_REACHED" | "NOT_FOUND" | "ERROR";
@@ -108,7 +108,8 @@ export interface ProductRow {
   price_cents: number | null;
   price_confirmed: 0 | 1;
   currency: string;
-  license_type: LicenseType;
+  license_type: Exclude<LicenseType, "PERSONAL">;
+  sales_audience?: "PERSONAL" | "BUSINESS";
   publicly_purchasable: 0 | 1;
   supported_formats: string;
   deliverables_json: string;
@@ -171,6 +172,7 @@ export interface OrderRow {
   created_at: string;
   paid_at: string | null;
   refunded_at: string | null;
+  terms_version_snapshot?: string | null;
 }
 
 export interface LicenseRow {

@@ -26,6 +26,9 @@ export interface LicenseTextOutput {
 
 export function generateLicenseText(licenseType: LicenseType, productTitle: string): LicenseTextOutput {
   const rightsByType: Record<LicenseType, string> = {
+    PERSONAL:
+      `The purchaser may use "${productTitle}" for personal, non-commercial purposes only. ` +
+      `This purchase does not grant use by a company or for client work.`,
     SINGLE_BUSINESS:
       `The licensed purchaser may use "${productTitle}" internally within one (1) single business entity, ` +
       `including adapting and customizing the included materials for that business's own internal operations.`,
@@ -43,6 +46,8 @@ export function generateLicenseText(licenseType: LicenseType, productTitle: stri
   };
 
   const restrictionsByType: Record<LicenseType, string> = {
+    PERSONAL:
+      "May not be used for business operations, client work, resale, redistribution, sublicensing, or white-label use.",
     SINGLE_BUSINESS:
       "May not be resold, sublicensed, or redistributed as a standalone product. May not be shared outside " +
       "the licensed business. May not be used to create a directly competing template/toolkit product for resale.",
