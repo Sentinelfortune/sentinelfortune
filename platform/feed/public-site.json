@@ -4,7 +4,7 @@
   "_evidence_note": [
     "TEST / PREVIEW FIXTURES — NOT REAL INVENTORY.",
     "",
-    "The House of Assets connector was not authorized in the session that built",
+    "No live catalogue export was available in the session that built",
     "this, so no live PUBLIC_SITE export could be read. These records exist to",
     "prove the engine end to end: ingestion, identity ownership, the specialized",
     "renderer, the detail route, the governed price state and the governed CTA.",
@@ -22,7 +22,7 @@
     "evidence: each must be refused, and platform/tests asserts exactly why."
   ],
   "source": {
-    "system": "HOUSE_OF_ASSETS",
+    "system": "SENTINEL_FORTUNE",
     "generated_at": "2026-10-17T09:00:00Z"
   },
   "records": [
@@ -454,7 +454,7 @@
         "approved": true,
         "withheld": false
       },
-      "_why_invalid": "publicationStatus is DRAFT. House of Assets never routed it to the public site."
+      "_why_invalid": "publicationStatus is DRAFT. It was never routed to the public site."
     },
     {
       "id": "test-reject-011",

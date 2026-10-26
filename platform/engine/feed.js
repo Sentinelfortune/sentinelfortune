@@ -13,7 +13,7 @@
  *
  *   {
  *     "schema": "sf.public-site/1.0",
- *     "source": { "system": "HOUSE_OF_ASSETS", "generated_at": "…" },
+ *     "source": { "system": "SENTINEL_FORTUNE", "generated_at": "…" },
  *     "records": [ … ]
  *   }
  *
@@ -38,8 +38,12 @@ const FEED_SCHEMA = "sf.public-site/1.0";
    if the endpoint is unconfigured or D1 is unreachable it answers 503, and
    `loadFeed` drops to STATIC_FEED_URL rather than showing an empty catalogue.
    A degraded read path must never look like a world with nothing in it. */
-/** The only systems allowed to author a public feed. Closed set. */
-const GOVERNED_SOURCES = Object.freeze(["HOUSE_OF_ASSETS", "EDITORIAL_CORRIDOR"]);
+/** The only systems allowed to author a public feed. Closed set.
+ *  SENTINEL_FORTUNE is the label the public is shown (platform/server/
+ *  public-redact.js): which private system produced a feed is not the
+ *  public's business. The two older labels stay accepted so a cached or
+ *  previously exported feed still loads. */
+const GOVERNED_SOURCES = Object.freeze(["SENTINEL_FORTUNE", "HOUSE_OF_ASSETS", "EDITORIAL_CORRIDOR"]);
 
 const DEFAULT_FEED_URL = "/api/feed";
 const STATIC_FEED_URL = "/feed/public-site.json";

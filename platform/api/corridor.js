@@ -538,6 +538,22 @@ async function createDraft(body, caller, env) {
        the most expensive kind of error message. Anything else is re-thrown to
        the generic upstream handler, which says it does not know. */
     if (/UNIQUE|constraint failed: editorial_records\.(record_id|identity)/i.test(String(err && err.message))) {
+      /* A RETRY OF THE SAME CREATE IS NOT A COLLISION. The insert, the event
+         and the idempotency entry are separate statements; if the request
+         failed after the insert, its retry found no idempotency entry and was
+         refused here for ever — the Worker hand-off reported it as
+         HANDOFF_ALREADY_EXISTS. The same principal sending byte-identical
+         content for an untouched v1 draft is that retry: answer it with the
+         existing record and write nothing. Any difference at all, another
+         principal, or a record that has moved on is still RECORD_EXISTS. */
+      const existing = await loadRecord(recordId, env);
+      if (existing && existing.created_by === caller && Number(existing.version) === 1
+          && ["DRAFT", "REVIEW"].includes(existing.status)
+          && existing.identity === identity && existing.slug === slug && existing.type === type
+          && existing.title === body.title && (existing.summary || "") === (body.summary || "")
+          && (existing.description || "") === prose && existing.payload_json === JSON.stringify(payload)) {
+        return { status: 200, body: { record: present(existing), already: true } };
+      }
       return { status: 409, body: { error: "RECORD_EXISTS", detail: "a record with this identity and slug already exists" } };
     }
     throw err;

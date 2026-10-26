@@ -77,6 +77,9 @@ function mockRes() {
 /* Every request the Worker sends to the public corridor, for inspection. */
 const outbound = [];
 let corridorDown = null;   // null | "all" | "submit_review"
+/* One D1 statement matching this fails once, as a real D1 can between two
+   statements of one request. null = D1 healthy. */
+let d1FailOnce = null;
 
 globalThis.fetch = async (url, init = {}) => {
   if (String(url) === PUBLIC_URL) {
@@ -90,6 +93,10 @@ globalThis.fetch = async (url, init = {}) => {
   }
   if (!String(url).includes("/d1/database/")) throw new Error(`unexpected network call: ${url}`);
   const { sql, params } = JSON.parse(init.body);
+  if (d1FailOnce && d1FailOnce.test(sql)) {
+    d1FailOnce = null;
+    return { ok: false, status: 503, json: async () => ({ success: false, errors: [{ message: "D1_ERROR: storage temporarily unavailable" }] }) };
+  }
   const bound = (params || []).map((v) => (v === null ? null : String(v)));
   const order = [];
   const converted = sql.replace(/\?(\d+)/g, (_, n) => { order.push(Number(n) - 1); return "?"; });
@@ -219,6 +226,26 @@ test("1. a previewed Worker record reaches the public feed only through Owner ap
   assert.ok(selectPublic(await feedRecords(), "vibraflowmedia").accepted.some((x) => x.id === pid), "the engine's own gate selects it");
 });
 
+test("1b. the public feed carries the handed-off work and nothing about how it was handed off", async () => {
+  const { id } = await prepared();
+  const pid = (await handoff(id)).body.handoff.publicRecordId;
+  assert.equal((await vercel(V.owner, { action: "approve", record_id: pid })).status, 200);
+  assert.equal((await vercel(V.claude, { action: "publish_approved", record_id: pid })).status, 200);
+
+  const res = mockRes();
+  await publicFeed({ method: "GET", headers: {} }, res);
+  const text = res.body;
+  assert.ok(JSON.parse(text).records.some((x) => x.id === pid));
+  for (const internal of [
+    "editorial-worker", "worker-handoff", id, V.worker, W.owner, PUBLIC_URL,
+    "CONVERSATION_ORIGINATED", "corridorVersion", "EDITORIAL_CORRIDOR", "d1_database", "House of Assets", "HOUSE_OF_ASSETS",
+  ]) {
+    assert.ok(!text.includes(internal), `the public feed leaks ${internal === V.worker || internal === W.owner ? "a credential" : internal}`);
+  }
+  assert.ok(!JSON.stringify(res.headers).includes("D1"), "headers name no storage");
+  assert.equal(res.headers["X-SF-Feed-Withheld-Count"], "0", "nothing legitimate was withheld");
+});
+
 /* ═════════════════════════════════════════════════════════════════════════
    2. AUTH
    ═════════════════════════════════════════════════════════════════════════ */
@@ -304,6 +331,60 @@ test("3b. a hand-off interrupted after create completes on retry without duplica
   const pid = retried.body.handoff.publicRecordId;
   assert.equal(row(pid).status, "REVIEW");
   assert.deepEqual(events(pid).map((e) => e.action), ["create_draft", "submit_review"]);
+});
+
+test("3d. create committed but the request failed after it: the retry completes, it is not refused as a duplicate", async () => {
+  const { id, slug } = await prepared();
+  d1FailOnce = /INSERT INTO editorial_events/;          // the row is written, its event is not
+  const broken = await handoff(id);
+  d1FailOnce = null;
+  assert.equal(broken.status, 503, JSON.stringify(broken.body));
+  assert.equal(broken.body.error.code, "PUBLIC_CORRIDOR_UNREACHABLE");
+  assert.equal(broken.body.error.retryable, true, "a 5xx is not a refusal");
+  assert.equal(broken.body.error.upstream.status, 502);
+  assert.equal(rowBySlug("vibraflowmedia", slug).status, "DRAFT", "the row did commit");
+
+  const retried = await handoff(id);
+  assert.equal(retried.status, 200, JSON.stringify(retried.body));
+  const pid = retried.body.handoff.publicRecordId;
+  assert.equal(row(pid).status, "REVIEW");
+  assert.equal(row(pid).version, 1);
+  assert.equal(db.prepare("SELECT COUNT(*) AS n FROM editorial_records WHERE slug=?").get(slug).n, 1, "one record");
+
+  const third = await handoff(id);
+  assert.equal(third.status, 200);
+  assert.equal(third.body.handoff.replay, true, "and from now on it replays");
+});
+
+test("3e. the review step failing upstream is retryable, and the retry finishes it", async () => {
+  const { id, slug } = await prepared();
+  d1FailOnce = /SET status='REVIEW'/;
+  const broken = await handoff(id);
+  d1FailOnce = null;
+  assert.equal(broken.status, 503, JSON.stringify(broken.body));
+  assert.equal(broken.body.error.code, "PUBLIC_CORRIDOR_UNREACHABLE");
+  assert.equal(broken.body.error.retryable, true);
+  assert.ok(broken.body.error.publicRecordId);
+  assert.equal(rowBySlug("vibraflowmedia", slug).status, "DRAFT");
+
+  const retried = await handoff(id);
+  assert.equal(retried.status, 200, JSON.stringify(retried.body));
+  assert.equal(row(retried.body.handoff.publicRecordId).status, "REVIEW");
+  assert.deepEqual(events(retried.body.handoff.publicRecordId).map((e) => e.action), ["create_draft", "submit_review"]);
+});
+
+test("3f. an identical create by ANOTHER principal is still RECORD_EXISTS; so is different content", async () => {
+  const { id } = await prepared();
+  const pid = (await handoff(id)).body.handoff.publicRecordId;
+  const draft = toPublicDraft(workerRecord(id)).body;
+  const other = await vercel(V.claude, { ...draft });
+  assert.equal(other.status, 409);
+  assert.equal(other.body.error, "RECORD_EXISTS");
+  const changed = await vercel(V.worker, { ...draft, title: "Not the same piece" });
+  assert.equal(changed.status, 409);
+  assert.equal(changed.body.error, "RECORD_EXISTS");
+  assert.equal(row(pid).version, 1);
+  assert.equal(row(pid).created_by, "editorial-worker");
 });
 
 test("3c. the public corridor unreachable: nothing created, retryable", async () => {

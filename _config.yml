@@ -196,6 +196,18 @@ exclude:
   - vault
   # Stale build mirrors of the frontend/backend source.
   - artifacts
+  # The editorial corridor (private drafts, previews, contract, tests) and the
+  # editorial Worker transport (source, wrangler config, mission reports).
+  # Neither is a web asset; both name internal systems and agents. Nothing
+  # public links into them.
+  - corridor
+  - transport
+  # Internal reports that name private systems.
+  - DANI-EDITORIAL-CORRIDOR-1.0-FINAL-ACCEPTANCE.md
+  - DIGITAL_PRODUCT_COMMERCIAL_BOUNDARY.md
+  - PUBLIC_EXPERIENCE_V2_ACTIVATION_PLAN.md
+  - PUBLIC_EXPERIENCE_V2_IMPLEMENTATION_REPORT.md
+  - PUBLIC_EXPERIENCE_V2_MEDIA_SYSTEM.md
 
   # --- Internal operational documentation ---------------------------------
   # These describe deployment procedure, required configuration keys, and known

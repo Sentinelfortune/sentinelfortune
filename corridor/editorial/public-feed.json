@@ -2,8 +2,7 @@
   "schema": "sf.public-site/1.0",
   "evidence": "TEST_PREVIEW",
   "source": {
-    "system": "HOUSE_OF_ASSETS",
-    "channel": "SFL_EDITORIAL_CORRIDOR",
+    "system": "SENTINEL_FORTUNE",
     "generated_at": "2026-10-18T04:29:21.950Z"
   },
   "records": [
@@ -38,8 +37,7 @@
         "author": "Lumen School Academy",
         "languages": [
           "en"
-        ],
-        "corridor": true
+        ]
       },
       "cta": {
         "kind": "READ",

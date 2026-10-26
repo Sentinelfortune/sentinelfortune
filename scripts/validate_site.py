@@ -48,7 +48,7 @@ def main():
     # Everything private must be excluded from the Jekyll build.
     for private in ["admin", "shop-worker", "functions", "scripts", "dist",
                     "product-source", "audit", "bot", "backend", "cloudflare",
-                    "originus", "vault"]:
+                    "originus", "vault", "platform", "corridor", "transport"]:
         check(re.search(rf"^\s*-\s*{re.escape(private)}\s*$", cfg, re.M) is not None,
               f"boundary: {private}/ excluded from Pages",
               f"BOUNDARY BREACH: {private}/ is NOT excluded and would be published")

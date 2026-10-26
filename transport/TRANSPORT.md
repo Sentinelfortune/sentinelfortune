@@ -234,12 +234,17 @@ Worker hands drafts to it rather than competing with it:
   corridor. Scheduled pieces (`HANDOFF_SCHEDULE_UNSUPPORTED`) and `VIEW_PRODUCT`
   CTAs (`HANDOFF_CTA_UNSUPPORTED`) are refused. A world that does not present the
   type refuses it (`PUBLIC_CORRIDOR_REFUSED` / `TYPE_NOT_ACCEPTED_BY_WORLD`).
+- A public-corridor 5xx or 429 on either step is `PUBLIC_CORRIDOR_UNREACHABLE`
+  (503, retryable), not a refusal. If the draft row committed but its request
+  failed, retrying the same hand-off completes it: the corridor answers a
+  byte-identical `create_draft` from the same principal on an untouched v1
+  `DRAFT`/`REVIEW` row with that row (2026-10-26).
 - Each attempt appends a `handoff` entry to the Owner audit. Neither the token
   nor the URL is ever returned.
 - Rollback: unpublish in the public corridor. Disable the bridge by deleting
   the secret, or by unsetting the Vercel token.
 
-Proof: `node --test transport/tests/public-bridge.test.mjs` (22 tests, real
+Proof: `node --test transport/tests/public-bridge.test.mjs` (26 tests, real
 handlers on both sides, D1 on node:sqlite; **not run against Cloudflare or Vercel**).
 
 ---

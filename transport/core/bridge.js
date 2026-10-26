@@ -164,8 +164,18 @@ export async function handoff(record, config, { fetchImpl = globalThis.fetch } =
     ? { status: r.status, error: r.body.error || null, detail: r.body.detail || null }
     : { status: r.status, error: null, detail: null });
 
+  /* A 5xx or a 429 is the corridor failing or pacing, not refusing: the same
+     hand-off, retried, replays under its idempotency keys. Reporting these as
+     PUBLIC_CORRIDOR_REFUSED marked them not retryable and told the Owner the
+     draft had been rejected when nothing had been decided. */
+  const transient = (r) => r.status === 429 || r.status >= 500;
+
   const created = await call({ ...draft.body, idempotency_key: keys.create });
   if (created.status === 0) return refusal("PUBLIC_CORRIDOR_UNREACHABLE", "the public corridor did not answer; nothing was handed off. Retry the same hand-off.");
+  if (transient(created)) {
+    return refusal("PUBLIC_CORRIDOR_UNREACHABLE", "the public corridor could not complete the draft just now; retry the same hand-off",
+      { upstream: upstream(created) });
+  }
   if (created.status === 409 && created.body && created.body.error === "RECORD_EXISTS") {
     return refusal("HANDOFF_ALREADY_EXISTS",
       "the public corridor already holds this piece under a different hand-off; edit it there, or unpublish and archive it there first",
@@ -179,6 +189,10 @@ export async function handoff(record, config, { fetchImpl = globalThis.fetch } =
 
   const reviewed = await call({ action: "submit_review", record_id: publicRecordId, idempotency_key: keys.review });
   if (reviewed.status === 0) return refusal("PUBLIC_CORRIDOR_UNREACHABLE", "the draft was created but review was not requested; retry the same hand-off", { publicRecordId });
+  if (transient(reviewed)) {
+    return refusal("PUBLIC_CORRIDOR_UNREACHABLE", "the draft was created but the review request did not complete; retry the same hand-off",
+      { publicRecordId, upstream: upstream(reviewed) });
+  }
   if (reviewed.status !== 200) {
     return refusal("PUBLIC_CORRIDOR_REFUSED", "the public corridor refused the review request", { publicRecordId, upstream: upstream(reviewed) });
   }

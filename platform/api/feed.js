@@ -35,9 +35,16 @@
  *    the rollback. Dynamic records are merged on top, keyed by id, so the
  *    seventeen existing records keep working and the corridor's output joins
  *    them rather than replacing them.
+ *
+ * 5. NOTHING INTERNAL REACHES THE PUBLIC. Both the dynamic response and the
+ *    static fallback are rebuilt by server/public-redact.js: no database id,
+ *    no private system name, no corridor bookkeeping, and a record that still
+ *    carries one is withheld rather than served. Headers name the path in
+ *    neutral terms (DYNAMIC / STATIC), never the storage behind it.
  */
 
 const CF_API = "https://api.cloudflare.com/client/v4";
+const { publicEnvelope } = require("../server/public-redact.js");
 
 /* Only ever PUBLISHED. The ORDER BY makes the newest publication first so the
    engine's "new" rails have a governed ordering to read. */
@@ -91,8 +98,20 @@ function toRecord(row) {
     /* Corridor output is real editorial work, not a fixture, so it carries no
        Demo chip. The flag is explicit rather than assumed. */
     realArtefact: true,
-    metadata: { ...(payload.metadata || {}), corridorVersion: row.version },
+    /* The corridor's version number stays in the corridor; public-redact.js
+       strips the rest of its bookkeeping from metadata. */
+    metadata: { ...(payload.metadata || {}) },
   };
+}
+
+/** Rebuild, redact, and say how many records were withheld — by id and rule
+ *  in the server log, by count only in the response. */
+function sendEnvelope(res, input) {
+  const { envelope, withheld } = publicEnvelope(input);
+  for (const w of withheld) console.warn(`[api/feed] withheld ${w.id || "(no id)"}: ${w.rule}`);
+  res.setHeader("X-SF-Feed-Withheld-Count", String(withheld.length));
+  res.statusCode = 200;
+  res.end(JSON.stringify(envelope));
 }
 
 /** The static feed, fetched from this same deployment. It is the base layer
@@ -146,8 +165,14 @@ module.exports = async function handler(req, res) {
       res.end(JSON.stringify({ error: "FEED_UNAVAILABLE" }));
       return;
     }
-    res.statusCode = 200;
-    res.end(JSON.stringify(base));
+    /* Redacted like the dynamic path: the static file carries fixture
+       annotations that were never meant to be served as data. */
+    sendEnvelope(res, {
+      schema: base.schema,
+      evidence: base.evidence,
+      generatedAt: base.source && base.source.generated_at,
+      records: base.records,
+    });
   }
 
   if (!accountId || !databaseId || !token) {
@@ -160,8 +185,9 @@ module.exports = async function handler(req, res) {
     rows = await queryD1({ accountId, databaseId, token });
   } catch {
     /* No detail in the body: an upstream error message is exactly the kind of
-       thing that leaks infrastructure shape to the public. */
-    await serveStaticFallback("D1_UNAVAILABLE");
+       thing that leaks infrastructure shape to the public. The header names
+       no storage either. */
+    await serveStaticFallback("UPSTREAM_UNAVAILABLE");
     return;
   }
 
@@ -174,25 +200,18 @@ module.exports = async function handler(req, res) {
   if (base && Array.isArray(base.records)) for (const r of base.records) merged.set(r.id, r);
   for (const r of dynamic) merged.set(r.id, r);
 
-  res.setHeader("X-SF-Feed-Source", base ? "D1+STATIC" : "D1");
+  res.setHeader("X-SF-Feed-Source", base ? "DYNAMIC+STATIC" : "DYNAMIC");
   res.setHeader("X-SF-Feed-Dynamic-Count", String(dynamic.length));
-  res.statusCode = 200;
-  res.end(JSON.stringify({
+  sendEnvelope(res, {
     schema: (base && base.schema) || "sf.public-site/1.0",
     /* Evidence stays whatever the static base declares. Serving one real
        corridor record does not make the whole catalogue live, and this
        endpoint has no business promoting it. */
     evidence: (base && base.evidence) || "TEST_PREVIEW",
-    /* The envelope's source block, naming this path honestly. It does NOT
-       claim HOUSE_OF_ASSETS: free editorial does not pass through the
-       commercial authority, and saying otherwise to satisfy a validator
-       would make the block worthless. engine/feed.js accepts both. */
-    source: {
-      system: "EDITORIAL_CORRIDOR",
-      generated_at: new Date().toISOString(),
-      d1_database: databaseId,
-      static_base: Boolean(base),
-    },
+    /* The source block carries the public label only (public-redact.js). It
+       used to name the write path and the D1 database id; neither is the
+       public's business, and an identifier is infrastructure shape. */
+    generatedAt: new Date().toISOString(),
     records: [...merged.values()],
-  }));
+  });
 };

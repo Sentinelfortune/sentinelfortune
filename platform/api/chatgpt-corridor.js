@@ -65,7 +65,8 @@ module.exports = async function handler(req, res) {
   }
 
   const token = process.env.CORRIDOR_TOKEN_CHATGPT;
-  if (!token) return send(503, { error: "CHATGPT_ADAPTER_UNCONFIGURED" });
+  /* A neutral code: an error body is no place to name an agent. */
+  if (!token) return send(503, { error: "ADAPTER_UNCONFIGURED" });
 
   const record = manifest.record || {};
   const recordId = record.record_id;

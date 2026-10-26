@@ -101,7 +101,6 @@ export function toPublicRecord(record, { language = null } = {}) {
          localizedRecord): metadata.translations.<lang> = {title, summary,
          description}. Without it the EN/FR reader switch has nothing to show. */
       translations: publicTranslations(record, lang),
-      corridor: true,
     },
   };
 
@@ -134,7 +133,9 @@ export function buildFeed(store, { now = () => Date.now(), evidence = "TEST_PREV
   return {
     schema: FEED_SCHEMA,
     evidence,
-    source: { system: "HOUSE_OF_ASSETS", channel: "SFL_EDITORIAL_CORRIDOR", generated_at: new Date(t).toISOString() },
+    /* The public label only. Which private system and which internal channel
+       produced the feed is not public metadata (platform/server/public-redact.js). */
+    source: { system: "SENTINEL_FORTUNE", generated_at: new Date(t).toISOString() },
     records,
   };
 }
