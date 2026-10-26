@@ -39,6 +39,10 @@
 
 const CF_API = "https://api.cloudflare.com/client/v4";
 
+/* The one way an editorial record may point at a Shop product, and the check
+   that the Shop really publishes it. See server/shop-link.js. */
+const { governEditorialCta, verifyShopProduct } = require("../server/shop-link.js");
+
 
 /* The engine's closed type set. A type with no renderer is refused at the
    door rather than becoming a record nothing can display. */
@@ -58,6 +62,14 @@ const WRITE_ACTIONS = [
    own token gets 403 — which is what keeps "an assistant cannot approve its
    own work" true now that approving is reachable at all. */
 const OWNER_ONLY_ACTIONS = ["approve"];
+
+/* THE WORKER BRIDGE. The Cloudflare editorial Worker (transport/) prepares and
+   previews; THIS corridor is the only publication authority, because only its
+   D1 reaches /api/feed. The Worker's credential may therefore hand a draft in
+   and ask for review — the same "asking, not deciding" any assistant may do —
+   and may never approve, publish, withdraw, or list other records. A second
+   path that could publish would be a second publication authority. */
+const BRIDGE_ACTIONS = ["create_draft", "submit_review", "get_record", "get_preview"];
 
 /* Which transitions exist. Anything absent is not merely refused — it is not
    expressible, which is the difference between a rule and a hope. */
@@ -190,6 +202,10 @@ function identifyCaller(req) {
        assistants' — approval authority that an assistant also holds is not
        approval authority. */
     ["owner", process.env.CORRIDOR_TOKEN_OWNER],
+    /* The Cloudflare editorial Worker's hand-off credential. A FOURTH value.
+       See BRIDGE_ACTIONS: it can put a draft up for review and read it back,
+       and nothing else. Absent means the principal does not exist. */
+    ["editorial-worker", process.env.CORRIDOR_TOKEN_EDITORIAL_WORKER],
   ];
   for (const [name, secret] of known) {
     if (secret && sameSecret(presented, secret)) return name;
@@ -236,9 +252,12 @@ function publicUrl(record) {
 
 /** What a caller is allowed to know about a record. Never the raw payload
  *  column, never anything about the infrastructure that stored it. */
+function parsePayload(row) {
+  try { return JSON.parse(row.payload_json) || {}; } catch { return {}; }
+}
+
 function present(row) {
-  let payload = {};
-  try { payload = JSON.parse(row.payload_json) || {}; } catch { payload = {}; }
+  const payload = parsePayload(row);
   return {
     record_id: row.record_id,
     identity: row.identity,
@@ -268,6 +287,7 @@ function present(row) {
     categories: Array.isArray(payload.categories) ? payload.categories : [],
     collections: Array.isArray(payload.collections) ? payload.collections : [],
     cta: payload.cta || null,
+    product_ref: payload.product_ref || null,
     public_url: row.status === "PUBLISHED" ? publicUrl(row) : null,
   };
 }
@@ -275,6 +295,39 @@ function present(row) {
 async function loadRecord(recordId, env) {
   const rows = await d1("SELECT * FROM editorial_records WHERE record_id = ?1", [recordId], env);
   return rows[0] || null;
+}
+
+/**
+ * A TRANSITION WRITES ONLY THE ROW IT INSPECTED.
+ *
+ * Every handler reads a record, decides, then writes — two round trips to D1
+ * with nothing holding the row in between. The first version wrote with
+ * `WHERE record_id=?1` alone, so a decision taken on one row landed on
+ * whatever the row had become: an approved v1 being published while an edit
+ * made it v2 published v2 — content the Owner never read — under the Owner's
+ * name. Pinned by tests/corridor.race.cjs.
+ *
+ * The caller's SQL must therefore end in `AND status=? AND version=?` naming
+ * the values it read. D1 executes one statement atomically, so the guard and
+ * the write cannot be separated; RETURNING says whether a row matched. No
+ * match means someone else got there first, and the honest answer is to say
+ * so, not to retry on the caller's behalf with a decision it did not make.
+ */
+async function writeIfUnchanged(sql, params, env) {
+  const rows = await d1(`${sql} RETURNING record_id`, params, env);
+  return rows.length > 0;
+}
+
+function concurrentModification(row) {
+  return {
+    status: 409,
+    body: {
+      error: "CONCURRENT_MODIFICATION",
+      status: row.status,
+      version: row.version,
+      detail: "the record changed while this action was in flight; read it again and decide on what it is now",
+    },
+  };
 }
 
 async function logEvent(e, env) {
@@ -428,6 +481,15 @@ async function createDraft(body, caller, env) {
      so a structured body needs no new renderer to become readable prose. */
   const prose = typeof body.body === "string" && body.body ? body.body : (body.description || "");
 
+  /* The caller's cta used to be stored verbatim. It is now governed: no BUY,
+     no commercial wording, no Shop link except through product_ref. */
+  const action = governEditorialCta(body, {
+    governedSrc,
+    hasAttachments: attachments.length > 0,
+    fallback: { kind: "READ", label: "Read this", destination: `/${WORLDS[identity].segment}/${slug}` },
+  });
+  if (action.error) return { status: 400, body: action };
+
   const payload = {
     body: prose,
     media,
@@ -437,7 +499,8 @@ async function createDraft(body, caller, env) {
     featured: body.featured === true,
     cta: attachments.length
       ? { kind: "DOWNLOAD", label: attachments[0].title, destination: attachments[0].src }
-      : (body.cta || { kind: "READ", label: "Read this", destination: `/${WORLDS[identity].segment}/${slug}` }),
+      : action.cta,
+    ...(action.product_ref ? { product_ref: action.product_ref } : {}),
     metadata: {
       evidence: "CONVERSATION_ORIGINATED",
       locale: "en",
@@ -499,15 +562,16 @@ async function updateDraft(body, caller, env) {
   /* An approval covers the version the Owner read. Changing an APPROVED
      record therefore withdraws its approval and returns it to REVIEW. */
   const to = row.status === "APPROVED" ? "REVIEW" : row.status;
-  await d1(
+  const written = await writeIfUnchanged(
     `UPDATE editorial_records
         SET title=?2, summary=?3, description=?4, version=version+1, updated_at=?5, status=?6,
             approved_by=CASE WHEN ?6='REVIEW' AND status='APPROVED' THEN NULL ELSE approved_by END,
             approval_mode=CASE WHEN ?6='REVIEW' AND status='APPROVED' THEN NULL ELSE approval_mode END,
             approved_at=CASE WHEN ?6='REVIEW' AND status='APPROVED' THEN NULL ELSE approved_at END
-      WHERE record_id=?1`,
-    [row.record_id, title, summary, description, now(), to], env,
+      WHERE record_id=?1 AND status=?7 AND version=?8`,
+    [row.record_id, title, summary, description, now(), to, row.status, row.version], env,
   );
+  if (!written) return concurrentModification(row);
   await logEvent({
     record_id: row.record_id, action: "update_draft", from: row.status, to,
     actor: caller, adapter: caller, detail: { version: row.version + 1 },
@@ -611,19 +675,40 @@ async function publishApproved(body, caller, env) {
      shows a re-publication rather than looking like a first one. */
   const lineage = restoring ? `${row.record_id}@v${row.version}` : row.rollback_of;
 
-  await d1(
+  /* A POINTER AT A PRODUCT IS PUBLISHED ONLY IF THE SHOP SAYS IT EXISTS.
+     Asked at publication, restore included: a product withdrawn from the Shop
+     since the Owner approved must not be advertised on the strength of that
+     approval. Refused before the write, so a refusal changes nothing. */
+  let shopProduct = null;
+  const payload = parsePayload(row);
+  if (payload.product_ref && payload.product_ref.shop_slug) {
+    const check = await verifyShopProduct(payload.product_ref.shop_slug, { apiBase: process.env.SHOP_API_BASE });
+    if (!check.verified) {
+      return { status: check.error === "SHOP_UNREACHABLE" ? 503 : 409, body: { error: check.error, detail: check.detail, status: row.status } };
+    }
+    shopProduct = { slug: check.product.slug, buyable: check.product.buyable, verified_at: now() };
+  }
+
+  /* Bound to the status and version every check above was made against —
+     including the APPROVAL_STALE check, which proved the approval names
+     row.version and would prove nothing if a different version were written. */
+  const written = await writeIfUnchanged(
     `UPDATE editorial_records
         SET status='PUBLISHED', approved_by=?2, approval_mode=?3,
             approved_at=COALESCE(approved_at, ?4), published_at=?4,
             unpublished_at=NULL, rollback_of=?5, updated_at=?4
-      WHERE record_id=?1`,
-    [row.record_id, approver, mode, at, lineage], env,
+      WHERE record_id=?1 AND status=?6 AND version=?7`,
+    [row.record_id, approver, mode, at, lineage, row.status, row.version], env,
   );
+  if (!written) return concurrentModification(row);
   await logEvent({
     record_id: row.record_id, action: restoring ? "republish" : "publish_approved",
     from: row.status, to: "PUBLISHED",
     actor: approver, adapter: caller, approval_mode: mode,
-    detail: { destination: `${row.identity}.sentinelfortune.com`, rollback_of: lineage || null },
+    detail: {
+      destination: `${row.identity}.sentinelfortune.com`, rollback_of: lineage || null,
+      ...(shopProduct ? { shop_product: shopProduct } : {}),
+    },
   }, env);
 
   const fresh = await loadRecord(row.record_id, env);
@@ -641,8 +726,10 @@ async function submitReview(body, caller, env) {
   if (!TRANSITIONS.submit_review.includes(row.status)) {
     return { status: 409, body: { error: "NOT_SUBMITTABLE", status: row.status } };
   }
-  await d1("UPDATE editorial_records SET status='REVIEW', updated_at=?2 WHERE record_id=?1",
-    [row.record_id, now()], env);
+  const written = await writeIfUnchanged(
+    "UPDATE editorial_records SET status='REVIEW', updated_at=?2 WHERE record_id=?1 AND status=?3 AND version=?4",
+    [row.record_id, now(), row.status, row.version], env);
+  if (!written) return concurrentModification(row);
   await logEvent({
     record_id: row.record_id, action: "submit_review", from: row.status, to: "REVIEW",
     actor: caller, adapter: caller,
@@ -671,13 +758,16 @@ async function approve(body, caller, env) {
     return { status: 409, body: { error: "NOT_APPROVABLE", status: row.status } };
   }
   const at = now();
-  await d1(
+  /* The Owner approves the version they read. If it changed while they were
+     reading, the approval does not silently transfer to the new text. */
+  const written = await writeIfUnchanged(
     `UPDATE editorial_records
         SET status='APPROVED', approved_by='owner', approval_mode='EXPLICIT',
             approved_at=?2, updated_at=?2
-      WHERE record_id=?1`,
-    [row.record_id, at], env,
+      WHERE record_id=?1 AND status=?3 AND version=?4`,
+    [row.record_id, at, row.status, row.version], env,
   );
+  if (!written) return concurrentModification(row);
   await logEvent({
     record_id: row.record_id, action: "approve", from: row.status, to: "APPROVED",
     /* actor is the Owner because the Owner decided; adapter records which
@@ -699,10 +789,12 @@ async function unpublish(body, caller, env) {
     return { status: 409, body: { error: "NOT_PUBLISHED", status: row.status } };
   }
   const at = now();
-  await d1(
-    `UPDATE editorial_records SET status='UNPUBLISHED', unpublished_at=?2, updated_at=?2 WHERE record_id=?1`,
-    [row.record_id, at], env,
+  const written = await writeIfUnchanged(
+    `UPDATE editorial_records SET status='UNPUBLISHED', unpublished_at=?2, updated_at=?2
+      WHERE record_id=?1 AND status=?3 AND version=?4`,
+    [row.record_id, at, row.status, row.version], env,
   );
+  if (!written) return concurrentModification(row);
   await logEvent({
     record_id: row.record_id, action: "unpublish", from: "PUBLISHED", to: "UNPUBLISHED",
     actor: caller, adapter: caller, detail: { rollback_reference: `${row.record_id}@v${row.version}` },
@@ -723,8 +815,10 @@ async function archive(body, caller, env) {
   if (!TRANSITIONS.archive.includes(row.status)) {
     return { status: 409, body: { error: "NOT_ARCHIVABLE", status: row.status, detail: "unpublish before archiving" } };
   }
-  await d1(`UPDATE editorial_records SET status='ARCHIVED', updated_at=?2 WHERE record_id=?1`,
-    [row.record_id, now()], env);
+  const written = await writeIfUnchanged(
+    `UPDATE editorial_records SET status='ARCHIVED', updated_at=?2 WHERE record_id=?1 AND status=?3 AND version=?4`,
+    [row.record_id, now(), row.status, row.version], env);
+  if (!written) return concurrentModification(row);
   await logEvent({ record_id: row.record_id, action: "archive", from: row.status, to: "ARCHIVED", actor: caller, adapter: caller }, env);
   return { status: 200, body: { record: present(await loadRecord(row.record_id, env)) } };
 }
@@ -805,6 +899,13 @@ module.exports = async function handler(req, res) {
     return send(403, {
       error: "OWNER_CREDENTIAL_REQUIRED",
       detail: "approval requires the Owner credential; an assistant cannot approve editorial work",
+    });
+  }
+  if (caller === "editorial-worker" && !BRIDGE_ACTIONS.includes(action)) {
+    return send(403, {
+      error: "BRIDGE_ACTION_NOT_PERMITTED",
+      detail: "the editorial Worker may hand drafts in for review; approval, publication and withdrawal happen in this corridor only",
+      allowed: BRIDGE_ACTIONS,
     });
   }
 

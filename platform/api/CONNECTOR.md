@@ -24,7 +24,9 @@ presented becomes the `created_by` and `adapter` in the audit trail.
 | `CORRIDOR_TOKEN_CLAUDE` | Claude's bearer credential |
 | `CORRIDOR_TOKEN_CHATGPT` | ChatGPT's bearer credential — a *different* value |
 | `CORRIDOR_TOKEN_OWNER` | the Owner's own credential — a *third* value, the only one that may `approve` |
+| `CORRIDOR_TOKEN_EDITORIAL_WORKER` | optional; the Cloudflare editorial Worker's hand-off credential — a *fourth* value. Absent means the Worker cannot hand anything in. See "The Worker bridge" below |
 | `CORRIDOR_STANDING_POLICY` | optional; absent means every publish needs an explicit Owner approval |
+| `SHOP_API_BASE` | optional; the Digital Shop Worker's https origin. Absent means a record with `product_ref` cannot publish (`SHOP_PRODUCT_UNVERIFIED`); every other record is unaffected |
 
 Until the `CORRIDOR_TOKEN_*` values exist the endpoint answers `401` to
 everything. That is the correct closed default, not a fault.
@@ -77,6 +79,32 @@ write and a retry returns the first result instead of acting twice.
 These are **aliases onto types that already exist**. No new renderer, no
 eighth world. A governed type may also be given directly, with an `identity`.
 
+### Pointing at a Shop product: `product_ref`
+
+A free record may send the reader to a real Digital Shop product. It does so
+with the product's Shop slug, and with nothing else:
+
+```json
+{ "action": "create_draft", "type": "TEACHING", "title": "…", "body": "…",
+  "product_ref": { "shop_slug": "ledger-watch" } }
+```
+
+The corridor builds the action itself: `OPEN`, label `See the product`, to
+`https://sentinelfortune.github.io/sentinelfortune/shop/product.html?slug=…`.
+The Shop page states the price and runs checkout. `publish_approved` first asks
+the Shop's public catalogue (`GET $SHOP_API_BASE/shop/products/<slug>`) and
+publishes only if the Shop confirms the product is published. If the Shop is
+not configured (`SHOP_PRODUCT_UNVERIFIED`), does not publish the product
+(`SHOP_PRODUCT_NOT_PUBLISHED`) or cannot be reached (`503 SHOP_UNREACHABLE`),
+the record stays unpublished. The audit event records which product the Shop
+confirmed. The check also runs when an unpublished record is restored.
+
+A free-form `cta` is still accepted for editorial actions (`READ`, `LISTEN`,
+`WATCH`, `OPEN`, `LEARN`, `SUPPORT`), with these refusals: `BUY`; price,
+currency or purchase wording in the label (EN/FR); price fields; checkout
+links; and any direct Shop link (`SHOP_LINK_REQUIRES_PRODUCT_REF`). Pinned by
+`tests/corridor.shop-link.cjs`.
+
 ### The rest
 
 | Action | Body | Notes |
@@ -97,7 +125,8 @@ eighth world. A governed type may also be given directly, with an `identity`.
   the Owner's own credential. An assistant cannot approve its own writing —
   enforced by the credential, before the record is even read.
 - **Selling.** `pricing_tier` is pinned to `FREE` by a database constraint and
-  no action writes a price. Paid work goes through House of Assets.
+  no action writes a price. Paid work goes through House of Assets. A Shop
+  product can only be pointed at through `product_ref`, never priced.
 - **An eighth world.** `identity` is checked here and again by a D1 CHECK.
 - **A type a world does not present.** `TYPE_NOT_ACCEPTED_BY_WORLD`, with that
   world's actual types named. It will not guess a destination.
@@ -121,3 +150,23 @@ then anyone may publish what you approved.
 Neither assistant receives a Cloudflare token, a D1 database id, or any
 infrastructure credential. They get one URL and one bearer value, and the
 server does the rest.
+
+## The Worker bridge: one publication authority
+
+This corridor is the **only** publication authority: only its D1 reaches
+`/api/feed`. The Cloudflare editorial Worker (`transport/`, `sfl-editorial-api`)
+prepares and previews, and the Owner hands a record from it into this
+corridor with `POST /v1/owner/handoff` on the Worker. The record arrives here
+as `REVIEW`, with `created_by: editorial-worker`, and waits for the Owner's
+`approve` **here**. An approval given in the Worker does not carry over.
+
+The `editorial-worker` credential may call `create_draft`, `submit_review`,
+`get_record` and `get_preview`, and nothing else: `approve` gets
+`403 OWNER_CREDENTIAL_REQUIRED`, and every other action gets
+`403 BRIDGE_ACTION_NOT_PERMITTED`, before anything is read. With the bridge
+configured, the Worker refuses its own `publish_approved` in every mode
+(`PUBLICATION_DELEGATED`). Pinned by `transport/tests/public-bridge.test.mjs`.
+
+Note: a `CORRIDOR_STANDING_POLICY`, if the Owner sets one, applies to handed-off
+records like any other: an assistant could then publish them without a
+per-record approval.

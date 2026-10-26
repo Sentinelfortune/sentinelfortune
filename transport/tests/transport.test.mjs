@@ -635,7 +635,7 @@ test("the digest comparison is constant-time and length-safe", () => {
 
 test("the transport reimplements no corridor rule", async () => {
   const { readFile } = await import("node:fs/promises");
-  const files = ["core/http.js", "core/auth.js", "core/project.js", "core/errors.js", "runtime/worker.js", "runtime/store-kv.js"];
+  const files = ["core/http.js", "core/auth.js", "core/project.js", "core/errors.js", "core/bridge.js", "runtime/worker.js", "runtime/store-kv.js"];
   const sources = await Promise.all(files.map((f) => readFile(new URL(`../${f}`, import.meta.url), "utf8")));
   const all = sources.join("\n");
 

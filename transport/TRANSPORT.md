@@ -104,6 +104,7 @@ existing Workers and is free — no collision.
 | `POST` | `/v1/owner/withdrawal` | **OWNER** | authorize an unpublish or archive |
 | `POST` | `/v1/owner/reject` | **OWNER** | reject |
 | `POST` | `/v1/owner/rollback` | **OWNER** | restore an earlier version |
+| `POST` | `/v1/owner/handoff` | **OWNER** | hand a record to the public corridor's REVIEW queue (§7.1) |
 | `GET` | `/v1/owner/approvals` \| `/feed` \| `/audit` \| `/records` | **OWNER** | read state |
 
 One endpoint carries all eight client actions, selected by the `operation` /
@@ -210,6 +211,36 @@ Only `RATE_LIMITED`, `INTERNAL` and `NOT_CONFIGURED` are marked `retryable`.
 `LIVE` mode removes only lock 2. It does not relax lock 1 in any way, and a
 test proves publication is still refused with `OWNER_APPROVAL_REQUIRED` in
 `LIVE` mode without an approval.
+
+### 7.1 The bridge to the public corridor (2026-10-25, local only)
+
+This Worker's feed reaches no world. Only the Vercel corridor's D1 feeds
+`/api/feed`. So the public corridor is **the** publication authority, and this
+Worker hands drafts to it rather than competing with it:
+
+| Setting (Worker) | Kind | Purpose |
+| --- | --- | --- |
+| `SFL_PUBLIC_CORRIDOR_URL` | var | must be `https://<host>.sentinelfortune.com/api/corridor` |
+| `SFL_PUBLIC_CORRIDOR_TOKEN` | **secret** | the value of the Vercel `CORRIDOR_TOKEN_EDITORIAL_WORKER` |
+
+- `POST /v1/owner/handoff {"recordId"}` (**Owner only**) sends a `DRAFT` /
+  `APPROVED` Worker record to the public corridor as `create_draft` then
+  `submit_review`, and stops at `REVIEW`. The Owner approves it **there**.
+- **Lock 3:** with both settings present, `publish_approved` is refused here in
+  every mode (`PUBLICATION_DELEGATED`) and `/v1/health` reports
+  `publicationEnabled: false, publicationAuthority: "PUBLIC_CORRIDOR"`.
+- Idempotent per Worker record **and version**. A different version of a piece
+  already handed off is refused (`HANDOFF_ALREADY_EXISTS`); edit it in the public
+  corridor. Scheduled pieces (`HANDOFF_SCHEDULE_UNSUPPORTED`) and `VIEW_PRODUCT`
+  CTAs (`HANDOFF_CTA_UNSUPPORTED`) are refused. A world that does not present the
+  type refuses it (`PUBLIC_CORRIDOR_REFUSED` / `TYPE_NOT_ACCEPTED_BY_WORLD`).
+- Each attempt appends a `handoff` entry to the Owner audit. Neither the token
+  nor the URL is ever returned.
+- Rollback: unpublish in the public corridor. Disable the bridge by deleting
+  the secret, or by unsetting the Vercel token.
+
+Proof: `node --test transport/tests/public-bridge.test.mjs` (22 tests, real
+handlers on both sides, D1 on node:sqlite; **not run against Cloudflare or Vercel**).
 
 ---
 

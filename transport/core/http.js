@@ -37,6 +37,8 @@ import { intentToAction } from "../../corridor/core/pipeline.js";
 import { readAuthConfig, authenticate, verifySignature } from "./auth.js";
 import { errorBody, statusFor, GENERIC } from "./errors.js";
 import { projectOutcome, projectRecord } from "./project.js";
+import { readBridgeConfig, handoff } from "./bridge.js";
+import { auditEntry } from "../../corridor/core/authority.js";
 
 export const API_VERSION = "sfl.editorial-api/1.0";
 
@@ -61,11 +63,16 @@ const CLIENT_PRINCIPALS = Object.freeze(["CLIENT_CHATGPT", "CLIENT_CLAUDE"]);
  * omitted a fresh in-memory corridor is created, which is what the local
  * server and the tests use.
  */
-export function createApi({ env = {}, corridor = createCorridor(), now = () => Date.now(), log = console } = {}) {
+export function createApi({ env = {}, corridor = createCorridor(), now = () => Date.now(), log = console, fetchImpl = globalThis.fetch } = {}) {
   const auth = readAuthConfig(env);
   const mode = MODES.includes(env.SFL_CORRIDOR_MODE) ? env.SFL_CORRIDOR_MODE : "TEST_PREVIEW";
+  /* With the hand-off configured, the public corridor is the publication
+     authority and this Worker publishes nothing of its own, in ANY mode —
+     otherwise there would be two authorities, one of them feeding no world. */
+  const bridge = readBridgeConfig(env);
 
   for (const problem of auth.problems) log.error(`[sfl-editorial-api] configuration: ${problem}`);
+  if (bridge.problem) log.error(`[sfl-editorial-api] configuration: ${bridge.problem}`);
 
   /** A refusal, with the detail withheld from callers who have not proved who
    *  they are. The full reason always reaches the log. */
@@ -116,7 +123,8 @@ export function createApi({ env = {}, corridor = createCorridor(), now = () => D
           mode,
           configured: auth.configured,
           /* Which principals EXIST is deliberately not disclosed. */
-          publicationEnabled: mode === "LIVE",
+          publicationEnabled: mode === "LIVE" && !bridge.configured,
+          publicationAuthority: bridge.configured ? "PUBLIC_CORRIDOR" : mode === "LIVE" ? "THIS_WORKER" : "NONE",
         },
       };
     }
@@ -207,6 +215,11 @@ export function createApi({ env = {}, corridor = createCorridor(), now = () => D
       payload.user_message || payload.ownerUtterance,
       payload.operation || payload.intent,
     );
+    if (bridge.configured && requested.action === "publish_approved") {
+      return refuse("PUBLICATION_DELEGATED",
+        "publication happens in the public corridor; the Owner hands a previewed record off with /v1/owner/handoff and approves it there",
+        { step: "OWNER_AUTHORITY", authenticated: true });
+    }
     if (mode === "TEST_PREVIEW" && requested.action === "publish_approved") {
       return refuse("PUBLICATION_DISABLED",
         "this deployment runs in TEST_PREVIEW mode and cannot publish; prepare and preview are available",
@@ -235,7 +248,7 @@ export function createApi({ env = {}, corridor = createCorridor(), now = () => D
      OWNER: the approval flow the corridor already defines
      ─────────────────────────────────────────────────────────────────────── */
 
-  function owner(path, method, payload) {
+  async function owner(path, method, payload) {
     const action = path.slice("/v1/owner/".length);
 
     if (method === "GET") {
@@ -284,6 +297,32 @@ export function createApi({ env = {}, corridor = createCorridor(), now = () => D
           ? ok({ record: projectRecord(r.record), restoredFrom: r.restoredFrom })
           : refuse("NOT_FOUND", r.reason, { step: "APPROVAL_STATE", authenticated: true });
       }
+      case "handoff": {
+        /* Hand a previewed record to the public corridor's REVIEW queue. The
+           Owner decides to send it; the Owner approves it THERE. */
+        const record = corridor.store.get(payload.recordId);
+        if (!record) return refuse("NOT_FOUND", `no record ${payload.recordId}`, { authenticated: true });
+        const r = await handoff(record, bridge, { fetchImpl });
+        corridor.store.ownerAudit.push(auditEntry({
+          action: "handoff", client: "OWNER", intent: "HANDOFF",
+          outcome: r.ok ? `HANDOFF:${r.publicStatus}` : `HANDOFF:${r.code}`,
+          detail: r.ok ? `${record.id} v${record.version} -> ${r.publicRecordId}` : `${record.id} v${record.version}`,
+          at: new Date(now()).toISOString(),
+        }));
+        if (!r.ok) {
+          const refused = refuse(r.code, r.message, { step: "HANDOFF", authenticated: true });
+          if (r.upstream) refused.body.error.upstream = r.upstream;
+          if (r.publicRecordId) refused.body.error.publicRecordId = r.publicRecordId;
+          return refused;
+        }
+        return ok({
+          handoff: {
+            workerRecordId: record.id, workerVersion: record.version,
+            publicRecordId: r.publicRecordId, publicStatus: r.publicStatus, replay: r.replay,
+            next: "OWNER_APPROVAL_IN_PUBLIC_CORRIDOR",
+          },
+        });
+      }
       default:
         return refuse("UNKNOWN_ROUTE", `/v1/owner/${action} is not an endpoint of this API`, { authenticated: true });
     }
@@ -323,7 +362,7 @@ function contractDescriptor(mode) {
       health: { method: "GET", path: "/v1/health", auth: false },
       contract: { method: "GET", path: "/v1/contract", auth: false },
       editorial: { method: "POST", path: "/v1/editorial", auth: "CLIENT" },
-      owner: { method: "POST", path: "/v1/owner/{approve|withdrawal|reject|rollback}", auth: "OWNER" },
+      owner: { method: "POST", path: "/v1/owner/{approve|withdrawal|reject|rollback|handoff}", auth: "OWNER" },
       ownerRead: { method: "GET", path: "/v1/owner/{approvals|feed|audit|records}", auth: "OWNER" },
     },
     actions: [

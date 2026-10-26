@@ -55,8 +55,9 @@ global.fetch = async (url, init) => {
   const args = order.length ? order.map(i => bound[i]) : bound;
   try {
     const st = db.prepare(converted);
-    const isSelect = /^\s*select/i.test(sql);
-    const results = isSelect ? st.all(...args) : (st.run(...args), []);
+    /* D1 returns RETURNING rows in `results`, exactly as for a SELECT. */
+    const returnsRows = /^\s*select/i.test(sql) || /\breturning\b/i.test(sql);
+    const results = returnsRows ? st.all(...args) : (st.run(...args), []);
     return { ok: true, json: async () => ({ success: true, result: [{ results }] }) };
   } catch (e) { return { ok: false, status: 400, json: async () => ({ success:false, errors:[{message:e.message}] }) }; }
 };
