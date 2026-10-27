@@ -23,7 +23,7 @@ import { readEnvelope, loadFeed, FEED_SCHEMA, DEFAULT_FEED_URL, STATIC_FEED_URL 
 import { BRANCHES, HOST_MAP, allBranches } from "../engine/identities.js";
 import { rendererFor, rendererName } from "../engine/renderers.js";
 
-const FEED = JSON.parse(readFileSync(new URL("../feed/public-site.json", import.meta.url), "utf8"));
+const FEED = JSON.parse(readFileSync(new URL("./preview-fixture.json", import.meta.url), "utf8"));
 
 /** A minimal valid public record, for building variations on. */
 function rec(over = {}) {

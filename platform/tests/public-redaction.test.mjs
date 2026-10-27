@@ -92,6 +92,11 @@ test("1a. the static feed file, served raw, names no private system and no inter
   assert.ok(readEnvelope(STATIC).ok, "the engine still accepts it");
 });
 
+test("1aa. no sample catalogue ships as a public static fallback", () => {
+  assert.deepEqual(STATIC.records, []);
+  assert.equal(STATIC.evidence, "TEST_PREVIEW");
+});
+
 test("1b. the corridor's committed public feed names no private system or channel", () => {
   const feed = JSON.parse(CORRIDOR_FEED_TEXT);
   assert.equal(findPrivate(feed), null);

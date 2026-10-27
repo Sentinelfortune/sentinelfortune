@@ -204,10 +204,10 @@ module.exports = async function handler(req, res) {
   res.setHeader("X-SF-Feed-Dynamic-Count", String(dynamic.length));
   sendEnvelope(res, {
     schema: (base && base.schema) || "sf.public-site/1.0",
-    /* Evidence stays whatever the static base declares. Serving one real
-       corridor record does not make the whole catalogue live, and this
-       endpoint has no business promoting it. */
-    evidence: (base && base.evidence) || "TEST_PREVIEW",
+    /* Demo fixtures are test-only. With an empty governed static fallback,
+       LIVE means all emitted records came from PUBLISHED database rows.
+       Never set LIVE when the database returned no published records. */
+    evidence: dynamic.length > 0 ? "LIVE" : "TEST_PREVIEW",
     /* The source block carries the public label only (public-redact.js). It
        used to name the write path and the D1 database id; neither is the
        public's business, and an identifier is infrastructure shape. */
