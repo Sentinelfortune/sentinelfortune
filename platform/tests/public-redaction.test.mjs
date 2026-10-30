@@ -92,6 +92,13 @@ test("1a. the static feed file, served raw, names no private system and no inter
   assert.ok(readEnvelope(STATIC).ok, "the engine still accepts it");
 });
 
+test("1aa. no sample catalogue ships as a public static fallback", () => {
+  assert.ok(STATIC.records.every(r => r.publicReadiness?.approved === true && r.publicationStatus === "PUBLIC_SITE"));
+  assert.ok(STATIC.records.every(r => !/^(test-|v2-preview-)/.test(r.id)));
+  assert.ok(STATIC.records.some(r => r.id === "vibraflow-legacy-365-day-001"));
+  assert.equal(STATIC.evidence, "LIVE");
+});
+
 test("1b. the corridor's committed public feed names no private system or channel", () => {
   const feed = JSON.parse(CORRIDOR_FEED_TEXT);
   assert.equal(findPrivate(feed), null);

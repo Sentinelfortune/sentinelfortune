@@ -542,19 +542,23 @@ function sectionF(accepted) {
 export const SUPPORT_AMOUNTS = Object.freeze([5, 10, 25]);
 
 function sectionG(support) {
-  /* `support` is injected, never assumed. A configured endpoint must be an
-     explicit https destination the Owner set — this file has no default. */
-  const configured = Boolean(support && support.enabled === true && typeof support.href === "string" && support.href.startsWith("https://"));
-
-  const amounts = h("div.sf-sup-amounts", { role: configured ? "group" : null, "aria-label": configured ? "Support amount" : null },
-    [...SUPPORT_AMOUNTS.map((amount) =>
+  // A support action is available only when an explicitly configured LIVE
+  // Stripe Payment Link exists for the selected amount.
+  const links = (support && support.enabled === true && support.links) || {};
+  const valid = (url) => typeof url === "string" && /^https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+$/.test(url);
+  const configured = SUPPORT_AMOUNTS.every((amount) => valid(links[String(amount)])) && valid(links.custom);
+  const amounts = h("div.sf-sup-amounts", {
+    role: configured ? "group" : null,
+    "aria-label": configured ? "Support amount" : null,
+  }, [
+    ...SUPPORT_AMOUNTS.map((amount) =>
       configured
-        ? h("a.sf-sup-amount", { href: `${support.href}${support.href.includes("?") ? "&" : "?"}amount=${amount}`, rel: "noopener", text: `$${amount}` })
+        ? h("a.sf-sup-amount", { href: links[String(amount)], rel: "noopener noreferrer", text: `$${amount}` })
         : h("span.sf-sup-amount.sf-sup-amount--inert", { text: `$${amount}` })),
-      configured
-        ? h("a.sf-sup-amount", { href: support.href, rel: "noopener", text: "Custom" })
-        : h("span.sf-sup-amount.sf-sup-amount--inert", { text: "Custom" }),
-    ]);
+    configured
+      ? h("a.sf-sup-amount", { href: links.custom, rel: "noopener noreferrer", text: "Custom" })
+      : h("span.sf-sup-amount.sf-sup-amount--inert", { text: "Custom" }),
+  ]);
 
   return section("Support the work", {
     kicker: "Voluntary",

@@ -455,7 +455,7 @@ export function addressLive(cfg) {
 
 /** The public word for a world's state. Never invented, never optimistic. */
 export const STATE_LABEL = Object.freeze({
-  BUILD: "In build",
+  BUILD: "World preview",
   READY: "Ready — not yet published",
   HUB: "Open",
   LIVE: "Live",

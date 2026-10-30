@@ -1,0 +1,551 @@
+{
+  "schema": "sf.public-site/1.0",
+  "evidence": "TEST_PREVIEW",
+  "_evidence_note": [
+    "TEST / PREVIEW FIXTURES — NOT REAL INVENTORY.",
+    "",
+    "No live catalogue export was available in the session that built",
+    "this, so no live PUBLIC_SITE export could be read. These records exist to",
+    "prove the engine end to end: ingestion, identity ownership, the specialized",
+    "renderer, the detail route, the governed price state and the governed CTA.",
+    "",
+    "`evidence` is TEST_PREVIEW and the runtime renders a visible preview notice",
+    "on every page while it stays that way. Replace this file (or point",
+    "window.SF_FEED_URL at a live export) and set evidence to LIVE; nothing in",
+    "the engine changes.",
+    "",
+    "Two of these records are REAL, already-shipped Sentinel Fortune work and are",
+    "marked real_artefact: Floor and S.5 ASCENT Lite. The rest are fixtures and",
+    "describe nothing that exists.",
+    "",
+    "The last four records are deliberately INVALID. They are the governance",
+    "evidence: each must be refused, and platform/tests asserts exactly why."
+  ],
+  "source": {
+    "system": "SENTINEL_FORTUNE",
+    "generated_at": "2026-10-17T09:00:00Z"
+  },
+  "records": [
+    {
+      "id": "v2-preview-001",
+      "publishedAt": "2026-10-19T08:00:00Z",
+      "slug": "the-discipline-of-an-unhurried-morning",
+      "identity": "vibraflowmedia",
+      "type": "TEACHING",
+      "title": "The Discipline of an Unhurried Morning",
+      "summary": "TEST_PREVIEW — a teaching on the first twenty minutes, and what they decide.",
+      "description": "Most people lose the day before it begins. Not to failure — to noise. This teaching sits with the first twenty minutes of a morning and asks what they are actually for. Reflective writing, not therapy and not medical or psychological advice.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "READ",
+        "destination": "/reflect/the-discipline-of-an-unhurried-morning"
+      },
+      "featured": true,
+      "categories": [
+        "Reflection",
+        "Practice"
+      ],
+      "collections": [
+        "Beginnings"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "evidence": "TEST_PREVIEW",
+        "mediaRoles": "GENERATED — ATTENTION, VALUE and DISCOVERY resolve to deterministic generated art until Owner imagery is supplied"
+      }
+    },
+    {
+      "id": "v2-preview-002",
+      "publishedAt": "2026-10-18T08:00:00Z",
+      "slug": "what-a-price-actually-says",
+      "identity": "lumenschoolacademy",
+      "type": "COURSE",
+      "title": "What a Price Actually Says",
+      "summary": "TEST_PREVIEW — a free lesson on pricing as a sentence your business speaks before you do.",
+      "description": "A price is not a number. It is a sentence your business speaks before you open your mouth, and most founders never read theirs back. This lesson reads it out loud: what a low price says, what a high one says, and what an unexplained one says loudest of all.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "LEARN",
+        "destination": "/learn/what-a-price-actually-says"
+      },
+      "featured": true,
+      "categories": [
+        "Business",
+        "Pricing"
+      ],
+      "collections": [
+        "Foundations"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "evidence": "TEST_PREVIEW",
+        "mediaRoles": "GENERATED — ATTENTION, VALUE and DISCOVERY resolve to deterministic generated art until Owner imagery is supplied"
+      }
+    },
+    {
+      "id": "v2-preview-003",
+      "publishedAt": "2026-10-17T08:00:00Z",
+      "slug": "shipping-one-edge-worker",
+      "identity": "lightnodesystems",
+      "type": "COURSE",
+      "title": "Shipping One Edge Worker",
+      "summary": "TEST_PREVIEW — a technical guide to putting a single governed API on the edge, without ceremony.",
+      "description": "What it does, what it needs, what it returns. A short technical guide covering one authenticated endpoint, secrets kept as digests rather than values, idempotent writes, and the difference between a deployment that builds and a deployment that is verified.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "LEARN",
+        "destination": "/systems/shipping-one-edge-worker"
+      },
+      "featured": true,
+      "categories": [
+        "Systems",
+        "AI"
+      ],
+      "collections": [
+        "Runbooks"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "evidence": "TEST_PREVIEW",
+        "mediaRoles": "GENERATED — ATTENTION, VALUE and DISCOVERY resolve to deterministic generated art until Owner imagery is supplied"
+      }
+    },
+    {
+      "id": "test-rec-001",
+      "publishedAt": "2026-10-14T09:00:00Z",
+      "slug": "origin-echo",
+      "identity": "sentinelfortunerecords",
+      "type": "MUSIC_RELEASE",
+      "title": "Origin Echo",
+      "summary": "A generative pad built in the browser — not a recording.",
+      "description": "Four detuned voices layered into an unresolved chord. Nothing is streamed and nothing was recorded: the browser synthesises it live each time you press play. It exists as a demonstration of the listening room, not as a release.",
+      "media": [
+        {
+          "kind": "AUDIO",
+          "src": "/media/generated/origin-echo",
+          "alt": "Generated ambient pad"
+        }
+      ],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "LISTEN",
+        "label": "Play",
+        "destination": "/release/origin-echo"
+      },
+      "featured": true,
+      "categories": [
+        "Sound worlds"
+      ],
+      "collections": [
+        "Generated"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false,
+        "approved_at": "2026-10-17T08:00:00Z"
+      },
+      "metadata": {
+        "duration": "continuous",
+        "generated": true
+      }
+    },
+    {
+      "id": "test-rec-002",
+      "publishedAt": "2026-09-02T09:00:00Z",
+      "slug": "the-quiet-wire",
+      "identity": "codexworldtv",
+      "type": "STORY",
+      "title": "The Quiet Wire",
+      "summary": "Test fixture — the opening entry of a storyworld that has not been written.",
+      "description": "A placeholder narrative record used to prove the story renderer, the series collection surface and the detail route. No episode, script or film exists behind it.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "READ",
+        "destination": "/story/the-quiet-wire"
+      },
+      "featured": true,
+      "categories": [
+        "Serialized"
+      ],
+      "collections": [
+        "The Quiet Wire"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "episode": 1,
+        "series": "The Quiet Wire"
+      }
+    },
+    {
+      "id": "real-rec-003",
+      "realArtefact": true,
+      "publishedAt": "2026-08-20T09:00:00Z",
+      "slug": "s5-ascent-lite",
+      "identity": "lumengame",
+      "type": "GAME",
+      "title": "S.5 ASCENT Lite",
+      "summary": "A side-on precision platformer. Hand-built levels, keyboard or touch.",
+      "description": "Move, jump, collect, climb. A real playable game: a 42 KB engine reading hand-authored level data. Free, no account, nothing to install. Your best score stays in your own browser.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "OPEN",
+        "label": "Play",
+        "destination": "https://sentinelfortune.github.io/sentinelfortune/frontend/games/s5-ascent-lite/"
+      },
+      "featured": true,
+      "categories": [
+        "Platformer"
+      ],
+      "collections": [
+        "Playable now"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "real_artefact": true,
+        "controls": "Arrows / A · D · Space"
+      }
+    },
+    {
+      "id": "real-rec-004",
+      "realArtefact": true,
+      "publishedAt": "2026-10-15T09:00:00Z",
+      "slug": "floor",
+      "identity": "lumenschoolacademy",
+      "type": "SOFTWARE",
+      "title": "Floor",
+      "summary": "Know the price below which a job loses you money.",
+      "description": "Enter your annual overhead, billable hours, labour cost and target margin. Floor works out what every billable hour has to contribute before anything is profit, then gives each job a break-even price floor and the price that would have hit your target margin. Runs in your browser; nothing is uploaded. It is arithmetic on figures you enter, not accounting, tax or financial advice.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "OPEN",
+        "label": "Open Floor",
+        "destination": "https://floor.sentinelfortune.com/"
+      },
+      "featured": true,
+      "categories": [
+        "Costing and pricing",
+        "Business tools"
+      ],
+      "collections": [
+        "Getting paid properly"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "real_artefact": true,
+        "version": "1.0.0",
+        "audience": "Owner-operators of small trades and home-service businesses",
+        "evidence": "39 unit tests and 15 end-to-end checks passing"
+      }
+    },
+    {
+      "id": "test-rec-005",
+      "publishedAt": "2026-07-11T09:00:00Z",
+      "slug": "four-questions",
+      "identity": "lumenschoolacademy",
+      "type": "COURSE",
+      "title": "The four questions that make an estimate defensible",
+      "summary": "Estimates lose money in what they leave out.",
+      "description": "Test fixture pointing at real published writing. Four questions, asked before the estimate goes out, close most of the gap between what you quoted and what the job cost.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "LEARN",
+        "destination": "https://sentinelfortune.github.io/sentinelfortune/updates/four-questions-defensible-estimate/"
+      },
+      "featured": false,
+      "categories": [
+        "Estimating"
+      ],
+      "collections": [
+        "Getting paid properly"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "reading_time": 3
+      }
+    },
+    {
+      "id": "test-rec-006",
+      "publishedAt": "2026-10-09T09:00:00Z",
+      "slug": "stillness-first",
+      "identity": "vibraflowmedia",
+      "type": "TEACHING",
+      "title": "Stillness, first",
+      "summary": "Test fixture — a reflective passage that has not been written.",
+      "description": "A placeholder record used to prove the reading room: one passage, one column, no onward call to action. Reflective writing, not therapy and not medical or psychological advice.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "READ",
+        "destination": "/reflect/stillness-first"
+      },
+      "featured": true,
+      "categories": [
+        "Reflection"
+      ],
+      "collections": [
+        "Beginnings"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {}
+    },
+    {
+      "id": "test-rec-007",
+      "publishedAt": "2026-10-16T09:00:00Z",
+      "slug": "ledger-watch",
+      "identity": "lightnodesystems",
+      "type": "SOFTWARE",
+      "title": "Ledger Watch",
+      "summary": "Test fixture — a workflow diagnostic that has not been built.",
+      "description": "A placeholder technical record used to prove the workshop renderer and its contract strip. It declares a job, its inputs and its outputs because a system that cannot be described that way does not belong in the workshop.",
+      "media": [],
+      "price": {
+        "amount": 49,
+        "currency": "USD"
+      },
+      "compareAtPrice": {
+        "amount": 79,
+        "currency": "USD"
+      },
+      "pricingTier": "PAID",
+      "cta": {
+        "kind": "BUY",
+        "destination": "https://sentinelfortune.github.io/sentinelfortune/shop/"
+      },
+      "featured": true,
+      "categories": [
+        "Diagnostics"
+      ],
+      "collections": [
+        "Operations"
+      ],
+      "bundleMembership": [
+        "operations-starter"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {
+        "takes": "A month of job records as CSV",
+        "returns": "Which workflow step is losing hours",
+        "runs": "In your browser"
+      }
+    },
+    {
+      "id": "test-rec-008",
+      "publishedAt": "2026-06-01T09:00:00Z",
+      "slug": "operations-starter",
+      "identity": "lightnodesystems",
+      "type": "BUNDLE",
+      "title": "Operations Starter",
+      "summary": "Test fixture bundle — two systems, one price.",
+      "description": "A placeholder bundle used to prove bundle membership resolution and the commerce renderer. Nothing is for sale.",
+      "media": [],
+      "price": {
+        "amount": 79,
+        "currency": "USD"
+      },
+      "pricingTier": "PAID",
+      "cta": {
+        "kind": "BUY",
+        "destination": "https://sentinelfortune.github.io/sentinelfortune/shop/"
+      },
+      "featured": false,
+      "categories": [
+        "Diagnostics"
+      ],
+      "collections": [
+        "Operations"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "metadata": {}
+    },
+    {
+      "id": "test-rec-009",
+      "publishedAt": "2026-10-12T09:00:00Z",
+      "slug": "legacy-first-collection",
+      "identity": "oglegacystore",
+      "type": "BUNDLE",
+      "title": "First Collection",
+      "summary": "Test fixture — a curated collection with no published products behind it.",
+      "description": "A placeholder commercial record used to prove the lookbook renderer and the Digital Shop handoff. The production catalogue holds no published products, so nothing here is for sale.",
+      "media": [],
+      "pricingTier": null,
+      "cta": {
+        "kind": "BUY",
+        "destination": "https://sentinelfortune.github.io/sentinelfortune/shop/"
+      },
+      "featured": true,
+      "categories": [
+        "Design language"
+      ],
+      "collections": [
+        "First Collection"
+      ],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "_why_invalid_cta": "Deliberate: a BUY with no governed price. The commercial heart must DISABLE this button and say the price is not published — never render a buy button with no price.",
+      "metadata": {}
+    },
+    {
+      "id": "test-reject-010",
+      "slug": "not-approved-yet",
+      "identity": "sentinelfortunerecords",
+      "type": "MUSIC_RELEASE",
+      "title": "Unapproved Release",
+      "summary": "Must never be public.",
+      "description": "",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "LISTEN",
+        "destination": "/release/not-approved-yet"
+      },
+      "publicationStatus": "DRAFT",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "_why_invalid": "publicationStatus is DRAFT. It was never routed to the public site."
+    },
+    {
+      "id": "test-reject-011",
+      "slug": "string-approval",
+      "identity": "lumenschoolacademy",
+      "type": "COURSE",
+      "title": "Truthy Approval",
+      "summary": "Must never be public.",
+      "description": "",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "LEARN",
+        "destination": "/learn/string-approval"
+      },
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": "yes",
+        "withheld": false
+      },
+      "_why_invalid": "approved is the string \"yes\", not boolean true. A string is not a decision — the shop publication bridge refuses this too."
+    },
+    {
+      "id": "test-reject-012",
+      "slug": "unknown-house",
+      "identity": "sentinelfortunemystery",
+      "type": "STORY",
+      "title": "Unknown Identity",
+      "summary": "Must never be public.",
+      "description": "",
+      "media": [],
+      "pricingTier": "FREE",
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "_why_invalid": "identity is not one of the seven. Refused, never defaulted into a house that does not own it."
+    },
+    {
+      "id": "test-reject-013",
+      "publishedAt": "2026-05-04T09:00:00Z",
+      "slug": "localhost-destination",
+      "identity": "lumengame",
+      "type": "GAME",
+      "title": "Local Link",
+      "summary": "Public, but its CTA must be stripped.",
+      "description": "This record is itself public and valid. Its CTA points at a localhost address, which must never reach a public link however it got into the feed. The record renders; the button does not.",
+      "media": [],
+      "pricingTier": "FREE",
+      "cta": {
+        "kind": "OPEN",
+        "destination": "http://127.0.0.1:8899/play/local-link"
+      },
+      "featured": false,
+      "categories": [
+        "Platformer"
+      ],
+      "collections": [],
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": false
+      },
+      "_why_partially_invalid": "The destination host is not on the allow-list. governedDestination refuses it, normalizeCta drops the whole CTA, and the commercial heart renders 'Not yet available.' instead of a dead button.",
+      "metadata": {}
+    },
+    {
+      "id": "test-reject-014",
+      "slug": "withdrawn",
+      "identity": "oglegacystore",
+      "type": "BOOK",
+      "title": "Withdrawn Title",
+      "summary": "Must never be public.",
+      "description": "",
+      "media": [],
+      "price": {
+        "amount": 19,
+        "currency": "USD"
+      },
+      "pricingTier": "PAID",
+      "cta": {
+        "kind": "BUY",
+        "destination": "https://sentinelfortune.github.io/sentinelfortune/shop/"
+      },
+      "publicationStatus": "PUBLIC_SITE",
+      "publicReadiness": {
+        "approved": true,
+        "withheld": true
+      },
+      "_why_invalid": "withheld is true. Something pulled it back after approval, and a withdrawal must win over an earlier approval."
+    }
+  ]
+}

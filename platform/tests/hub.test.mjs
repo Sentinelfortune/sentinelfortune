@@ -20,7 +20,7 @@ import { MEDIA_ROLES, governedRole, governedRoles } from "../engine/visual.js";
 import { isPublicHost, isCanonicalHost, HUB_PUBLIC_HOSTS } from "../engine/router.js";
 import { priceState, ctaState } from "../engine/commerce.js";
 
-const FEED = JSON.parse(readFileSync(new URL("../feed/public-site.json", import.meta.url), "utf8"));
+const FEED = JSON.parse(readFileSync(new URL("./preview-fixture.json", import.meta.url), "utf8"));
 
 /* ═══ ONE ENGINE, SEVEN WORLDS ════════════════════════════════════════ */
 

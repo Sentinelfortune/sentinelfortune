@@ -298,7 +298,7 @@ function renderTeaching(record, ctx) {
          requirement, and it is separate from the onward pressure this room
          exists to leave out. */
       h("div.vf-cost", null, [priceTag(record)]),
-      record.description ? h("div.vf-text", null, [h("p", { text: record.description })]) : null,
+      record.description ? h("div.vf-text", null, record.description.split(/\n\s*\n/).map(paragraph => h("p", { text: paragraph.trim() }))) : null,
     ]),
     h("p.vf-fine", {
       text: "Reflective writing. Not therapy, not medical or psychological advice, and not a substitute for either.",

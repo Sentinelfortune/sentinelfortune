@@ -329,7 +329,15 @@ async function bootHub() {
     preview,
     /* Support infrastructure is injected or absent. There is no default, so a
        payment action cannot appear by accident. */
-    support: (typeof window !== "undefined" && window.SF_SUPPORT) || null,
+    support: {
+      enabled: true,
+      links: {
+        "5": "https://buy.stripe.com/28E00j2P6dvf9oP0UDbAs1d",
+        "10": "https://buy.stripe.com/dRm00jahydvf6cDcDlbAs1e",
+        "25": "https://buy.stripe.com/28EaEXgFW8aVasT5aTbAs1f",
+        custom: "https://buy.stripe.com/8x2aEXblC9eZeJ98n5bAs1c",
+      },
+    },
   }), hubLinks);
 
   applySeo({ branch: HUB, route: { view: "home" }, evidence: STATE.evidence });
