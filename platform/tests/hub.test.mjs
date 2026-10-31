@@ -250,7 +250,7 @@ test("support is voluntary, bounded, and carries no payment by default", () => {
   assert.ok(!/https:\/\/[^"'\s]*(donate|support|pay|checkout|stripe)/i.test(source),
     "hub.js must not contain a hardcoded payment destination");
   assert.ok(/support\.enabled === true/.test(source), "support must be explicitly enabled to render an action");
-  assert.ok(/startsWith\("https:\/\/"\)/.test(source), "a support destination must be https");
+  assert.ok(source.includes("buy\\.stripe\\.com"), "support validation must require Stripe checkout URLs");
 });
 
 test("the homepage defines no price, tier or checkout of its own", () => {

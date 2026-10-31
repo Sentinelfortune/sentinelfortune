@@ -415,7 +415,8 @@ function viewHome(ctx) {
   /* The living surface. Rails render in the branch's declared order, each one
      built from governed data, and ANY rail with nothing in it is dropped here
      rather than rendering as an empty shelf. */
-  const rails = cfg.rails.map((spec) => buildRail(spec, ctx)).filter(Boolean);
+  const shown = new Set(spotlights.map((record) => record.id));
+  const rails = cfg.rails.map((spec) => buildRail(spec, ctx, shown)).filter(Boolean);
   return h("div", null, [hero, h("div.sf-rails", null, rails)]);
 }
 
@@ -503,11 +504,16 @@ function dynamicHero(spotlights, ctx) {
 
 /** Turn one declared rail spec into a rendered rail, or null. Every label
  *  below is something the data can actually support. */
-function buildRail(spec, ctx) {
+function buildRail(spec, ctx, shown = new Set()) {
   const { pool, links, branch: cfg } = ctx;
   const card = (r) => ({ badge: typeLabel(r.type), identity: cfg.slug, ratio: ratioFor(r.type) });
-  const mk = (title, records, extra = {}) =>
-    rail({ title, records, hrefFor: links.detail, cardOpts: card, ...extra });
+  const mk = (title, records, extra = {}) => {
+    const unique = records.filter((record) => !shown.has(record.id));
+    if (!unique.length) return null;
+    const result = rail({ title, records: unique, hrefFor: links.detail, cardOpts: card, ...extra });
+    if (result) unique.forEach((record) => shown.add(record.id));
+    return result;
+  };
 
   switch (spec.kind) {
     case "continue": {
