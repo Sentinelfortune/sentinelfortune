@@ -285,11 +285,11 @@ export const BRANCHES = Object.freeze({
     name: "OG Legacy Store",
     tag: "Commerce",
     mark: "◇",
-    job: "Connect proprietary brands, selected merchandise and lawful general trading opportunities under Sentinel Fortune LLC.",
-    promise: "Digital innovation meets real-world commerce.",
-    role: "General trading, wholesale, import-export and digital and physical commerce; product availability and delivery are assessed per inquiry.",
-    cta: "Explore / Inquire",
-    focus: Object.freeze(["proprietary brands", "selected merchandise", "general trading", "wholesale", "domestic and international commerce"]),
+    job: "Explore proprietary brands, selected merchandise and commercial supply opportunities. Submit purchasing requirements for individual review by Sentinel Fortune LLC.",
+    promise: "Products, international sourcing and commercial supply opportunities.",
+    role: "Selected merchandise, wholesale and purchasing inquiries, supplier-led fulfillment, and eligible international trade. Quotations and delivery terms are confirmed before order acceptance.",
+    cta: "Browse / Request Quote",
+    focus: Object.freeze(["proprietary brands", "selected merchandise", "commercial supply", "product sourcing", "wholesale", "international purchasing inquiries"]),
     /* Commerce leads with the collection, then one object at a time. Checkout
        is never reimplemented here — the Digital Shop owns it. */
     lead: "BUY",
